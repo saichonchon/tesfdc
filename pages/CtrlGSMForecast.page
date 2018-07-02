@@ -1,0 +1,114 @@
+<apex:page title="GSM Forecast" id="thePage" applyBodyTag="true" sidebar="false" controller="CtrlGSMForecast" docType="html-5.0">
+<head>
+	<script type="text/javascript">
+		document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+	<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/css3animate/animate.min.css')}" />
+	<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+	<link type="text/css" rel="stylesheet" href="{!$Resource.CtrlGSMForecastCSS}" />
+	
+	<style type="text/css">
+		.imgce{
+            margin-top: 8px; display: block;float: left; width: 13px; height: 13px;
+            background: url({!URLFOR($Resource.jQueryTool, '/img/twisty_sprite.png')}) no-repeat;
+        }
+        .imgce.collapse{ background-position:0px -11px; }
+        .imgce.expand{ }
+		.menucollapse{
+        		margin-top: 6px; display: block;float: left; width: 13px; height: 13px;
+            background: url({!URLFOR($Resource.jQueryTool, '/img/twisty_sprite.png')}) no-repeat;
+        		background-position:0px -11px;
+        }
+		.cmtimg{background-image: url({!URLFOR($Resource.jQueryTool, '/img/cmt16_16.png')});}
+        .commentimg{background-image: url({!URLFOR($Resource.jQueryTool, '/img/comment_16_16.png')});}
+    </style>
+	
+    <script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+    <script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+
+	<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery-1.8.3.min.js')}"/>
+	<script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+	
+	<script src="{!$Resource.CtrlGSMForecastJS}"></script>
+</head>
+
+<body>
+	<div id="loading-curtain-div" title="Please Wait..."></div>
+	<div id="contentallid" class="tc">
+		<apex:variable var="inputVal" value="" />
+		<apex:form id="theForm">
+			<apex:actionStatus id="theStatus" onstart="document.getElementById('loading-curtain-div').style.display='';" />
+			<apex:actionFunction name="init" action="{!init}" oncomplete="initComplete()" status="theStatus" reRender="theDataOp, themsg" />
+			<apex:actionFunction name="saveGSMForecast" action="{!saveGSMForecast}" oncomplete="saveGSMForecastComplete()" status="theStatus" reRender="saveop, themsg" />
+			<apex:actionFunction name="actionRSMComments" action="{!actionRSMComments}" oncomplete="actionRSMCommentsComplete()" status="theStatus" reRender="gsmcomment, themsg" />
+
+			<apex:outputPanel layout="block" id="compop">
+				<div id="gsmmenu" class="gsmmenucls" style="visibility: hidden;">
+					<c:CompGSMForecastMenu pageCtrl="{!this}" id="cgsmfmenu"></c:CompGSMForecastMenu>
+				</div>
+
+				<div id="dmsgid"><apex:pageMessages id="themsg"/></div>
+
+				<apex:outputPanel layout="block" id="theDataOp">
+					<input id="colorid" value="{!colorConfig}" type="hidden"/>
+					<div id="querydiv" style="display: none;">
+						<input id="bbbsqlid" value="{!queryStrForBBBM}" type="hidden" />
+						<input id="scheduleid" value="{!queryStrForScheduled}" type="hidden"/>
+					</div>
+					<apex:inputHidden value="{!selectedRegion}" id="sregionid" />
+					<c:CompGSMForecastBody inputVal="{!inputVal}" pageCtrl="{!this}" id="cgsmfbody"></c:CompGSMForecastBody>
+				</apex:outputPanel>
+
+			</apex:outputPanel>
+			
+			<apex:outputPanel style="display:none;" id="saveop">
+				<apex:inputHidden value="{!saveJSON}" id="savejsonid"/>
+			</apex:outputPanel>
+			
+			<apex:outputPanel style="display:none;" id="tableop">
+				<apex:inputHidden value="{!a_tableJson}" id="tablejson"/>
+				<apex:inputHidden value="{!a_total_tableJson}" id="tabletotaljson"/>
+			</apex:outputPanel>
+			
+			<apex:outputPanel id="gsmcomment" >
+				<apex:inputHidden value="{!cmtSearchObj.fiscalDate}" id="fdateid" />
+				<apex:inputHidden value="{!cmtSearchObj.fcDefId}" id="fid" />
+				<c:CompGSMForecastPopUP pageCtrl="{!this}" id="cgsmpopupid"></c:CompGSMForecastPopUP>
+			</apex:outputPanel>
+			<span id="tmpvalid"></span>
+	    </apex:form>
+	</div>
+	
+	
+	<div id="connStatus_id" class="connstatuscls" style="display: none;">
+    		<div class="connbox">
+    			<div class="connboxhead" style="position: relative;">
+    				<div class="connhelp">
+    					<div class="con">■ <b>{!$Label.rsm_connection_status1}</b></div>
+    					<div class="suc">■ <b>{!$Label.rsm_connection_status2}</b></div>
+    					<div class="err">■ <b>{!$Label.rsm_connection_status3}</b></div>
+    				</div>
+			</div>
+	    		<div id="connbox">
+	    			
+	    		</div>
+    		</div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    	function setFocusOnLoad() {}
+    	window.$label={'notdata':'{!$Label.rsm_not_data}', 'bbb':'{!$Label.rsm_object_name1}', 'sch':'{!$Label.rsm_object_name2}',
+    					'reload':'{!$Label.rsm_btn_reload}', 'cancel':'{!$Label.rsm_cancel}' };
+    	addListener(window, 'load', initDocumentPage, {'locale':'{!lc.locale}'});
+</script>
+	
+</apex:page>

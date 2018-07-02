@@ -1,0 +1,352 @@
+<apex:page docType="html-5.0" controller="CtrlOppyPartMassUpdatePage" sidebar="false" showheader="false">
+     <head>
+    <system.webServer>
+       <httpProtocol>
+            <customHeaders>
+             <clear />
+             <add name="X-UA-Compatible" value="IE=edge, chrome=1" />
+            </customHeaders>
+       </httpProtocol>
+      </system.webServer>
+      <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+    </head>
+    <style type='text/css'>
+        .selectConfidence{width:75px;} 
+        .selectStatus{width:75px;}
+    </style>
+    <script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script>
+        var confidence1 = ['On Hold','Weak','50/50','Likely','Commit','Dead','Lost','TAM'],
+                confidence2 = ['Won'],
+                status1 = ['Concept','Designed'],
+                status2 = ['Concept','Designed','Pre-prod','Production','Ramp-down','EOL'],
+                statusFinal = ['Production','Ramp-down','EOL'];
+                
+        /*** check if item in given array ***/
+        function itemInArray(item,ary){//ok
+            if(!item && (ary.length ===5||ary.length ===4)) return true; // just for ary including empty item
+            for(var k in ary){
+                if(ary[k] === item) {return true;}
+            }
+            return false;
+        }
+        function prepare(status, processStatus)
+        {                       
+            var confidenceEl = document.getElementById(status);         
+            var neighbour = $(confidenceEl).parent().next().next().find('select');                  
+        
+            if(!itemInArray(confidenceEl.value,confidence1) && !itemInArray(confidenceEl.value,confidence2)) {} //do nothing
+            else{                           
+                if(itemInArray(confidenceEl.value,confidence1)){                    
+                    neighbour.children().each(function(){                       
+                        if(!itemInArray(this.value, status1) && itemInArray(this.value, status2)){                      
+                            $(this).remove();
+                        }
+                    });
+                }
+                // Won
+                else if(itemInArray(confidenceEl.value, confidence2)){
+                    //if(!adm){
+                        // remove all confidence1
+                         $(confidenceEl).children().each(function(){
+                            if(itemInArray(this.value, confidence1)){
+                                $(this).remove();
+                            }
+                        });
+                        // if select production or later status
+                        var nextSelValue = '';
+                        neighbour.children().each(function(){
+                            if($(this).attr('selected') == 'selected') nextSelValue = this.value;
+                            if(itemInArray(this.value, status1)){
+                                $(this).remove();
+                            }
+                        });
+                        if(itemInArray($.trim(nextSelValue), statusFinal)){
+                            neighbour.children().each(function(){
+                                if(itemInArray(this.value, status1) || $.trim(this.value) === 'Pre-prod'){
+                                    $(this).remove();
+                                }
+                            });
+                        }
+                    //}
+                }
+            }           
+        }
+
+        function massUpdate(selectId, status, processStatus, lostReason, ReasonCompetitor, billingDate, orderDate, deadReason){            
+            var arrId = selectId.split('@');
+            var status = document.getElementById(status).value;
+            var processStatus = document.getElementById(processStatus).value;
+            var lostReasonValue = document.getElementById(lostReason).value;
+            var deadReason = document.getElementById(deadReason).value;                     
+            var billingDate = document.getElementById(billingDate).value;
+            var orderDate = document.getElementById(orderDate).value;
+            var competitorId = '';
+            
+            if(status == 'Lost' || status == 'Dead')
+            {
+                if(status == 'Lost' ){                  
+                    var competitor = document.getElementById(ReasonCompetitor);
+                    if(lostReasonValue == '')
+                    {
+                        //alert("error: You must select one lost reason here");
+                        alert("{!$Label.APLMassUpdateErrmsg1}");
+                        return;
+                    }
+                    if(competitor != null){
+                        if(competitor.value == ''){                         
+                            //alert("error: You must select one Competitor here");
+                            alert("{!$Label.APLMassUpdateErrmsg2}");
+                            return;
+                        }
+                        else
+                        {                           
+                            var inputCompetitor;                            
+                            sforce.connection.sessionId = '{!$Api.Session_ID}';                                                 
+                            inputCompetitor = document.getElementById(ReasonCompetitor).value;
+                            
+                            competitorId = sforce.apex.execute("CtrlOppyPartMassUpdatePage","competitorValid",
+                            {
+                                competitor: inputCompetitor
+                            });                         
+                            if(competitorId == ''){                             
+                                //alert("error: The competitor does not exist");
+                                alert("{!$Label.APLMassUpdateErrmsg3}");
+                                return;
+                            }                               
+                        }
+                    }                   
+                }
+                
+                if(status == 'Dead' && deadReason == ''){                   
+                    //alert("error: You must select one lost reason here");
+                    alert("{!$Label.APLMassUpdateErrmsg1}");
+                    return;
+                }                                           
+            }
+            if(processStatus == 'Production')
+            {
+                if(billingDate == '')
+                {                
+                    //alert("Error: You must input Initial Billing Date here");
+                    alert("{!$Label.APLMassUpdateErrmsg4}");
+                    return;
+                }
+            }
+            for(var i=0; i<arrId.length; i++)
+            {
+                parent.document.getElementById(arrId[i] + 'status').value = status;
+                
+                if(status == 'Lost')
+                {
+                    parent.document.getElementById(arrId[i] + 'statusReason').value = lostReasonValue;
+                    if(competitorId != 'Duplicate')
+                        parent.document.getElementById(arrId[i] + 'statusReasonCompetitor').value = competitorId;
+                }
+                if(status == 'Dead')
+                {
+                    parent.document.getElementById(arrId[i] + 'statusReason').value = deadReason;
+                }
+                if(status == 'Won')
+                {
+                    var selectStatus = parent.document.getElementById(arrId[i] + 'status');                 
+                    parent.checkSelect(selectStatus,0);
+                }
+                if(processStatus == 'Production')
+                {
+                    parent.document.getElementById(arrId[i] + 'processstatus__BillingDate').value = billingDate;
+                    parent.document.getElementById(arrId[i] + 'processstatus__OrderDate').value = orderDate;
+                }
+                parent.document.getElementById(arrId[i] + 'processstatus__').value = processStatus;
+            }
+            
+            parent.closePopUp();
+        }
+        
+        function cancelUpdate() {            
+            parent.closePopUp();
+        }           
+        
+        function showReason(reason, id) {
+            var optStr;                         
+            var neighbour = $(reason).parent().next().next().find('select');
+            var reasonValue = reason.value;
+            
+            var neighbourVal;
+            neighbour.children().each(function(){
+                if($(this).attr('selected') == 'selected') neighbourVal = this.value;
+            });            
+            
+            if(!itemInArray(reason.value, confidence1) && !itemInArray(reason.value, confidence2)) {return false;} // do nothing
+            else{
+                if(itemInArray(reason.value, confidence1)){
+    
+                    //manage the options - begin
+                    var valuesOfStatus1 = [];   
+                    
+                    neighbour.children().each(function(){
+                        if(itemInArray(this.value,status1)){                            
+                            valuesOfStatus1.push(this.value);
+                        }
+                    });                     
+                    
+                    if(valuesOfStatus1.length < status1.length){//some options is missing, need make up
+                        optStr = '';
+                        for(var k=0; k<status1.length; k++){
+                            optStr += '<option value="' + status1[k] + '"';                     
+                            optStr += '>' + status1[k] + '</option>';
+                        }                                               
+                        neighbour.empty().append(optStr);                   
+                    }
+                    
+                    neighbour.children().each(function(){
+                        if(!itemInArray(this.value,status1)){                           
+                            $(this).remove();
+                        }
+                    });                 
+                                
+                    if(itemInArray(neighbourVal, status1)){                 
+                        neighbour.children().each(function(){                           
+                            if(itemInArray(this.value, statusFinal) || this.value === 'Pre-prod') $(this).remove();
+                        });
+                    }                   
+                    else if(!itemInArray(neighbourVal, status1) && itemInArray(neighbourVal, status2)){                     
+                        neighbour.children().each(function(){                           
+                            if($(this).val() === 'Concept') {
+                                $(this).attr('selected', 'selected');
+                                neighbour.val($(this).val());
+                            }
+                            if(itemInArray(this.value, statusFinal) || this.value === 'Pre-prod') $(this).remove();
+                        });                     
+                    }
+                    else if(!itemInArray(neighbourVal, status1) && !itemInArray(neighbourVal, status2)){                                                    
+                        neighbour.children().each(function(){                           
+                            if(itemInArray(this.value, statusFinal) || this.value === 'Pre-prod') $(this).remove();
+                        });                     
+                    }                   
+                }
+                // Won
+                else if(itemInArray(reason.value, confidence2)){
+                    var isFind = false;
+                    optStr = '';
+                    neighbour.children().each(function(){
+                        if(itemInArray(this.value, statusFinal) || this.value === 'Pre-prod') isFind = true;
+                    });
+                    if(!isFind){                    
+                        neighbour.val('Pre-prod');
+                        optStr = '<option value="Pre-prod" selected="selected">Pre-prod</option>';
+                        for(var k=0; k<statusFinal.length; k++){
+                            optStr += '<option value="' + statusFinal[k] + '"';                     
+                            optStr += '>' + statusFinal[k] + '</option>';
+                        }
+                        neighbour.append(optStr);
+                    } 
+                    //if(!isAdmin){
+                        neighbour.children().each(function(){
+                            if(itemInArray(this.value, status1) ) {
+                                $(this).remove();
+                            }
+                        });
+                    //}                 
+                }       
+            }           
+            
+            if(reason.value != 'Won' && document.getElementById('dateTr').style.display == '')
+                document.getElementById('dateTr').style.display='none';
+            if (reason.value == 'Lost') {
+                document.getElementById('lostTr').style.display='';
+                document.getElementById('deadTr').style.display='none';                
+            }
+            else
+            if (reason.value == 'Dead')
+            {
+                document.getElementById('deadTr').style.display=''; 
+                document.getElementById('lostTr').style.display='none';                         
+            }
+            else            
+            {                
+                document.getElementById('lostTr').style.display='none';
+                document.getElementById('deadTr').style.display='none';                
+            }
+                       
+        } 
+        
+        function showDate(processstatus, id) {          
+            if (processstatus == 'Production') {
+                document.getElementById('dateTr').style.display='';
+            }
+            else{
+                document.getElementById('dateTr').style.display='none';                
+            }
+        }    
+        
+        function hideLoading(){
+            parent.document.getElementById('loading').style.display = "none";
+        }
+        hideLoading();              
+    </script>
+    <apex:messages />
+    <apex:form id="form">                     
+        <apex:pageBlock mode="maindetail">            
+            <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+            <tbody id="left_Tbody">
+                <tr >
+                    <td colspan="4" align="left" style="font-weight:bold; font-size:16px;"><apex:outputLabel value="Please select Confidence and Process Status:"/></td>
+                </tr>
+                <tr>                    
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Status__c.Label}"/></td>
+                    <td class="dataCol"><apex:inputField value="{!part.Status__c}" id="status" styleClass="selectConfidence" onchange="showReason(this, this.id);"/> </td>
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Process_Status__c.Label}"/></td>                    
+                    <td >
+                        <apex:selectList id="processstatus" size="1" value="{!part.Process_Status__c}" styleClass="selectStatus" onchange="showDate(this.value, this.id);" >                                                    
+                            <apex:selectOptions value="{!ProcessStatusItems}" />  
+                        </apex:selectList> 
+                    </td>                                                            
+                </tr>                
+                <tr Style="display:none;" id="lostTr">
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason__c.Label}"/></td>
+                    
+                    <td class="dataCol">                        
+                        <apex:inputField value="{!part.Lost_Reason__c}" id="lostReason" required="true"/>                                          
+                    </td>
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Competitor__c.Label}" style="font-weight:bold;vertical-align:top;"/></td>
+                    <td class="dataCol"><apex:inputField value="{!part.Competitor__c}" id="reasonCompetitor" required="true"/>                        
+                        <p Style="color:red;">
+                            {!$Label.OppyPartLookUpInformation}
+                        </p>
+                    </td> 
+                </tr>
+                <tr Style="display:none;" id="deadTr">
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason__c.Label}"/></td>
+                    
+                    <td class="dataCol">                        
+                        <apex:inputField value="{!part.Lost_Reason__c}" id="deadReason" required="true"/>                                          
+                    </td>                    
+                </tr>                
+                <tr Style="display:none;" id="dateTr">
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Initial_Billing_Date__c.Label}" id="billingdateLabel"/></td>
+                    <td class="dataCol">
+                        <apex:inputField value="{!part.Initial_Billing_Date__c}" id="bill" required="true"/>
+                        <p Style="color:red;">Please input Initial Billing Date</p>
+                    </td>          
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Initial_Order_Date__c.Label}" id="orderdateLabel"/></td>     
+                    <td class="dataCol">
+                        <apex:inputField value="{!part.Initial_Order_Date__c}" id="order" />
+                        <p Style="color:red;">Please confirm Initial Order Date</p>                                         
+                    </td>
+                </tr> 
+                <script>
+                    prepare('{!$Component.status}','{!$Component.processstatus}');
+                </script>
+                </tbody>              
+            </table>
+            <br/>
+            <div style="width:100%;text-align:center;">
+                <input type="button" value="OK" class="btn" onclick="massUpdate('{!selectId}', '{!$Component.status}','{!$Component.processstatus}','{!$Component.lostReason}','{!$Component.reasonCompetitor}','{!$Component.bill}','{!$Component.order}','{!$Component.deadReason}');return false;"/>
+                <input type="button" value="Cancel" class="btn" onclick="cancelUpdate();"/>   
+            </div>          
+        </apex:pageBlock>       
+    </apex:form>    
+</apex:page>

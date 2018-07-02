@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A set of claims tied to a specific fund request.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fund_Request__r.Account__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The partner account that made the claim request. Typically updated via a scontrol or APEX code rather than having the partner select their own account.</description>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Fund Claims</relationshipLabel>
+        <relationshipName>R00N30000002DjDKEA0</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Age_Days__c</fullName>
+        <description>The number of elapsed days since the claim was created</description>
+        <externalId>false</externalId>
+        <formula>NOW() - CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age (Days)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <description>The amount of the current claim</description>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Date__c</fullName>
+        <description>The date the fund claim was approved. This should be updated through a workflow approval process.</description>
+        <externalId>false</externalId>
+        <label>Approved Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Approved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checkbox to trigger budget recalculate workflow</description>
+        <externalId>false</externalId>
+        <label>Approved</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Attn__c</fullName>
+        <externalId>false</externalId>
+        <label>Attn</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget_V1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fund_Request__r.Budget__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Budget</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Optionally assign the fund claim to a budget. This budget is typically the same budget as the fund request is assigned to</description>
+        <externalId>false</externalId>
+        <label>Budget</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Account__c</field>
+                <operation>equals</operation>
+                <valueField>SFDC_Budget__c.Account__r.Id</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>SFDC_Budget__c</referenceTo>
+        <relationshipLabel>Fund Claims</relationshipLabel>
+        <relationshipName>R00N30000002DjDZEA0</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Claim_Details__c</fullName>
+        <description>High level information about the fund claim</description>
+        <externalId>false</externalId>
+        <label>Claim Details</label>
+        <length>1000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Claim_ID__c</fullName>
+        <description>A unique id assigned to the fund claim. Optionally useful for the partner as a means to identify the specific fund claim record.</description>
+        <displayFormat>{YY}{MM}{DD}-{0}</displayFormat>
+        <externalId>false</externalId>
+        <label>Claim ID</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Claim_Paid_Date__c</fullName>
+        <description>Claim paid date</description>
+        <externalId>false</externalId>
+        <label>Claim Paid Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Expenditure_Type__c</fullName>
+        <description>A list of available activity/ expenditure types. Customize as needed</description>
+        <externalId>false</externalId>
+        <label>Expenditure Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1. Print &amp; Digital Advertising</fullName>
+                    <default>false</default>
+                    <label>1. Print &amp; Digital Advertising</label>
+                </value>
+                <value>
+                    <fullName>2. Direct Mail / Email campaigns</fullName>
+                    <default>false</default>
+                    <label>2. Direct Mail / Email campaigns</label>
+                </value>
+                <value>
+                    <fullName>3. Advertising Specialties / Promotional Items</fullName>
+                    <default>false</default>
+                    <label>3. Advertising Specialties / Promotional Items</label>
+                </value>
+                <value>
+                    <fullName>4. Website Development</fullName>
+                    <default>false</default>
+                    <label>4. Website Development</label>
+                </value>
+                <value>
+                    <fullName>5.Tradeshow &amp; Special Events</fullName>
+                    <default>false</default>
+                    <label>5.Tradeshow &amp; Special Events</label>
+                </value>
+                <value>
+                    <fullName>6. Product Display Cases</fullName>
+                    <default>false</default>
+                    <label>6. Product Display Cases</label>
+                </value>
+                <value>
+                    <fullName>7. Technical / Training Seminars</fullName>
+                    <default>false</default>
+                    <label>7. Technical / Training Seminars</label>
+                </value>
+                <value>
+                    <fullName>8. Business Related Entertainment</fullName>
+                    <default>false</default>
+                    <label>8. Business Related Entertainment</label>
+                </value>
+                <value>
+                    <fullName>9. Sales Contests</fullName>
+                    <default>false</default>
+                    <label>9. Sales Contests</label>
+                </value>
+                <value>
+                    <fullName>10. Distributor Marketing Programs</fullName>
+                    <default>false</default>
+                    <label>10. Distributor Marketing Programs</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Final_Approved_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Final Approved Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Final_Approver__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;Debra Warren&quot;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Final Approver</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fund_Claim_Invoice_Sent_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Fund Claim Invoice Sent Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fund_Request__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Note: This cannot be a master detail relationship if you plan to use approval workflow as the fund request will be locked (during approval and most likely post approval) and therefore any child claims cannot be saved</description>
+        <externalId>false</externalId>
+        <label>Fund Request</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Account__c</field>
+                <operation>equals</operation>
+                <valueField>SFDC_MDF__c.Account__r.Id</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>SFDC_MDF__c</referenceTo>
+        <relationshipLabel>Fund Claims</relationshipLabel>
+        <relationshipName>R00N30000002DjDcEAK</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Initial_Approver__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;Debra Warren&quot;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Initial Approver</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Intial_Approved_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Intial Approved Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Other_Expenditure_Type__c</fullName>
+        <description>Used when the user chooses &apos;other&apos; as the expenditure type</description>
+        <externalId>false</externalId>
+        <label>Other Expenditure Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Owner_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Street + &quot; &quot; + Owner:User.City</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Owner City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Owner_Country__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.State + &quot; &quot; + Owner:User.PostalCode + &quot; &quot; + Owner:User.Country</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Owner Country</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Paid_Check_Number__c</fullName>
+        <description>Check number used to pay claim.</description>
+        <externalId>false</externalId>
+        <label>Paid Check Number</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Partner_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The user that owns the partner account. Should be updated/ set automatically by an APEX trigger or scontrol rather than entered by the user</description>
+        <externalId>false</externalId>
+        <label>Partner Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>R00N30000002DjDeEAK</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Method__c</fullName>
+        <description>How the claim payment was paid/ processed</description>
+        <externalId>false</externalId>
+        <label>Payment Method</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Check</fullName>
+                    <default>false</default>
+                    <label>Check</label>
+                </value>
+                <value>
+                    <fullName>Credit Memo</fullName>
+                    <default>false</default>
+                    <label>Credit Memo</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Performance_Attached__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checked by the partner or the vendor (depending on the field level security and implementation specifics) to indicate that the claim has supporting documentation</description>
+        <externalId>false</externalId>
+        <label>Performance Attached</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Performance_Verified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Proof of performance verified by the vendor.</description>
+        <externalId>false</externalId>
+        <label>Performance Verified</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Remit_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The partner account billed for this activity. May be different from the Account on the Budget and Fund request</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The partner account billed for this activity.</inlineHelpText>
+        <label>Remit-To</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Fund Claims (Remit-To)</relationshipLabel>
+        <relationshipName>Fund_Claims</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Remit_to_Address__c</fullName>
+        <externalId>false</externalId>
+        <formula>Remit_To__r.Name + &quot; &quot; + Remit_To__r.BillingStreet + &quot; &quot; + Remit_To__r.BillingCity + &quot; &quot; + Remit_To__r.BillingState + &quot; &quot; + Remit_To__r.BillingPostalCode + &quot; &quot; + Remit_To__r.BillingCountry</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Remit-to Address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Remit_to_Attention__c</fullName>
+        <externalId>false</externalId>
+        <label>Remit-to Attention</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>The fund claim approval status. This should be updated through an approval process rather than changing through the user interface</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Draft</fullName>
+                    <default>true</default>
+                    <label>Draft</label>
+                </value>
+                <value>
+                    <fullName>Submitted</fullName>
+                    <default>false</default>
+                    <label>Submitted</label>
+                </value>
+                <value>
+                    <fullName>In Process</fullName>
+                    <default>false</default>
+                    <label>In Process</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+                <value>
+                    <fullName>Paid</fullName>
+                    <default>false</default>
+                    <label>Paid</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TE_Invoice_Sent_for_Pymt__c</fullName>
+        <description>requested by Carol Toder</description>
+        <externalId>false</externalId>
+        <label>TE Invoice Sent for Pymt</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Fund Claim</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Approved_claims</fullName>
+        <columns>NAME</columns>
+        <columns>Amount__c</columns>
+        <columns>Budget__c</columns>
+        <columns>Fund_Request__c</columns>
+        <columns>Account__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Approved__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Approved claims</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Open_Claims</fullName>
+        <columns>NAME</columns>
+        <columns>Amount__c</columns>
+        <columns>Budget__c</columns>
+        <columns>Account__c</columns>
+        <columns>Fund_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Draft,Submitted,In Process</value>
+        </filters>
+        <label>Open Claims</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Claim Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Fund Claims</pluralLabel>
+    <searchLayouts>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Budget__c</lookupFilterFields>
+        <lookupFilterFields>Fund_Request__c</lookupFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Fund_Request__c</searchFilterFields>
+        <searchFilterFields>Amount__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Amount_Limits</fullName>
+        <active>true</active>
+        <description>The amount must be greater than zero</description>
+        <errorConditionFormula>Amount__c &lt;= 0</errorConditionFormula>
+        <errorDisplayField>Amount__c</errorDisplayField>
+        <errorMessage>The claim amount must be greater than zero</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Other_Expenditure_Type</fullName>
+        <active>true</active>
+        <description>Used to force the user to choose fill in the &apos;other expenditure type&apos; when &apos;other&apos; is chosen as the expenditure type</description>
+        <errorConditionFormula>AND(ISPICKVAL( Expenditure_Type__c, &quot;Other&quot;), LEN(Other_Expenditure_Type__c )=0)</errorConditionFormula>
+        <errorDisplayField>Other_Expenditure_Type__c</errorDisplayField>
+        <errorMessage>Please provide details on the &apos;Other&apos; expenditure type.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>New_Fund_Claim</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Fund Claim</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>/a25/e?CF00NG0000009HNJk={!SFDC_MDF__c.Name}&amp;CF00NG0000009HNJk_lkid={!SFDC_MDF__c.Id}&amp;CF00NG0000009HNJa={!SFDC_MDF__c.Account__c}&amp;CF00NG0000009HNJa_lkid={!SFDC_MDF__c.AccountId__c}&amp;CF00NG0000009HNJf={!SFDC_MDF__c.Budget__c}&amp;CF00NG0000009HNJf_lkid={!SFDC_MDF__c.BudgetId__c}&amp;retURL=%2F{!SFDC_MDF__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Request_PDF</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Request PDF</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>../apex/FundClaimPDF?id={!SFDC_MDF_Claim__c.Id}</url>
+    </webLinks>
+</CustomObject>

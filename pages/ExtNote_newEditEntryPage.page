@@ -1,0 +1,19 @@
+<apex:page standardController="Note" extensions="ExtNote" showHeader="true" sideBar="true">
+	<apex:sectionHeader title="{!$ObjectType.Note.label}" subtitle="{!mode}"/>
+	<apex:form >
+		<apex:pageBlock mode="edit" tabStyle="Note">
+			<apex:pageBlockButtons >
+				<apex:commandButton value="{!$Label.SaveButton}" action="{!save}" status="statusSave"/>
+				<apex:commandButton value="{!$Label.CancelButton}" action="{!cancel}" immediate="true"/>
+                <apex:actionStatus startText=" Loading... " stopText="" id="statusSave" >
+                     <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">{!$Label.Loading}...</span></apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockButtons>
+			<apex:pageBlockSection columns="1" collapsible="false" title="{!$Label.Note_Information}">
+				<apex:inputField value="{!note.IsPrivate}" />
+				<apex:inputField value="{!note.Title}" style="width:50%"/>
+				<apex:inputField value="{!note.Body}" style="width:50%;height:200px"/>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

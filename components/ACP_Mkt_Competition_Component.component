@@ -1,0 +1,95 @@
+<apex:component controller="ACP_DataTable_Ctrl" allowDML="true" id="markCompPanel">
+ <!--  <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+   <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+   <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300" />
+   <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff" />
+   <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+   <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+   <apex:attribute name="tableId" description="This is the value for Table ID" type="String" required="true" assignTo="{!tableType}"/>
+   <apex:attribute name="fields" description="This is the value for FieldSet" type="String[]"  />
+   <apex:attribute name="sObjectName" description="This is the value for Object API" type="String" required="true" />
+   <!--apex:attribute name="strategyList" type="ACP_Strategy__c[]" description="" assignTo="{!strategiesList}" /-->
+   <!--apex:attribute name="supplierEvlList" type="ACP_TE_Supplier_Evaluation__c[]" description="" assignTo="{!supplierEvaluationList}" />
+ <apex:attribute name="marketList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!MarkCompList}"/>
+ <!--  <apex:attribute name="admList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!ADMData}"/>-->
+  <!-- <apex:attribute name="oppTAMRevList" type="ACP_Opportunity_TAM_Revenue__c[]" description="" assignTo="{!OppTAMList}"/>
+   <apex:attribute name="user_BU" type="String" description="curren User's BU" assignTo="{!userBU}"/> 
+   <apex:attribute name="sectionSettingRec" type="ACP_Section_Detail__c" assignTo="{!markrec}" description="ACP Section Detail" />
+  
+   <apex:pageBlock mode="maindetail" id="sPanel"> -->
+
+   
+
+
+      <!------------------------------------------------- Market and Competition Detail---------------------------------------------------- ------------------>
+      
+  <!--   <apex:outputPanel rendered="{!IF(MarkCompList== null, false, true)}" id="mrkPanel" >
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  id ="MrktCompDetailUpd" style=" background-color: {!markrec.ACP_Header_BG_Color__c};border-color:{!borderColor};position: position: relative;">
+           <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonMark" action="{!addMarketComp}" style="float:right" disabled="{!If(MarkCompList.size < markrec.ACP_No_Of_Records__c,false, true)}" />
+           <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonMark" style="float:right; display:none" action="{!actionSaveMark}" reRender="sPanel" oncomplete="window.top.location.reload()"/> 
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonMark" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" reRender="sPanel"/>
+                
+            <div class="panel-title">
+                <h4 style="color:{!markrec.ACP_Header_Font_Color__c};"> {!markrec.ACP_Header_Label__c}</h4>
+            </div>
+        </div> -->
+      <!--    <apex:outputPanel rendered="{!markrec.ACP_TAM_PAM_SAM_Billing__c = 'NY Fcst'}">
+           <apex:outputField value="{!markrec.ACP_TAM_PAM_SAM_Billing__c}" > </apex:outputfield> 
+           </apex:outputpanel>-->
+          <!-- <apex:outputField value="{!markrec.ACP_TAM_PAM_SAM_Billing__c}" />
+          <apex:outputField value="{!markrec.ACP_No_Of_Records__c}" /> -->
+        <!--    <apex:pageBlockTable value="{!MarkCompList}" var="Market"  styleClass="table table-bordered" > 
+            <apex:column >
+                                <a href="javascript:if (window.confirm('Are you sure?')) DeleteMark1('{!Market.Id}');">Del</a>
+                            </apex:column>
+            <apex:column headerValue="{!$Label.ACP_Product_CBC}" headerClass="columnHeader" >
+            <apex:commandLink action="/apex/ACP_Edit_Mkt_Product_CBC?macId={!Market.Id}&acpId={!acpid}" value="{!Market.ACP_CBC__c}">
+           </apex:commandLink>
+            </apex:column>
+            
+          <apex:column headerValue="{!$Label.ACP_TAM_LY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"> <apex:outputField value="{!Market.ACP_TAM_LY_Bill__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  <apex:column headerValue="{!$Label.ACP_TAM_CY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"> <apex:outputField value="{!Market.ACP_TAM_CYRR__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  <apex:column headerValue="{!$Label.ACP_TAM_NY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"> <apex:outputField value="{!Market.ACP_TAM_NY_Fcst__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  <apex:column headervalue="{!$Label.ACP_TAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"> <apex:outputField value="{!Market.ACP_TAM__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  <apex:column headervalue="{!$Label.ACP_PAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"> <apex:outputField value="{!Market.ACP_PAM__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  <apex:column headervalue="{!$Label.ACP_SAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"> <apex:outputField value="{!Market.ACP_SAM__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield></apex:column>
+                  
+                  <apex:column headervalue="{!$Label.ACP_LY_Bill}"> <apex:outputField value="{!Market.ACP_LY_Bill__c}" html-disabled="true">  </apex:outputfield></apex:column>
+                  <apex:column headervalue="{!$Label.ACP_CY_YTD}"> <apex:outputField value="{!Market.ACP_CY_YTD__c}" html-disabled="true">  </apex:outputfield></apex:column>
+                  <apex:column headervalue="{!$Label.ACP_LY_YTD}"> <apex:outputField value="{!Market.ACP_LY_YTD__c}" html-disabled="true">  </apex:outputfield></apex:column>
+              -->    
+        <!--<apex:column headerValue="{!$Label.ACP_SAM_LY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'LY Bill',true,false)}"> <apex:outputField value="{!Market.ACP_SAM__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield> </apex:column>
+            <apex:column headerValue="{!$Label.ACP_PAM_CY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'CY BIll(RR)',true,false)}"> <apex:outputField value="{!Market.ACP_PAM_CY_RR__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield> </apex:column>
+            <apex:column headerValue="{!$Label.ACP_PAM_NY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'NY Fcst',true,false)}"> <apex:outputField value="{!Market.ACP_PAM_NY_Fcst__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield> </apex:column>
+            
+            <apex:column headerValue="{!$Label.ACP_PAM_LY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'LY Bill',true,false)}"> <apex:outputField value="{!Market.ACP_PAM__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>  </apex:outputfield> </apex:column>                    
+            <apex:column headerValue="{!$Label.ACP_SAM_CY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'CY BIll(RR)',true,false)}"> <apex:outputField value="{!Market.ACP_SAM_CY_RR__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/> </apex:outputfield> </apex:column>            
+            <apex:column headerValue="{!$Label.ACP_SAM_NY}" rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'NY Fcst',true,false)}"> <apex:outputField value="{!Market.ACP_SAM_NY_Fcst__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/> </apex:outputfield> </apex:column>-->
+            <!--
+                    <apex:repeat value="{!fields}" var="fieldMark">  
+                        <apex:column headerValue="{!$ObjectType[sObjectName].fields[fieldMark].Label}" >
+                        <apex:outputField value="{!Market[fieldMark]}" > 
+                        <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>            
+                        </apex:outputField>
+                      </apex:column>
+                      
+                    </apex:repeat> 
+                    <apex:column headerValue="{!$Label.ACP_Market_Share}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"> <apex:outputField value="{!Market.ACP_Market_Share_TAMLY__c}" >   </apex:outputfield></apex:column>
+                    <apex:column headervalue="{!$Label.ACP_Market_Share}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"> <apex:outputField value="{!Market.ACP_Market_Share_TAM__c}" > </apex:outputfield></apex:column>
+                   <!-- <apex:column headerValue="{!$Label.ACP_Market_Share}"> <apex:outputField value="{!Market.ACP_Market_Share_Calc__c}" > </apex:outputfield> </apex:column>-->
+              <!--  </apex:pageBlockTable> 
+               
+    </div>
+   </apex:outputPanel>
+      
+     
+        
+   </apex:pageBlock>
+    <apex:actionFunction action="{!DeleteMark}" name="DeleteMark1" reRender="sPanel">
+    <apex:param name="markid" value="" assignTo="{!MarkId}"/>
+    </apex:actionFunction>
+    -->
+  
+</apex:component>

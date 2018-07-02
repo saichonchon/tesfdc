@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account$BU_Customer_Classification__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Top Disty</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>DTC</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$BillingCountry</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>CN,TW,HK</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$Transaction_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$WWCORPACCTNM__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>CBU - China Book/Bill MTD</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Daily_Booking_Billing_By_Customer__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Daily_BBBs__r$Transaction_Date__c</dateColumn>
+        <interval>THIS_FISCALPERIOD</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,166 @@
+<aura:component access="global">
+
+
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+  <aura:attribute name="sid" 				type="String" />
+  <aura:attribute name="initValue" 			type="String" />
+  <aura:attribute name="message" 			type="String" />
+  <aura:attribute name="level" 				type="String" />
+  <aura:attribute name="isRequired" 		type="Boolean" default="false"/>
+  <aura:attribute name="value" 				type="String" description="Date displayed if exists already" />
+  <aura:attribute name="label" 				type="String" description="Label for the component" />
+  <aura:attribute name="labelClass" 		type="String" description="" default="slds-form-element__label" />
+  <aura:attribute name="placeholder" 		type="String" description="" />
+  <aura:attribute name="class" 				type="String" description="A CSS style to be attached to the component." />
+  <aura:attribute name="formatSpecifier" 	type="String" description="Java style format specifier for the date" />
+  <aura:attribute name="width" 				type="String" description="" />
+
+  <aura:attribute name="date" type="Integer" description="The currently highlighted date." />
+  <aura:attribute name="month" type="Integer" description="The currently rendered month." />
+  <aura:attribute name="monthName" type="String" description="The currently rendered month name." />
+  <aura:attribute name="year" type="Integer" description="The currently rendered year." />
+  <aura:attribute name="selectedDate" type="Date" description="The selected date." />
+  <aura:attribute name="setFocus" type="Boolean" default="true" description="Control if we should focus any date when we render the month." />
+
+  <!-- private attributes -->
+  <aura:attribute name="_setFocus" type="Boolean" default="true" description="The internal state of setFocus." />
+  <aura:attribute name="_namesOfWeekdays" type="List" description="The names of the week days based on locale." />
+  <aura:attribute name="_today" type="String" description="The date string (yyyy-MM-dd) of today based on the Aura time zone." />
+  <aura:attribute name="_yearOptions" type="String[]" />
+  <aura:attribute name="_windowTimeout" type="Object" />
+  <aura:attribute name="_onclickprevious" type="Aura.Action" default="{!c.goToPreviousMonth}" description="This allows handling onClick events" />
+  <aura:attribute name="_gridOver" type="Boolean" default="false" />
+
+  <!-- events -->
+  <aura:registerevent name="dateChangeEvent" type="c:LtngDateChangeEvt" description="The event fired when a calendar value is selected" />
+
+  <aura:method name="reInit" action="{!c.doInit}" description="Runs the init method again if an external value has been changed and we need to update the ui">
+  </aura:method>
+  
+  <aura:handler name="change" value="{!v.initValue}" action="{!c.handlerInitValueChange}"/>  
+    
+  <div class="slds-form-element ">
+      <label class="{!v.labelClass}" for="closedate">
+		<abbr class="{!v.isRequired ? 'slds-required' : 'slds-hide' }" title="required">*</abbr>{!v.label}
+      </label>
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right" style="{! 'width: ' + v.width}" onmouseleave="{!c.onMouseLeaveInput}">
+        <input type="text" aura:id="dateInput" class="slds-input" value="{!v.value}" format="{!v.formatSpecifier}" displayDatePicker="false" updateOn="keyup"  onclick="{!c.handleInputFocus}"/>
+      <button style="right:5px;" aura:id="date-button" onclick="{!c.handleInputFocus}" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon custom-date-style" type="button">
+        <c:LtngSVGComp class="slds-button__icon slds-button__icon--small" xlinkHref="/resource/SLDS221/assets/icons/utility-sprite/svg/symbols.svg#event" />          
+          <span class="slds-assistive-text">Date</span>
+      </button>
+      <button style="right:5px;" aura:id="clear-button" onclick="{!c.handleClearDate}" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon slds-hide" type="button">
+      	<c:LtngSVGComp class="slds-button__icon slds-button__icon--small" xlinkHref="/resource/SLDS221/assets/icons/utility-sprite/svg/symbols.svg#clear" />
+        <span class="slds-assistive-text">Clear</span>
+      </button>
+    </div>
+  </div>
+    <section aura:id="invalidDialog" style="position: absolute; z-index: 8000;" class="slds-popover slds-nubbin--left-top slds-theme--error slds-hide" role="dialog">
+      <button style="color: #fff;" class="slds-button slds-button--icon-small slds-float--right slds-popover__close slds-button--icon" title="Close dialog">
+        <c:LtngSVGComp class="slds-button__icon slds-button__icon--small" xlinkHref="/resource/SLDS221/assets/icons/utility-sprite/svg/symbols.svg#close" /> 
+        <span class="slds-assistive-text">Close dialog</span>
+      </button>
+      <header class="slds-popover__header">
+        <h2 class="slds-text-heading--small">Invalid StartDate.</h2>
+      </header>
+    </section>
+
+  <div aura:id="grid" id="datepicker-dropdown" class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" onmouseenter="{!c.onMouseEnterGrid}" onmouseleave="{!c.onMouseLeaveGrid}">
+
+    <div class="slds-datepicker__filter slds-grid">
+      <div class="slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-grow">
+        <div class="slds-align-middle" style="margin-left: 1rem;">
+          <a onclick="{!c.goToPreviousMonth}" href="javascript:void(0);" class="slds-button slds-button__icon slds-button--icon">
+              <lightning:icon iconName="utility:left" size="xx-small" class="slds-button__icon"/>
+              <!--
+              <c:LtngSVGComp class="slds-button__icon" xlinkHref="/resource/SLDS221/assets/icons/utility-sprite/svg/symbols.svg#left" />
+				-->
+          </a>
+        </div>
+        <h2 id="month" class="slds-align-middle" aria-live="assertive" aria-atomic="true">{!v.monthName}</h2>
+        <div class="slds-align-middle" style="margin-right: 1rem;">
+          <a onclick="{!c.goToNextMonth}" href="javascript:void(0);" class="slds-button slds-button__icon slds-button--icon">
+			<lightning:icon iconName="utility:right" size="xx-small" class="slds-button__icon"/>
+          </a>
+        </div>
+      </div>
+      <div class="slds-shrink-none">
+        <ui:inputSelect aura:id="yearSelect" class="slds-select" label="pick a year" labelClass="slds-assistive-text" required="false" change="{!c.handleYearChange}" />
+      </div>
+    </div>
+    <table aura:id="maintable" class="datepicker__month" role="grid" aria-labelledby="month">
+      <thead>
+        <tr id="weekdays">
+          <aura:iteration items="{!v._namesOfWeekdays}" var="day">
+            <th scope="col" class="dayOfWeek">
+              <abbr title="{!day.shortName}">{!day.shortName}</abbr>
+            </th>
+          </aura:iteration>
+        </tr>
+      </thead>
+      <tbody>
+        <tr aura:id="week1">
+          <c:LtngDateCellComp aura:id="0" />
+          <c:LtngDateCellComp aura:id="1" />
+          <c:LtngDateCellComp aura:id="2" />
+          <c:LtngDateCellComp aura:id="3" />
+          <c:LtngDateCellComp aura:id="4" />
+          <c:LtngDateCellComp aura:id="5" />
+          <c:LtngDateCellComp aura:id="6" />
+        </tr>
+        <tr aura:id="week2">
+          <c:LtngDateCellComp aura:id="7" />
+          <c:LtngDateCellComp aura:id="8" />
+          <c:LtngDateCellComp aura:id="9" />
+          <c:LtngDateCellComp aura:id="10" />
+          <c:LtngDateCellComp aura:id="11" />
+          <c:LtngDateCellComp aura:id="12" />
+          <c:LtngDateCellComp aura:id="13" />
+        </tr>
+        <tr aura:id="week3">
+          <c:LtngDateCellComp aura:id="14" />
+          <c:LtngDateCellComp aura:id="15" />
+          <c:LtngDateCellComp aura:id="16" />
+          <c:LtngDateCellComp aura:id="17" />
+          <c:LtngDateCellComp aura:id="18" />
+          <c:LtngDateCellComp aura:id="19" />
+          <c:LtngDateCellComp aura:id="20" />
+        </tr>
+        <tr aura:id="week4">
+          <c:LtngDateCellComp aura:id="21" />
+          <c:LtngDateCellComp aura:id="22" />
+          <c:LtngDateCellComp aura:id="23" />
+          <c:LtngDateCellComp aura:id="24" />
+          <c:LtngDateCellComp aura:id="25" />
+          <c:LtngDateCellComp aura:id="26" />
+          <c:LtngDateCellComp aura:id="27" />
+        </tr>
+        <tr aura:id="week5">
+          <c:LtngDateCellComp aura:id="28" />
+          <c:LtngDateCellComp aura:id="29" />
+          <c:LtngDateCellComp aura:id="30" />
+          <c:LtngDateCellComp aura:id="31" />
+          <c:LtngDateCellComp aura:id="32" />
+          <c:LtngDateCellComp aura:id="33" />
+          <c:LtngDateCellComp aura:id="34" />
+        </tr>
+		
+        <tr aura:id="week6">
+          <c:LtngDateCellComp aura:id="35" />
+          <c:LtngDateCellComp aura:id="36" />
+          <c:LtngDateCellComp aura:id="37" />
+          <c:LtngDateCellComp aura:id="38" />
+          <c:LtngDateCellComp aura:id="39" />
+          <c:LtngDateCellComp aura:id="40" />
+          <c:LtngDateCellComp aura:id="41" />
+        </tr>
+		
+        <tr>
+          <td colspan="7" role="gridcell"><a onclick="{!c.goToToday}" href="javascript:void(0);" class="slds-show--inline-block slds-p-bottom--x-small">Today</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</aura:component>

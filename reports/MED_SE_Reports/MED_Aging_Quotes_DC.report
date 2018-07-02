@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_49842630</developerName>
+        <masterLabel>Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity$Account.Account_Manager__c.MED_Region__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Americas North</sourceValue>
+            </sourceValues>
+            <value>Americas North</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Americas South</sourceValue>
+            </sourceValues>
+            <value>Americas South</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Aus / New Zlnd</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>China</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>India</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Japan</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Korea</sourceValue>
+            </sourceValues>
+            <value>Asia Pacific</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>EMEA</sourceValue>
+            </sourceValues>
+            <value>EMEA</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity$Account.Account_Manager__c.Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Opportunity_Number__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Custom report for demand call</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Owner.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Quote_Released_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>QR - Quote Released</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_49842630</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Opportunity$MED_Quote_Released_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>MED Aging Quotes - Demand Call</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <roleHierarchyFilter>X101816_Worldwide_Medical</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$MED_Quote_Released_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

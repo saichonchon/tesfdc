@@ -1,0 +1,124 @@
+<apex:component layout="none">
+    
+    <apex:attribute name="pageCtrl" type="CtrlOppyForecastToolEnhancementAPL" required="true" description="the root page controller reference" />
+    
+    <apex:outputPanel layout="block" style="ition: relative;" rendered="{!pageCtrl.co.map_sectionConfig['business']}"> 
+	    
+	    <div id="section_business" style="" class="slds-section slds-section-business {!if(pageCtrl.cookieLost = 'true', 'slds-is-open', '')}">
+	    
+	        <input id="sqlLostHide" value="{!pageCtrl.co.sqlLost}" type="hidden"/>
+	    
+	        <h3 class="slds-section__title">
+	            <button onclick="event_sectionBusiness_click(this)" aria-controls="expando-business-unique-id" class="slds-button slds-section__title-action slds-section-business-btn" type="button">
+	                <svg class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+	                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#switch')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+	                </svg>
+	                <span class="slds-truncate" title="Section Title">Regist Exsiting business lost</span>
+	            </button>
+	        </h3>
+	        <div aria-hidden="false" class="slds-section__content" id="expando-business-unique-id">
+	            <div style="padding: 10px; position: relative;" >
+	                <div id="slds-spinner-lost" class="custom-spinner-size">
+				        <div class="slds-spinner_container">
+				            <div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+				                <div class="slds-spinner__dot-a"></div>
+				                <div class="slds-spinner__dot-b"></div>
+				            </div>
+				        </div>
+				    </div>
+	                <div>
+	                	<div class="slds-text-align--center">
+	                		<button onclick="event_newBusinessLostOpen_click(this)" class="slds-button slds-button_neutral" type="button">
+	                			<svg class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+				                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#new')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+				                </svg>
+	                			New APL Lost Dead Project
+	                		</button>
+	                	</div>
+	                    <div>
+	                        <div class="slds-show_inline-block">
+	                            <h1 class="slds-section-business-current" id="currentFiscalYearLostDead">Current Fiscal Year Lost/Dead</h1>
+	                        </div>
+	                    </div>
+	                    <table id="lostCurrentTable" class="slds-section-business-table slds-table_fixed-layout slds-table slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-table-table">
+	                        <thead class="slds-section-business-thead">
+	                            <tr>
+	                            	<th style="width: 80px; text-align: center;" class="actionCls">
+	                            		<div class="slds-truncate slds-white-space"></div>
+                            		</th>
+	                                	<apex:repeat value="{!pageCtrl.co.list_cfsm_lost}" var="lost">
+                                    <th class="{!lost.cls} {!if(lost.isOrder, 'custom-th-order', '')}" data-api="{!lost.apiName}">
+                                    	<div class=" slds-white-space">{!lost.labelName}</div>
+                                    	<apex:outputPanel layout="block" styleClass="custom-order" rendered="{!lost.isOrder}"> 
+                                    		
+                                    	</apex:outputPanel>
+                                   	</th>
+	                                	</apex:repeat>
+	                            </tr>
+	                        </thead>
+	                        <tbody id="lostCurrentDeadTbody">
+	                            
+	                        </tbody>
+	                        <tfoot>
+	                            <tr style="font-weight: bold;">
+	                                <td colspan="{!pageCtrl.co.columnLost}" class="slds-foot-td-left"></td>
+	                                <td class="slds-foot-td ">
+	                                    <div class="slds-truncate slds-white-space">Total</div>
+	                                </td>
+	                                <td class="slds-foot-td slds-text-align--right">
+	                                    <div class="slds-truncate slds-white-space" id="lostCurrentTotal">N/A</div>
+	                                </td>
+	                                <td class="slds-foot-td slds-text-align--right">
+	                                    <div class="slds-truncate slds-white-space" id="lostNextTotal">N/A</div>
+	                                </td>
+	                            </tr>
+	                        </tfoot>
+	                    </table>
+	                </div>
+	                
+	                <div style="margin-top: 20px;">
+	                    <div>
+	                        <div class="slds-show_inline-block">
+	                            <h1 class="slds-section-business-previous" id="currentPreviousFiscalYearLostDead">Previous Fiscal Year Lost/Dead</h1>
+	                        </div>
+	                    </div>
+	                    <table id="lostPreviousTable" class="slds-section-business-table slds-table_fixed-layout slds-table slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-table-table">
+	                        <thead class="slds-section-business-thead">
+	                        	<th style="width: 80px;text-align: center;" class="actionCls">
+	                        		<div class="slds-truncate slds-white-space"></div>
+                        		</th>
+	                            	<apex:repeat value="{!pageCtrl.co.list_cfsm_lost}" var="lost">
+                                <th class="{!lost.cls} {!if(lost.isOrder && lost.apiName != 'Estimated_Billing_Impact_for_Next_FY__c', 'custom-th-order', '')} ">
+                                	<div class=" slds-white-space">{!lost.labelName}</div>
+                                	<apex:outputPanel layout="block" styleClass="custom-order" rendered="{!if(lost.isOrder && lost.apiName != 'Estimated_Billing_Impact_for_Next_FY__c', true, false)}"> 
+                                    		
+                                   	</apex:outputPanel>
+                               	</th>
+	                            	</apex:repeat>
+	                        </thead>
+	                        <tbody id="lostPreviousDeadTbody">
+	                            
+	                        </tbody>
+	                        <tfoot>
+	                            <tr style="font-weight: bold;">
+	                                <td colspan="{!pageCtrl.co.columnLost}" class="slds-foot-td-left"></td>
+	                                <td class="slds-foot-td ">
+	                                    <div class="slds-truncate slds-white-space" >Total</div>
+	                                </td>
+	                                <td class="slds-foot-td slds-text-align--right">
+	                                    <div class="slds-truncate slds-white-space" id="lostPreviousCurrentTotal">N/A</div>
+	                                </td>
+	                                <td class="slds-foot-td slds-text-align--right">
+	                                    <div class="slds-truncate slds-white-space" id="lostPreviousNextTotal">N/A</div>
+	                                </td>
+	                            </tr>
+	                        </tfoot>
+	                    </table>
+	                </div>
+	                
+	            </div>
+	        </div>
+	    </div>
+    </apex:outputPanel>
+    
+</apex:component>

@@ -1,0 +1,145 @@
+<apex:page docType="html-5.0" controller="CtrlOppyPartLookupPageAPL" sidebar="false" showheader="false">
+     <head>
+    <system.webServer>
+       <httpProtocol>
+            <customHeaders>
+             <clear />
+             <add name="X-UA-Compatible" value="IE=edge, chrome=1" />
+            </customHeaders>
+       </httpProtocol>
+      </system.webServer>
+      <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+    </head>
+    <script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script>
+        function fillIn(id,inputId, field, status) {
+            var isclose = true;
+            
+            var reason = document.getElementById(id).value;
+            var reasonText = document.getElementById(id+'Text').value;
+            
+            if(reason == ''){
+                isclose = false;
+                alert("error: You must select one lost reason here");
+                return;
+            }
+            //added by weihang 2013-05-28
+            var competitor = document.getElementById(inputId);
+            if(competitor != null){
+                if(competitor.value == ''){
+                    isclose = false;
+                    alert("error: You must select one Competitor here");
+                    return;
+                }
+            }
+            //added by weihang 2013-05-28 end
+            if(reason == 'Other' && reasonText == ''){
+                isclose = false;
+                alert("error: You must specify the other reason");
+            }
+            if(status == 'Lost' ){              
+                var inputCompetitor;
+                var competitorId = '';
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                if(document.getElementById(id + 'Competitor_lkid').value == parent.document.getElementById(field+'ReasonCompetitor').value){                        
+                    inputCompetitor = document.getElementById(id + 'Competitor').value;
+                    competitorId = sforce.apex.execute("CtrlOppyPartLookupPage","competitorValid",
+                    {
+                        competitor: inputCompetitor
+                    });
+                    if(competitorId == ''){
+                        isclose = false;
+                        alert("error: The competitor does not exist");
+                    }
+                    else {
+                        if(competitorId != 'Duplicate'){
+                            document.getElementById(id + 'Competitor_lkid').value = competitorId;
+                        }                       
+                    }                   
+                }
+            }
+                        
+            if(isclose){
+                parent.document.getElementById(field+'Reason').value = reason;
+                parent.document.getElementById(field+'ReasonText').value = reasonText;
+                if(status == 'Lost'){                   
+                    parent.document.getElementById(field+'ReasonCompetitor').value = document.getElementById(id + 'Competitor_lkid').value;
+                }
+                else{
+                    parent.document.getElementById(field+'ReasonCompetitor').value = '';    
+                }
+                parent.onConfidenceSelect();
+                parent.document.getElementById(field+'OldStatus').value = status;
+                parent.closePopUp();
+            }           
+        }
+
+        function cancelUpdate(field) {
+            //parent.document.getElementById(field).value = parent.document.getElementById(field+'OldStatus').value;
+            parent.resumeSel(field);
+            parent.closePopUp();
+        }   
+        
+        function showReasonText(reason, id) {
+            if (reason == 'Other') {
+                document.getElementById('otherTr').style.display='';
+            }
+            else{
+                document.getElementById('otherTr').style.display='none';
+                document.getElementById(id +'Text').value ='';
+            }
+        }   
+        
+        function hideLoading(){
+            parent.document.getElementById('loading').style.display = "none";
+        }
+        hideLoading();      
+    </script>
+    <apex:messages />
+    <apex:form id="form">       
+        <apex:actionStatus startText=" Loading... " stopText="" id="statusSave">
+            <apex:facet name="start">
+                <img class="deployingImg" src="/changemgmt/img/spinner24.gif" />            
+            </apex:facet>
+        </apex:actionStatus>    
+        <apex:pageBlock mode="maindetail">
+            <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+                <tr >
+                    <td colspan="4" align="left" style="font-weight:bold; font-size:16px;"><apex:outputLabel value="{!$Label.Reason_Title}:"/></td>
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason__c.Label}"/></td>
+                    <td class="dataCol">
+                        <apex:inputField value="{!part.Status__c}" id="status" style="display:none"/>
+                        <apex:inputField value="{!part.Lost_Reason__c}" id="reason" onchange="showReasonText(this.value, this.id);" required="true"/>                   
+                        
+                    </td>
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Competitor__c.Label}" style="font-weight:bold;vertical-align:top;" rendered="{!status='Lost'}"/></td>
+<!--                    <td class="dataCol"><apex:inputField value="{!part.Competitor__c}" rendered="{!status='Lost'}" id="reasonCompetitor" required="false"/></td>-->
+                    <td class="dataCol"><apex:inputField value="{!part.Competitor__c}" rendered="{!status='Lost'}" id="reasonCompetitor" required="{!status = 'Lost'}"/>
+                        <p Style="display:{!IF(status='Lost', '','none')};color:red;">
+                            {!$Label.OppyPartLookUpInformation}
+                        </p>
+                    </td> 
+                </tr>
+                <tr Style="display:{!IF(part.Lost_Reason__c =='Other', '','none')};" id="otherTr">
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason_Text__c.Label}" id="reasonTextLabel"/></td>
+                    <td class="dataCol" colspan="3" >
+                        <apex:outputPanel styleClass="requiredInput" layout="block" >
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:inputTextArea value="{!part.Lost_Reason_Text__c}" id="reasonText" style="width:95%"/> 
+                        </apex:outputPanel>
+                    </td>
+                </tr>               
+            </table>
+            <br/>
+            <div style="width:100%;text-align:center;">
+<!--                <input type="button" value="OK" class="btn" onclick="fillIn('{!$Component.reason}','{!field}', '{!status}');return false;"/>-->
+                <input type="button" value="OK" class="btn" onclick="fillIn('{!$Component.reason}','{!$Component.reasonCompetitor}','{!field}', '{!status}');return false;"/>
+                <input type="button" value="Cancel" class="btn" onclick="cancelUpdate('{!field}');"/>   
+            </div>          
+        </apex:pageBlock>       
+    </apex:form>
+</apex:page>

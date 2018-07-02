@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>IF(BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_to_Date_Amount_USD__c:SUM=0,0,(BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_to_Date_Amount_USD__c:SUM / BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_to_Date_Amount_USD__c:SUM) -1)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Growth rate YOY</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Growth YOY</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_to_Date_Amount_USD__c:SUM - BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_to_Date_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Difference YTD CY to YTD LY</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Difference</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <field>Account$AccountNumber</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part_Description__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Customer_Part__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>shows YOY PN sales analysis bei customer</description>
+    <filter>
+        <criteriaItems>
+            <column>Account$Id</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>sales analysis detail</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Yearly_Bookings_Billings__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Yearly_BBB_by_Part_and_Customers__r$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

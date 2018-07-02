@@ -1,0 +1,7 @@
+-- Template script for an ETL data pipeline
+-- load a File(Extract)
+myJson = load 'force://chatter/REPLACE_ME_CHATTER_ID' using gridforce.hadoop.pig.loadstore.func.ForceStorage() as (name,street,city,zip);
+-- Transform
+data = FILTER myJson by Zip == '00000';
+ --Store
+STORE data INTO 'force://entity/Contact/fields/Name, MailingStreet, MailingPostalCode, MailingCity' USING gridforce.hadoop.pig.loadstore.func.ForceStorage();

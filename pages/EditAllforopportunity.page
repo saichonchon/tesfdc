@@ -1,0 +1,277 @@
+<!--
+Author:           Tangyong Li <tangyong.li@capgemini.com>
+Description:      Visualforce page to manage the Opportunity_Part__c records.
+                  The user story number is W-00145.
+Controller class: EditAllforopportunity
+Test Class:       EditAllforopportunityTest
+History
+2017-08-11        Tangyong Li <tangyong.li@capgemini.com> created 
+-->
+<apex:page Standardcontroller="opportunity" extensions="EditAllforopportunity" tabstyle="Opportunity" sidebar="false" showHeader="true">
+    <apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+    <apex:includeScript value="{!URLFOR($Resource.EditAllforopportunityJS)}" />
+    <apex:stylesheet value="{!URLFOR($Resource.EditAllforopportunityCSS)}" />
+    <script type="text/javascript"> 
+    var oppId = '{!exlID}';
+    var thousandSep = "{!str_thousandSep}";
+    var decimalSep = "{!str_decimalSep}";
+    window.onload = function(){
+        bodyOnLoad();
+        autoResizeTable();
+        hideNoUseStatus();
+        alignLeftAndRight();
+        addCommaSeparator();
+    }
+    </script>
+    <apex:form id="frm">
+        <apex:actionFunction name="filterByGPLCode" action="{!searchByGPLCode}" rerender="frm" oncomplete="autoResizeTable()"/>
+        <apex:inputHidden value="{!exlID}" id="ExlID"/>
+        <apex:pageMessages /> 
+        <b>Back to Opportunity:</b>  <apex:commandLink value="" action="{!BacktoOLI}">
+        {!returnOppName}
+        </apex:commandLink>
+        <apex:variable value="{!1}" var="rowNum"/>
+        
+        <apex:pageBlock rendered="{!IF(renderpageblock = 0, true, false)}" id="mainBlock">
+            <apex:pageblockbuttons >
+                <apex:commandButton value="Save" action="{!save2}" reRender="frm" status="status_page"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+                <!-- <apex:commandButton value=" Refresh " action="{!saveAndRefresh}" oncomplete="window.location=window.location;"/> -->
+            </apex:pageblockbuttons>
+            <div style="float:left;width:60%;height:120px;">
+                
+                <table>
+                    <tr style="height:40px;">
+                        <td><b style="margin-left:11px;">Filter: </b></td>
+                        <td><b  style="margin-left:11px;">GPL Code: </b></td>
+                        <td>
+                            <apex:selectList id="gplCode" style="width:80px;" value="{!GPLCode}" size="1" onchange="clickSearch();">
+                                <apex:selectOptions value="{!GPLCodeDescMap}"/> 
+                            </apex:selectList>
+                            <b style="margin-left:21px;">Status: </b>
+                            <apex:selectList style="width:80px;" id="prodlinedescstatus" value="{!prodSearchStatus}" size="1" required="true" onchange="clickSearch();">
+                                <apex:selectOptions value="{!prodlinedescpicklistvaluesstatus}"/>
+                            </apex:selectList>
+                            <span style="padding-left:5px;display:none;"><apex:commandButton id="btnGo3" value="Search" action="{!Search1}"></apex:commandButton></span>
+                            <span style="padding-left:5px;display:none;"><apex:commandButton id="btnGo11" value="ShowAll" action="{!ShowAll}"></apex:commandButton></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b style="margin-left:11px;">Update: </b></td>
+                        <td><b style="margin-left:11px;">Status: </b></td>
+                        <td>
+                            <apex:selectlist style="width:80px;" value="{!SelectedStatus}" size="1">
+                                <apex:selectOptions value="{!status}" />                  
+                            </apex:selectlist>
+                            <span style="padding-left:22px"><apex:commandButton id="btnGo112" value="Mass Update" action="{!Massupdate}"></apex:commandButton></span>
+                        </td>
+                        
+                    </tr>
+                </table>
+                
+            </div>
+            <!--- Total Table -->
+            <div style="float:left;width:35%;text-align:left;height:120px;">
+                <div style="padding:5px 0;">
+                    <b>Price % Variation</b>
+                    <apex:inputfield value="{!oppy.Percentage__c}" label="Nominate percentage" style="align-left:380px; width:60px;margin-left:9px;"  id="theField" />
+                    <apex:commandButton value="Submit" action="{!saverefresh}" style="margin-left: 10px;" /> 
+                </div>
+                <div style="padding:5px 0;">
+                    <apex:outputPanel rendered="{!renderedTotal}" id="mainblock" >
+                        <table style="margin-top:10px;" cellspacing="0">
+                            <tr>
+                                <th style="width:58px;text-align: right;border:1px solid;">Total Value</th>
+                                <th style="width:58px;text-align: right;border:1px solid;">Total Cost</th>
+                                <th style="width:40px;text-align: right;border:1px solid;">Total GM</th>
+                            </tr>
+                            <tr>                
+                                <td style="width:58px;text-align: right;border:1px solid;">
+                                    <!-- <b><apex:outputText id="total_val_id" value="{!dec_totalValue}"/></b> -->
+									
+									<b><apex:outputText id="total_val_id" value="{0, number,0.00}">
+                                       <apex:param value="{!dec_totalValue}" />
+                                   </apex:outputText></b>
+                                </td>
+                                <td style="width:58px;text-align: right;border:1px solid;">
+<!--                                    <b><apex:outputText id="total_cost_id" value="{!dec_totalCost}"/></b> -->
+                                   
+                                   <b><apex:outputText id="total_cost_id" value="{0, number,0.00}">
+                                       <apex:param value="{!dec_totalCost}" />
+                                   </apex:outputText></b>
+                                </td>
+                                <td style="width:40px;text-align: right;border:1px solid;"><b><apex:outputText value="{!str_totalGM}"/></b></td>         
+                            </tr> 
+                        </table>  
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!renderedTotaldisc}">
+                        <table style="margin-left:160px;" cellspacing="0">
+                            <tr>
+                                <th style="width:58px;text-align: right;border:1px solid;">Total Value</th>
+                                <th style="width:58px;text-align: right;border:1px solid;">Total Cost</th>
+                                <th style="width:40px;text-align: right;border:1px solid;">Total GM</th>
+                            </tr>
+                            <tr>                
+                                <td style="width:58px;text-align: right;border:1px solid;"><b>
+                                    <apex:outputText value="{0, number,###,###,##0.00}">
+                                        <apex:param value="{!dec_totalValue}" />
+                                    </apex:outputText></b>
+                                </td>
+                                <td style="width:58px;text-align: right;border:1px solid;"><b>
+                                    <apex:outputText value="{0, number,###,###,##0.00}">
+                                        <apex:param value="{!dec_totalCost}" />
+                                    </apex:outputText></b>
+                                </td>
+                                <td style="width:40px;text-align: right;border:1px solid;"><b><apex:outputText value="{!str_totalGM}"/></b></td>     
+                            </tr>
+                        </table> 
+                    </apex:outputpanel> 
+                </div>
+            </div>
+            <!---- Total Table ends here --->
+            <br/><br/><br/>
+            
+            <apex:outputPanel id="theTable">
+                <div id="wrapper" style="Width:100%">
+                    <div id="left" >
+                        <table border="1" id="table_left" style="width: 100%;" cellspacing="0" cellpading="0" >
+                            <tr Class="tablealign">
+                                <!-- <th style="width:5%;" >Seq Num </th> -->
+                                <th>Cust Part Number</th>
+                                <th><apex:outputText >{!if($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c,'Part/RPN Num','Part/RPN Num')}</apex:outputText></th>
+                                <th>Part Name</th>
+                                <th>Status</th>
+                            </tr>
+                            <apex:repeat value="{!list_oppyPart}" var="a">
+                                <tr Class="tablealign">
+                                   <!--  <td ><apex:outputText value="{!a.Seq_No__c}"   /></td> -->
+                                    <!--<td ><apex:outputText value="{!a.Customer_Part_Number1__r.name}"   /></td>-->
+                                    <td ><apex:outputText value="{!a.Customer_Part_Number__c}"   /></td>
+                                    <td ><apex:outputText value="{!If(AND($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c,a.Part__r.RPN_Part__c <> ''),a.Part__r.name+'/'+a.Part__r.RPN_Part__c,a.Part__r.name)}" style="width:35px"/></td>
+                                    
+                                    <!-- modified by Tangyong Li 2010-01-16 -->
+                                    <!-- <td ><apex:outputfield value="{!a.Part__r.Description__c}" style="width:140px" /></td> -->
+                                    <td ><apex:outputText value="{!IF(a.Part__r.Proposal_Part__c==true,a.Proposal_Part_Name_Override__c, a.Part__r.Description__c)}" style="width:140px" />
+                                    </td>
+                                    
+                                    <td class="selectStatus">
+                                        <apex:inputfield value="{!a.Status__c}"/>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                    </div>
+                    
+                    <div id="right" style="overflow:scroll; width:70%">
+                        <table border="1" id="table_right"  cellspacing="0" cellpading="0" >   
+                            <tr Class="tablealign"> 
+                                <th >Part Description</th>
+                                <apex:outputpanel rendered="{!IF(oppy.Quote_Type__c =='Meet Competitor Price',true,false)}">
+                                    <th >Competitor Name</th>
+                                    <th >Competitor Part Number</th>
+                                    <th >Competitor Price</th>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!IF(oppy.ERP_For_Pricing__c =='ANZPAC',true,false)}">
+                                    <th >ANZ Item Id</th>
+                                </apex:outputpanel>
+                                <th>ANZ Qty PIP</th>
+                                <th >Quantity</th>   
+                                <th>Sales History</th>
+                                <th>Cust Std Price</th>
+                                <th>Target Price</th>
+                                <th>PIP</th> 
+                                <th>Cost</th>     
+                                <th>Total Line Cost</th>
+                                <th>Total Line Value</th>
+                                <th>Line GM </th>   
+                                <th>Ex Stock</th>
+                                <th>LT Days</th>
+                                <th>MOQ</th>   
+                                <!-- <th>PIP</th> -->
+                                <th>PPQ</th>
+                                <!-- <th>Drawing Number</th> -->
+                                <!-- <th>Rev Number</th> -->
+                                <th>UOM</th>   
+                                <th>Reason Lost</th>
+                                <th>Reason Lost Comments</th>
+                                <th>GPL Code</th>
+                                <th>GPL Description</th>
+                                <th>Internal Comments</th>
+                                <th>Customer Comments</th>
+                            </tr>
+                            <apex:repeat value="{!list_oppyPart}" var="a">
+                                <tr Class="tablealign"> 
+                                    <td ><apex:inputtext size="40" value="{!a.Part_Name__c}"  /></td>
+                                    <apex:outputpanel rendered="{!IF(oppy.Quote_Type__c =='Meet Competitor Price',true,false)}">
+                                        <td ><apex:inputField value="{!a.NDR_Competitor_Name__c}"  /></td>
+                                        <td ><apex:inputField value="{!a.NDR_Competitor_Part_Number__c}"  /></td>
+                                        <td ><apex:inputField value="{!a.Competitor_Price__c}"  /></td>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF(oppy.ERP_For_Pricing__c =='ANZPAC',true,false)}">
+                                        <td ><apex:inputField value="{!a.ANZ_Item_Id__c}" style="width:60px" /></td>
+                                    </apex:outputpanel>
+                                    <td class="td_quantity_pip_class" data-pip="{!a.part__r.Pieces_in_Pack__c}"><apex:inputfield onchange="changeQty(this);" value="{!a.Qty_PIP__c}" style="width:70px" /></td>
+                                    <td class="td_quantity_class" data-cost="{!a.Standard_Cost__c}"><apex:inputfield onchange="changeTotalLineCost(this);" onblur="setQuantity(this);" value="{!a.Quantity__c}" style="width:40px" /> <apex:param name="partNo" value="{!partNo}"/></td>
+                                    <td >
+                                        <apex:commandLink action="{!SalesHistory}" onclick="basicPopup('{!a.Part__c}&oppyId={!a.Opportunity__c}')" >
+                                        <apex:param name="partNoVAlue" value="{!a.Part_Number__c}"  />Sales History
+                                        <!-- <apex:commandButton value="SalesHistory"/> -->
+                                        </apex:commandLink></td>      
+                                    <td ><div style="width:50px;"><apex:outputText value="{0, number, ###,###,###,##0.00}" style="max-width:80px;"><apex:param value="{!a.Sales_Price__c}"/></apex:outputText></div></td>
+                                    <td ><apex:inputfield value="{!a.Offered_Price__c}" style="width:80px" /></td> 
+                                    <td ><apex:outputText value="{!a.part__r.Pieces_in_Pack__c}" style="width:80px" /></td> 
+                                    <td ><div style="width:50px;"><apex:outputText value="{0, number, ###,###,###,##0.00}" style="max-width:50px;"><apex:param value="{!a.Standard_Cost__c}"/></apex:outputText></div></td>
+                                    <td >
+                                        <apex:outputText id="totalCost_id" value="{0, number, ###,###,###,##0.00}">  
+                                            <!-- <apex:param value="{!(a.Total_Cost__c)}"/>   -->
+                                            <apex:param value="{!(a.Quantity__c * a.Standard_Cost__c)}"/>  
+                                        </apex:outputText> 
+                                    </td>                                  
+                                    <td > 
+                                        <apex:outputText value="{0, number, ###,###,###,##0.00}">  
+                                            <apex:param value="{!(a.Total_Price__c)}"/>  
+                                        </apex:outputText> 
+    
+                                    </td>
+                                    <td ><apex:outputfield value="{!a.Margin_CS75__c}"/></td>
+                                    <td ><apex:inputfield value="{!a.Ex_Stock__c}" style="width:70px" /></td>
+                                    <!-- <td ><apex:inputfield value="{!a.LT_Days__c}"  style="width:50px" /></td> -->
+                                    <td ><apex:inputfield value="{!a.Lead_Time__c}"  style="width:50px" /></td>
+                                    <td ><apex:inputfield id="moq_id" value="{!a.Min_Order_Qty__c}"  style="width:70px"  /></td>
+                                    <!-- <td ><apex:outputfield value="{!a.Pieces_in_Pack__c}" style="width:100%"/> </td> -->
+                                    <td ><apex:outputfield value="{!a.Primary_Pack_Quantity__c}"   style="width:70px"/></td>
+                                    <!-- <td ><apex:outputfield value="{!a.Drawing_Number__c}" style="width:100%"/> </td> -->
+                                    <!-- <td ><apex:outputfield value="{!a.Drawing_Revision_Number__c}" style="width:100%"/> </td> -->
+                                    <td > <apex:inputfield value="{!a.Code_for_unit_of_measurement__c}" style="width:70px" /></td>
+                                    <td >
+                                        <apex:inputfield value="{!a.Lost_Reason__c}" />
+                                    </td>
+                                    <td><apex:inputText value="{!a.Reason_Lost_Comments__c}" size="40" /></td>
+                                    <td ><apex:outputfield value="{!a.Part__r.Product_Hierarchy__r.Name}"/></td>
+                                    <td ><apex:outputfield value="{!a.Part__r.Product_Hierarchy__r.GPL_Description__c}"/></td>
+                                    <td><apex:inputText value="{!a.Comments__c}"/></td>
+                                    <td><apex:inputText value="{!a.NDR_Customer_Comments__c}"/></td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+        </apex:pageBlock>
+        <apex:actionStatus id="status_page">
+            <apex:facet name="start">
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                    &nbsp;
+                </div>
+                <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                    <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                        <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                        <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,19 @@
+<apex:page standardController="Case" recordSetvar="unused" extensions="astClone2.AstreaObjectsCloneCtr"  sidebar="false">
+    <apex:form >
+        <apex:pageBlock >
+            <b>List of newly created {!objectname} records: </b>
+            <apex:image value="/img/alohaSkin/help_orange.png" title="Click on the name of the record to navigate to the newly created record." width="13px" height="13px"/>
+
+            <br/><br/>
+            
+            <apex:dataList value="{!resultAccounts}" var="r">
+                {!objectname} {!r.counter} : &nbsp;
+                <apex:outputLink value="/{!r.AccId}"> 
+                    <b><apex:outputText value="{!r.accName}" /></b>
+                </apex:outputLink>
+            </apex:dataList><br/>
+            
+            <center><apex:commandButton action="{!BackToRecordfromStatus}" value="Close"/></center>
+        </apex:pageBlock>
+     </apex:form>
+</apex:page>

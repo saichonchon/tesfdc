@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Report$Name</field>
+    </columns>
+    <columns>
+        <field>Report$ReportTypeEnumOrId</field>
+    </columns>
+    <columns>
+        <field>Report$Owner</field>
+    </columns>
+    <columns>
+        <field>Report$CreatedBy</field>
+    </columns>
+    <columns>
+        <field>Report$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Report$Description</field>
+    </columns>
+    <columns>
+        <field>Report$LastModifiedBy</field>
+    </columns>
+    <columns>
+        <field>Report$LastModifiedDate</field>
+    </columns>
+    <columns>
+        <field>Report$LastRunDate</field>
+    </columns>
+    <columns>
+        <field>Report$Id</field>
+    </columns>
+    <currency>USD</currency>
+    <description>reports by creater more than 180 days not run</description>
+    <filter>
+        <criteriaItems>
+            <column>Report$LastRunDate</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>LAST_N_DAYS:180</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Report$CreatedBy</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Klaus Klein</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Report for clean UP</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Reports_analysis__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Report$Owner</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Report$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

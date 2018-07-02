@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM 
+-Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM)/
+ Plant_Account_Shipment__c.Shipment_Count__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))/
+(Plant_Account_Shipment__c.Shipment_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)+
+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))-
+(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))/
+(Plant_Account_Shipment__c.Shipment_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>Account.Plant_Account_Shipments__r$Shipped_Date__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3 Month Rolling</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Competitive_Price__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Competitive_Price__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Competitive_Price__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Competitive_Price__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Competitive_Price__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Competetive Price</description>
+        <developerName>FORMULA6</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Competetive Price Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Delivery_Performance__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Delivery_Performance__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Delivery_Performance__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Delivery_Performance__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Delivery_Performance__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Delivery Performance</description>
+        <developerName>FORMULA7</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Delivery Performance Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Product_Quality__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Product_Quality__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Product_Quality__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Product_Quality__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Product_Quality__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Product Quality</description>
+        <developerName>FORMULA8</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Product Quality Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Shipment_Count__c</field>
+    </columns>
+    <columns>
+        <field>Account$Account__c</field>
+    </columns>
+    <columns>
+        <field>Account.Plant_Account_Shipments__r$Detractor_Count_Competitive_Price__c</field>
+    </columns>
+    <currency>USD</currency>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Plant_Account_Shipments__r$Shipped_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND NPS Operation Questions Plants</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Accounts_with_NPS_plant_data__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Plant_Account_Shipments__r$Shipped_Date__c</dateColumn>
+        <interval>INTERVAL_PREVCURFY</interval>
+    </timeFrameFilter>
+</Report>

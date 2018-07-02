@@ -1,0 +1,30 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	<!-- total -->
+	<apex:variable value="{!0}" var="rowNum"/>
+	<apex:repeat var="total" value="{!pageCtrl['list_TotalColumns']}">
+	    <tr class="{!total.cls} totcls {!if(rowNum=0, '', ' dn subtotcls ')}">
+	        <apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+	        <td class="{!if(fd['isFutrue'], 'td_input', '')} " >
+	            
+	        </td>
+	        </apex:repeat>
+	    </tr>
+	<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+	</apex:repeat>
+	<!-- total -->	
+	
+	<apex:repeat var="soldTo" value="{!pageCtrl['list_soldToData']}">
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!pageCtrl['list_SoldToColumns']}">
+		<tr class="{!if(rowNum = 0, ' v1', ' dn ')} rlevel1" data-id="{!soldTo['id']}">
+			<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+	        <td class="  {!if(fd['isFutrue'], 'td_input', '')} " data-old="{!soldTo['csFC'][fd.mLabel]}" data-pmfc="{!if(fd.isInput, soldTo['pmFC'][fd.mLabel], '')}" data-dcfc="{!if(fd.isInput, soldTo['dcFC'][fd.mLabel], '')}"></td>
+	        </apex:repeat>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+	
+</apex:component>

@@ -1,0 +1,14 @@
+<apex:page standardController="AgileVizArt__Project__c" extensions="AgileVizArt.ExtProject_Charts_GanttMilestones" sidebar="false">
+    <apex:form >
+        <apex:commandLink target="_self" action="{!cancel}" rendered="{!linkType == 'back'}" >Back</apex:commandLink>   
+    </apex:form>
+    <apex:outputLink target="_top" value="{!$Page.AgileVizArt__ExtProject_Charts_GanttMilestones}?Id={!objId}&fullview" rendered="{!linkType == 'fullview'}">[Full View]</apex:outputLink>
+    <apex:outputLink target="_top" value="{!$Page.AgileVizArt__ExtProject_Charts_GanttMilestones}?Id={!objId}&name={!projectName}&fullview" rendered="{!linkType == 'namefullview'}">[Full View]</apex:outputLink>
+    <div style="width:100%;height:330px;margin-left: 0px;margin-right: 0px; text-align: center">
+        <div style="width:910px;height:330px;margin-left: auto;margin-right: auto; text-align: center"  >
+        <apex:iframe src="{!$Page.AgileVizArt__ExtProject_Charts_showGantt}?Id={!objId}&name={!projectName}" scrolling="true" width="910" height="330" frameborder="false" >
+            
+        </apex:iframe>
+        </div>
+    </div>
+</apex:page>

@@ -1,0 +1,1648 @@
+<apex:page standardController="Account_Plan__c" extensions="ExtAccountPlanView_controlPDF" sideBar="true" showHeader="true"
+ title="{!$ObjectType.Account_Plan__c.label}" >
+ 
+    <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.ckeditor4_3_4_full,'/contents.css')}" />
+ 
+    <apex:sectionHeader title="{!$ObjectType.Account_Plan__c.label}" subtitle="Detail"/>
+    <script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+    <script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    
+    <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery-1.8.3.min.js')}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.ckeditor4_3_4_full,'/ckeditor.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ckeditor4_3_4_full,'/adapters/jquery.js')}"/>
+
+    
+    <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/base64/base64.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryTool, 'jscolor_142/jscolor.js')}"/>
+    <!-- <apex:includeScript value="{!URLFOR($Resource.jQBub)}" /> -->
+    <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+    <apex:stylesheet value="{!URLFOR($Resource.ITB_Table_Style)}" /> 
+    <!-- added by leijun 2013-04-22 begin -->
+    <!--
+    <script src="{!URLFOR($Resource.Jqplot,'dist/excanvas.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.pieRenderer.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.categoryAxisRenderer.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasTextRenderer.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasAxisLabelRenderer.min.js')}" ></script>
+    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.css')}" />
+     -->
+    <style>
+        .ckboxpdfcls{width: 20px; height: 20px; line-height: 20px; margin-top: 13px;}
+        .ckboxpdfallcls{margin-left: 1.9%;width: 20px; height: 20px; line-height: 20px; margin-top: 13px;}
+        .ckboxpdfallclsCol{width: 20px; height: 20px; line-height: 20px; margin-top: 13px;}
+        #sign1 {
+            text-align: left;
+        }
+        .oldre{color: #DE8703;}
+        div#chart_div.jqplot-target {
+            color: #FFFFFF;
+        }
+        div#regionChart_div.jqplot-target {
+            color: #FFFFFF;         
+        }
+        .jqplot-title {   
+            top: 0px;
+            left: 0px;      
+            padding-bottom: 0.5em;
+            font-size: 1.2em;   
+            color:black;
+            font-weight: bold;  
+        }
+        .h2 {text-align:center;}
+        
+        #popCmt{position:fixed;top:0px;left:0px;width:100%;height:100%;background:#f8f8f8;opacity:0.8;
+            filter:ALPHA(opacity=80);z-index:1000;}
+        #popCtn{width:400px;height:165px;position:fixed;top:50%;left:50%;margin-left:-200px;
+            margin-top:-225px;z-index:9999;border:8px double #ddd;border-radius:5px;background-color:#FFF;
+            -webkit-box-shadow:1px 3px 5px #aaa;-moz-box-shadow:1px 3px 5px #aaa;box-shadow:1px 3px 5px #aaa;}
+        .titleLine{background-color:#ededed;width:400px;border-bottom:1px solid #aaa;
+            border-radius:3px;font-size:20px;text-align:center;}
+        .icon_close{border-width:1px;border-style:solid;border-color:#bbb;
+            height:20px;width:20px;text-align:center;
+            line-height:20px;cursor:pointer;float:right;font-size:20px;margin:1px;}
+        .icon_close:hover{border-color:#aaa;font-weight:bold;}
+        .clear{clear:both;}
+        #popCtn .popReasonBody{padding:5px;}
+        #popCtn div input.btn{float:right;margin:10px 15px 10px 5px;width:50px;}
+        .vam{vertical-align: middle !important;}
+        
+        .detailList {
+            border-color: transparent;
+        }
+    </style>
+    
+    
+       <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');" title="Please Wait..."></div>
+                
+       <div id="popCmt" style="display:none;"></div>   
+        <div id="popCtn" style="display:none;">
+            <div class="titleLine"><div class="icon_close" onclick="closeStyleBoxNew();">×</div><div class="clear"></div></div>
+            <div class="popReasonBody">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="vam">Font Family</td>
+                        <td class="vam" >
+                            <select id="sfontfamilyid"> 
+                                <option value="Serif">Serif</option>
+                                <option value="Sans-serif">Sans-serif</option>
+                                <option value="Monospace">Monospace</option>
+                                <option value="Courier">Courier</option>
+                                <option value="Arial Unicode MS">Arial Unicode MS</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="vam">Font Size</td>
+                        <td class="vam">
+                            <input type="text" value="13" name="fontsizeinput"/> 
+                            <label for="fontsizeinput">px</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="vam">Font Color</td>
+                        <td class="vam">
+                            <input type="text" value="000000" class="color {adjust:false, pickerPosition:'top', pickerMode:'HSV'}" id="colorId" />             
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="vam">
+                            <input type="button" class="btn" value="{!$Label.Cancel}" id="closeboxid" tid="" sid="" onclick="closeStyleBoxNew();"/>
+                            <input type="button" class="btn" value="{!$Label.SaveButton}" onclick="setStyleBox();"/>
+                            <input type="button" class="btn" value="{!$Label.Reset}" onclick="reSetStyleBox();"/>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <!-- 
+        <div>
+            <span class="typeName" >Font Family: </span>
+            <span id="pickTypeFace">
+                <select id="sfontfamilyid"> 
+                    <option value="Serif">Serif</option>
+                    <option value="Sans-serif">Sans-serif</option>
+                    <option value="Monospace">Monospace</option>
+                    <option value="Courier">Courier</option>
+                    <option value="Arial Unicode MS">Arial Unicode MS</option>
+                </select>
+            </span>
+        </div>
+        <div>
+            <span class="typeName">Font Size: </span>
+            
+            <span id="pickTypeSize">
+                <input type="text" value="13" name="fontsizeinput"/> 
+                <label for="fontsizeinput">px</label>
+                
+                <select id="sfontsizeid"> 
+                    <option value="10Px">10Px</option>
+                    <option value="20Px">20Px</option>
+                    <option value="30Px">30Px</option>
+                    <option value="40Px">40Px</option>
+                    <option value="50Px">50Px</option>
+                </select>
+                 
+            </span>
+        </div>
+        <div>
+            <span class="typeName">Font Color: </span>
+            <span id="pickTypeColor" >  
+            <input type="text" value="000000" class="color {adjust:false, pickerPosition:'top', pickerMode:'HSV'}" id="colorId" />             
+            </span>
+        </div>
+        <div>
+            <input type="button" class="btn" value="Save" onclick="setStyleBox();"/>
+            <input type="button" class="btn" value="Cancel" id="closeboxid" tid="" onclick="closeStyleBox();"/>
+        </div>
+         -->
+        </div>
+    </div>   
+    <apex:form id="theForm">    
+        <apex:actionStatus startText="" stopText="" id="searchbynumberLOOKUP" >
+         <apex:facet name="start">
+            <div id="pageStartLoading" style="text-align:center;width:99%;height:99%;display:block;background-color:#FFF;opacity:0.50;position:absolute;z-index:8000;filter:alpha(opacity=85);">
+                <div class="loadingDiv" style="width:40px;margin-left:48%;margin-top:48%;position:absolute;">
+                    <img src="/img/loading.gif"/>
+                </div>
+            </div>
+         </apex:facet>    
+        </apex:actionStatus>
+        <apex:pageMessages id="messId"/>
+
+        <apex:pageBlock id="theBlock" mode="detail">
+        <apex:pageBlockButtons >
+            <input type="button" value="{!if(isAppliancesBU, $Label.SaveAndViewPDF, $Label.ViewPDF)}" onclick="doViewPDF_click()"/>   
+            <input type="button" value="{!$Label.Cancel}"   onclick="cancelViewPDF_click()"/>                     
+        </apex:pageBlockButtons> 
+        
+        <apex:actionFunction name="doViewPDF" oncomplete="doViewPDFComplete()" action="{!PDF}" reRender="messId" status="searchbynumberLOOKUP"></apex:actionFunction>
+        <apex:actionFunction name="cancelViewPDF" action="{!cancelPDF}" reRender="messId" status="searchbynumberLOOKUP"></apex:actionFunction>
+        <apex:outputPanel id="mess1">
+            <table width="100%">        
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle1">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls" />  
+                            <apex:image id="theImage1" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>                                                                                                                  
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle1_td" class="ckstyletd">
+                    <apex:pageBlockSection showHeader="false" title="{!$Label.Fields}" columns="2" collapsible="true" >                                         
+                    <apex:pageBlockSectionItem >  
+                        <apex:outputLabel value=" "/>                                        
+                        <apex:outputPanel >
+                            <input type="button" value="{!$Label.Upload_Company_Logo}" onclick="uploadLogo();"/>
+                            <apex:outputPanel rendered="{!hasCompanyLogo}">
+                                <input type="button" value="{!$Label.Delete}" onclick="deleteLogo('company');"/>
+                            </apex:outputPanel>                     
+                        </apex:outputPanel> 
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >   
+                        <apex:outputLabel value=" "/>      
+                        <apex:outputPanel >
+                            <input type="button" value="{!$Label.Upload_Manager_Logo}" onclick="uploadphoto();"/>
+                            <apex:outputPanel rendered="{!hasManagerLogo}">
+                                <input type="button" value="{!$Label.Delete}" onclick="deleteLogo('manager');"/>
+                            </apex:outputPanel>
+                        </apex:outputPanel>  
+                    </apex:pageBlockSectionItem>
+                    
+                        
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel styleClass="setfontcls" >
+                            <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Company_Logo_Id__c)}"/>
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Company_Logo__c.Label}" rendered="{!Not(IsNull(accountPlan.Company_Logo_Id__c))}"></apex:outputLabel>
+                        </apex:outputPanel>                                        
+                        <apex:outputField value="{!accountPlan.Company_Logo__c}"/>                    
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel styleClass="setfontcls" >
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Account_Manager__c.Label}" rendered="{!Not(IsNull(accountPlan.Account_Manager_Id__c))}"/>
+                            <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Account_Manager_Id__c)}"/>
+                        </apex:outputPanel>
+                        <apex:outputField value="{!accountPlan.Account_Manager__c}" id="testId1"/>                    
+                    </apex:pageBlockSectionItem> 
+                    <apex:outputLabel value=" "/> 
+                    <apex:pageBlockSectionItem >               
+                    <apex:outputLabel styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Account_Manager_Approver__c.label}"  />                                
+                    <apex:outputPanel styleClass="setfontcls" >
+                        <apex:outputField styleClass="setfontcls" id="testId" value="{!accountPlan.Account_Manager_Approver__c}" />
+                    </apex:outputPanel>
+                    </apex:pageBlockSectionItem>  
+                    </apex:pageBlockSection>
+    
+    
+                    <apex:pageBlockSection showHeader="false" columns="2" id="theCustomerId">
+                    <apex:outputLabel value=" "/>                                          
+                    <apex:pageBlockSectionItem dataStyle="{font-weight:bold; vertical-align: bottom;}" >            
+                        <apex:outputLabel value="{!$Label.Customer}" styleClass="setfontcls"/>
+                        <apex:outputText styleClass="setfontcls" style="color:#0073AE"><b class="setfontcls" >{!Account_Plan__c.Customer__r.Name}</b></apex:outputText>
+                    </apex:pageBlockSectionItem> 
+                     
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$Label.Customer_Type}" styleClass="setfontcls"/>
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Customer_Type__c}"/> 
+                            <apex:outputText styleClass="setfontcls" rendered="{!accountPlan.Replicate_to_Central_Org__c != true}"><br/>{!$Label.Profile_dont_be_sent_to_Dashboard} </apex:outputText>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem> 
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Business_Unit__c.label}" styleClass="setfontcls"/>
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Business_Unit__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem> 
+                    <!--  
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Approval_Status__c.label}" styleClass="setfontcls"/>
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Approval_Status__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    -->
+                   <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Plan_Year__c.label}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Plan_Year__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Active__c.label}" styleClass="setfontcls"/>
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Active__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.GAM_Code__c.label}" styleClass="setfontcls"/>
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.GAM_Code__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>   
+                     
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Account_Definition__c.label}" styleClass="setfontcls" />
+                        <apex:outputPanel rendered="{!accountPlan.Customer_Type__c='A'}" styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Account_Definition__c}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <!--  
+                    <apex:pageBlockSectionItem >            
+                        <apex:outputLabel value="{!$Label.Type}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.RecordType.Name}"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    -->                                   
+                    <apex:pageBlockSectionItem >            
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Sales_Figures_Makeup__c.label}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.Sales_Figures_Makeup__c}"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <!-- 
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$Label.Created_By}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.CreatedById}"/>, 
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.CreatedDate}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>   
+                              
+                    <apex:pageBlockSectionItem dataStyle="vertical-align:middle">
+                        <apex:outputLabel value="{!$Label.Voice_Overview}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <a href="/servlet/servlet.FileDownload?file={!voiceId}" class="setfontcls">
+                                <apex:image url="{!$Resource.Speaker}" width="25" height="25" title="{!$Label.Voice_Overview_exists}" rendered="{!displayVoice}"/>
+                            </a>
+                            <apex:outputLabel styleClass="setfontcls" style="color:grey" value="{!$Label.Not_loaded}" rendered="{!Not(displayVoice)}"/>                                         
+                        </apex:outputPanel>                                
+                    </apex:pageblockSectionItem>
+                     --> 
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$Label.Last_Modified_By}" styleClass="setfontcls" />
+                        <apex:outputPanel styleClass="setfontcls">
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.LastModifiedByID}"/>, 
+                            <apex:outputField styleClass="setfontcls" value="{!accountPlan.LastModifiedDate}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                </apex:pageBlockSection>
+                 </td>
+                </tr>           
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel id="mess2">
+            <table width="100%">        
+                <tr>                                       
+                    <td class="ckstyletd setfontcls" >
+                        <apex:pageBlockSection id="overviewSection" title="{!$Label.Customer_Overview}" columns="1">
+                            <apex:pageBlockSectionItem id="overviewItem" >
+                               <apex:outputPanel styleClass="setfontcls">
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle2">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage2" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                </div>
+                                            </td>
+                                            <td id="ckstyle2_td" class="ckstyletd">
+                                                <apex:outputPanel id="overviewPanel" styleClass="setfontcls" rendered="{!list_overview.size > 0}">
+                                                     <table class="itb-table-style-01 setfontcls" width="100%">
+                                                         <thead>
+                                                             <tr style="background-color: lightblue">
+                                                                 <th colspan="1" align="center" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!$Label.All_figures_in_Millions}"/></th>
+                                                                 <th colspan="5" align="center" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!$Label.Customer_Revenue}"/></th>
+                                                             </tr>
+                                                         </thead>
+                                                         <tbody>
+                                                             <tr style="background-color: lightblue">
+                                                                 <td width="25%" class="setfontcls"><b><apex:outputText styleClass="setfontcls" value="{!$Label.Category}"/></b></td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!planYearMinus3}"/></td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!planYearMinus2}"/></td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!$Label.YoY_Variance}"/></td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!planYearMinus1}"/></td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!$Label.YoY_Variance}"/></td>
+                                                             </tr>
+                                                             
+                                                             <apex:repeat value="{!list_overview}" var="item">
+                                                             <tr>
+                                                                 <td width="25%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.name}"/></td>
+                                                                 <td width="15%" class="setfontcls">
+                                                                     <apex:outputText styleClass="setfontcls" value="{0, number, ###.000}">
+                                                                         <apex:param value="{!item.sumYear3}"/>
+                                                                     </apex:outputText>
+                                                                 </td>
+                                                                 <td width="15%" class="setfontcls">
+                                                                     <apex:outputText styleClass="setfontcls" value="{0, number, ###.000}">
+                                                                         <apex:param value="{!item.sumYear2}"/>
+                                                                     </apex:outputText>
+                                                                 </td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.yoVariante2}" rendered="{!NOT(ISNULL(item.yoVariante2))}"/></td>
+                                                                 <td width="15%" class="setfontcls">
+                                                                     <apex:outputText styleClass="setfontcls" value="{0, number, ###.000}">
+                                                                         <apex:param value="{!item.sumYear1}"/>
+                                                                     </apex:outputText>
+                                                                 </td>
+                                                                 <td width="15%" class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.yoVariante1}" rendered="{!NOT(ISNULL(item.yoVariante1))}"/></td>
+                                                             </tr>
+                                                                
+                                                             </apex:repeat>
+                                                         </tbody>
+                                                     </table>
+                                                 </apex:outputPanel>
+                                                 <apex:outputPanel styleClass="setfontcls" rendered="{!list_overview.size == 0}">
+                                                     <b class="setfontcls"><apex:outputLabel styleClass="setfontcls" value="{!$Label.No_overview}"/></b>
+                                                 </apex:outputPanel>
+                                    </td>
+                                </tr>                                               
+                               </table>                                                                                         
+                               </apex:outputPanel>
+                           </apex:pageBlockSectionItem>
+                        <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                            <apex:pageBlockSectionItem id="newsStr" >  
+                                <apex:outputPanel >
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle3">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage3" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                </div>
+                                            </td>
+                                            <td id="ckstyle3_td" class="ckstyletd">
+                                                <table width="100%" style="border-color:transparent">
+                                                    <tr>
+                                                        <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Customer_News__c.Label}"/></th>
+                                                        <td>
+                                                            <textarea style="display: none;" class="richnews_cls richinitcls" id="richnews_id" rows="15" name="richnews_name">{!accountPlan.Customer_News__c}</textarea>
+                                                            <apex:inputHidden value="{!accountPlan.Customer_News__c}" id="hideNews_id"  />
+    <!--                                                        <apex:inputField styleClass="setfontcls" id="theTextInput1" value="{!accountPlan.Customer_News__c}" /> -->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>          
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:outputPanel>                         
+                                        <!--
+                                    </td>
+                                </tr>
+                            </table>
+                            --> 
+                       </apex:pageBlockSection>     
+                    </td>
+                </tr>                
+            </table>
+        </apex:outputPanel>
+        
+        <apex:outputPanel >
+            <table width="100%">
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle4">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                            <apex:image id="theImage4" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle4_td" class="ckstyletd">
+                        <apex:pageBlockSection >
+                            <apex:pageBlockSectionItem id="segment">
+                                <apex:outputPanel styleClass="setfontcls">
+                                    <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Industry_Segment__c))}">
+                                        <table class="itb-table-style-01 setfontcls">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th align="center"><apex:outputText styleClass="setfontcls" value="{!$Label.Industry_Segment}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Industry_Segment__c}"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!ISNULL(accountPlan.Industry_Segment__c)}">
+                                        <apex:outputText styleClass="setfontcls"><b>{!$Label.No_Industry_Segment}</b></apex:outputText>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem id="keyAccount" >
+                                <apex:outputPanel >
+                                    <apex:outputPanel id="keyAccountPanel" rendered="{!list_keyProduct.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th ><apex:outputText styleClass="setfontcls" value="{!$Label.key_Products}"/> </th>                    
+                                                    <th colspan="2"><apex:outputText styleClass="setfontcls" value="{!accountPlan.Key_Product_Percent_Title__c}"/></th>
+                                
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_keyProduct}" var="item">
+                                                    <tr>
+                                                        <td> <apex:outputText styleClass="setfontcls" value="{!item.name}"/></td>
+                                                        <td> <apex:outputText styleClass="setfontcls" value=" {!item.productPct}" /> <apex:image value="{!URLFOR($Resource.Graphics, item.productOutlook + '.jpg')}" title="{!item.productOutlook}" rendered="{!NOT(ISNULL(item.productOutlook))}"/></td>                                                            
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_keyProduct.size == 0}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Key_Product}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>               
+                        </apex:pageBlockSection>                    
+                    </td>
+                </tr>           
+            </table>
+        </apex:outputPanel>
+        
+        <apex:outputPanel >
+            <table width="100%">
+                <tr>                                       
+                    <td  class="ckstyletd">
+                        <apex:pageBlockSection id="tePerformanceSection" title="{!$Label.TE_Performance_Overview}" columns="1">
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel >
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle5">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage5" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                </div>
+                                            </td>
+                                            <td id="ckstyle5_td" class="ckstyletd">
+                                                <apex:outputPanel >
+                                                    <table>
+                                                    <tr>
+                                                        <td width="70%" align="left" class="setfontcls">
+                                                            <b class="setfontcls oldre">
+                                                            {!$Label.TE_Performance}:</b>  
+                                                                <apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.TE_Performance_Status__c+ '.jpg')}" 
+                                                                                        title="{!accountPlan.TE_Performance_Status__c}" rendered="{!NOT(ISNULL(accountPlan.TE_Performance_Status__c))}" /> 
+                                                                   {!accountPlan.TE_Performance_Status__c}
+                                                        </td>
+                                                    </tr>
+                                                    </table>
+                                                </apex:outputPanel>
+                                                
+                                                <apex:outputPanel id="performancePanel" rendered="{!list_tePerformance.size > 0}">
+                                                    <table class="itb-table-style-01">
+                                                        <thead>
+                                                            <tr style="background-color: lightblue">
+                                                                <th colspan="1" ><i><apex:outputText styleClass="setfontcls" value="{!$Label.All_figures_in_Millions}"/></i></th>
+                                                                <th colspan="1" ><apex:outputText styleClass="setfontcls" value="{!$Label.Actual}"/></th>
+                                                                <th colspan="2" ><apex:outputText styleClass="setfontcls" value="{!$Label.Forecast} ({!planYear})"/></th>
+                                                                <th colspan="7" ><apex:outputText styleClass="setfontcls" value="{!$Label.Annual_Plan}"/></th>
+                                                            </tr>
+                                                            <tr style="background-color: lightblue">
+                                                                <td><i><apex:outputText styleClass="setfontcls" value="{!$Label.Fiscal_Years}"/></i></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!planYearMinus1}"/></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!$Label.YTD_Actuals}"/></td>
+                                                                
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!$Label.Adjusted_Forecast}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!planYear}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!$Label.YoY}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!planYearPlus1}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!$Label.YoY}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!planYearPlus4}"/></td>
+                                                                <td ><apex:outputText styleClass="setfontcls" value="{!$Label.YoY}"/></td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <apex:repeat value="{!list_tePerformance}" var="item">
+                                                                <tr>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.Name}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.actualValue}"/></td>  
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.ytdActualValue}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.forecastValue}"/></td>
+                                                                    
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.apValue1}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.yoyValue1}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.apValue2}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.yoyValue2}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.apValue3}"/></td>
+                                                                    <td><apex:outputText styleClass="setfontcls" value="{!item.yoyValue3}"/></td>
+                                                                </tr>
+                                                            </apex:repeat>
+                                                        </tbody>
+                                                    </table>
+                                                    <apex:outputPanel styleClass="setfontcls" rendered="{!NOT(ISNULL(accountPlan.Revenue_Section_Last_Updated_By__c))}">
+                                                        <i class="setfontcls">{!$Label.TE_Revenue_Section_Last_Updated_By} <apex:outputfield styleClass="setfontcls" Value="{!accountPlan.Revenue_Section_Last_Updated_By__c}"/> on <apex:outputfield styleClass="setfontcls" Value="{!accountPlan.Revenue_Section_Last_Updated__c}"/></i>
+                                                    </apex:outputPanel>       
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!list_tePerformance.size == 0}">
+                                                    <b><apex:outputLabel styleClass="setfontcls" value="{!$Label.Nothing_To_View}"/></b>
+                                                </apex:outputPanel>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                                <apex:pageBlockSectionItem >  
+                                    <apex:outputPanel >
+                                        <table width="100%" style="border-color:transparent">
+                                            <tr>
+                                                <td width="50px">
+                                                    <div id="ckstyle6">
+                                                        <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                        <apex:image id="theImage6" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                    </div>
+                                                </td>
+                                                <td id="ckstyle6_td" class="ckstyletd">
+                                                    <table width="100%" style="border-color:transparent">
+                                                        <tr>
+                                                            <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Pricing__c.Label}"/></th>
+                                                            <td>
+                                                                <textarea style="display: none;" class="richprice_cls richinitcls" id="richprice_id" rows="15" name="richprice_name">{!accountPlan.Pricing__c}</textarea>
+                                                                <apex:inputHidden value="{!accountPlan.Pricing__c}" id="hidePrice_id"  />
+    <!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput2" value="{!accountPlan.Pricing__c}" style="width:1000px;"/> -->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>          
+                                </apex:pageBlockSectionItem>
+                            </apex:outputPanel>
+                            <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                                <apex:pageBlockSectionItem >                                
+                                    <apex:outputPanel >
+                                        <table width="100%" style="border-color:transparent">
+                                            <tr>
+                                                <td width="50px">
+                                                    <div id="ckstyle7">
+                                                        <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                        <apex:image id="theImage7" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                    </div>
+                                                </td>
+                                                <td id="ckstyle7_td" class="ckstyletd">
+                                                    <table width="100%" style="border-color:transparent">
+                                                        <tr>
+                                                            <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Capacity_Issues__c.Label}"/></th>
+                                                            <td>
+                                                                <textarea style="display: none;" class="richcapacity_cls richinitcls" id="richcapacity_id" rows="15" name="richcapacity_name">{!accountPlan.Capacity_Issues__c}</textarea>
+                                                                <apex:inputHidden value="{!accountPlan.Capacity_Issues__c}" id="hideCapacity_id"  />
+    <!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput3" value="{!accountPlan.Capacity_Issues__c}"/> -->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>          
+                                   </apex:outputPanel>        
+                                </apex:pageBlockSectionItem>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                                <apex:pageBlockSectionItem >                                  
+                                    <apex:outputPanel >
+                                        <table width="100%" style="border-color:transparent">
+                                            <tr>
+                                                <td width="50px">
+                                                    <div id="ckstyle8">
+                                                        <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                        <apex:image id="theImage8" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                    </div>
+                                                </td>
+                                                <td id="ckstyle8_td" class="ckstyletd">
+                                                    <table width="100%" style="border-color:transparent">
+                                                        <tr>
+                                                            <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Outlook__c.Label}"/></th>
+                                                            <td>
+                                                                <textarea style="display: none;" class="richoutlook_cls richinitcls" id="richoutlook_id" rows="15" name="richoutlook_name">{!accountPlan.Outlook__c}</textarea>
+                                                                <apex:inputHidden value="{!accountPlan.Outlook__c}" id="hideOutlook_id"  />
+    <!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput4" value="{!accountPlan.Outlook__c}" /> -->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>          
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                            </apex:outputPanel>
+                            
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel >
+            <table width="100%">
+                <tr>
+                     <td class="ckstyletd">
+                        <apex:pageBlockSection columns="1">
+                            <apex:pageBlockSectionItem id="competItem" >
+                                <apex:outputPanel >
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle9">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage9" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                                                </div>
+                                            </td>
+                                            <td id="ckstyle9_td" class="ckstyletd"> 
+                                                <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Competitors}" /></font></h2><br/>
+                                                <apex:outputPanel id="competPanel" rendered="{!list_competitor.size > 0}">
+                                                    <table class="itb-table-style-01">
+                                                        <thead>
+                                                            <tr style="background-color: lightblue">
+                                                                <th width="25%" ><apex:outputText styleClass="setfontcls" value="{!$Label.Competitors}"/></th>
+                                                                <th width="50%" ><apex:outputText styleClass="setfontcls" value="{!$Label.Market_Share}"/></th>
+                                                                <th width="25%" ><apex:outputText styleClass="setfontcls" value="{!$Label.Comments}"/></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <apex:repeat value="{!list_competitor}" var="item">
+                                                                <tr>
+                                                                    <td width="25%" ><apex:outputLink styleClass="setfontcls" value="/{!item.compId}" target="_Blank">{!item.name}</apex:outputLink></td>
+                                                                    <td width="50%" ><apex:outputText styleClass="setfontcls" value="{!item.marketShare}"/> <apex:image Value="{!URLFOR($Resource.Graphics, item.tendend+ '.jpg')}" title="{!item.tendend}" rendered="{!NOT(ISNULL(item.tendend))}"/></td>
+                                                                    <td width="25%" ><apex:outputText styleClass="setfontcls" value="{!item.comment}"/></td>
+                                                                </tr>
+                                                            </apex:repeat>
+                                                        </tbody>
+                                                    </table>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!list_competitor.size == 0}">
+                                                    <b><apex:outputLabel styleClass="setfontcls" value="{!$Label.No_Competitor}"/></b>
+                                                </apex:outputPanel>                                     
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem id="relationItem" >
+                                <apex:outputPanel >
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle10">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage10" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                </div>
+                                            </td>
+                                            <td id="ckstyle10_td" class="ckstyletd">
+                                                <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Relationships}" /></font></h2><br/>
+                                                <apex:outputPanel id="relationPanel">
+                                                    <table class="itb-table-style-01">
+                                                        <thead>
+                                                            <tr class="headerrow" style="background-color: lightblue"><th colspan="4" class="setfontcls">{!$Label.Relationships}</th></tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="setfontcls">{!$ObjectType.Account_Plan__c.fields.Executive_Relationship__c.label}:</td>
+                                                                <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Executive_Relationship__c+ '.jpg')}" title="{!accountPlan.Executive_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Executive_Relationship__c))}" /></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Executive_Relationship__c}"/></td>
+                                                                <td width="50%"><apex:outputText styleClass="setfontcls" value="{!accountPlan.Executive_Relationship_Comments__c}"/></td>                
+                                                            </tr>                
+                                                            <tr>
+                                                                <td class="setfontcls">{!$ObjectType.Account_Plan__c.fields.Purchasing_Relationship__c.label}:</td>
+                                                                <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Purchasing_Relationship__c+ '.jpg')}" title="{!accountPlan.Purchasing_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Purchasing_Relationship__c))}" /></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Purchasing_Relationship__c}"/></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Purchasing_Relationship_Comments__c}"/></td>
+                                                            </tr>                
+                                                            <tr>
+                                                                <td class="setfontcls">{!$ObjectType.Account_Plan__c.fields.Engineering_Relationship__c.label}:</td>
+                                                                <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Engineering_Relationship__c+ '.jpg')}" title="{!accountPlan.Engineering_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Engineering_Relationship__c))}" /></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Engineering_Relationship__c}"/></td>
+                                                                <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Engineering_Relationship_Comments__c}"/></td>
+                                                            </tr>
+                                                        </tbody>
+                                                   </table>
+                                                </apex:outputPanel>
+                                            </td>
+                                        </tr>
+                                    </table>                                   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                                <apex:pageBlockSectionItem >   
+                                    <apex:outputPanel >
+                                        <table width="100%" style="border-color:transparent">
+                                            <tr>
+                                                <td width="50px">
+                                                    <div id="ckstyle11">
+                                                        <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                        <apex:image id="theImage11" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                    </div>
+                                                </td>
+                                                <td id="ckstyle11_td" class="ckstyletd">
+                                                    <table width="100%" style="border-color:transparent">
+                                                        <tr>
+                                                            <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Competition__c.Label}"/></th>
+                                                            <td>
+                                                                <textarea style="display: none;" class="richcompetition_cls richinitcls" id="richcompetition_id" rows="15" name="richcompetition_name">{!accountPlan.Competition__c}</textarea>
+                                                                <apex:inputHidden value="{!accountPlan.Competition__c}" id="hideCompetition_id"  />
+    <!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput5" value="{!accountPlan.Competition__c}"/> -->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>          
+                                    </apex:outputPanel>                                        
+                                </apex:pageBlockSectionItem>
+                            </apex:outputPanel>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel >
+            <table width="100%">
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle12">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                            <apex:image id="theImage12" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle12_td" class="ckstyletd">
+                        <apex:pageBlockSection id="straSection" title="{!$Label.Strategies}">
+                            <apex:pageBlockSectionItem id="straItem" >
+                                <apex:outputPanel >
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Strategies}" /></font></h2><br/>
+                                    <apex:outputPanel id="straPanel" rendered="{!list_strategies.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Strategic_Account_Objectives}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="Location"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_strategies}" var="item">
+                                                    <tr>
+                                                        <td><apex:outputText styleClass="setfontcls" value="{!item.objective}"/></td>
+                                                         <td><apex:outputText styleClass="setfontcls" value="{!item.location}"/></td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_strategies.size == 0}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.no_stategies}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem id="straplanItem" >
+                                <apex:outputPanel >
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Strategic_Initiatives_Penetration_Plan}" /></font></h2><br/>
+                                    <apex:outputPanel id="straplanPanel" rendered="{!list_strategiesInitiativesPenetrationPlan.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Strategic_Initiatives_Penetration_Plan}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Target}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Status}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Owner}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_strategiesInitiativesPenetrationPlan}" var="item">
+                                                    <tr>
+                                                        <td><apex:outputText styleClass="setfontcls" value="{!item.plan}"/></td>
+                                                        <td><apex:outputText styleClass="setfontcls" value="{!item.target}"/></td>
+                                                        <td><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/></td>
+                                                        <td><apex:outputText styleClass="setfontcls" value="{!item.owner}"/></td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_strategiesInitiativesPenetrationPlan.size == 0}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.no_stategies}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel >  
+            <table width="100%">
+                <tr>
+                   <td class="ckstyletd">
+                        <apex:pageBlockSection id="breakSection" title="{!$Label.Breakthrough_Programs}" columns="1">
+                           
+                            <apex:pageBlockSectionItem id="breakItem">
+                                <apex:outputPanel >                                
+                                    <table style="border-color:transparent" width="100%">
+                                        <tr>                                 
+                                            <td width="50px">
+                                                <div id="ckstyle13">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage13" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                                                </div>
+                                            </td>
+                                            <td  id="ckstyle13_td" class="ckstyletd">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td width="50%">
+                                                            <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Breakthrough_Programs}" /></font></h2><br/>
+                                                            <apex:outputPanel id="breackPanel" rendered="{!list_BreakthroughProgram.size > 0}">
+                                                                <table class="itb-table-style-01">
+                                                                    <thead>
+                                                                        <tr style="background-color: lightblue">
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Breakthrough_Programs}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Status}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Comments}"/></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <apex:repeat value="{!list_BreakthroughProgram}" var="item">
+                                                                            <tr>
+                                                                                <td><apex:outputText styleClass="setfontcls" value="{!item.name}"/></td>
+                                                                                <td class="setfontcls"><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/><apex:outputText styleClass="setfontcls" value="{!item.status}"/></td>
+                                                                                <td><apex:outputText styleClass="setfontcls" value="{!item.comments}"/></td>
+                                                                            </tr>
+                                                                        </apex:repeat>
+                                                                    </tbody>
+                                                                </table>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel rendered="{!list_BreakthroughProgram.size == 0}">
+                                                                <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Breakthrough_Program}"/></b>
+                                                            </apex:outputPanel>
+                                                        </td>
+                                                        <td width="50%">
+                                                            <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Key_Projects_Opportunities}" /></font></h2><br/>
+                                                            <apex:outputPanel id="keyProjectPanel" rendered="{!list_keyProjects.size > 0}">
+                                                                <table class="itb-table-style-01">
+                                                                    <thead>
+                                                                        <tr style="background-color: lightblue">
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Key_Projects_Opportunities}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Start_Date}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Type}"/></th>
+                                                                            <th><apex:outputText styleClass="setfontcls" value="{!$Label.Master_Programm}"/></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <apex:repeat value="{!list_keyProjects}" var="item">
+                                                                            <tr>
+                                                                                <td><apex:outputLink styleClass="setfontcls" value="/{!item.keyProjectId}" target="_Blank">{!item.name}</apex:outputLink></td>
+                                                                                <td><apex:outputText styleClass="setfontcls" Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                                                <td><apex:outputText styleClass="setfontcls" value="{!item.startDate}"/></td>
+                                                                                <td><apex:outputText styleClass="setfontcls" value="{!item.proTyp}"/></td>
+                                                                                <td><apex:outputLink styleClass="setfontcls" value="/{!item.masterProjectId}" target="_Blank">{!item.masterProgramm}</apex:outputLink></td>
+                                                                            </tr>
+                                                                        </apex:repeat>
+                                                                    </tbody>
+                                                                </table>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel rendered="{!list_keyProjects.size == 0}">
+                                                                <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Projects_Opportunities}"/></b>
+                                                            </apex:outputPanel>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>                                
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">
+                                <apex:pageBlockSectionItem >   
+                                    <apex:outputPanel >
+                                        <table width="100%" style="border-color:transparent">
+                                            <tr>
+                                                <td width="50px">
+                                                    <div id="ckstyle14">
+                                                        <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                        <apex:image id="theImage14" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                    </div>
+                                                </td>
+                                                <td  id="ckstyle14_td" class="ckstyletd">
+                                                    <table width="100%" style="border-color:transparent">
+                                                        <tr>
+                                                            <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Key_Opportunity_Comments__c.Label}"/></th>
+                                                            <td>
+                                                                <textarea style="display: none;" class="richkeyopp_cls richinitcls" id="richkeyopp_id" rows="15" name="richkeyopp_name">{!accountPlan.Key_Opportunity_Comments__c}</textarea>
+                                                                <apex:inputHidden value="{!accountPlan.Key_Opportunity_Comments__c}" id="hideKeyopp_id"  />
+    <!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput1" value="{!accountPlan.Key_Opportunity_Comments__c}" /> -->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>          
+                                    </apex:outputPanel>                          
+                                </apex:pageBlockSectionItem>
+                            </apex:outputPanel>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel> 
+        <apex:outputPanel >  
+            <table width="100%">
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle15">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls"  />
+                            <apex:image id="theImage15" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle15_td" class="ckstyletd">
+                        <apex:pageBlockSection id="winlosSection" title="{!$Label.Recent_Wins_Losses}">
+                            <apex:pageBlockSectionItem id="winItem" >
+                                <apex:outputPanel >
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Recent_Big_Wins}" /></font></h2><br/>
+                                    <apex:outputPanel id="recentWinsPanel" rendered="{!list_wins.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Recent_Big_Wins}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Date_Won}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Comments}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_wins}" var="item">
+                                                    <tr>
+                                                        <td class="setfontcls"><apex:outputLink styleClass="setfontcls" value="/{!item.oppId}" target="_Blank">{!item.Name}</apex:outputLink></td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.dateValue}"/></td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.comments}"/></td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_wins.size == 0}">
+                                        <b class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!$Label.No_Recent_Big_Wins}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem id="lossesItem" >
+                                <apex:outputPanel >
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Recent_Losses}" /></font></h2><br/>
+                                    <apex:outputPanel id="lossesPanel" rendered="{!list_losses.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Recent_Losses}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Date_Lost}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Comments}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_losses}" var="item">
+                                                    <tr>
+                                                        <td class="setfontcls"><apex:outputLink styleClass="setfontcls" value="/{!item.oppId}" target="_Blank">{!item.Name}</apex:outputLink></td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.dateValue}"/></td>
+                                                        <td class="setfontcls"><apex:outputText styleClass="setfontcls" value="{!item.comments}"/></td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_losses.size == 0}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Losses}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel> 
+        
+        <apex:outputPanel >  
+            <table width="100%">
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle16">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                            <apex:image id="theImage16" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle16_td" class="ckstyletd">
+                        <apex:pageBlockSection id="obsteclesAndScorcardSection" title="{!$Label.Obstecles_And_Scorcard}">
+                            <apex:pageBlockSectionItem id="obsteclesItem" >
+                                <apex:outputPanel >
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$Label.Obstacles}" /></font></h2><br/>
+                                    <apex:outputPanel id="obsteclesPanel" rendered="{!list_obstecles.size > 0}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$Label.Obstacle_Headwind}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!list_obstecles}" var="item">
+                                                    <tr>
+                                                        <td><apex:outputText styleClass="setfontcls" value="{!item}"/></td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!list_obstecles.size == 0}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Obstecles}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem id="Scorcard" >
+                                <apex:outputPanel > 
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}" /></font></h2><br/>
+                                    <apex:outputPanel id="ScorcardPanel" rendered="{!NOT(ISNULL(accountPlan.Customer_Scorecard__c))}">
+                                        <table class="itb-table-style-01">
+                                            <thead>
+                                                <tr style="background-color: lightblue">
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}"/></th>
+                                                    <th><apex:outputText styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard_Comments__c.label}"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><a class="setfontcls" href="http://{!accountPlan.Customer_Scorecard__c}" target="_Blank"><apex:outputText styleClass="setfontcls" value="{!accountPlan.Customer_Scorecard__c}"/></a></td>
+                                                    <td><apex:outputText styleClass="setfontcls" value="{!accountPlan.Customer_Scorecard_Comments__c}"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!ISNULL(accountPlan.Customer_Scorecard__c)}">
+                                        <b><apex:outputText styleClass="setfontcls" value="{!$Label.No_Customer_Scorecard}"/></b>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>   
+        
+        <apex:outputPanel >  
+            <table width="100%">
+                <tr>
+                    <td width="50px">
+                        <div id="ckstyle17">
+                            <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                            <apex:image id="theImage17" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/>
+                        </div>
+                    </td>
+                    
+                    <td id="ckstyle17_td" class="ckstyletd">
+                        <apex:pageBlockSection id="updateSection" title="{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}" columns="1">
+                            <apex:pageBlockSectionItem id="updateItem" >
+                                <apex:outputPanel styleClass="setfontcls">
+                                    <h2><font color="DE8703" size="4px" ><apex:outputLabel styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}" /></font></h2><br/>
+                                    <apex:outputPanel id="updatePanel" styleClass="setfontcls" layout="block" rendered="{!NOT(ISNULL(accountPlan.Monthly_Update__c))}">
+                                        <apex:outputField styleClass="setfontcls" id="editor_update" value="{!accountPlan.Monthly_Update__c}"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel styleClass="setfontcls" rendered="{!NOT(ISNULL(accountPlan.Monthly_Update_Last_Updated_By__c))}">
+                                        <i class="setfontcls">   {!$ObjectType.Account_Plan__c.fields.Monthly_Update_Last_Updated_By__c.label} 
+                                        <apex:outputfield styleClass="setfontcls" Value="{!accountPlan.Monthly_Update_Last_Updated_By__c}"/> on 
+                                        <apex:outputfield styleClass="setfontcls" Value="{!accountPlan.Monthly_Update_Last_Updated__c}"/></i>      
+                                        <br/><br/>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel style="display:{!IF(isAppliancesBU, '', 'none')}">  
+            <table width="100%">
+                <tr>
+                    <td class="ckstyletd">
+                        <apex:pageBlockSection id="Indicator" columns="1">
+                            <apex:pageBlockSectionItem >  
+                                <apex:outputPanel >
+                                    <table width="100%" style="border-color:transparent">
+                                        <tr>
+                                            <td width="50px">
+                                                <div id="ckstyle18">
+                                                    <apex:inputCheckbox styleClass="ckboxpdfcls" />
+                                                    <apex:image id="theImage18" value="{!URLFOR($Resource.jQueryTool, 'img/colours.png')}" width="20" height="20"  title="set the font"  onclick="setFont(this);"  style="margin-left: 3px;"/> 
+                                                </div>
+                                            </td>
+                                            <td  id="ckstyle18_td" class="ckstyletd">
+                                                <table width="100%" style="border-color:transparent">
+                                                    <tr>
+                                                        <th width="150px" style="font-size: 14px;color: black;font-weight: bold;text-align: left;"><apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.Fields.Industry_Trends_Indicators__c.Label}"/></th>
+                                                        <td>
+                                                            <textarea style="display: none;" class="richindustry_cls richinitcls" id="richindustry_id" rows="15" name="richindustry_name">{!accountPlan.Industry_Trends_Indicators__c}</textarea>
+                                                            <apex:inputHidden value="{!accountPlan.Industry_Trends_Indicators__c}" id="hideIndustry_id"  />
+<!--                                                            <apex:inputField styleClass="setfontcls" id="theTextInput1" value="{!accountPlan.Industry_Trends_Indicators__c}"/> -->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>          
+                                </apex:outputPanel>                                  
+                            </apex:pageBlockSectionItem>                           
+                        </apex:pageBlockSection>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel> 
+    </apex:pageBlock>
+
+    </apex:form>
+
+    <script>
+        function setFocusOnLoad() {}//to prevent datepicker auto pop up
+        function uploadLogo(){
+            window.location.href="/apex/Itbpicture__ExtPicture_UniversalUploadPage_Flex?pictureFieldName=Company_Logo_Id__c&objectType=Account_Plan__c&objectId={!accountPlan.Id}&noverride=1&defWidth=275";
+        }
+        
+        function uploadphoto(){  
+            window.location.href="/apex/Itbpicture__ExtPicture_UniversalUploadPage_Flex?pictureFieldName=Account_Manager_Id__c&objectType=Account_Plan__c&objectId={!accountPlan.Id}&noverride=1&defWidth=162";
+        }
+        function deleteLogo(choice){
+            if (confirm("Do you really want to delete the picture?")) 
+            {
+                sforce.connection.sessionId = '{!$Api.Session_ID}'; 
+                var getCon = sforce.connection.query("SELECT Id, Company_Logo_Id__c, Account_Manager_Id__c FROM Account_Plan__c Where Id = '{!accountPlan.Id}'");
+                
+                var conRecord = getCon.getArray("records");
+                
+                if(choice == 'company'){
+                    try{
+                        if(conRecord[0].Company_Logo_Id__c != null){
+                            var getPicAtt = sforce.connection.query("SELECT Id FROM Attachment Where Id = '" + conRecord[0].Company_Logo_Id__c + "'");
+                            var attRecord = getPicAtt.getArray("records");
+                            var temp = [];
+                            
+                            var result = sforce.connection.deleteIds([attRecord[0].Id]); 
+                        }
+                    }
+                    catch(err){}
+                    conRecord[0].Company_Logo_Id__c = null;
+                
+                }
+                else{
+                    try{
+                        if(conRecord[0].Account_Manager_Id__c != null){
+                            var getPicAtt = sforce.connection.query("SELECT Id FROM Attachment Where Id = '" + conRecord[0].Account_Manager_Id__c + "'");
+                            var attRecord = getPicAtt.getArray("records");
+                            var result = sforce.connection.deleteIds([attRecord[0].Id]); 
+                        }
+                    }
+                    catch(err){}
+                    conRecord[0].Account_Manager_Id__c = null;
+                
+                    
+                }
+                
+            var saveResults = sforce.connection.update(conRecord);
+            window.location.reload();
+        }
+    }
+      
+    //initDocumentPage();
+    
+    $(document).ready(function () {
+        
+        $('div.pbHeader td.pbTitle').html('<input type="checkbox" id="checkallbox" onclick="checkallStyle(this)" class="ckboxpdfallcls" /> <image id="theImage" src="{!URLFOR($Resource.jQueryTool,'img/colours.png')}" title="set the font"  onclick="setallStyle(this);" class="ckboxpdfallclsCol"/>');
+    });
+       
+    ;function hideRegionChartDivLoading() {
+        $("#regionChartDivLoading").hide();
+    }
+    
+    ;function hideChartDivLoading() {
+        $("#chartDivLoading").hide();
+    }
+    
+    ;function hideChart2Loading() {
+        $("#chart2Loading").hide();
+    }
+    
+    ;function showRegionChartDiv() {
+        $("#regionChart_div").show();
+    }
+    
+    ;function showChartDiv() {
+        $("#chart_div").show();
+    }
+    
+    ;function showChart2() {
+        $("#chart2").show();
+    }
+
+    
+    function cancelSave(){
+        clsSave();
+    }
+    function clsSave(){
+        $('#popCmt').slideUp('slow');
+        $('#popCtn').slideUp('slow');
+    }
+
+
+        
+
+////////////
+j$ = $;
+        function noenter(e){   
+            var key;     
+            if(window.event)
+                key = window.event.keyCode; //IE
+            else
+                key = e.which; //firefox
+            if(key == 13) {
+               window.event.keyCode = 9;
+            }       
+            return (key != 13);
+        }
+        
+        function checkAccountActiveLength (obj){
+            if($('.accActive:checked').length > 5){
+                alert("The selected quantity is not greater than 5");
+                $(obj).attr('checked',false);
+            } 
+        }
+        function checkStrategicActiveLength(obj) {
+            if($('.strategicActive:checked').length > 10){
+                alert("The selected quantity is not greater than 10");
+                $(obj).attr('checked',false);
+            }   
+        }
+        ;function cancelViewPDF_click(){
+            cancelViewPDF();    //this is action function
+        }
+        ;function doViewPDF_click(){
+            $('[id*=hideNews_id]').val(CKEDITOR.instances.richnews_id.getData());
+            $('[id*=hidePrice_id]').val(CKEDITOR.instances.richprice_id.getData());
+            $('[id*=hideCapacity_id]').val(CKEDITOR.instances.richcapacity_id.getData());
+            $('[id*=hideOutlook_id]').val(CKEDITOR.instances.richoutlook_id.getData());
+            $('[id*=hideCompetition_id]').val(CKEDITOR.instances.richcompetition_id.getData());
+            $('[id*=hideKeyopp_id]').val(CKEDITOR.instances.richkeyopp_id.getData());
+            $('[id*=hideIndustry_id]').val(CKEDITOR.instances.richindustry_id.getData());
+            
+            doViewPDF();    //this is action function
+        }
+        ;function doViewPDFComplete(){
+            var a_pdf=document.getElementById('pdf_lin'),$a_pdf=$(a_pdf), _href=$a_pdf.attr('oldhref');
+            // add lili 2014-4-28 due to fix the bug of map key ckstyle1 not found in map begin 
+            for(var pdf in pdfStyleShow) {
+                var temppdf = $.extend({},pdfStyle[pdf]);
+                var temppdfs = $.extend({},pdfIsShow[pdf]);
+                pdfStyleShow[pdf] = $.extend(temppdf,temppdfs);
+                
+            }
+            var m = '{\n ';
+            for(var pdf in pdfStyleShow){
+                m += ( '\"'+pdf + '\":' + JSON.stringify(pdfStyleShow[pdf]) +',');
+            }
+            
+            m = (m.substring(0, m.length-1) + '\n}');
+            //_href = (_href+'&base64='+Base64.encode(tt.toString())+'&base641='+Base64.encode(t.toString()));
+            _href = (_href+'&base64='+Base64.encode(m.toString()));
+            // add lili 2014-4-28 due to fix the bug of map key ckstyle1 not found in map end
+            $a_pdf.attr({'href':_href});
+            a_pdf.click();
+        }
+        var pdfIsShow = {
+            'ckstyle1': {isShow:false}, 
+            'ckstyle2': {isShow:false},
+            'ckstyle3': {isShow:false}, 
+            'ckstyle4': {isShow:false}, 
+            'ckstyle5': {isShow:false},
+            'ckstyle6': {isShow:false}, 
+            'ckstyle7': {isShow:false},
+            'ckstyle8': {isShow:false}, 
+            'ckstyle9': {isShow:false},
+            'ckstyle10': {isShow:false}, 
+            'ckstyle11': {isShow:false},
+            'ckstyle12': {isShow:false},
+            'ckstyle13': {isShow:false},
+            'ckstyle14': {isShow:false},
+            'ckstyle15': {isShow:false},
+            'ckstyle16': {isShow:false},
+            'ckstyle17': {isShow:false},
+            'ckstyle18': {isShow:false}
+        };
+        var pdfStyle={
+            'ckstyle1':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle2':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle3':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle4':  {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle5':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle6':  {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle7':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle8':  {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle9':  {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle10': {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle11': {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle12': {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle13': {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle14': {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle15': {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle16': {fontColor: '', fontSize: '',  fontFamily: ''},  
+            'ckstyle17': {fontColor: '', fontSize: '',  fontFamily: ''}, 
+            'ckstyle18': {fontColor: '', fontSize: '',  fontFamily: ''}
+        };
+        var pdfStyleShow={
+            'ckstyle1':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle2':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle3':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle4':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle5':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle6':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle7':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle8':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle9':  {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle10': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle11': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle12': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle13': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle14': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle15': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle16': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false},  
+            'ckstyle17': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}, 
+            'ckstyle18': {fontColor: '', fontSize: '',  fontFamily: '', isShow:false}
+        };
+
+        
+        addListener(window, 'load', initDocumentPage, {});
+        var loaded_len=0;
+        ;function initDocumentPage(){
+            $('input[type="checkbox"].ckboxpdfcls').off('click').on('click', ckboxStyle_eve);
+            
+            
+            var CKEDITOR_CONFIG={
+                        toolbar:[
+                            ['Undo','Redo'],
+                            ['PasteText', 'PasteFromWord'],
+                            ['Bold','Italic','Underline'],
+                            ['SpecialChar'],
+                            ['TextColor', 'BGColor'],
+                            ['JustifyLeft','JustifyCenter','JustifyRight'],
+                            ['Styles', 'Format', 'Font', 'FontSize'],
+                            
+                     //       { name: 'clipboard', items: ['PasteText', 'PasteFromWord'] },
+                     //       {name: 'basicstyles', items: ['Bold','Italic','Underline']},
+                     //       { name: 'insert', items: ['SpecialChar'] },
+                     //       { name: 'colors', items: ['TextColor', 'BGColor'] },
+                    //        {name: 'paragraph', items: ['JustifyLeft','JustifyCenter','JustifyRight']},
+                     //       { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                            ['BulletedList', 'NumberedList', 'Outdent', 'Indent']
+                        ],
+                        language: '{!userLocal}',
+                        removePlugins: 'elementspath, magicline',
+                        enterMode: CKEDITOR.ENTER_DIV,
+                        allowedContent: false
+            };
+
+       //     CKEDITOR.replace('richnews_id');
+            CKEDITOR.replace('richnews_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richprice_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richcapacity_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richoutlook_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richcompetition_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richkeyopp_id', CKEDITOR_CONFIG);
+            CKEDITOR.replace('richindustry_id', CKEDITOR_CONFIG);
+            
+            CKEDITOR.on('instanceReady', function(){ 
+                loaded_len +=1;
+            });
+
+            asynConnectionChecking();
+        }
+        
+        ;function asynConnectionChecking(){
+
+            var clearTimer = window.setInterval(function(){
+                if(loaded_len == 7){
+                    clearInterval(clearTimer);
+                    loaded_len=0;
+                    document.getElementById('loading-curtain-div').style.display = 'none';
+                }
+            }, 500);
+        }
+        
+        ;function checkallStyle(target){
+            var $this=$(target), isCheck=$this.prop('checked');
+            document.getElementById('closeboxid').setAttribute('tid', 'all');
+            if(isCheck){
+                closeStyleBox();
+                //showStyleBox();
+            }else{
+                //var font={'font-size': '', 'color': '', 'font-family': ''};
+                //$(('.setfontcls')).css(font);
+                for(pdf in pdfIsShow){
+                    pdfIsShow[pdf] = {isShow:false};
+                }
+                $('input[type="checkbox"].ckboxpdfcls').prop({'checked':false});
+            }
+        }
+        ;function setallStyle(target) {
+             var $this=$(target);
+             document.getElementById('closeboxid').setAttribute('sid', 'all');
+             showStyleBox();
+        }
+        ;function ckboxStyle_eve(e){
+            var $this=$(this), _id=this.parentNode.id, isCheck=$this.prop('checked');
+            
+            document.getElementById('closeboxid').setAttribute('tid', _id);
+            
+            if(isCheck){
+                closeStyleBox();
+                //showStyleBox();
+            }else{
+                //var font={'font-size': '', 'color': '', 'font-family': ''};
+                //$(('#'+_id+'_td .setfontcls')).css(font);
+                pdfIsShow[_id]={isShow:false};
+
+                var check_len=$('input[type="checkbox"].ckboxpdfcls:checked').length;
+                if(check_len == 0){
+                    $('#checkallbox').prop({'checked': false});
+                }
+            }
+            
+        }
+        ;function setFont(e) {
+            var _id=$(e).parent().attr("id");
+            document.getElementById('closeboxid').setAttribute('sid', _id);              
+            showStyleBox();
+
+        }
+        ;function setStyleBox(){
+            var sid=document.getElementById('closeboxid').getAttribute('sid'),
+                //tid=document.getElementById('closeboxid').getAttribute('tid'),
+                fontColor=$.trim(document.getElementById('colorId').value),
+                fontSize=$('#sfontsizeid option:selected').val(),
+                fontFamily =$('#sfontfamilyid option:selected').val(),
+                font={'font-size': fontSize, 'color': '#'+(fontColor==''?'':fontColor), 'font-family':fontFamily};
+            if(sid == 'all'){               
+                //$('input[type="checkbox"].ckboxpdfcls').prop({'checked': true});
+                for(pdf in pdfStyle){
+                    pdfStyle[pdf] = {fontColor: fontColor, fontSize:fontSize, fontFamily:fontFamily};
+                }
+                $('.setfontcls').css(font);
+            }else{
+                //console.log(sid);
+                pdfStyle[sid]={fontColor: fontColor, fontSize:fontSize, fontFamily:fontFamily};
+                $(('#'+sid+'_td .setfontcls')).css(font);
+                //var check_len=$('input[type="checkbox"].ckboxpdfcls:checked').length;
+                //if(check_len == 11){
+                    //$('#checkallbox').prop({'checked': true});
+                //}
+            }
+            hideStyleBox();
+        }
+        ;function reSetStyleBox() {
+            var sid=document.getElementById('closeboxid').getAttribute('sid');
+            font={'font-size': '', 'color': '', 'font-family':''};
+            if(sid == 'all') {
+                var font={'font-size': '', 'color': '', 'font-family': ''};
+                $(('.setfontcls')).css(font);
+                for(pdf in pdfStyle){
+                    pdfStyle[pdf] = {fontColor: '', fontSize: '', fontFamily: ''};
+                }
+            }else {
+                pdfStyle[sid]={fontColor: '', fontSize:'', fontFamily:''};
+                $(('#'+sid+'_td .setfontcls')).css(font);
+            }
+            hideStyleBox();
+        }
+        ;function closeStyleBoxNew(){
+            var sid=document.getElementById('closeboxid').getAttribute('sid');
+            font={'font-size': '', 'color': '', 'font-family':''};
+            if(sid == 'all') {
+                var font={'font-size': '', 'color': '', 'font-family': ''};
+                $(('.setfontcls')).css(font);
+                for(pdf in pdfStyle){
+                    pdfStyle[pdf] = {fontColor: '', fontSize: '', fontFamily: ''};
+                }
+            }else {
+                pdfStyle[sid]={fontColor: '', fontSize:'', fontFamily:''};
+                $(('#'+sid+'_td .setfontcls')).css(font);
+            }
+            hideStyleBox();
+        }
+        ;function closeStyleBox(){
+            var tid=document.getElementById('closeboxid').getAttribute('tid');
+            if(tid == 'all'){
+                /*
+                $('#checkallbox').prop({'checked': false});
+                $('input[type="checkbox"].ckboxpdfcls').prop({'checked': false});                                
+                */
+                $('#checkallbox').prop({'checked': true});
+                $('input[type="checkbox"].ckboxpdfcls').prop({'checked': true});
+                for(pdf in pdfStyle){
+                    pdfIsShow[pdf] = {isShow: true};
+                }
+                //$('.setfontcls').css({'font-size': '', 'color': '', 'font-family': ''});
+            }else{
+                //$('#'+tid+' input[type="checkbox"]').prop('checked', false);
+                $('#'+tid+' input[type="checkbox"]').prop('checked', true);
+                //pdfStyle[tid]={fontColor: '', fontSize: '', fontFamily: '', isShow:false};
+                pdfIsShow[tid]={isShow:true};
+                var check_len=$('input[type="checkbox"].ckboxpdfcls:checked').length;
+                if(check_len == 0){
+                    //$('#checkallbox').prop({'checked': false});
+                    $('#checkallbox').prop({'checked': true});
+                }
+            }
+        }
+
+        ;function hideStyleBox(){
+            $('#popCmt').slideUp('slow');
+            $('#popCtn').slideUp('slow');
+        }
+        ;function showStyleBox(){
+            $('#popCmt').slideDown('slow');
+            $('#popCtn').slideDown('slow');
+        }
+        
+        ;function addListener (element, event, fn, params) {
+            var eventHandler = ( params ? function(){ fn.call(params); } : fn );
+            if (window.attachEvent) {
+                element.attachEvent('on' + event, eventHandler);
+            } else {
+                element.addEventListener(event, eventHandler, false);
+            }
+        }
+    </script>
+    <a target="_blank" rel="external" oldhref="/apex/ExtAccountPlanView_showAccountPlan_PDF?id={!accountPlan.Id}" href="/apex/ExtAccountPlanView_showAccountPlan_PDF?id={!accountPlan.Id}" id="pdf_lin" style="display: none !important;">pdftmp</a>
+</apex:page>

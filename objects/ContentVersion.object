@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>ContentSize</fullName>
+    </fields>
+    <fields>
+        <fullName>Content_Owner_GIBU__c</fullName>
+        <description>pulls GIBU from owner to be available in content report</description>
+        <externalId>false</externalId>
+        <formula>TEXT( Owner.GIBU__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Content Owner GIBU</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Content_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If owner is someone other than yourself, please enter name of content owner.</inlineHelpText>
+        <label>Content Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Content</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CurrencyIsoCode</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Current_Owner__c</fullName>
+        <description>pulls the owner first and last name, owner is not an available field in report type &apos;Content Report&apos;</description>
+        <externalId>false</externalId>
+        <formula>Owner.FirstName &amp; Owner.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current Owner</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Energy Record Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter content date of expiration</inlineHelpText>
+        <label>Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>FileExtension</fullName>
+    </fields>
+    <fields>
+        <fullName>FileType</fullName>
+    </fields>
+    <fields>
+        <fullName>IsAssetEnabled</fullName>
+    </fields>
+    <fields>
+        <fullName>Language</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Owner_Active__c</fullName>
+        <description>pulls active status from owner to be available in content report</description>
+        <externalId>false</externalId>
+        <formula>Owner.IsActive</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Owner Active</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SharingOption</fullName>
+        <trackHistory>true</trackHistory>
+    </fields>
+    <fields>
+        <fullName>SharingPrivacy</fullName>
+        <trackHistory>true</trackHistory>
+    </fields>
+    <fields>
+        <fullName>TagCsv</fullName>
+    </fields>
+    <fields>
+        <fullName>Title</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <searchLayouts>
+        <searchResultsAdditionalFields>VERSION.TITLE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.CONTENT_SIZE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.FILE_EXTENSION</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.OWNER</searchResultsAdditionalFields>
+    </searchLayouts>
+</CustomObject>

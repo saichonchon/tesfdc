@@ -1,0 +1,267 @@
+<apex:page controller="CtrlSearchGPL" sidebar="false" showheader="false">
+	<script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.JquerySource)}" />
+	<apex:includeScript value="{!URLFOR($Resource.JqueryPowerFloat)}" />
+	<apex:includeScript value="{!URLFOR($Resource.JqueryPowerFloatMini)}" />
+	
+	<apex:includeScript value="{!URLFOR($Resource.JQueryIE9)}" />
+   	<apex:includeScript value="{!URLFOR($Resource.OpportunityPartManageJS)}" />
+	<apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+	<style>
+		.handleClass{
+			cursor: pointer;
+		}
+	</style>
+    <apex:form id="pageForm" >
+    
+    	<apex:pageMessages id="pagemessages"  /> 
+		<apex:actionFunction action="{!ChangeCBC1}" name="ChangeCBC1" rerender="selectGPLPanel,CBC2SelectList,pmSelectList" status="status">		
+   		</apex:actionFunction>
+   		<apex:actionFunction action="{!ChangeCBC2}" name="ChangeCBC2" rerender="selectGPLPanel,pmSelectList" status="status">
+   		</apex:actionFunction>
+        <apex:PageBlock id="searchGPL" >
+               	<table>    		
+	         	<tr><td colspan="3">
+            		<apex:outputPanel id="searchCriteriaChoice">
+                		<table cellspacing="5">
+                			<tr>
+                    			<td >
+                    			<div id="searchLookupMode"></div>
+                    			</td>
+                			</tr>
+                		</table>            
+            		</apex:outputPanel>
+	            </td></tr>
+            	<tr>
+            		<td><apex:outputPanel id="searchMethodLOOKUP" styleClass="searchFilterFieldsHolder">						            			  
+           				<apex:outputPanel >                                  
+                 				<table class="searchFilterFields" style="align:center;width:100%; ">
+                    				<tr>
+                        				<td>
+                            				<h4>{!$Label.Search_By}</h4>
+                        				</td>
+                    				</tr>
+                    				<tr>
+                    					<td>
+                    						<table>
+	                   	 						<tr>
+	                    							<td>
+			                    						<table>
+			                    							                    
+				                    						<tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.CBC1}" />
+										                        </td>
+										                        <td>
+<!--										                            <apex:inputText onkeypress="return noenter()" id="cbc1" value="{!productHierarchy.CBC1__c}" />-->
+										                            <apex:selectList styleClass="handleClass" style="width:171px;" id="CBC1SelectList" onchange="ChangeCBC1();" label="{!$ObjectType.Product_Hierarchy__c.fields.CBC1__c.label}" value="{!cbc1Value}" size="1" >
+		    															<apex:selectOptions value="{!map_name_picklist[cbc1MapKey]}"/>
+		    														</apex:selectList>
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                            <apex:outputText value="{!$Label.CBC2}" />
+										                        </td>
+										                        <td>
+										                            <apex:selectList styleClass="handleClass"  style="width:171px;" id="CBC2SelectList" onchange="ChangeCBC2();" rendered="{!cbc1NotNull}"  label="{!$ObjectType.Product_Hierarchy__c.fields.CBC2__c.label}" value="{!cbc2Value}" size="1" >
+		    															<apex:selectOptions value="{!map_name_picklist[cbc2MapKey]}"/>
+		    														</apex:selectList>
+		    														
+		    														<apex:selectList styleClass="handleClass" style="width:171px;" rendered="{!!cbc1NotNull}" disabled="true" label="{!$ObjectType.Product_Hierarchy__c.fields.CBC2__c.label}" value="{!cbc2Value}" size="1" >
+		    															<apex:selectOptions value="{!map_name_picklist[cbc2MapKey]}"/>
+		    														</apex:selectList>
+										                        </td>
+				                    						</tr>
+				                    						<tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.Product_Manager}" />
+										                        </td>
+										                        <td>
+										                            <apex:selectList styleClass="handleClass" style="width:171px;" id="pmSelectList" label="{!$ObjectType.Product_Hierarchy__c.fields.Product_Manager__c.label}" value="{!productManagerValue}" size="1" >
+		    															<apex:selectOptions value="{!map_name_picklist[productManagerMapKey]}"/>
+		    														</apex:selectList>
+		    														
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td colspan="2">
+										                        	<apex:outputText value="{!$Label.Search_by_Product_Manager}" />&nbsp;&nbsp;
+	    															<apex:inputCheckbox value="{!searchByPM}" id="check" styleClass="checkboxsingleforsales handleClass" /> 
+										                        </td>				                        				                        				                        
+				                    						</tr>
+														</table>
+	                    							</td>
+                   								</tr>
+                    						</table>
+                    					</td>
+                    				</tr>                                                                                      
+                 			</table>
+            			</apex:outputPanel>
+            			<apex:outputPanel style="height:10px;">
+            			<table style="height:10px;">
+            			<tr>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+               			</tr>
+            			</table>
+            			</apex:outputPanel>
+            			<apex:outputPanel id="selectGPLPanel">                                  
+                 				<table class="searchFilterFields" style="align:center;width:100%; ">
+                    				<tr>
+                        				<td>
+                            				<h4>{!$Label.Select_GPL}</h4>
+                        				</td>
+                    				</tr>
+                    				<tr>
+                    					<td>
+                    						<table>
+							                    <tr>
+							                    	<td>
+							                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							                        </td>
+							                        <td>
+							                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							                        </td>
+							                        <td>
+							                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							                        </td>
+							                        <td>
+							                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							                        </td>
+							                        <td>
+							                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							                        </td>
+							                        <td>
+							                            <apex:outputText value="GPL:" />
+							                        </td>
+							                        <td>
+							                            <apex:selectList styleClass="handleClass" id="gplSelect" style="width:171px;" label="GPL:" value="{!gplString}" size="1" >
+   															<apex:selectOptions value="{!map_name_picklist[gplMapKey]}"/>
+   														</apex:selectList>
+<!--   														<apex:outputText value="{!$Label.No_Records_Found}" rendered="{!list_optionGPL.size = 0}"/>-->
+							                        </td>
+							                        				                        
+							                    </tr>
+                    						</table>
+                    					</td>
+                    				</tr>                                                                                      
+                 			</table>
+            			</apex:outputPanel>
+            			
+            			<apex:outputPanel style="height:10px;">
+            			<table style="height:10px;">
+            			<tr>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+	                        <td>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                        </td>
+               			</tr>
+            			</table>
+            			</apex:outputPanel>
+            			
+            			<apex:outputPanel >                                  
+                				<table style="align:center;width:100%; ">
+                   				<tr>
+				                    <td colspan="5" align="center">
+				                     	<apex:commandButton action="{!SearchGPL}" value="{!$Label.Search}"  rerender="gplSelect"  status="status"/>
+				                     	<apex:commandButton onclick="addPart();"  value="{!$Label.Add}"  rerender="avoidRefreshError"  status="status"/>
+			                    	 	<apex:commandButton value="{!$Label.Cancel}" onclick="cancel()" rerender="avoidRefreshError" />  
+			                            <apex:actionStatus startText=" Loading... " stopText="" id="status">
+										    <apex:facet name="start"><img src="/img/loading.gif"/></apex:facet>
+										</apex:actionStatus> 
+									</td> 
+                   				</tr>                                                                                      
+                				</table>
+            			</apex:outputPanel>
+            	</apex:outputPanel></td>
+            	
+       		</tr>
+         	</table>
+         </apex:PageBlock>
+
+
+		<input type="hidden" id="selectedGPLId" value=""></input>
+        <input type="hidden" id="selectedGPLName" value=""></input>
+        
+        
+		<apex:outputPanel id="avoidRefreshError">
+        </apex:outputPanel>
+		
+	<script>
+		hideLoading();
+		
+		function hideLoading(){
+			parent.document.getElementById('loading').style.display = "none";
+		}
+		
+		function cancel() {
+			parent.closePopUp();
+		}	
+
+		function addPart(){
+			var field = parent.document.getElementById("selectedProposalPartId").value;			
+			if($('Select[id*="gplSelect"]').val() == null || $('Select[id*="gplSelect"]').val() =='') {				
+				alert('{!$Label.Do_Not_Select_GPL}');
+				return;
+			}
+			var id = $('Select[id*="gplSelect"]').val().split(',')[0];
+			var name = $('Select[id*="gplSelect"]').val().split(',')[1];
+			var manager = $('Select[id*="gplSelect"]').val().split(',')[2];
+			parent.document.getElementById(field + "_Id").value = id;
+			parent.document.getElementById(field + "_Name").value = name;
+			
+			try{
+				var GPLField = parent.document.getElementById(field + "_Name");
+				
+				$(GPLField).parent().parent().next().children().children().each(function(){
+					//START added minghao.li@itbconsult.com
+					var $this = $(this);
+					if($this.attr('id').indexOf('GPL_Manager') != -1 && $(this)[0].tagName == 'SPAN'){
+						$(this).html(manager);
+					}
+					if($this.attr('id').indexOf('GPL_ManagerHidden') != -1 && $(this)[0].tagName == 'INPUT'){
+						$(this).val(manager);
+					}
+					//END added minghao.li@itbconsult.com
+					/*
+					if(this.id.indexOf('GPL_Manager') != -1) {
+						//alert(this.id);
+						alert($(this)[0]);
+						this.innerHTML=manager;
+					}
+					if(this.id.indexOf('GPL_ManagerHidden') != -1) {
+						this.value=manager;
+						//alert(this.id);
+						}
+					*/
+				});
+			
+			
+			}catch(er){
+			//	alert('error' + er);
+			}
+			
+			
+			parent.SelectGPL('{!selectedIndex}');
+			cancel();
+		}        
+	</script> 
+         		 
+</apex:form>  		 
+</apex:page>

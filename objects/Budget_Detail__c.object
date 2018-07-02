@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Budget Detail</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.SALES_TERRITORY_CDE__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Territory Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This field is the relationship to the Account.</description>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Budget Details</relationshipLabel>
+        <relationshipName>Budget_Details</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Adjusted_Business__c</fullName>
+        <description>Run Rate Business + Run Rate Business * Market Growth + Run Rate Business * Price Change +  Run Rate Business * Price Increase</description>
+        <externalId>false</externalId>
+        <formula>Run_Rate_Business__c + Run_Rate_Business__c * Market_Growth__c + Run_Rate_Business__c * Price_Change__c + Run_Rate_Business__c * Price_Increase__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>total adjusted repeat business</inlineHelpText>
+        <label>Adj. Repeat Business $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Adjustment__c</fullName>
+        <description>Allows user to amend Calculated Budget based on known opportunity pipeline or best case and knowledge about the customer</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ adjustment value from &quot;pending&quot; opportunities and other potential effects, explain in comments</inlineHelpText>
+        <label>Adjustment $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Backlog__c</fullName>
+        <description>Calculated open backlog to be delivered in budget period (fiscal year of budget). Retrieved from daily billings object. Value is calculated in Visualforce page when user changes its budget plan.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>open backlog current year (based on schedule date)</inlineHelpText>
+        <label>Backlog $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billings_CYRR__c</fullName>
+        <description>Billings current year run rate = Billings CYTD divided by the number of fiscal months of current year in monthly BBB table times 12 (= 12 months).
+
+For direct, we use the number of months of direct business. For CMA/POS number of records with indirect business.
+
+Value is calculated in Visualforce page when user changes its budget plan.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>calculated billings run rate for current year</inlineHelpText>
+        <label>Billings RR CY $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billings_CYTD__c</fullName>
+        <description>After each edit of the budget plan, billings of current year to date are calculated from TED imported data (monthly BBB by customer) and stored here for future reference, especially that the manager refers to the same value. Current year is defined by the fiscal year value given by Budget record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>billings current year  to date</inlineHelpText>
+        <label>Billings YTD CY $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billings_LY__c</fullName>
+        <description>After each edit of the budget plan, billings of last year are calculated from TED imported data (monthly BBB by customer) and stored here for future reference, especially that the manager refers to the same value.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>billings previous fiscal year</inlineHelpText>
+        <label>Billings LY $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget_Document_Currency__c</fullName>
+        <externalId>false</externalId>
+        <label>Budget Document Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget_TBR_NY__c</fullName>
+        <description>This field is used to calculate field &apos;Total Budget TBR NY&apos; on budget</description>
+        <externalId>false</externalId>
+        <label>Budget TBR NY</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget_Year__c</fullName>
+        <externalId>false</externalId>
+        <formula>Budget__r.Year__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Budget Year</inlineHelpText>
+        <label>Budget Year</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget__c</fullName>
+        <description>Parent relation to budget</description>
+        <externalId>false</externalId>
+        <label>Budget</label>
+        <referenceTo>Budget__c</referenceTo>
+        <relationshipLabel>Budget Details</relationshipLabel>
+        <relationshipName>Budget_Details</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Business_Transfers__c</fullName>
+        <description>Total of Transfer In/Out/TAM-DTAM</description>
+        <externalId>false</externalId>
+        <formula>Transfer_In__c + Transfer_Out__c + TAM_DTAM__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Total of Transfer In/Out/TAM-DTAM</inlineHelpText>
+        <label>Business Transfers</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Calculated_Budget__c</fullName>
+        <externalId>false</externalId>
+        <formula>Adjusted_Business__c + Opportunities_Won__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>total budget,  adjusted repeat business + Opportunities won</inlineHelpText>
+        <label>Forecast $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <description>allows user to note background information or budget decisions like which opportunities have been considered in adjustment.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>explain the background of your forecast calculation</inlineHelpText>
+        <label>Comments</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Forecast_CY__c</fullName>
+        <description>Updated forecast for current year, manually updated by user. Prepopulated with Billings CYRR on first time.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>estimated final current year adjusted by plan owner</inlineHelpText>
+        <label>Estimated Final CY $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Growth__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (AND( Total_Budget__c = 0, Forecast_CY__c &lt;= 0),0,IF( Total_Budget__c = 0,-1,(Total_Budget__c / Forecast_CY__c )-1))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Growth %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Manager_Final_Budget__c</fullName>
+        <description>Manager’s final override of budget. This should not be visible to account manager. Should be populated by Manager Total Budget initially.</description>
+        <externalId>false</externalId>
+        <label>Manager Final Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_Total_Budget__c</fullName>
+        <description>Shows manager override of budget. Should be visible to account manager in second round.</description>
+        <externalId>false</externalId>
+        <label>Manager Total Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Market_Growth__c</fullName>
+        <description>Defines growth of customer’s market as percentage. In case of record type Other, market growth indicates growth of over all customers</description>
+        <externalId>false</externalId>
+        <inlineHelpText>%  expected customer growth</inlineHelpText>
+        <label>Customer Growth %</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Obsoletion_EOL__c</fullName>
+        <description>Correction amount for EOL business</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ amount of discontinuance business because of end of life, lost business, obsoletion</inlineHelpText>
+        <label>Obsoletion/EOL $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities50_50__c</fullName>
+        <description>All opportunities with Stage &lt; Pre-Prod, but only parts of 50:50</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ value from opportunities on stage gates &lt; pre prod (pending) and confidence factor 50/50</inlineHelpText>
+        <label>Opportunities 50/50 $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities_Commit__c</fullName>
+        <description>All opportunities with Stage &lt; Pre-Prod, but only parts of commit</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ value from opportunities on stage gates &lt; pre prod (pending) and confidence factor commit</inlineHelpText>
+        <label>Opportunities Commit $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities_Likely__c</fullName>
+        <description>All opportunities with Stage &lt; Pre-Prod, but only parts of commit or likely</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ value from opportunities on stage gates &lt; pre prod (pending) and confidence factor likely</inlineHelpText>
+        <label>Opportunities Likely $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities_Pipeline__c</fullName>
+        <description>All opportunities with Stage &lt; Pre-Prod, with all parts except of confidence Lost/Dead/On Hold</description>
+        <externalId>false</externalId>
+        <label>Opportunities Pipeline</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities_Weak__c</fullName>
+        <description>All opportunities with Stage &lt; Pre-Prod, but only parts of weak</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ value from opportunities on stage gates &lt; pre prod (pending) and confidence factor weak</inlineHelpText>
+        <label>Opportunities Weak $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunities_Won__c</fullName>
+        <description>All opportunities with Stage &gt;= Pre-Prod, but without Parts of Confi-dence Lost/Dead/On Hold. Only cal-culate forecast of current fiscal year.
+Link to a report defined via custom setting, which shows all &quot;won&quot; oppor-tunities by passing account number. Calculated each time user edits budg-et plan via Visualforce page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ value from won opportunities, all opportunities on stage pre-prod and mass-prod</inlineHelpText>
+        <label>Opportunities Won $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Parent_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Parent Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Budget Details (Parent Account)</relationshipLabel>
+        <relationshipName>Budget_Details1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Price_Change__c</fullName>
+        <description>Defines price change percentage, i.e. can we execute a price increase or do we get price pressure.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>% price adjustment</inlineHelpText>
+        <label>Market Price Change %</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Price_Increase__c</fullName>
+        <description>Price Increase in %</description>
+        <externalId>false</externalId>
+        <label>Price Increase %</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Run_Rate_Business__c</fullName>
+        <description>Sum of Billings CYRR, Obsoletion/EOL, Transfer Out, Transfer In, TAM/DTAM</description>
+        <externalId>false</externalId>
+        <formula>Forecast_CY__c + Obsoletion_EOL__c + Transfer_Out__c + Transfer_In__c + TAM_DTAM__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>total repeat business</inlineHelpText>
+        <label>Repeat Business $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TAM_DTAM__c</fullName>
+        <description>Transfers between distribution and direct business</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ transfer from Direct to Distribution</inlineHelpText>
+        <label>TAM/DTAM $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Budget__c</fullName>
+        <externalId>false</externalId>
+        <formula>Calculated_Budget__c + Adjustment__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Transfer_In__c</fullName>
+        <description>Same as Transfer Out, but opposite.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ amount of business received from other accounts</inlineHelpText>
+        <label>Transfer In $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Transfer_Out__c</fullName>
+        <description>Business which gets transferred to another entity of customer, e.g. pro-duction is transferred to another country</description>
+        <externalId>false</externalId>
+        <inlineHelpText>$ amount of business transferred to other accounts</inlineHelpText>
+        <label>Transfer Out $</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <description>Defines type of business per budget detail record.</description>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Direct</fullName>
+                    <default>false</default>
+                    <label>Direct</label>
+                </value>
+                <value>
+                    <fullName>POS</fullName>
+                    <default>false</default>
+                    <label>POS</label>
+                </value>
+                <value>
+                    <fullName>CMA</fullName>
+                    <default>false</default>
+                    <label>CMA</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Budget Detail</label>
+    <nameField>
+        <label>Budget Detail Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Budget Details</pluralLabel>
+    <recordTypes>
+        <fullName>Account</fullName>
+        <active>true</active>
+        <description>Defines if budget detail is related to dedicated account or for territory in general. Assumption: Only one rec-ord with record type Other per budget record</description>
+        <label>Account</label>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>CMA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>POS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Other</fullName>
+        <active>true</active>
+        <description>Defines if budget detail is related to dedicated account or for territory in general. Assumption: Only one rec-ord with record type Other per budget record</description>
+        <label>Other</label>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>CMA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>POS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

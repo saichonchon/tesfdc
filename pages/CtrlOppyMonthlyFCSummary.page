@@ -1,0 +1,341 @@
+<!--
+Author:        Yiming Shen <yiming.shen@capgemini.com>
+Description:   A controller class for show Opportunity_Forecast__c records, Monthly_Target__c records
+			   and Month_Forecast__c records in CtrlOppyMonthlyFCSummary.page.
+			   The user story number is W-00146.
+Inputs:        
+Test Class:    CtrlOppyMonthlyFCSummaryTest.cls
+History
+2017-07-31 	Yiming Shen <yiming.shen@capgemini.com> Created
+-->
+<apex:page id="CtrlOppyMonthlyFCSummary" controller="CtrlOppyMonthlyFCSummary" sidebar="false" applyHtmlTag="true" applyBodyTag="false" standardStylesheets="false" docType="html-5.0">
+	<head>
+		<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+		<apex:includeScript value="{!URLFOR($Resource.CtrlOppyMonthlyFCSummaryJs)}" />
+		<apex:stylesheet value="{!URLFOR($Resource.CtrlOppyMonthlyFCSummaryCSS)}" />
+		<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+		<style type="text/css">
+		</style>
+		<script type="text/javascript">
+		</script>
+	</head>
+	<body>
+
+		<!-- main body panel start -->
+		<div id="div_main_body" class="div_main_body_class">
+			<article style="overflow:auto;width:67%;float:left;border:none;background:transparent;" class="slds-card">
+
+				<!-- filter select section end -->
+				<div class="slds-form-element territory_level_select">
+		        <label class="slds-form-element__label select_label" for="territory">Territory</label>
+		        <div class="slds-form-element__control">
+		            <select class="slds-select" id="territory" value="" onchange="changeSelectedSalesHierarchy();" style="width:236px">
+		            	<optgroup label="Level 7 Territory" style="{!IF(AND(list_pickValsLevel7 != null, list_pickValsLevel7.size > 0), '', 'display:none;')}">
+			            	<apex:repeat id="level_7_options" value="{!list_pickValsLevel7}" var="terrOption">
+			            		<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value == selectedTerritoryLevel,true,false)}">
+				                    <option selected="selected" value="{!terrOption.value}"> 
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel> 
+		                    	<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value != selectedTerritoryLevel,true,false)}">
+				                    <option value="{!terrOption.value}">
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel>	
+			                </apex:repeat>
+		                </optgroup>
+		                <optgroup label="Level 6 Territory" style="{!IF(AND(list_pickValsLevel6 != null, list_pickValsLevel6.size > 0), '', 'display:none;')}">
+			            	<apex:repeat id="level_6_options" value="{!list_pickValsLevel6}" var="terrOption">
+				            	<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value == selectedTerritoryLevel,true,false)}">
+				                    <option selected="selected" value="{!terrOption.value}"> 
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel> 
+		                    	<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value != selectedTerritoryLevel,true,false)}">
+				                    <option value="{!terrOption.value}">
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel>
+			                </apex:repeat>
+		                </optgroup>
+		                <optgroup label="Level 5 Territory" style="{!IF(AND(list_pickValsLevel5 != null, list_pickValsLevel5.size > 0), '', 'display:none;')}">
+		                	<apex:repeat id="level_5_options" value="{!list_pickValsLevel5}" var="terrOption">
+		                		<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value == selectedTerritoryLevel,true,false)}">
+				                    <option selected="selected" value="{!terrOption.value}"> 
+				                    	{!terrOption.label}
+			                    	</option>
+	                    		</apex:outputPanel> 
+		                    	<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value != selectedTerritoryLevel,true,false)}">
+				                    <option value="{!terrOption.value}">
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel>
+	                		</apex:repeat>
+	            		</optgroup>
+	            		<optgroup label="Level 4 Territory" style="{!IF(AND(list_pickValsLevel4 != null, list_pickValsLevel4.size > 0), '', 'display:none;')}">
+		                	<apex:repeat id="level_4_options" value="{!list_pickValsLevel4}" var="terrOption">
+		                		<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value == selectedTerritoryLevel,true,false)}">
+				                    <option selected="selected" value="{!terrOption.value}"> 
+				                    	{!terrOption.label}
+			                    	</option>
+		                		</apex:outputPanel> 
+		                    	<apex:outputPanel layout="inline" rendered="{!IF(terrOption.value != selectedTerritoryLevel,true,false)}">
+				                    <option value="{!terrOption.value}">
+				                    	{!terrOption.label}
+			                    	</option>
+		                    	</apex:outputPanel>
+	                		</apex:repeat>
+                		</optgroup>
+		            </select>
+		        </div>
+		    </div>
+				
+				<div class="slds-card__body">
+				
+				
+				<!-- result dataTable start -->
+				<apex:outputPanel id="theDatasPanel">
+				<apex:form id="theTotalForm">
+				<div>
+					<table>
+						<tr>
+							<td style="width:20%;">
+								<table id="theLeftColumnTable" class="slds-table table_border_fix_class slds-table--cell-buffer deepGreen_td_class td_chart1_border_class table_text_align_right">
+									<tr class="fixLineHeight total_font_weight"><td>Fiscal Month</td></tr>
+									<tr class="fixLineHeight total_font_weight"><td>Booking Target</td></tr>
+									<tr class="fixLineHeight total_font_weight"><td>Actual Bookings</td></tr>
+									<tr class="fixLineHeight total_font_weight"><td>Delta to Booking Target</td></tr>
+								</table>
+							</td>
+							<td style="width:80%;">
+								<table id="theRightColumnTable" class="slds-table table_border_fix_class slds-table--cell-buffer td_chart2_border_class table_text_align_center">
+									<tr class="fixLineHeight total_font_weight deepGreen_td_class">
+										<apex:repeat value="{!list_ChartFiscalMonthLabels}" var="perFiscalMonth">
+											<td style="width:25%;">{!perFiscalMonth}</td>
+										</apex:repeat>
+									</tr>
+									<tr class="fixLineHeight lightGreen_td_class">
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+        										<apex:param value="{!firstMonthTargetValue}"/>
+        									</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+    											<apex:param value="{!secondMonthTargetValue}"/>
+    										</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+    											<apex:param value="{!thirdMonthTargetValue}"/>
+    										</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+    											<apex:param value="{!currentQuarterTargetValue}"/>
+    										</apex:outputText>
+										</td>
+									</tr>
+									<tr class="fixLineHeight lightGreen_td_class">
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+		    									<apex:param value="{!firstMonthActualBookingValue}"/>
+		    								</apex:outputText>
+	    								</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+												<apex:param value="{!secondMonthActualBookingValue}"/>
+											</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+												<apex:param value="{!thirdMonthActualBookingValue}"/>
+											</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+												<apex:param value="{!currentQuarterActualBookingValue}"/>
+											</apex:outputText>
+										</td>
+									</tr>
+									<tr class="fixLineHeight lightGreen_td_class">
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+	        									<apex:param value="{!firstMonthDeltaBookingValue}"/>
+	        								</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+        										<apex:param value="{!secondMonthDeltaBookingValue}"/>
+        									</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+        										<apex:param value="{!thirdMonthDeltaBookingValue}"/>
+        									</apex:outputText>
+										</td>
+										<td>
+											<apex:outputText value="{0, number, ###,##0}" >
+        										<apex:param value="{!currentQuarterDeltaBookingValue}"/>
+        									</apex:outputText>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</div>
+				
+				
+				<div id="div_table_result" class="div_table_result_class">
+					<table id="theTable" class="slds-table table_border_fix_class slds-table--cell-buffer" style="word-wrap:break-word;word-break:break-all;table-layout:fixed;" >
+					<thead>
+						<tr style="background: #747678;">
+							<th style="width:128px;" class="theTable_column_divide_class1 total_font_weight text_align_center">
+								Probability
+							</th>
+							<th style="width:137px;" class="theTable_column_divide_class2 total_font_weight text_align_center">
+								Opportunity
+							</th>
+							<th style="width:125px;" class="theTable_column_divide_class2 total_font_weight text_align_center">
+								Company
+							</th>
+							<th style="width:123px;" class="theTable_column_divide_class2 total_font_weight text_align_center">
+							 	GAM Level 3
+							</th>
+						 	<th style="width:92px;" class="theTable_column_divide_class2 total_font_weight text_align_center">
+							 	Close Date
+							</th>
+							<th style="width:191px;" class="theTable_column_divide_class3 total_font_weight text_align_center">
+								<select id="select_month" onchange="monthSelectChange();return false;" value="{!currentFiscalMonth}" class="slds-select select_month_class" >
+								<apex:repeat value="{!list_ddl_months}" var="monthOption">
+									<option value="{!monthOption.Value}" data-IsCurrent="{!monthOption.IsCurrent}" >{!monthOption.Text}</option>
+								</apex:repeat>
+								</select>
+							</th>
+						</tr>
+					</thead>
+					<tbody class="theTable_tbody_class">
+						<apex:repeat id="repeat_list_monthFc" value="{!list_ListOpportunityForecastWrappers}" var="list_monthfc_total">
+							<apex:repeat value="{!list_monthfc_total}" var="monthlyForecast">
+								<tr style="{!IF(monthlyForecast.IsTotal,'','display:none;background:white;')}" class="{!IF(monthlyForecast.IsTotal,'summaryRowStyle',monthlyForecast.Level+'detailRowStyle')}" data-recordId="{!monthlyForecast.oppForId}">
+									<td class="text_align_center">
+										<apex:outputText value="{!monthlyForecast.Level}" rendered="{!IF(monthlyForecast.IsTotal,true,false)}" />
+									</td>
+									<td class="">
+										<apex:image html-probability="{!monthlyForecast.Level}"  onclick="showLoading();slideDownRelatedDetailedRow(this);hideLoading();" styleClass="arrowDown" value="/img/arrow_dwn.gif" rendered="{!IF(monthlyForecast.IsTotal,true,false)}" />
+										<apex:image html-probability="{!monthlyForecast.Level}"  onclick="showLoading();slideUpRelatedDetailedRow(this);hideLoading();" style="display:none;" styleClass="arrowUp" value="/img/arrow_up.gif" rendered="{!IF(monthlyForecast.IsTotal,true,false)}"/>
+										<apex:outputLink value="/{!monthlyForecast.OppyId}" style="color:blue;text-decoration:underline !important" target="_blank" rendered="{!IF(monthlyForecast.IsTotal,false,true)}">
+											{!monthlyForecast.OppyName}
+										</apex:outputLink>
+									</td>
+									<td class="">									
+										<apex:outputLink value="/{!monthlyForecast.AcctId}" style="color:blue;text-decoration:underline !important" target="_blank" rendered="{!IF(monthlyForecast.IsTotal,false,true)}">
+											{!monthlyForecast.AcctName}
+										</apex:outputLink>
+									</td>
+									<td class="">									
+										<apex:outputLink value="/{!monthlyForecast.salesHierarchyId}" style="color:blue;text-decoration:underline !important" target="_blank" rendered="{!IF(monthlyForecast.IsTotal,false,true)}">
+											{!monthlyForecast.SalesHierarchyName}
+										</apex:outputLink>
+									</td>
+									<td class="">									
+										<apex:outputText value="{!monthlyForecast.oppyCloseDate}" rendered="{!IF(monthlyForecast.IsTotal,false,true)}" />
+									</td>
+									<td class="text_align_center">
+										<apex:outputText styleClass="totalMonthlyForecast" html-probability="{!monthlyForecast.Level}"  value="{0, number, ###,##0}" rendered="{!IF(monthlyForecast.IsTotal,true,false)}">
+	        								<apex:param value="{!monthlyForecast.FcValue}" />
+	    								</apex:outputText>
+										<!-- <apex:input html-probability="{!monthlyForecast.Level}" rendered="{!IF(monthlyForecast.IsTotal,false,true)}" style="background:white;text-align:center;" html-isChanged="false" html-oppyForecastId="{!monthlyForecast.oppForId}" styleClass="detailMonthlyForecast editable_input" type="number" onchange="makeChangedFlag(this);" value="{!monthlyForecast.FcValue}" /> -->
+	    								<apex:input html-probability="{!monthlyForecast.Level}" rendered="{!IF(monthlyForecast.IsTotal,false,true)}" style="background:white;text-align:center;display:none;" html-isChanged="false" html-oppyForecastId="{!monthlyForecast.oppForId}" styleClass="detailMonthlyForecast editable_input" type="number" onchange="makeChangedFlag(this);" value="{!monthlyForecast.FcValue}" />
+	    								<apex:outputPanel onclick="inputFcValue(this)" id="fcvalue_output" rendered="{!IF(monthlyForecast.IsTotal,false,true)}">
+											<apex:outputText value="{0, number, ###,##0}">
+		        								<apex:param value="{!monthlyForecast.FcValue}" />
+		    								</apex:outputText>
+	    								</apex:outputPanel>
+									</td>
+								</tr>
+							</apex:repeat>
+						</apex:repeat>
+					</tbody>
+					<tfoot>
+					    <tr style="border-top:1px solid #d8dde6;background: #0066A1;">
+						    <td class="total_font_weight text_align_center">
+						    	Total
+					    	</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="text_align_center">
+								<apex:outputPanel id="panel_total_forecast">									
+									<apex:outputText value="{0, number, ###,##0}" >
+        								<apex:param value="{!mfcFooterTotal.FcValue}"/>
+    								</apex:outputText>
+								</apex:outputPanel>
+							</td>
+					    </tr>
+					    <tr style="background: #0066A1;">
+						    <td class="total_font_weight text_align_center">
+						    	Latest Estimate
+					    	</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="text_align_center">
+								<apex:outputPanel id="panel_input_forecast">
+									<input id="input_totalForecast" class="input_totalForecast_class" type="text" value="{!mfcFooterForecastInputTotal.FcValue}" onkeyup="this.value=this.value.replace(/\D/g,'')" />
+								</apex:outputPanel>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				<div class="div_saveButton_class">
+					<button class="slds-button slds-button--neutral button_custom_class" onclick="SaveTotalForecast();return false;">Save</button>				
+				</div> 
+				</div>
+				
+				<apex:actionFunction name="getMonthlyOppyForecast" oncomplete="delayDOMrefresh()" rerender="theTotalForm,theIframe" action="{!CalculateOppyForecastSummaryByLevelAndMonth}">
+					<apex:param name="territoryName" assignTo="{!selectedTerritoryName}" value="" />
+					<apex:param name="territoryLevel" assignTo="{!selectedTerritoryLevel}" value="" />
+				</apex:actionFunction>
+				
+				<apex:actionFunction name="saveInputValue" oncomplete="refresh()" rerender="theParamsPanel" action="{!SaveMonthFcValue}"/>
+				<apex:actionFunction name="saveOppyForecastsValue" oncomplete="refresh()" rerender="theParamsPanel,theTotalForm" action="{!SaveOpportunityForecastValue}">
+				<apex:param name="json2Save" assignTo="{!json_MonthlyOppyForecasts2Save}" value="" />
+				</apex:actionFunction>
+				
+				<apex:outputPanel id="theParamsPanel">
+					<apex:inputHidden value="{!selectedMonthValue}" id="hidden_param_selectMonthValue" />
+					<apex:inputHidden value="{!forecastInputValue}" id="hidden_param_forecastInputValue" />
+				</apex:outputPanel>
+				</apex:form>
+				
+				
+				</apex:outputPanel>
+				<!-- result dataTable end -->
+				</div>
+			</article>
+			<apex:outputPanel id="theIframe" layout="block">
+				<iframe style="{!IF(ISBLANK(iframeURL),'display:none;','')}float:right;margin-top:56px;" height="500px" width="430px" scrolling="auto" src="{!iframeURL}​"></iframe>
+			</apex:outputPanel> 
+		</div>
+		
+		<!-- main body panel end -->
+		
+		
+		<!-- Loading panel start -->
+		<div id="Loading_Panel" style="display:none;">
+			<div style="position:fixed;" class="slds-spinner_container">
+				<div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+		            <span class="slds-assistive-text">Loading</span>
+		            <div class="slds-spinner__dot-a"></div>
+		            <div class="slds-spinner__dot-b"></div>
+				</div>
+			</div>
+	    </div>
+	    <!-- Loading panel end -->  
+	</body>
+</apex:page>

@@ -1,0 +1,194 @@
+<apex:page title="Account Groups" sidebar="false" controller="CtrlAccountGrouping" id="thePage" applyBodyTag="true" docType="html-5.0">
+
+    <head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/css3animate/animate.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/multiselect/css/jquery.uix.multiselect.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/fancytree/skin-win7/ui.fancytree.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CtrlAccountGroupingCss}" />
+        <style type="text/css">
+            .countryimg{
+                background-image:url('{!$Resource.CtrlGroupingCountryflag}');
+            }
+            .part_d{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/deleteImage.png')}');
+            }
+            .other_d, .gpl_d, .gplsearch, .othersearch{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/lockover16.png')}');
+                background-position: 1px 1px;
+            }
+            .reload_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+            }
+            .mark_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/ACGP_new1.png')}');
+            }
+            .mark_new{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/PC.png')}') !important; }
+            .mark_b{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/B.png')}') !important; }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+                background-position:-145px -146px;
+            }
+            .pin.spin{
+                background-position: -129px -146px;
+            }
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/jquery.uix.multiselect.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/locales/jquery.uix.multiselect_en.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/fancytree/jquery.fancytree-all.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlAccountGroupingJs}"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingAMForecastJs}"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingRelayForecastJs}"></script>
+        <script type="text/javascript">
+            var OTHER_LABEL='{!$Label.APL_Other_Accounts}', OTHER_ID='{!otherAcctId}',
+                CUSTOM_LABEL = {
+                    'searchpart': '{!$Label.APL_btn_search_part}', 'savemsg': '{!$Label.APL_save_msg}',
+                    'savemsgsuccess' : '{!$Label.APL_msg_save_success}', 'delpart': '{!$Label.APL_btn_del_part}',
+                    'clickwait' : '{!$Label.APL_msg_click_wait}', 'AM': 'AM Territory Code', 'Relay': 'Relay Specialist Code'
+                };
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initDocument, {'locale':'{!lc.locale}'});
+            window.$label = {
+                'savemsg':'{!$Label.APL_msg_save}'
+            };
+            
+            function showAccuracy(type){
+                
+                window.open("/apex/APL_Forecast_Accuracy_AM?territoryCode={!pageConf.territoryCode}&type="+type);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+        
+        
+        <div id="contentallid" class="tc">
+        
+            <apex:variable var="inputVal" value="" />
+            <apex:form id="theForm">
+                
+                <apex:actionFunction name="searchGroupsAccounts" action="{!searchGroupsAccounts}" oncomplete="searchGroupsAccountsComplete()" reRender="groupingAllOP, themsg" />
+                <apex:actionFunction name="saveAcctGroup" action="{!saveAcctGroup}" oncomplete="saveAcctGroupComplete()" reRender="groupingAllOP, themsg" />
+                
+                <apex:actionFunction name="updateAPLSalesFCForSave" action="{!updateAPLSalesFCForSave}" oncomplete="updateAPLSalesFCForSaveComplete()" reRender="groupingAllOP, themsg" />
+                <apex:actionFunction name="updateAPLSalesFCForNext" action="{!updateAPLSalesFCForNext}" oncomplete="updateAPLSalesFCForNextComplete()" reRender="groupingAllOP, themsg" />
+                
+                <apex:actionFunction name="removeRelayOtherFc" action="{!removeRelayOtherFCForSave}" oncomplete="removeRelayOtherFcComplete()" reRender="groupingAllOP, themsg" />
+                <apex:actionFunction name="removeRelayOtherFcNext" action="{!removeRelayOtherFCForNext}" oncomplete="removeRelayOtherFcNextComplete()" reRender="groupingAllOP, themsg" />
+
+                <apex:actionFunction name="submitAM" action="{!submitAM}" oncomplete="submitAMComplete()" reRender="submitamopid, themsg" />
+                <apex:actionFunction name="submitRelay" action="{!submitAM}" oncomplete="submitRelayComplete()" reRender="submitamopid, themsg" />
+
+                <apex:actionFunction name="frozenNext" action="{!frozenNext}" oncomplete="frozenNextComplete()" reRender="groupingAllOP, themsg" />
+                
+                <apex:actionFunction name="nextForecast" action="{!nextForecast}" oncomplete="nextForecastComplete()" reRender="groupingAllOP, themsg" />
+                <apex:actionFunction name="backForecast" action="{!backForecast}" oncomplete="backForecastComplete()" reRender="theForm" />
+                
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                
+                
+                <apex:outputPanel id="groupingAllOP" layout="block">
+
+                    <apex:inputHidden value="{!pageConf.isStop}" id="errorstopid" />
+                    <apex:inputHidden value="{!str_mapTypeCodes}" id="jsonmaptypecodeid" />
+                    <apex:inputHidden value="{!pageConf.isFrozen}" id="hidd_frezz" />
+
+                    <apex:inputHidden value="{!pageConf.str_lastAcctForecastId}" id="lastforecast_id"/>
+                    <apex:inputHidden value="{!pageConf.str_lastRemoveId}" id="lastremove_id"/>
+                    <apex:inputHidden value="{!str_jsonAccts}" id="jsonacctsid" />
+                    <apex:inputHidden value="{!pageConf.isRelay}" id="isrealyid" />
+                    <apex:inputHidden value="{!pageConf.territoryCode}" id="territorycodeid" />
+                    <input value="{!chartURL}" id="charturlid" type="hidden" />
+                    
+                    <apex:outputPanel rendered="{!ctrl.isRendered_tree}" id="groupingOP" layout="block">
+                        <c:CompAccountGroupingMenu pageCtrl="{!this}"></c:CompAccountGroupingMenu>
+                        <c:CompAccountGroupingBody pageCtrl="{!this}"></c:CompAccountGroupingBody>
+                    </apex:outputPanel>
+                    
+
+                    <apex:outputPanel rendered="{!ctrl.isRendered_am}" id="groupingAMForecastOP" layout="block">
+                        <c:CompGroupingAMForecastMenu pageCtrl="{!ctrl.am_fc}"></c:CompGroupingAMForecastMenu>
+                        <c:CompGroupingAMForecastBody pageCtrl="{!ctrl.am_fc}" inputVal="{!inputVal}"></c:CompGroupingAMForecastBody>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!ctrl.isRendered_relay}" id="groupingRelayForecastOP" layout="block">
+                        <c:CompGroupingRelayForecastMenu pageCtrl="{!ctrl.relay_fc}"></c:CompGroupingRelayForecastMenu>
+                        <c:CompGroupingRelayForecastBody pageCtrl="{!ctrl.relay_fc}"></c:CompGroupingRelayForecastBody>
+                    </apex:outputPanel>
+                    
+                    <c:CompGroupingAddPartPopUP isRelay="{!pageConf.isRelay}"></c:CompGroupingAddPartPopUP>
+                </apex:outputPanel>
+                
+                <apex:outputPanel id="submitamopid">
+                    <input type="hidden" id="submitamhidd" name="submitamhidd" value=""/>
+                </apex:outputPanel>
+            </apex:form>
+    
+        </div>
+        
+        <div id="gototopid" class="gototopcls bradiuscls">TOP</div>
+        
+        <c:CompGroupingProgress ></c:CompGroupingProgress>
+        
+        <span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+            <span id="innerData" class="innerdata"></span>
+        </span>
+    </body>
+    
+    <script type="text/javascript">
+        /*START AM remote action*/
+        ;function searchGPL_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchGPL}';}
+        ;function searchOthersGPL_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchOthersPartFC}';}
+        ;function searchRelayGPL_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchRelayGPLFC}';}
+        ;function searchCBC2_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchCBC2Forecast}';}
+        ;function searchPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchPartFC}';}
+        
+        ;function searchAllPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchAllPart}';}
+        ;function saveForecast_js(){ return '{!$RemoteAction.CtrlAccountGrouping.saveForecast}';}
+        ;function searchRelayPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchRelayPartFC}';}
+        
+        ;function deletePart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.deletePart}';}
+        ;function addedPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.addedPart}';}
+        
+        ;function getAddPartRefData_js(){ return '{!$RemoteAction.CtrlAccountGrouping.getAddedPartRefData}';}
+        ;function searchRefDataTotal_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchAMAcctFCReferenceData}';}
+        ;function searchRefDataCBC_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchAMCBCRefDataQuarterly}';}
+        ;function searchRefDataGPL_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchAMGPLRefDataQuarterly}';}
+
+        /*END AM remote action*/
+        
+        /*START Relay remote action*/
+        ;function searchRelayCBC2_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchCBC2ForecastForRelay}';}
+        ;function searchRelayPartFC_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchPartFCForRelay}';}
+        ;function searchRelayTopPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.addedRelayPart}';}
+        ;function searchRelayPagePart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchRelayPart}';}
+        ;function addPartRefData_js(){ return '{!$RemoteAction.CtrlAccountGrouping.getAddedRelayPartRefData}';}
+        ;function delRelayPart_js(){ return '{!$RemoteAction.CtrlAccountGrouping.delRelayPart}';}
+        ;function saveRelayForecast_js(){ return '{!$RemoteAction.CtrlAccountGrouping.saveRelayFC}';}
+        /*END Realy remote action*/
+        
+        /* START new remoteaction */
+        ;function getBacklogRefData_js(){ return '{!$RemoteAction.CtrlAccountGrouping.getBacklogRefData}';}
+        ;function getAPLsRefData_js(){ return '{!$RemoteAction.CtrlAccountGrouping.getAPLsRefData}';}
+        ;function saveAPLsObject_js(){ return '{!$RemoteAction.CtrlAccountGrouping.saveAPLsObject}';}
+        ;function delAPLsOjbect_js(){ return '{!$RemoteAction.CtrlAccountGrouping.delAPLsOjbect}';}
+        ;function existAPLsObject_js(){ return '{!$RemoteAction.CtrlAccountGrouping.existAPLsObject}';}
+        ;function searchAPLsObject_js(){ return '{!$RemoteAction.CtrlAccountGrouping.searchAPLsObject}';}
+        /* END new remoteaction */
+    </script>
+</apex:page>

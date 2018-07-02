@@ -1,0 +1,143 @@
+<apex:component >
+	<apex:includeScript value="{!URLFOR($Resource.LoadingResourceZip, 'jquery-1.6.2.min.js')}" />
+    <apex:outputPanel id="outdiv">
+		<div id="ITB_popup" style="text-align:center;"></div>
+		<div id="ITB_mask" ></div>
+	</apex:outputPanel>
+	
+	<script>
+		// ##################################################################################
+		// Function: endLoading
+		// Description: cancel loading popup picture.
+		// This function is only applied for VF pages in Salesforce  when loading is finish
+		//
+		// Parameters:
+		// 
+		//
+		// Created by: Haobo Song, 2012-04-09
+		//
+		// Modified by:
+		// 1.
+		// ##################################################################################
+		function endLoading(){
+			$("#ITB_mask").css({
+				visibility : 'hidden'
+			});	
+			$("#ITB_popup_window").remove();
+			$("#ITB_mask").hide();
+		}
+		// ##################################################################################
+		// Function: showLoading
+		// Description: show loading popup picture.
+		// This function is only applied for VF pages in Salesforce  when user need loading
+		//
+		// Parameters:
+		// 
+		//
+		// Created by: Haobo Song, 2012-04-09
+		//
+		// Modified by:
+		// 1.
+		// ##################################################################################
+		function showLoading(){
+			//alert('screenheight:'+screen.height);
+			
+			var div = document.getElementById("pageblock");
+			var h = (div.clientHeight)/2+40;
+			//alert('clientHeight:'+h);
+			var hMask = (div.clientHeight);
+			var wMask = (div.clientWidth);
+			var leftdiv = screen.width - (div.clientWidth);
+			if(hMask > screen.height) h = (screen.height)/2-150;
+			//if(h > screen.height) h = (hMask/(screen.height))*(screen.height) - ((screen.height)/2-150);
+			
+			$("#ITB_mask").css({"height":hMask,"width":wMask});
+			
+			$("#ITB_mask").show();
+			$("#ITB_mask").css({
+				visibility : 'visible'
+			});	
+		 	$(   
+			  '<div id="ITB_popup_window" style="background-color:white;align:center" style="width:100% !important;" >' 
+			   + '<div id="ITB_loading">'
+			   + '</div>'
+			   + '</div>').appendTo($("#ITB_popup"));
+			
+			$("#ITB_popup").css({"top":h,"left":(wMask)/2+leftdiv,"z-index":99999});
+		}
+		
+		// ##################################################################################
+		// Function: showLoadingBottom
+		// Description: show loading popup picture.
+		// This function is only applied for VF pages in Salesforce  when user need loading and the button is on the bottom
+		//
+		// Parameters:
+		// 
+		//
+		// Created by: Haobo Song, 2012-04-09
+		//
+		// Modified by:
+		// 1.
+		// ##################################################################################
+		function showLoadingBottom(){
+		
+			var div = document.getElementById("pageblock");
+			var h = (div.clientHeight)/2+40;
+			var hMask = (div.clientHeight);
+			var wMask = (div.clientWidth);
+			var leftdiv = screen.width - (div.clientWidth);
+			//if(h > screen.height) h = (screen.height)/2-150;
+			if(hMask > screen.height) h = (hMask/(screen.height))*(screen.height) - ((screen.height)/2-150) - 40;
+			
+			$("#ITB_mask").css({"height":hMask,"width":wMask});
+			
+			$("#ITB_mask").show();
+			$("#ITB_mask").css({
+				visibility : 'visible'
+			});	
+		 	$(   
+			  '<div id="ITB_popup_window" style="background-color:white;align:center" style="width:100% !important;" >' 
+			   + '<div id="ITB_loading">'
+			   + '</div>'
+			   + '</div>').appendTo($("#ITB_popup"));
+			
+			$("#ITB_popup").css({"top":h,"left":(wMask)/2+leftdiv,"z-index":99999});
+		}
+	</script>
+	
+	
+	<style type='text/css'>
+		#ITB_loading{
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			/*width: 100px;
+			height: 100px;
+			background: transparent url({!URLFOR($Resource.LoadingResourceZip, 'Loading.gif')}) no-repeat center right;*/
+			width: 24px;
+			height: 24px;
+			background: transparent url(/changemgmt/img/spinner24.gif) no-repeat center right;
+		}
+		#ITB_mask {   
+		    position: absolute;   
+		    /*top: 0; 
+		    left: 0;*/   
+		    width:100%;   
+		    height:100%;   
+		    //background: gray;
+		    background: white;
+		    opacity:0.5;
+		    filter: ALPHA(opacity = 50);   
+		    z-index: 9999;   
+		    visibility: hidden ;
+		    display:none;       
+		} 
+		#ITB_popup {   
+			margin-right:auto;
+			margin-left:auto;
+			position: absolute;
+			z-index: 9999999;    
+		}
+	</style>
+	
+</apex:component>

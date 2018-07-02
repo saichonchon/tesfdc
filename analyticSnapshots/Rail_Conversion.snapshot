@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnalyticSnapshot xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Rail Conversion data three years window</description>
+    <groupColumn>Tender__c.Opportunities__r.Parts__r.Forecast__r$Fiscal_Year__c</groupColumn>
+    <mappings>
+        <sourceField>JobName</sourceField>
+        <sourceType>snapshot</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Name</targetField>
+    </mappings>
+    <mappings>
+        <aggregateType>Sum</aggregateType>
+        <sourceField>Tender__c.Opportunities__r.Parts__r.Forecast__r$Amount__c.CONVERT</sourceField>
+        <sourceType>summary</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Conversion_Amount__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>Tender__c.Opportunities__r.Parts__r.Forecast__r$Fiscal_Year__c</sourceField>
+        <sourceType>tabular</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Fiscal_Year__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>FORMULA1</sourceField>
+        <sourceType>summary</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Opp_Value_PAM_ratio__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>Tender__c.Opportunities__r$Id</sourceField>
+        <sourceType>tabular</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Opportunity__c</targetField>
+    </mappings>
+    <mappings>
+        <aggregateType>Maximum</aggregateType>
+        <sourceField>Tender__c$PAM_Total__c.CONVERT</sourceField>
+        <sourceType>summary</sourceType>
+        <targetField>Rail_Report_Snapshot__c.PAM_Total__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>ExecutionTime</sourceField>
+        <sourceType>snapshot</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Snapshot_Date__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>Tender__c$Id</sourceField>
+        <sourceType>tabular</sourceType>
+        <targetField>Rail_Report_Snapshot__c.Tender__c</targetField>
+    </mappings>
+    <name>Rail Conversion</name>
+    <runningUser>michael_ludwig@te.com.c2s</runningUser>
+    <sourceReport>IND_Tender_Reports/Won_Tenders_with_3_yr_Conversion_Snpshot</sourceReport>
+    <targetObject>Rail_Report_Snapshot__c</targetObject>
+</AnalyticSnapshot>

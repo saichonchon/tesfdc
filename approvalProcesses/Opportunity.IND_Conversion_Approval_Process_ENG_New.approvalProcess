@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Account</field>
+        <field>Account_Number__c</field>
+        <field>Five_Year_Revenue__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>all opps &lt;$500k are auto-approved, others require manager approval//This opportunity is being submitted for conversion approval. Please route to your manager.</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Five_Year_Revenue__c</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>You have submitted this opportunity for conversion approval. All projects &gt;$500k must be routed to your manager for approval. Please select your managers name in the box below.</label>
+        <name>Manager_approval</name>
+    </approvalStep>
+    <description>this approval process is for SPIN opportunities when jumping from &apos;Won&apos; to &apos;Production&apos;
+
+Eng opps</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>1 AND 4 AND (2 OR 3)</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.RecordType</field>
+            <operation>equals</operation>
+            <value>IND - Engineering project</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Status_PMV__c</field>
+            <operation>equals</operation>
+            <value>Conversion Rejected</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Status_PMV__c</field>
+            <operation>equals</operation>
+            <value>G0 Approved</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Five_Year_Revenue__c</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Set_approval_status_PMV_conv_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>set_approval_status_PMV_conv_rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Set_approval_status_PMV_conv_in_approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>IND Conversion Approval Process ENG_New</label>
+    <recallActions>
+        <action>
+            <name>Set_approval_status_PMV_G0_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

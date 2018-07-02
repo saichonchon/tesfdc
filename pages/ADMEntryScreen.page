@@ -1,0 +1,161 @@
+<apex:page controller="ADMEntryScreen_Controller" tabStyle="S_OP_Forecasting__tab" id="thepage" sidebar="false" showHeader="true" >
+   
+    <apex:slds />
+    <apex:includeScript value="{!$Resource.jquery_min}"/>
+    <style>
+        .lookupInput a {
+            padding: 5px !important;
+            border: none !important;
+            background: none !important;
+            width: 30px !important;
+        }
+        body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{background-color:#ffffff !important;padding-bottom:20px;}
+        /*table.outerNoSidebar{display:none;}*/
+    </style>
+    <apex:form id="Formid">
+        <apex:pageMessages />
+        <apex:pageBlock id="block" mode="edit" >
+            <div class="slds-page-header">
+                <div class="slds-media">
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="ADM Entry-Review Screen">ADM Entry-Review Screen<input type="text" class="hide-inonload" style="width:1px;height:1px;position:absolute;z-index:-1;"/></h1>
+                    </div>
+                </div>
+            </div>
+            <apex:actionFunction action="{!toggleEnabled}" name="toggleEnabled" reRender="block"/>
+            <div class="slds-grid slds-wrap slds-p-top--medium slds-p-bottom--medium">
+                <div class="slds-p-horizontal_small slds-size_1-of-2">
+                    <div class="slds-form slds-form_horizontal">
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.distributionmanager && Text($User.ADM_User_Type__c) != $Label.salesengineer, true, false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_searchby}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:selectRadio value="{!Available}" styleClass="radio-inline fcs" onchange="toggleEnabled()" tabindex="1">
+                                        <apex:selectOption itemValue="OEM" itemLabel="OEM" id="OEM"  rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.distributionmanager, true, false)}"/>  
+                                        <apex:selectOption itemValue="Distributor"  itemLabel="DISTY" id="DISTY"  rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer, true, false)}"/>
+                                    </apex:selectRadio>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <div class="slds-form-element slds-m-bottom--small">
+                            <label class="slds-form-element__label">Number of Records per Page</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!PaginationRecords}" styleClass="slds-select" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!PaginationDropDown}"  ></apex:selectOptions>
+                                </apex:selectList>
+                            </div>
+                        </div>                        
+                        
+                        <apex:outputPanel rendered="{!if(Available=='OEM',true,false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_SoldToCustomer}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField styleClass="slds-input" value="{!forecast.Sold_To_Customer__c}" label="" onclick="OEM" rendered="{!if(Available=='OEM',true,false)}"/>
+                                </div>
+                            </div>
+                        </apex:outputPanel>                
+                        
+                        <apex:outputPanel rendered="{!if(Available=='OEM',true,false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_SoldToCustomerNumber}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputtext value="{!SoldToCustomerNumber}" styleClass="slds-input" id="inputAccountNumber" disabled="{!if(Available=='Distributor',true,false)}"/>
+                                </div>
+                            </div>
+                        </apex:outputPanel>              
+                        
+                        <!---<apex:outputPanel rendered="{!if((Available=='OEM' && Text($User.ADM_User_Type__c) != $Label.salesengineer),true,false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_WorldwideAccountName}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!forecast.Worldwide_Customer_Name__c}" styleClass="slds-input" rendered="true" />
+                                </div>
+                            </div>
+                        </apex:outputPanel>--->
+                        
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer, true, false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_WorldwideAccountName}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField value="{!forecast.Worldwide_Account_Name__c}" styleClass="slds-input" rendered="true" />
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer, true, false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_WorldwideAccountNumber}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputtext value="{!WWC_Num}" styleClass="slds-input" id="custnum" />
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <div class="slds-form-element slds-m-bottom--small">
+                            <label class="slds-form-element__label">{!$Label.ADM_ProfitCentre}</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!ProfitCenter}" styleClass="slds-select" multiselect="true" size="4">
+                                    <apex:selectOptions value="{!ProfitCenterValues}"  > </apex:selectOptions>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-m-bottom--small">
+                            <label class="slds-form-element__label">{!$Label.ADM_CBC3}</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!CBC3Val}" styleClass="slds-select" multiselect="true" size="4">
+                                    <apex:selectOptions value="{!CBC3Values}"  > </apex:selectOptions>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                        
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer,true,false)}"> <!-- && Available!='OEM', true, false)}">-->
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_Region}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:selectList value="{!Region}"  multiselect="true" size="4" styleClass="slds-select"> <!--disabled="{!if(Available=='OEM',true,false)}" rendered="{!if(Available=='OEM',false,true)}" >-->
+                                        <apex:selectOptions value="{!RegionValues}" > </apex:selectOptions>
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                        </apex:outputPanel>                 
+                        
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer && Text($User.ADM_User_Type__c) != $Label.distributionmanager,true,false)}"> <!--&& Available!='OEM', true, false)}">-->
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_District}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:selectList value="{!District}"  multiselect="true" size="4" styleClass="slds-select" > <!--disabled="{!if(Available=='OEM',true,false)} " rendered="{!if(Available=='OEM',false,true)}">-->
+                                        <apex:selectOptions value="{!DistrictValues}"  > </apex:selectOptions>
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                        </apex:outputPanel>     
+                        
+                        <apex:outputPanel rendered="{!IF(Text($User.ADM_User_Type__c) != $Label.salesengineer && Text($User.ADM_User_Type__c) != $Label.distributionmanager, true, false)}">
+                            <div class="slds-form-element slds-m-bottom--small">
+                                <label class="slds-form-element__label">{!$Label.ADM_UserId}</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputtext value="{!UserNWKid}" styleClass="slds-input" id="inputUser" />
+                                </div>
+                            </div>
+                        </apex:outputPanel>                     
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-align_absolute-center">
+                <apex:commandButton styleClass="slds-button slds-button--brand" value="Submit" onclick="setSessionNull();" action="{!Searchvalues}" />
+            </div>
+        </apex:pageBlock>      
+    </apex:form>
+    <!--</Div>-->
+    <script>
+    jQuery(document).ready(function(){
+        jQuery(window).scrollTop(0);
+    });
+    function setSessionNull(){
+        sessionStorage.setItem("selectedTabIndex", null);
+    }
+    </script>
+</apex:page>

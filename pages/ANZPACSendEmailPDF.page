@@ -1,0 +1,101 @@
+<apex:page controller="Email_Individualquote" sidebar="false" showHeader="false">
+<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+<script>
+function sendComplete() {
+    hideLoading();
+    //var isClosePop = '{!isClosePop}';
+    var isClosePop = $("input[id*='hidden_message']").val();
+    console.log(isClosePop);
+    if(isClosePop == 'true') {
+        setTimeout(function(){ window.close(); }, 1000);
+    }
+}
+function showLoading() {
+    $("div[id='Loading_Panel']").css("display","block");
+}
+function hideLoading() {
+    $("div[id='Loading_Panel']").css("display","none");
+}
+</script>
+    <!-- Loading panel start -->
+    <div id="Loading_Panel" style="display:none;z-index:9999 !important;">
+        <div style="position:fixed;" class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Loading panel end --> 
+    <apex:form id="myForm">
+        <apex:pageMessages id="messageContainer"/>
+        <apex:inputHidden value="{!isClosePop}" id="hidden_message"/>
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="temp_populate">
+                <!-- <apex:inputText value="{!toemailid}" label="TO:" style="width:20%"/> -->
+                <apex:inputField label="To" value="{!quote.Opportunity_Name__r.Customer_Contact_Name__c}"  style="width:250px;"/>
+                
+                <!-- 
+                <apex:selectList value="{!selectedContId}" size="1" label="TO:" style="width:204px;">
+                    <img src="/s.gif" Class="helpIcon" title="{!$Label.Energy_Quote_Contact_Email}"/>
+                    <apex:selectOptions value="{!list_contactOptions}"/>
+                    <apex:actionSupport event="onchange" action="{!toContactChanged}" />
+                </apex:selectList>
+                 -->
+                 
+                <apex:inputText value="{!ccemails}" label="CC" style="width:250px;"/>
+                <apex:selectList value="{!tId}" id="Template" size="1" label="Select Template" style="width:250px;">
+                    <apex:selectOptions value="{!templates}" />
+                    <apex:actionSupport event="onchange" action="{!populatetemplate}" />
+                </apex:selectList>
+                
+                <apex:inputText value="{!emailSubject}" label="Subject" style="width:250px;"/>
+                <pre ><apex:inputTextarea richText="true" value="{!emailBody}"/></pre>
+                
+            </apex:pageBlockSection>
+            <apex:commandButton value="Send" onclick="showLoading()" action="{!send_templates}" oncomplete="sendComplete()" rerender="messageContainer,hidden_message"/>
+        </apex:pageBlock>
+        <br/>
+        <apex:pageBlock id="attachBlock">
+            <apex:outputPanel rendered="{!showList}">
+                <apex:variable value="{! 1 }" var="rowNum"/>
+                <apex:pageBlockTable value="{!orderAttachment}" var="attch" id="attachTable" >
+                    <apex:facet name="header">Attachments</apex:facet>
+                    <apex:column id="select">
+                        <apex:facet name="header">
+                            <apex:outputPanel >Select</apex:outputPanel>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!attch.selected}" disabled="{!IF(rowNum == 1,true,false)}"/>    
+                        <apex:variable value="{! rowNum + 1 }" var="rowNum"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:outputPanel >Name</apex:outputPanel>
+                        </apex:facet>
+                        <apex:outputPanel >
+                            <div title="" style="cursor:pointer;float:left;padding-right: 6px;" class="docIconHolder" >
+                                <div class="docIcon_16 docIcon {!attch.cssAttribute}">    </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputField value="{!attch.attach.Name}"/>                        
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header" >
+                            <apex:outputPanel >Description</apex:outputPanel>
+                        </apex:facet>
+                        <apex:outputtext >{!attch.attach.Description}</apex:outputtext>     
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:outputPanel >Type</apex:outputPanel>
+                        </apex:facet>
+                        <apex:outputtext >{!attch.attach.ContentType}</apex:outputtext>    
+                    </apex:column>
+                </apex:pageBlockTable>
+                <!-- <apex:commandButton value="OK"  action="{!prepareAttachment}" rendered="{!okbuttonpanel}" /> -->
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

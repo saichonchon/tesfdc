@@ -1,0 +1,253 @@
+<aura:component controller="LtngOpportunityForecastCtrl">
+	
+    <aura:attribute name="popupOptions"						type="Map" />
+    <aura:attribute name="isMass"						type="Boolean" />
+    
+    <aura:attribute name="searchString" 			type="String" />
+    <aura:attribute name="billingDate"				type="String" default="" />
+    <aura:attribute name="orderDate"				type="String" default="" />
+    
+    <aura:attribute name="profile" 					type="Object" />
+    <aura:attribute name="opportunity" 				type="Object" />
+    
+    
+    <aura:attribute name="list_Confidence" 			type="List" default="[]"/>
+    <aura:attribute name="list_ProcessStatus" 		type="List" default="[]"/>
+    <aura:attribute name="list_LostReasons" 		type="List" />
+    <aura:attribute name="list_reason" 		type="List" />
+    
+    
+    <aura:attribute name="list_result" 				type="List" />
+    
+    <aura:attribute name="map_LostReasons" 		 	type="Map" />
+    <aura:attribute name="map_ProcessStatus" 		type="Map" />
+	
+    
+    
+    <aura:handler name="change" value="{!v.isMass}" action="{!c.handlerisMassChange}"/>
+    <aura:handler name="dateChangeEvent" event="c:LtngDateChangeEvt" action="{!c.handleDateChangeEvt}"/>
+    
+    <aura:registerEvent name="popupEvent" type="c:LtngOpportunityForecastPopupEvt"/> 
+    
+    <aura:if isTrue="{!v.isMass}">
+    <div class="slds-modal slds-fade-in-open slds-docked-composer-modal " style="z-index:200;" aria-hidden="false" role="dialog"  >
+      
+        <div class="slds-modal__container" style="width:50%; height: 80%">
+        <div class="slds-modal__content" style="overflow: visible;">
+          <div class="slds-docked-composer slds-grid slds-grid--vertical" role="dialog" aria-labelledby="panel-heading-01">
+            <div class="slds-docked-composer__header slds-grid slds-shrink-none">
+              <div class="slds-media slds-media--center">
+                  <div class="slds-media__figure slds-m-right--x-small">
+                    <div class="slds-media__body">
+                        <div class="slds-grid">
+                            <div>
+                                <h2>Please select Confidence and Process Status</h2>
+                            </div>
+                        </div>
+                      
+                    </div>
+                  </div>
+              </div>
+              <div class="slds-col--bump-left">
+                <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--icon slds-icon--small" title="Close">
+                    <lightning:icon iconName="utility:close" size="xx-small" class="slds-button__icon"/>
+                    <span class="slds-assistive-text">Close Panel</span>
+                </button>
+              </div>
+            </div>
+            <div class="slds-docked-composer__body" style="display: inline-table; display:ruby-base-container; width:100%;">
+              <div class="slds-align--absolute-center" style="padding:1rem 1rem; margin: 0;">
+                  <div style="width:100%;">
+                      <div class="slds-form--stacked">
+                          <div class="slds-form-element__group">
+                              <div class="slds-form-element__row">
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style="display: inline-block; ">
+                                      <label class="slds-form-element__label" for="Confidence">Confidence</label>
+                                      <div class="slds-form-element__control">
+                                          <div class="slds-select_container">
+                                              <select aura:id="confidence" onchange="{!c.event_confidence_change}" class="slds-select" id="Confidence">
+                                                  <aura:iteration items="{!v.list_Confidence}" var="value" >
+                                                      <option value="{!value}">{!value}</option>
+                                                  </aura:iteration>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style="display: inline-block;">
+                                      <label class="slds-form-element__label" for="ProcessStatus">Process Status</label>
+                                      <div class="slds-form-element__control">
+                                          <div class="slds-select_container">
+                                              <select aura:id="processStatus" onchange="{!c.event_processStatus_change}" class="slds-select" id="ProcessStatus">
+                                                  <aura:iteration items="{!v.list_ProcessStatus}" var="value" >
+                                                      <option value="{!value}">{!value}</option>
+                                                  </aura:iteration>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          
+                          
+                          <div aura:id="dndadm" class="slds-form-element__group slds-hide" style="margin-top: 10px;">
+                              <div class="slds-form-element__row">
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style="display: inline-block;">
+                                      <label class="slds-form-element__label" for="wonReason">Won Reason<abbr class="slds-required" title="required">*</abbr></label>
+                                      <div class="slds-form-element__control">
+                                          <div class="slds-select_container">
+                                              <select onchange="{!c.event_wonReason_change}" class="slds-select" aura:id="wonReason" id="wonReason">
+                                                  <aura:iteration items="{!v.list_reason}" var="p" indexVar="idx"> 
+                                                  <option selected="{!idx == 0 ? true : false}" value="{!p}">{!p}</option>
+                                                  </aura:iteration>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style="display: inline-block;">
+                                      <label class="slds-form-element__label" for="teShipsetPercenttage">
+                                          TE Shipset Percenttage <abbr class="slds-required" title="required">*</abbr>
+                                      </label>
+                                      <div class="slds-form-element__control">
+                                          <input id="teShipsetPercenttageInput" aura:id="teShipsetPercenttageInput" class="slds-input" type="text"/>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          
+                          
+                          
+                          <div class="slds-form-element__group">
+                              <div class="slds-form-element__row slds-grid" >
+                                  <div aura:id="reasonBox" class="slds-hide  slds-size--1-of-2 custom-massupdate-element" style="margin-top: 10px;" >
+                                      <label class="slds-form-element__label" for="LostReason">
+                                            Lost Reason<abbr class="slds-required" title="required">*</abbr>
+                                      </label>
+                                      <div class="slds-form-element__control">
+                                          <div class="slds-select_container">
+                                              <select aura:id="lostReason" onchange="{!c.event_lostReasons_change}" class="slds-select" id="LostReason">
+                                                  <aura:iteration items="{!v.list_LostReasons}" var="value" >
+                                                      <option value="{!value}">{!value}</option>
+                                                  </aura:iteration>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div aura:id="competitorBox" class="slds-hide slds-size--1-of-2 custom-massupdate-element" style="margin-top: 10px;"><!-- START competitor -->
+                                      <label class="slds-form-element__label" for="competitor">
+                                            Competitor 
+                                            <aura:if isTrue="{!v.popupOptions.isRequired}"><abbr class="slds-required" title="required">*</abbr></aura:if>
+                                      </label>
+                                      <div class="slds-form-element__control" style="position: relative;">
+                                          <div class="slds-input-has-icon slds-input-has-icon--right">
+                                              <div aura:id="lookup-pill" style="position: absolute; width: 100%; z-index: 10; background-color: #f4f6f9;" class="slds-pill-container custom-slds-pill-contailner slds-hide">
+                                                    <span style="display: flex;" class="slds-pill slds-pill--bare" title="{!v.searchString}">
+                                                        <span style="padding-left: .2rem;" class="slds-pill__label">
+                                                            {!v.searchString}
+                                                        </span>
+                                                        <button aura:id="removeValueBtn" class="slds-button slds-button--icon-bare" onclick="{!c.event_competitorClear_click}">
+                                                            <lightning:icon iconName="utility:close" size="xx-small" class="slds-button__icon"/>
+                                                            <span class="slds-assistive-text">Remove</span>
+                                                        </button>
+                                                    </span>
+                                              </div>
+                                              <lightning:icon iconName="utility:search" size="xx-small" class="slds-input__icon"/>
+                                              <input onkeyup="{!c.event_competitorSearch_keyup}" aura:id="competitor" type="text" id="competitor" value="{!v.searchString}" class="slds-lookup__search-input slds-input" placeholder="If no competitor involved, type 'None' in the search field!" />
+                                          </div>
+                                          <div aura:id="lookuplist" class="slds-lookup__menu " role="listbox" style="margin-bottom:10px; position: absolute;">
+                                                <div class="slds-lookup__item">
+                                                    <button class="slds-button">
+                                                        <lightning:icon iconName="utility:search" size="x-small" class="slds-icon slds-icon-text-default slds-icon--x-small"/>
+                                                        &quot;{!v.searchString}&quot; in <span aura:id="pluralLabel">Account</span>
+                                                        <div aura:id="spinnerStatus" class="" style="height: 35px; width: 35px; position: absolute; top: 2px; right: 1px;">
+                                                          <div class="slds-spinner_container">
+                                                            <div class="slds-spinner--brand slds-spinner slds-spinner--small" style="position: relative;left: 50%;top: 50%;" aria-hidden="true" role="alert">
+                                                              <div class="slds-spinner__dot-a"></div>
+                                                              <div class="slds-spinner__dot-b"></div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <ul aura:id="lookuplist-items" class="slds-lookup__list" role="presentation">
+                                                    <aura:iteration items="{!v.list_result}" var="result">
+                                                        <li class="slds-lookup__item">
+                                                            <a id="{!'_id_' + result.Id}" role="option" href="javascript:void(0)" onclick="{!c.event_competitorSelect_click}" data-json="{!result.Name}">
+                                                                {!result.Name}
+                                                            </a>
+                                                        </li>
+                                                    </aura:iteration>
+                                                </ul>
+                                            </div>
+                                      
+										</div>
+                                  </div><!-- END competitor -->
+                                  
+                              </div>
+                          </div>
+                          
+                          <div aura:id="wonDateBox" class="slds-form-element__group slds-hide" style="margin-top: 10px;">
+                              <div  class="slds-form-element__row">
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style=" display: inline-block;">
+                                    <c:LtngDatePickerComp aura:id="billingDate" sid="billingDate" label="Initial Billing Date" isRequired="true"/>
+                                  </div>
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style=" display: inline-block;">
+                                    <c:LtngDatePickerComp aura:id="orderDate" sid="orderDate" label="Initial Order Date" isRequired="true"/>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          <div aura:id="dndatm" class="slds-form-element__group slds-hide" style="margin-top: 10px;">
+                              <div class="slds-form-element__row">
+                                  <div class="slds-form-element slds-size--1-of-2 custom-massupdate-element" style="display: inline-block;">
+                                      <label class="slds-form-element__label" for="massAvailableforTAMckBox">
+                                          Available for TAM?
+                                      </label>
+                                      <div class="slds-form-element__control">
+                                          <div class="slds-checkbox ">
+                                              <input aura:id="massAvailableforTAMckBox" id="massAvailableforTAMckBox"  type="checkbox" />
+                                              <label class="slds-checkbox--faux" for="massAvailableforTAMckBox"></label>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          
+                          <div aura:id="lostReasonTextBox" class="slds-form-element__group slds-hide" style="margin-top: 10px; margin-left: 1rem;">
+                              <div  class="slds-form-element__row">
+                                  <div id="massLostReasonBox" class="slds-form-element">
+		                              <label class="slds-form-element__label" for="massLostReasonBox">
+		                                  Lost Reason Text<abbr class="slds-required" title="required">*</abbr>
+		                              </label>
+		                              <div style="width:95%;" class="slds-form-element__control">
+		                                  <div class="slds-select_container custom-select_container">
+		                                      <textarea aura:id="massLostReasonText" class="slds-textarea"></textarea>
+		                                  </div>
+		                              </div>
+		                          </div>
+                              </div>
+                          </div>
+                          
+                      </div>
+                      
+                  </div>
+
+              </div>
+            </div>
+            <footer class="slds-docked-composer__footer slds-shrink-none">
+                <div class="slds-col--bump-left slds-text-align--right">
+                    <div class="slds-button-group" role="group">
+                        <button onclick="{!c.event_save_click}" class="slds-button slds-button--brand">Save</button>
+                        <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--neutral">Cancel</button>
+                    </div>
+                </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+        
+    </div>
+    </aura:if>
+</aura:component>

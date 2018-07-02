@@ -1,0 +1,22 @@
+<apex:page standardController="Opportunity" recordSetvar="unused" id="page">
+    <apex:sectionHeader title="Mass Update" subtitle="Opportunity"/>
+    <apex:form id="frm">
+        <apex:pageBlock id="pgblk_1" title="Update Records" mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton value=" Save " action="{!Save}"/>
+                <apex:commandButton value=" Cancel " action="{!Cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!selected}" var="opp" id="Optable">
+            <apex:column headerValue="Account Name">
+            <apex:outputField value="{!opp.AccountID}"/>
+            </apex:column>
+             
+                <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.MassEdit}" var="fldSet">
+                    <apex:column headerValue="{!fldSet.Label}">
+                        <apex:inputField value="{!opp[fldSet]}"/>
+                    </apex:column>
+                </apex:repeat>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_70810839</developerName>
+        <masterLabel>Sales Channel</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities$Owner.Profile</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Channel Standard User</sourceValue>
+            </sourceValues>
+            <value>Channel</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Industrial Engineering User w/Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial User w/ Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay User w/ Cost</sourceValue>
+            </sourceValues>
+            <value>Industrial Direct</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Account.Opportunities$Owner</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account$AccountNumber</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$StageName</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$CloseDate</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Manufacturing_Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Days_since_last_user_update__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Snapshot_Type__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Fiscal_Year__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Fiscal_Quarter__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Count_Pipeline__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Snapshot ver.</description>
+    <filter>
+        <booleanFilter>(( ((1 AND 9 AND ((2 AND (3 OR 4 OR 7 OR (5 AND 6 AND 10))) OR (8 AND (7 OR 4)))) AND 11) AND 12) AND 13) AND 14</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities$Opportunity_Group__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Engineering,Sales,NDR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Approved/Active,Concept,Sampling,Quotation,Exploring Needs,Developing &amp; Differentiating,Contracting</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$CloseDate</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessThan</operator>
+            <value>THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Manufacturing_Start_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessThan</operator>
+            <value>THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>lessThan</operator>
+            <value>THIS_FISCAL_QUARTER</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Amount__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>USD 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Days_since_last_user_update__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>60</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Won,Commit</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner.GIBU__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Industrial</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Status__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>On Hold,Dead,Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Territory_L2_Code__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>102202</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>JP/KR/ANZ</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Snapshot_Type__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Monthly</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>10/2/2017 12:00 AM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>IND JP/KR/ANZ Invalid Opportunities snap</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_snapshot__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Fiscal_Quarter__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

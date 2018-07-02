@@ -1,0 +1,77 @@
+<apex:page controller="OutOfOffice_Controller">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:outputPanel id="warningmgspanl" >
+                <table style="width:45%">
+                    <tr><td><apex:pageMessages /></td></tr>
+                </table>
+            </apex:outputPanel>
+
+            Out of Office : <apex:inputField value="{!vUser.Out_Of_Office__c}" onchange="clearact();"/><br/><br/>
+            <apex:actionFunction name="clearact" action="{!ClearSearch}" rerender="casestatus"/>
+            <table>
+                <tr>
+                    <td>
+                        <apex:outputLabel value="Transfer cases to" for="reg"></apex:outputLabel>
+                        <apex:selectList id="regi" value="{!vSelect_Owner}" size="1">
+                        <apex:selectOptions value="{!Owners}"></apex:selectOptions>
+                        </apex:selectList>
+                    </td>
+                    <td style="padding-left:5px">
+                        <apex:inputText id="casestatus" value="{!SearchText}"/>                                                    
+                        <apex:commandButton value="  GO  " action="{!runSearch}" rerender="Output_Panel, warningmgspanl"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td align="center">
+                        <apex:commandButton action="{!save}" value=" Save " rerender="Output_Panel, warningmgspanl" id="savebtn"/>
+                    </td>
+                    <td/>
+                </tr>
+            </table>
+            
+            <!----------Go button Script Starts Here------------>
+            <script type="text/javascript">
+                function myFunction()
+                {
+                    searchServer(document.getElementById("casestatus").value);
+                }
+                function radio(Name, id, OffStatus){
+                    document.getElementById('{!$Component.casestatus}').value=Name;
+                    document.getElementById('{!$Component.parentCase}').value = id; 
+                    document.getElementById('{!$Component.UserName}').value = Name;
+                    if(OffStatus=='true'){
+                        alert('Selected user is out of office.Please select another user.');
+                    }
+                }
+            </script>
+            <!----------Go button Script Ends Here------------>
+            
+            <!----------Hidden Variable------------>
+            <apex:inputhidden id="parentCase" value="{!vselectedId}"/>
+            <apex:inputhidden id="UserName" value="{!UserName}"/>
+            
+            <!----------Table Panel Starts Here------------->
+            <apex:outputPanel id="Output_Panel"> 
+                <!----------User Table Panel Starts Here------------->
+                <apex:pageBlockTable value="{!vUserLst}" var="ul" id="results" rendered="{!table}">
+                    <apex:column >
+                        <input type="radio" id="radio1" name="radioList" onclick="radio('{!ul.name}','{!ul.id}', '{!ul.out_of_office__c }')" />          
+                    </apex:column>
+                    <apex:column value="{!ul.name}"/>
+                </apex:pageBlockTable>
+                <!----------User Table Panel Ends Here------------->
+                <!----------Queue Table Panel Starts Here------------->
+                <apex:pageBlockTable value="{!vQueueLst}" var="ul" id="results1" rendered="{!table1}">
+                    <apex:column >
+                        <input type="radio" id="radio1" name="radioList" onclick="radio('{!ul.queue.name}','{!ul.queueid}', 'FALSE')"/>          
+                    </apex:column>
+                    <apex:column value="{!ul.queue.name}"/>
+                </apex:pageBlockTable>
+                <!----------Queue Table Panel Ends Here------------->
+            </apex:outputPanel>         
+            <!----------Table Panel Ends Here------------->
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

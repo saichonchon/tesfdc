@@ -1,0 +1,284 @@
+<!-- 
+Author:        Yiming Shen <yiming.shen@capgemini.com>
+Description:   A visualforce page for show Monthly_Target__c records and save changes.
+			   The user story number is W-00153.
+Inputs:        
+Test Class:    
+History
+2016-09-27  Buwen Guo <buwen.guo@oinio.com> Created
+2017-07-10 	Yiming Shen <yiming.shen@capgemini.com> Modified
+-->
+<apex:page controller="CtrlMonthlyTargetBookings" sidebar="false" docType="html-5.0" title="Monthly Target Bookings">
+	<apex:stylesheet value="{!URLFOR($Resource.CtrlMonthlyTargetBookingsCSS)}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+	<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+	<apex:includeScript value="{!URLFOR($Resource.CtrlMonthlyTargetBookingsJS)}" />
+	<style type="text/css">
+	</style>
+    <script type="text/javascript">
+    
+    </script>
+    <div id="loading"></div>
+	<div id="mask"></div>
+	<div id="select_group">
+		<div class="slds-form-element territory_level_select">
+	        <label class="slds-form-element__label select_label" for="territory">Territory</label>
+	        <div class="slds-form-element__control">
+	            <select class="slds-select" id="territory" value="" onchange="changeSelectedSalesHierarchy();">
+	            	<optgroup label="Level 7 Territory" style="{!IF(AND(list_pickValsLevel7 != null, list_pickValsLevel7.size > 0), '', 'display:none;')}">
+		            	<apex:repeat id="level_7_options" value="{!list_pickValsLevel7}" var="terrOption">
+		                    <apex:outputPanel layout="inline" rendered="{!IF(AND(selectedTerritoryName == terrOption.territoryName, selectedTerritoryLevel == '7', terrOption.territoryLevel == '7'), true, false)}">
+			            		<option selected="selected" terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+	                    	</apex:outputPanel>
+	                    	<apex:outputPanel layout="inline" rendered="{!IF(AND(OR(selectedTerritoryName != terrOption.territoryName, selectedTerritoryLevel != '7'), terrOption.territoryLevel == '7'), true, false)}">
+			            		<option terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+	                    	</apex:outputPanel>
+		                </apex:repeat>
+	                </optgroup>
+	                <optgroup label="Level 6 Territory" style="{!IF(AND(list_pickValsLevel6 != null, list_pickValsLevel6.size > 0), '', 'display:none;')}">
+		            	<apex:repeat id="level_6_options" value="{!list_pickValsLevel6}" var="terrOption">
+		            	<apex:outputPanel layout="inline" rendered="{!IF(AND(selectedTerritoryName == terrOption.territoryName, selectedTerritoryLevel == '6', terrOption.territoryLevel == '6'), true, false)}">
+	            		<option selected="selected" terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+	                    	{!terrOption.territoryName}
+                    	</option>
+                	</apex:outputPanel>
+                	<apex:outputPanel layout="inline" rendered="{!IF(AND(OR(selectedTerritoryName != terrOption.territoryName, selectedTerritoryLevel != '6'), terrOption.territoryLevel == '6'), true, false)}">
+	            		<option terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+	                    	{!terrOption.territoryName}
+                    	</option>
+                	</apex:outputPanel>
+		                </apex:repeat>
+	                </optgroup>
+	                <optgroup label="Level 5 Territory" style="{!IF(AND(list_pickValsLevel5 != null, list_pickValsLevel5.size > 0), '', 'display:none;')}">
+	                	<apex:repeat id="level_5_options" value="{!list_pickValsLevel5}" var="terrOption">
+		                	<apex:outputPanel layout="inline" rendered="{!IF(AND(selectedTerritoryName == terrOption.territoryName, selectedTerritoryLevel == '5', terrOption.territoryLevel == '5'), true, false)}">
+			            		<option selected="selected" terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+	                    	</apex:outputPanel>
+	                    	<apex:outputPanel layout="inline" rendered="{!IF(AND(OR(selectedTerritoryName != terrOption.territoryName, selectedTerritoryLevel != '5'), terrOption.territoryLevel == '5'), true, false)}">
+			            		<option terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+	                    	</apex:outputPanel>
+                		</apex:repeat>
+            		</optgroup>
+            		<optgroup label="Level 4 Territory" style="{!IF(AND(list_pickValsLevel4 != null, list_pickValsLevel4.size > 0), '', 'display:none;')}">
+	                	<apex:repeat id="level_4_options" value="{!list_pickValsLevel4}" var="terrOption">
+		                	<apex:outputPanel layout="inline" rendered="{!IF(AND(selectedTerritoryName == terrOption.territoryName, selectedTerritoryLevel == '4', terrOption.territoryLevel == '4'), true, false)}">
+			            		<option selected="selected" terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+	                    	</apex:outputPanel>
+		                	<apex:outputPanel layout="inline" rendered="{!IF(AND(OR(selectedTerritoryName != terrOption.territoryName, selectedTerritoryLevel != '4'), terrOption.territoryLevel == '4'), true, false)}">
+			            		<option terrLevel="{!terrOption.territoryLevel}" salesHierarchyId="{!terrOption.territorySalesHierarchyId}" value="{!terrOption.territoryCode}">
+			                    	{!terrOption.territoryName}
+		                    	</option>
+		                	</apex:outputPanel>
+	            		</apex:repeat>
+            		</optgroup>
+	            </select> 
+	        </div>
+	    </div>
+    </div>
+    <div>
+    <apex:form >
+	    <apex:actionStatus id="save-status" onstart="showLoading();" onstop="hideLoading();"/>
+		<apex:actionFunction action="{!getMonthlyTargetBookings}" name="getSelectedMonthlyTargetBookings" reRender="showMsg,thePanel,theChildrenSection,level_4_options,level_5_options,level_6_options,level_7_options" status="save-status" oncomplete="hideLoading();">
+		    <apex:param name="territoryName" assignTo="{!selectedTerritoryName}" value="" />
+		    <apex:param name="territoryCode" assignTo="{!selectedTerritoryCode}" value="" />
+		    <apex:param name="salesHierarchyId" assignTo="{!selectedSalesHierarchyId}" value="" />
+		    <apex:param name="territoryLevel" assignTo="{!selectedTerritoryLevel}" value="" />
+		</apex:actionFunction> 
+		<apex:actionFunction action="{!saveMonthlyTargets}" name="storeMonthlyTargetToDatabase" reRender="showMsg,thePanel,theChildrenSection,level_5_options,level_6_options,level_7_options" status="save-status" oncomplete="hideLoading();">
+	    	<apex:param name="monthlyTargetJsonString" assignTo="{!json_MonthlyTargets2Save}" value="" />
+	    </apex:actionFunction>
+	    <apex:actionFunction action="{!init}" name="reloadData" reRender="showMsg,thePanel" status="save-status" oncomplete="hideLoading();">
+    	</apex:actionFunction>
+		<apex:pageMessages id="showMsg"/>
+		<apex:outputPanel layout="block" id="thePanel">
+		    <table id="theTable" class="table_style slds-table slds-table--cell-buffer slds-table_bordered slds-table_col-bordered">
+		        <tr class="deepGreen_td_class">
+		        	<td class="fist_col"></td>
+		            <td class="labelAlignStyle">CF1</td>
+		            <td></td>
+		            <td></td>
+		            <td class="labelAlignStyle">CF2</td>
+		            <td></td>
+		            <td></td>
+		            <td class="labelAlignStyle">CF3</td>
+		            <td></td>
+		            <td></td>
+		            <td class="labelAlignStyle">CF4</td>
+		            <td></td>
+		            <td></td>
+		        </tr>
+		        <tr class="deepGreen_td_class">
+		            <td class="fist_col"></td>
+		            <apex:repeat value="{!list_MonthLabels}" var="perFiscalMonthLabel">
+		                <td class="labelAlignStyle">
+		                	{!perFiscalMonthLabel}
+	                	</td>
+		            </apex:repeat>
+		            
+		        </tr>
+		        <tr style="{!IF(the1stMonthTargetBookingsWrapper == null,'display:none;','')}">
+		        	<td class="fist_col">
+		        		CF{!the1stMonthTargetBookingsWrapper.wrapperFiscalQuarterNumber}
+	        		</td>
+	        		<apex:repeat value="{!the1stMonthTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+		        		<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle" title="{!IF(AND(targetBookingMonth.isEditable == false, targetBookingMonth.monthTargetValue != null),'Proposed Value: '+TEXT(targetBookingMonth.monthProposedValue),'')}">
+		        			<apex:input disabled="true" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" styleClass="numberAlignStyle inputElement" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(targetBookingMonth.isEditable == false,true,false)}" />
+		        			<apex:input style="width:100%;height:100%;display:inline-block;color:red;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}"  html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" styleClass="numberAlignStyle inputElement editable_Proposed_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel != '4'),true,false)}" />
+		        			<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel == '4'), true, false)}" />
+		        		</td>
+        			</apex:repeat>
+		           
+		        </tr>
+		        <tr style="{!IF(the2ndMonthTargetBookingsWrapper == null,'display:none;','')}">
+		        	<td class="fist_col">RnO {!the2ndMonthTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+		            <apex:repeat value="{!the2ndMonthTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+		            	<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle" title="{!IF(AND(targetBookingMonth.isEditable == false, targetBookingMonth.monthTargetValue != null),'Proposed Value: '+TEXT(targetBookingMonth.monthProposedValue),'')}">
+		            		<apex:input disabled="true" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" styleClass="numberAlignStyle inputElement" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(targetBookingMonth.isEditable == false,true,false)}" />
+		            		<apex:input style="width:100%;height:100%;display:inline-block;color:red;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" styleClass="numberAlignStyle inputElement editable_Proposed_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel != '4'),true,false)}" />
+		            		<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel == '4'), true, false)}" />
+		            	</td>
+	        		</apex:repeat>
+		            
+		        </tr>
+			    <tr style="{!IF(the3rdMonthTargetBookingsWrapper == null,'display:none;','')}">
+			        <td class="fist_col">RnO {!the3rdMonthTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+			         	<apex:repeat value="{!the3rdMonthTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+			         		<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle" title="{!IF(AND(targetBookingMonth.isEditable == false, targetBookingMonth.monthTargetValue != null),'Proposed Value: '+TEXT(targetBookingMonth.monthProposedValue),'')}">
+			         			<apex:input disabled="true" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" styleClass="numberAlignStyle inputElement" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(targetBookingMonth.isEditable == false,true,false)}" />
+			         			<apex:input style="width:100%;height:100%;display:inline-block;color:red;" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" html-targetValue="{!targetBookingMonth.monthTargetValue}" html-proposedValue="{!targetBookingMonth.monthProposedValue}" styleClass="numberAlignStyle inputElement editable_Proposed_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel != '4'),true,false)}" />
+			         			<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, selectedTerritoryLevel == '4'), true, false)}" />
+			         		</td>
+		        		</apex:repeat>
+		            
+			    </tr>
+			    <tr style="background:#b9d1f7;{!IF(AND(list_NoGAMChildrenMonthlyTargetWrappers != null, list_NoGAMChildrenMonthlyTargetWrappers.size > 0),'','display:none;')}">
+			    	<td>
+			    		Level {!selectedChildrenTerritoryLevel} Territories
+		    		</td>
+			    	<td colspan="12"></td>
+			    </tr>
+			    <apex:repeat id="theChildrenSection" value="{!list_NoGAMChildrenMonthlyTargetWrappers}" var="childMonthlyTargetBookingsWrapper" rendered="{!IF(AND(list_NoGAMChildrenMonthlyTargetWrappers != null, list_NoGAMChildrenMonthlyTargetWrappers.size > 0), true, false)}" >
+				    <tr>
+				        <td class="fist_col">{!childMonthlyTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+				         	<apex:repeat value="{!childMonthlyTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+			    				<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle">
+		            				<apex:outputText value="" rendered="{!IF(targetBookingMonth.isEditable == false, true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue != null), true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:red;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue != null), true, false)}" />
+		            				<apex:outputPanel layout="inline" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue == null), true, false)}">
+		            					<input proposedValue="{!targetBookingMonth.monthProposedValue}" targetValue="{!targetBookingMonth.monthTargetValue}" class="numberAlignStyle inputElement editable_Target_Input" parentId="{!targetBookingMonth.parentMonthlyTargetId}" monthName="{!targetBookingMonth.monthAbbrName}" monthNum="{!targetBookingMonth.monthNumber}" terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" terrName="{!targetBookingMonth.relatedTerritoryName}" terrCode="{!targetBookingMonth.relatedTerritoryCode}" GAMDesc="{!targetBookingMonth.relatedGAMDescription}" GAMCode="{!targetBookingMonth.relatedGAMCode}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" type="number" step="0.01" value="0" />
+		            				</apex:outputPanel>
+		            			</td>
+			        		</apex:repeat>
+			            
+		            </tr>
+	            </apex:repeat>
+			    <!--<tr style="background:#b9d1f7;{!IF(AND(list_Level6ChildrenMonthlyTargetWrappers != null, list_Level6ChildrenMonthlyTargetWrappers.size > 0),'','display:none;')}">
+			    	<td>Level 6 Territories</td>
+			    	<td colspan="12"></td>
+			    </tr>
+			    <apex:repeat id="theLevel6ChildrenSection" value="{!list_Level6ChildrenMonthlyTargetWrappers}" var="childMonthlyTargetBookingsWrapper" rendered="{!IF(AND(list_Level6ChildrenMonthlyTargetWrappers != null, list_Level6ChildrenMonthlyTargetWrappers.size > 0), true, false)}" >
+				    <tr>
+				        <td class="fist_col">{!childMonthlyTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+				         	<apex:repeat value="{!childMonthlyTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+			    				<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle">
+		            				<apex:outputText value="" rendered="{!IF(targetBookingMonth.isEditable == false, true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue != null), true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:red;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue != null), true, false)}" />
+		            				<apex:outputPanel layout="inline" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue == null), true, false)}">
+		            					<input proposedValue="{!targetBookingMonth.monthProposedValue}" targetValue="{!targetBookingMonth.monthTargetValue}" class="numberAlignStyle inputElement editable_Target_Input" parentId="{!targetBookingMonth.parentMonthlyTargetId}" monthName="{!targetBookingMonth.monthAbbrName}" monthNum="{!targetBookingMonth.monthNumber}" terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" terrName="{!targetBookingMonth.relatedTerritoryName}" terrCode="{!targetBookingMonth.relatedTerritoryCode}" GAMDesc="{!targetBookingMonth.relatedGAMDescription}" GAMCode="{!targetBookingMonth.relatedGAMCode}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" type="number" step="0.01" value="0" />
+		            				</apex:outputPanel>
+		            			</td>
+			        		</apex:repeat>
+			            <td></td>
+		            </tr>
+			    </apex:repeat>
+			    <tr style="background:#b9d1f7;{!IF(AND(list_Level7ChildrenMonthlyTargetWrappers != null, list_Level7ChildrenMonthlyTargetWrappers.size > 0),'','display:none;')}">
+			    	<td>Level 7 Territories</td>
+			    	<td colspan="13"></td>
+		    	</tr>
+			    <apex:repeat id="theLevel7ChildrenSection" value="{!list_Level7ChildrenMonthlyTargetWrappers}" var="childMonthlyTargetBookingsWrapper" rendered="{!IF(AND(list_Level7ChildrenMonthlyTargetWrappers != null, list_Level7ChildrenMonthlyTargetWrappers.size > 0), true, false)}" >
+				    <tr>
+				        <td class="fist_col">{!childMonthlyTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+				         	<apex:repeat value="{!childMonthlyTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+			    				<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle">
+		            				<apex:outputText value="" rendered="{!IF(targetBookingMonth.isEditable == false, true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthTargetValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue != null), true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;color:red;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Target_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue != null), true, false)}" />
+		            				<apex:outputPanel layout="inline" rendered="{!IF(AND(targetBookingMonth.isEditable == true, targetBookingMonth.monthTargetValue == null, targetBookingMonth.monthProposedValue == null), true, false)}">
+		            					<input proposedValue="{!targetBookingMonth.monthProposedValue}" targetValue="{!targetBookingMonth.monthTargetValue}" class="numberAlignStyle inputElement editable_Target_Input" parentId="{!targetBookingMonth.parentMonthlyTargetId}" monthName="{!targetBookingMonth.monthAbbrName}" monthNum="{!targetBookingMonth.monthNumber}" terrLevel ="{!targetBookingMonth.relatedTerritoryLevel}" terrName="{!targetBookingMonth.relatedTerritoryName}" terrCode="{!targetBookingMonth.relatedTerritoryCode}" GAMDesc="{!targetBookingMonth.relatedGAMDescription}" GAMCode="{!targetBookingMonth.relatedGAMCode}" style="width:100%;height:100%;display:inline-block;color:green;font-weight:bold;" type="number" step="0.01" value="0" />
+		            				</apex:outputPanel>
+		            			</td>
+			        		</apex:repeat>
+			            <td></td>
+		            </tr>
+			    </apex:repeat>-->
+			    <tr style="background:#b9d1f7;{!IF(AND(list_GAMChildrenMonthlyTargetWrappers != null, list_GAMChildrenMonthlyTargetWrappers.size > 0),'','display:none;')}">
+			    	<td>GAM</td>
+			    	<td colspan="12"></td>
+	    		</tr>
+			    <apex:repeat id="theGAMChildrenSection" value="{!list_GAMChildrenMonthlyTargetWrappers}" var="childMonthlyTargetBookingsWrapper" rendered="{!IF(AND(list_GAMChildrenMonthlyTargetWrappers != null, list_GAMChildrenMonthlyTargetWrappers.size > 0), true, false)}" >
+				    <tr>
+				        <td class="fist_col">{!childMonthlyTargetBookingsWrapper.wrapperMonthAbbrName}</td>
+				         	<apex:repeat value="{!childMonthlyTargetBookingsWrapper.list_TargetBookingMonths}" var="targetBookingMonth">
+			    				<td style="{!IF(targetBookingMonth.isEditable == true,'background:white;','')}" class="numberAlignStyle">
+		            				<apex:outputText value="" rendered="{!IF(targetBookingMonth.isEditable == false, true, false)}" />
+		            				<apex:input html-proposedValue="{!targetBookingMonth.monthProposedValue}" html-targetValue="{!targetBookingMonth.monthTargetValue}" style="width:100%;height:100%;display:inline-block;" html-GAMDesc="{!targetBookingMonth.relatedGAMDescription}" html-GAMCode="{!targetBookingMonth.relatedGAMCode}" html-terrName="{!targetBookingMonth.relatedTerritoryName}" html-terrLevel="{!targetBookingMonth.relatedTerritoryLevel}" html-terrCode="{!targetBookingMonth.relatedTerritoryCode}" html-monthName="{!targetBookingMonth.monthAbbrName}" html-monthNum="{!targetBookingMonth.monthNumber}" html-parentId="{!targetBookingMonth.parentMonthlyTargetId}" styleClass="numberAlignStyle inputElement editable_Proposed_Input" type="number" value="{!targetBookingMonth.monthProposedValue}" rendered="{!IF(AND(targetBookingMonth.isEditable == true), true, false)}" />
+		            			</td>
+			        		</apex:repeat>
+		            </tr>
+			    </apex:repeat>
+			    <tr style="background:white;">
+			    	<td colspan="13">
+			    		<div id="button_group" style="text-align:center;">
+			    			<button style="cursor:pointer;margin:0 20px;" onclick="doSave();return false;">Save</button>
+			    			<button style="cursor:pointer;" onclick="showLoading();reloadData();return false;">Cancel</button>
+			    		</div>
+			    	</td>
+			    </tr>
+			    <tr style="background:#b9d1f7;">
+				    <td>Pipeline</td>
+			    	<td colspan="12"></td>
+			    </tr>
+			    <tr>
+		        	<td class="fist_col">
+		        		<apex:outputText value="{!summaryOppyForecastTotalWrapper.oppyConfidenceLevel}" />
+		        	</td>
+		        	<apex:repeat value="{!summaryOppyForecastTotalWrapper.list_MonthlyAmounts}" var="summaryMonthlyOppyForecast">
+			        	<td class="numberAlignStyle">
+							{!summaryMonthlyOppyForecast.oppyForecastMonthlyAmountFormat}
+						</td>
+		        	</apex:repeat>
+	        	</tr>
+	        	<apex:repeat value="{!list_OpportunityForecastWrappers}" var="oppyForecastWrapper">
+			        <tr class="summaryRowStyle">
+						<td class="fist_col">
+							<span>Pipeline {!oppyForecastWrapper.oppyConfidenceLevel}%</span>
+						</td>
+						<apex:repeat value="{!oppyForecastWrapper.list_MonthlyAmounts}" var="monthlyOppyForecast">
+							<td class="numberAlignStyle">
+								<apex:outputPanel rendered="{!IF(ISBLANK(monthlyOppyForecast.oppyForecastMonthlyAmountFormat), false, true)}">
+									<a href="/{!oppyForecastReportId}?pv0={!monthlyOppyForecast.oppyForecastIds}" target="_blank" >
+										{!monthlyOppyForecast.oppyForecastMonthlyAmountFormat}
+									</a>
+								</apex:outputPanel>
+							</td>
+						</apex:repeat>
+					</tr>
+				</apex:repeat>
+		    </table>
+	    </apex:outputPanel>
+    </apex:form>
+    </div>
+    
+</apex:page>

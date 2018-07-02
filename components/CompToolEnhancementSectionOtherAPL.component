@@ -1,0 +1,129 @@
+<apex:component layout="none">
+	
+	<apex:attribute name="pageCtrl" type="CtrlOppyForecastToolEnhancementAPL" required="true" description="the root page controller reference" />
+	
+	<apex:outputPanel layout="block" style="ition: relative;" rendered="{!pageCtrl.co.map_sectionConfig['other']}"> 
+	
+		<div id="section_other" style="" class="slds-section slds-section-other {!if(pageCtrl.cookieOther = 'true', 'slds-is-open', '')}">
+			
+			<input id="sqlOtherHide" value="{!pageCtrl.co.sqlOther}" type="hidden"/>
+			
+			<h3 class="slds-section__title">
+				<button onclick="event_sectionOther_click(this)" aria-controls="expando-other-unique-id" aria-expanded="true" class="slds-button slds-section__title-action slds-section-other-btn" type="button">
+					<svg class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+						<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#switch')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+					</svg>
+					<span class="slds-truncate" title="Section Title">Others</span>
+				</button>
+			</h3>
+			<div aria-hidden="false" class="slds-section__content" id="expando-other-unique-id">
+				<div style="padding: 10px; position: relative;" >
+					<div id="slds-spinner-other" class="custom-spinner-size">
+				        <div class="slds-spinner_container">
+				            <div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+				                <div class="slds-spinner__dot-a"></div>
+				                <div class="slds-spinner__dot-b"></div>
+				            </div>
+				        </div>
+				    </div>
+					<div>
+						<div class="slds-grid" style="border: 1px solid #d8dde6;">
+							<div class="slds-col">
+								<h1 class="slds-section-other-current" id="otherCurrentFiscalyearWon">Current Fiscal Year won</h1>
+							</div>
+							<div class="slds-col_bump-left" style="padding: 5px; font-size: 1.2rem;">
+								<label>Billing Available Month</label>
+								<span style="margin-left: 10px;">
+									{!pageCtrl.co.territoryInfo.strCurrentFiscalYear}-{!pageCtrl.co.territoryInfo.strCurrentFiscalMonth}
+								</span>
+							</div>
+						</div>
+						<table id="otherCurrentTable" class="slds-section-other-table slds-table_fixed-layout slds-table slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-table-table">
+							<thead class="slds-section-other-thead">
+								<tr>
+									<th style="width: 80px; text-align: center;" class="actionCls">
+	                            		<div class="slds-truncate slds-white-space"></div>
+                            		</th>
+	                                	<apex:repeat value="{!pageCtrl.co.list_cfsm_other}" var="lost">
+                                    <th class="{!lost.cls} {!if(lost.isOrder, 'custom-th-order', '')}" data-api="{!lost.apiName}">
+                                    	<div class=" slds-white-space">{!lost.labelName}</div>
+                                    	<apex:outputPanel layout="block" styleClass="custom-order" rendered="{!lost.isOrder}"> 
+                                   		</apex:outputPanel>
+                                   	</th>
+	                                	</apex:repeat>
+								</tr>
+							</thead>
+							<tbody id="otherCurrentTbody">
+								
+							</tbody>
+							<tfoot>
+								<tr style="font-weight: bold;">
+									<td colspan="10" class="slds-foot-td-left"></td>
+									<td class="slds-foot-td bgGreen">
+										<div class="slds-truncate slds-white-space">Total</div>
+									</td>
+									<td class="slds-foot-td slds-text-align--right bgGreen">
+										<div class="slds-truncate slds-white-space" id="otherTableCurrentTotal">N/A</div>
+									</td>
+									<td class="slds-foot-td slds-text-align--right bgGreen">
+										<div class="slds-truncate slds-white-space" id="otherTableNextTotal">N/A</div>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					
+					<div>
+						<div class="slds-grid" style="border: 1px solid #d8dde6; margin-top: 20px;">
+							<div class="slds-col">
+								<h1 class="slds-section-other-previous" id="otherPreviousFiscalyearWon">Previous Fiscal Year won</h1>
+							</div>
+							<div class="slds-col_bump-left" style="padding: 5px; font-size: 1.2rem;">
+								<label>Billing Available Month</label>
+								<span id="currentFiscal" data-periodYear="{!pageCtrl.co.periodYear}" data-month="{!pageCtrl.co.territoryInfo.strCurrentFiscalMonth}" data-year="{!pageCtrl.co.territoryInfo.strCurrentFiscalYear}" style="margin-left: 10px;">
+									{!pageCtrl.co.territoryInfo.strCurrentFiscalYear}-{!pageCtrl.co.territoryInfo.strCurrentFiscalMonth}
+								</span>
+							</div>
+						</div>
+						<table id="otherPreviousTable"  class="slds-section-other-table slds-table_fixed-layout slds-table slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-table-table">
+							<thead class="slds-section-other-thead">
+								<tr>
+									<th style="width: 80px; text-align: center;" class="actionCls">
+	                            		<div class="slds-truncate slds-white-space"></div>
+                            		</th>
+	                                	<apex:repeat value="{!pageCtrl.co.list_cfsm_other_previous}" var="lost">
+                                    <th class="{!lost.cls} {!if(lost.isOrder && lost.apiName != 'NextFYNewBusinessIncremental', 'custom-th-order', '')}" data-api="{!lost.apiName}">
+                                    	<div class=" slds-white-space">{!lost.labelName}</div>
+                                    	<apex:outputPanel layout="block" styleClass="custom-order" rendered="{!if(lost.isOrder && lost.apiName != 'NextFYNewBusinessIncremental', true, false)}"> 
+                                   		</apex:outputPanel>
+                                   	</th>
+	                                	</apex:repeat>
+								</tr>
+							</thead>
+							<tbody id="otherPreviousTbody">
+								
+							</tbody>
+							<tfoot>
+								<tr style="font-weight: bold;">
+									<td colspan="10" class="slds-foot-td-left"></td>
+									<td class="slds-foot-td bgGreen">
+										<div class="slds-truncate slds-white-space">Total</div>
+									</td>
+									<td class="slds-foot-td slds-text-align--right bgGreen">
+										<div class="slds-truncate slds-white-space" id="otherTableRreviousCurrentTotal">N/A</div>
+									</td>
+									<td class="slds-foot-td slds-text-align--right bgGreen">
+										<div class="slds-truncate slds-white-space" id="otherTableRreviousNextTotal">N/A</div>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	
+	</apex:outputPanel>
+	
+</apex:component>

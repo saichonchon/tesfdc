@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to assign ownership of records users via Apex</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>TEMarketing__Active__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If True, then include user in Round Robin assignments.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If False, then include user in Round Robin assignments.</inlineHelpText>
+        <label>Active</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>True</fullName>
+                    <default>true</default>
+                    <label>True</label>
+                </value>
+                <value>
+                    <fullName>False</fullName>
+                    <default>false</default>
+                    <label>False</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__Group_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Group Name</label>
+        <referenceTo>TEMarketing__Assignment_Group_Name__c</referenceTo>
+        <relationshipName>Assignment_Groups</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__Last_Assignment__c</fullName>
+        <defaultValue>NOW()</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Last time case was assigned to this person</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Last time case was assigned to this person</inlineHelpText>
+        <label>Last Assignment</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__Millisecond__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Millisecond</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IMAGE( 
+CASE(TEMarketing__User_Active__c &amp; IF(ISPICKVAL(TEMarketing__Active__c,&quot;True&quot;)=True,&quot;True&quot;,&quot;False&quot;), 
+&quot;TrueTrue&quot;, &quot;/img/samples/light_green.gif&quot;,
+&quot;/img/samples/light_red.gif&quot;), 
+&quot;status color&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>If Status and User Status are True</inlineHelpText>
+        <label>Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__User_Active__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>if(TEMarketing__User__r.TEMarketing__Assignment_Group_Active__c=True,
+     IF( TEMarketing__User__r.IsActive=True,&quot;True&quot;,&quot;False&quot;) ,
+     &quot;False&quot;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>True if &quot;Assignment Group Active&quot; and &quot;Active&quot; fields on the user record are checked.  If True the users is available for this and all Assignment Groups.</inlineHelpText>
+        <label>User Active</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>R00N30000002Yj6ZEAS</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Group Member</label>
+    <nameField>
+        <displayFormat>AG-{0000}</displayFormat>
+        <label>Assignment #</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Group Members</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>TEMarketing__Last_Assignment__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

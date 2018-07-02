@@ -1,0 +1,40 @@
+<apex:component layout="block" id="compmenu">
+	<apex:attribute name="pageCtrl" type="CtrlRSMChangeScreen" required="true" description="the root page controller reference" />
+	
+	<div id="popCmt" class="hide"></div>
+	<div id="popCtn" class="" style="display: none;">
+		<div class="titleLine"><span id="popTitle">{!$Label.FinancialPlan_Comment}</span><div class="icon_close" onclick="clsPop();">&times;</div></div>
+		<div id="loadCtDiv"></div>
+		<div style="overflow-y: scroll; overflow-x: hidden;height: 438px;">
+	        <table class="hdfw" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+	        	<thead>
+	                <tr>
+	                <th class="pb pdtb tl border_b1">{!$Label.FinancialPlan_Account}</th>
+	                <th class="pc pdtb tl border_b1">{!$Label.FinancialPlan_PFCenter}</th>
+	                <th class="pd pdtb pdtr tr border_b1">{!$Label.FinancialPlan_Value}</th>
+	                <th class="pe pdtb tl border_b1">{!$Label.FinancialPlan_Comment}</th>
+	                </tr>
+	        	</thead>
+	            <tbody id="commentBodyId">
+	            	<apex:repeat var="item" value="{!pageCtrl.list_comments}">
+	                <tr class="odd">
+		                <td class="pb tl border_b1"><a target="_blank" href="/{!item.acctId}">{!item.acctName}</a></td>
+		                <td class="pc tl border_b1">{!item.profitCenter}</td>
+		                <td class="pd tr pdtr border_b1 asmval">{!item.value}</td>
+		                <td class="pe tl border_b1">{!item.comment}</td>
+	                </tr>
+	                </apex:repeat>
+	            </tbody>
+	        </table>
+		</div>
+	        <!-- 
+	        <div id="ptbCtn">
+		        <table>
+		            <tbody id="popTb">
+		            </tbody>
+		        </table>
+	        </div>
+	        <center><input type="button" value="{!$Label.FinancialPlan_Save}" onclick="saveCmt();" class="btn"/></center>
+	         -->
+	</div>
+</apex:component>

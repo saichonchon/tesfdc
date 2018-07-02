@@ -1,0 +1,87 @@
+<apex:page standardController="Lead" extensions="DistributorLeadSharingController" tabStyle="Lead">
+   
+ <Script>  
+.pageTitleIcon {
+display: inline;
+float: left;
+width: 32px;
+margin-right: 5px;
+}
+.pageType {
+font-size: .9em;
+font-weight: bold;
+color: #4a4a56;
+padding-left: 1px;
+}
+.pageDescription {
+font-size: 72px !important;
+line-height: 1.9em;
+font-weight: 900;
+}
+.pageType {
+font-size: .5em;
+font-weight: normal;
+color: #4a4a56;
+padding-left: 1px;
+}
+</Script>
+ <apex:form style="overflow:scroll; height:400px; width:300 px;" id="myForm">
+        <!--
+        <br/>
+            <center>  <b>Search Distributor User:</b>
+                <apex:inputText value="{!UserName}" />
+                <apex:commandButton value="Find" action="{!searchUser}" rerender="pgblk1"/> 
+            </center>
+        <br/>
+        -->
+        <script>
+            function onCheck(){
+                clickCon(true);
+            }
+        </script>
+        <apex:actionFunction name="clickCon" action="{!onProceed}" reRender="pgblk2" />
+                <apex:image styleClass="pageTitleIcon" url="/s.gif"/>
+                <apex:outputLabel styleClass="pageType"> Distributor Sharing </apex:outputLabel>
+                <div>
+               &nbsp;&nbsp;&nbsp;  <apex:outputText value="{!Lead.name}" style="font-size:25px !important;"/>
+                 </div>
+                 
+         <div>
+         <br></br>
+         <apex:commandLink value="{!Lead.name}, " action="{!onLinkClick}"/>
+         <apex:commandLink value="{!Lead.Company}" action="{!onLinkClick}"/>
+
+            </div>
+            
+        <apex:pageBlock title="List of partner users of Distributor" id="pgblk1" >
+        
+            <apex:PageBlockSection rendered="{!pgShow}" id="pgb1k1k2" columns="1"> 
+                <apex:pageBlockTable value="{!wrapconlist}" var="c" width="700" align="Center" id="table1">                
+                    <apex:column headerValue="Select Parent" width="20%">
+                        <input type="radio" id="radio1" name="radioList" onclick="javascript:document.getElementById('{!$Component.parentCase}').value = '{!c.userObj.Id}';" />          
+                    </apex:column>
+                    <apex:column headerValue="User Name" value="{!c.userObj.name}" width="40%" /> 
+                    <!-- <apex:outputLink value="/{!c.cont.id}">{!c.cont.name}</apex:outputLink>   -->
+                    <apex:column headerValue="Contact Email" value="{!c.userObj.email}" width="40%"/>
+                </apex:pageBlockTable> 
+                <br></br>
+                    Adding selected user will share the lead record with user and send email notification to user
+                <br></br>
+                <apex:CommandButton value="Share with User" action="{!onProceed}" />
+            </apex:PageBlockSection>
+                <apex:inputHidden id="parentCase" value="{!selectedId}"/>
+                <apex:inputHidden id="Name" value="{!Lead.name}"/>
+                <apex:inputHidden id="Company" value="{!Lead.Company}"/>
+                <apex:inputHidden id="Email" value="{!Lead.email}"/>
+                <apex:inputHidden id="Phone" value="{!Lead.Phone}"/>
+                <apex:inputHidden id="City" value="{!Lead.City}"/>
+                <apex:inputHidden id="Country" value="{!Lead.Country}"/>
+                <apex:inputHidden id="PostalCode" value="{!Lead.PostalCode}"/>
+                <apex:inputHidden id="DistributorResponse" value="{!Lead.Distributor_Response__c}"/>
+
+
+
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

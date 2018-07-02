@@ -1,0 +1,98 @@
+<apex:component layout="block" allowDML="true">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+<div class="popup-Add" id="teamaddpopupid" style="display: none;">
+	<div class="inputCon" id="searchuserconid" style="display: none;"></div>
+        <div class="popup-title"><span>{!$Label.PMV_team_lab_add_new_team}</span></div>
+        <div class="popup-content">
+        	<table border="0" cellspacing="0" cellpadding="0" style="width: 100%; ">
+        		<thead>
+        			<tr>
+        				<th style="padding-right: 20px; width: 46%;">
+        					<div class="popup-content-title">
+        						<span>{!$Label.PMV_team_lab_choose_team_information}</span>
+        							<input style="visibility: hidden; width: 10px !important;" type="button" class="popup-buttonYellow popup-SearchClick cp" value=" "/>
+       						</div>
+        				</th>
+        				<th>
+        				<div class="popup-content-title">
+        					<span>{!$Label.PMV_team_lab_add_team_member}</span>
+        					<input style="margin-left: 32%;" onclick="searchUsersPopUP(this, 'teamaddpopupid')" type="button" class="popup-buttonYellow popup-SearchClick cp" value="{!$Label.PMV_team_button_search_for_user}"/>
+       					</div>
+        				</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<tr>
+        				<td style="vertical-align: top;">
+        					<div style="position: relative;overflow: hidden;padding: 5px 0px;">
+	        					<div class="popup_labcls">{!$Label.PMV_team_lab_team_name}</div>
+	        					<div class="requiredInput" name="requiredInputName">
+		            				<div class="requiredBlock"></div>
+			            			<input type="text" id="teamaddnameid" class="addinput"/>
+		            			</div>
+        					</div>
+	            			<div>
+	            				<div class="popup_labcls">{!$Label.PMV_team_lab_description}</div>
+	            				<textarea rows="10" id="teamadddescriptionid" class="adddescription" style="width: 263px; min-width: 263px; max-width:263px; max-height:240px; resize: none;"></textarea>
+<!-- 	            				<input type="text" id="teamadddescriptionid" class="adddescription" name="adddescriptionName"/> -->
+	            			</div>
+        				</td>
+        				
+        				<td style="vertical-align: top;">
+        					<div class="popup-content-partDiv popupuserscls" id="adduserdivid">
+				                <div class="tmpteamcls">
+				                	<input uid="  " onclick="addUserBtn_eve(this, 'searchuserconid')" type="button" class="icls addusercls teamusercls popup-buttonGray fix cp" value="{!$Label.PMV_team_button_addicon}"/>
+				                	<input type="text" class="icls usernamecls" onkeyup="searchUserInput_eve(event, this)"/>
+				               	</div>
+				            </div>
+        				</td>
+        			</tr>
+        		</tbody>
+        		
+        		<tfoot>
+        			<tr>
+        				<th colspan="2" class="popup_footth">
+			                <input type="button" class="popup-buttonGray cp" value="{!$Label.PMV_team_button_cancel}" onclick="closeTeamPopUP(this, 'teamaddpopupid')"/>
+			                <input type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_save}" onclick="addTeamMembers(this, 'teamaddpopupid', 'searchuserconid', true);" />
+        				</th>
+        			</tr>
+        		</tfoot>
+        	</table>
+        	<!-- 
+            <div class="popup-content-title"><span>{!$Label.PMV_team_lab_choose_team_information}</span></div>
+            <table class="text-table">
+            	<tr>
+            		<th>{!$Label.PMV_team_lab_team_name}</th>
+            		<td>
+            			<div class="requiredInput">
+            				<div class="requiredBlock"></div>
+	            			<input type="text" id="teamaddnameid" class="addinput"/>
+            			</div>
+           			</td>
+            	</tr>
+            	<tr>
+            		<th>{!$Label.PMV_team_lab_description}</th>
+            		<td>
+            			<input type="text" id="teamadddescriptionid" class="adddescription"/>
+           			</td>
+            	</tr>
+            </table>
+            
+            <div class="popup-content-title"><span>{!$Label.PMV_team_lab_add_team_member}</span></div>
+            <div class="popup-content-partDiv popupuserscls" id="adduserdivid">
+            	
+                <div class="tmpteamcls">
+                	<input uid="  " onclick="addUserBtn_eve(this, 'searchuserconid')" type="button" class="icls addusercls teamusercls popup-buttonGray cp" value="{!$Label.PMV_team_button_addicon}"/>
+                	<input type="text" class="icls usernamecls" onkeyup="searchUserInput_eve(event, this)"/>
+               	</div>
+            </div>
+            <input onclick="searchUsersPopUP(this, 'teamaddpopupid')" type="button" class="popup-buttonYellow popup-SearchClick cp" value="{!$Label.PMV_team_button_search_for_user}"/>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray cp" value="{!$Label.PMV_team_button_cancel}" onclick="closeTeamPopUP(this, 'teamaddpopupid')"/>
+                <input type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_save}" onclick="addTeamMembers(this, 'teamaddpopupid', 'searchuserconid', true);" />
+            </div>
+        	 -->
+        </div>
+    </div>
+</apex:component>

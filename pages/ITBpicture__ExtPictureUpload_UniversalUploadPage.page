@@ -1,0 +1,40 @@
+<apex:page id="uploadPage" standardController="Attachment" extensions="ITBpicture.ExtPictureUpload" tabStyle="Document">
+	<style type="text/css">
+		.picBorder {
+			background-color : #FFFFFF;
+			border:2px solid #E3DEB8;
+			min-height:100px;
+			padding:5px;
+			min-width:100px;
+			margin:20px;
+			float:left;
+			text-align:center;
+			vertical-align:middle;
+		}
+		.pic {
+			text-align:center;
+			vertical-align:middle;
+		}
+		
+	</style>
+	
+    <apex:messages />
+    <apex:form id="uploadForm">
+		<apex:pageBlock id="uploadBlock" title="{!IF(hasPicture,$Label.ITBpicture__ReplacePictureHeadline, $Label.ITBpicture__UploadPictureHeadline)}">
+			<apex:pageBlockButtons > 
+                <apex:commandButton value="{!IF(hasPicture,$Label.ITBpicture__ButtonReplacePicture, $Label.ITBpicture__ButtonUploadPicture)}" action="{!uploadPicture}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons> 
+        	<apex:pageBlockSection id="oldPictureSection" title="{!$Label.ITBpicture__SectionTitleExistingPicture}" columns="1">
+				<apex:outputpanel styleClass="picBorder" id="image" layout="block">
+					<apex:image styleClass="pic" id="oldPicture" value="/servlet/servlet.FileDownload?file={!oldImageId}" rendered="{!hasPicture}"/>
+				</apex:outputpanel>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection id="newPictureSection" title="{!$Label.ITBpicture__SectionTitleNewPicture}" columns="1">
+					<apex:outputText >{!$Label.ITBpicture__UploadPictureDescription}</apex:outputText>
+					<apex:inputFile id="picture2upload" value="{!attachment.body}" contentType="{!attachment.ContentType}"/>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+    </apex:form>
+   
+</apex:page>

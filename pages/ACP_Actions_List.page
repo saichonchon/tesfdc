@@ -1,0 +1,32 @@
+<apex:page controller="ACP_Actions_List_Ctrl" standardStylesheets="false" title="Business Performance"  tabStyle="ACP_Account_Plan__c" sidebar="false" showHeader="true">
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'panelCSS.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+<div class = "bootstrap-sfdc">
+<div class="container-fluid whiteBack"> 
+    <apex:form >
+        <!--<apex:image url="{!$Resource.status_bar}" width="100%" height="8"/><br/><br/>-->
+        <apex:pageMessages /> 
+        <div align="center">
+        <apex:pageBlock mode="maindetail" id="aPanel">   
+   
+        <apex:outputPanel id="myButtons">
+        <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="myPanel,myButtons" styleClass="btn btn-default"/>
+        <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="myPanel,myButtons" styleClass="btn btn-default"/>        
+        <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="myPanel,myButtons" styleClass="btn btn-default"/>
+        <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="myPanel,myButtons" styleClass="btn btn-default"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="myPanel">
+        <!--<div align="left">Total Task Count: {!total_size}</div>-->
+        <!--<c:ACP_Task_Detail myItemList="{!Tasks}"/>-->
+        <c:ACP_DataTable actionsList="{!Tasks}" title="Actions List" fields="{!$ObjectType.Task.FieldSets.ACP_Actions_UI_Fieldset}" sObjectName="Task" tableId="actionsListTable" recCount="{!total_size}" category="{!category}" actionStatus="{!actionStatus}"/>
+        <!--<c:ACP_DataTable_Alka actionsList="{!Tasks}" title="Actions List" fields="{!$ObjectType.Task.FieldSets.ACP_Actions_UI_Fieldset}" sObjectName="Task" tableId="actionsListTable"></c:ACP_DataTable_Alka>-->
+        </apex:outputPanel>
+        <apex:commandButton value="Close" onclick="window.top.close();"/> 
+        </apex:pageBlock>
+        </div>
+        
+</apex:form> 
+</div>
+</div>
+</apex:page>

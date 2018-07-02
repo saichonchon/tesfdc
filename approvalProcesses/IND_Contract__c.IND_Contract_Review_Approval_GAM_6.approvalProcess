@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Account__c</field>
+        <field>Record_Type_Name__c</field>
+        <field>Contract_Start_Date__c</field>
+        <field>Contract_End_Date__c</field>
+        <field>Renewal_Term_Months__c</field>
+        <field>Cancel_Contract_XX_days_before_renewal__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_GAM_approved</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Renewal_Cancelled</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>GAM__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND( 
+
+Renewal_Term_Months__c &gt; 0,
+NOT(ISBLANK( GAM__c ))
+
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Review of Contract pending Termination GAM</label>
+        <name>Review_of_Contract_pending_Termination_GAM</name>
+        <rejectionActions>
+            <action>
+                <name>IND_Contract_End_Renew_Tp_Start_Term</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Int_End_Int_start_term</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_GAM_approved</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Update_First_Review_Check</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Renewal_Cancelled</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>AM_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+
+Renewal_Term_Months__c &gt; 0,
+ GAM_Approval__c = false,
+NOT(ISBLANK(  AM_Manager__c  ))
+
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Review of contract pending termination SM</label>
+        <name>Review_of_contract_pending_termination_SM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>IND_Contract_End_Renew_Tp_Start_Term</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Int_End_Int_start_term</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Update_First_Review_Check</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_GAM_approved</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Renewal_Cancelled</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>GAM__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+
+ Cancel_Contract_XX_days_before_renewal__c  &gt; 0,
+Renewal_Term_Months__c = 0,
+NOT(ISBLANK( GAM__c ))
+
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Review of contract no auto-renew GAM</label>
+        <name>Review_of_contract_no_auto_renew_GAM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Contract_cancellation_rejected</name>
+                <type>Alert</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_GAM_approved</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_Review_Date</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Renewal_Cancelled</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>AM_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+
+Cancel_Contract_XX_days_before_renewal__c &gt; 0,
+Renewal_Term_Months__c = 0,
+GAM_Approval__c = false,
+NOT(ISBLANK(  AM_Manager__c  ))
+
+)</formula>
+        </entryCriteria>
+        <label>Review of contract no auto-renew SM</label>
+        <name>Review_of_contract_no_auto_renew_SM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Contract_cancellation_rejected</name>
+                <type>Alert</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_All_Green_Status</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_Review_Date</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>IND_Contract_Set_status_to_active</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>this approval process is intended for contracts that auto-renew at the end of the initial runtime and are rejected by the contract owner, i.e. are supposed to be canceled.
+Or, contracts without auto-renewal option, but with defined cancellation period.
+ Cancellation requires approval by the GAM</description>
+    <emailTemplate>IND_Contract_Email_Templates/IND_Contract_Review</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>IND_Contract__c.Contract_Status__c</field>
+            <operation>equals</operation>
+            <value>Active - Pending Termination Approval</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>IND Contract Review Approval GAM_6</label>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

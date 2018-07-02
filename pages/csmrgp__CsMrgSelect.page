@@ -1,0 +1,493 @@
+<!--
+    01/18/2018  BE  JSENCODE applied to alertMessage and lastPageMessage (00156217)
+    04/25/2018  BE  Page has special handling for merging when in SCC or Lightning Console, in Lightning Console, the background color of the page is white instead
+                    of transparent (00159185)
+    05/23/2018  BE  Fixed issue where cross object lookup fields would cause page to crash. Use output fields to display most lookup links instead of the convoluted way of figuring them
+                    out from before (00160506)
+    06/12/2018  BE  Horizontal scrolling for the merge table when there are too many columns (00161049)
+-->
+<apex:page showHeader="true" sidebar="false" extensions="csmrgp.CsMrgSelectCtrl" standardController="Case" recordSetVar="Cases" tabStyle="Case_Merge_Premium__tab" id="pg">
+    <apex:includeScript value="/support/console/42.0/integration.js"/>
+    <apex:slds />
+    <apex:stylesheet value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/style/csmrgp-style.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/remove-console-padding.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/icon-util.js')}"/>
+    <script type="text/javascript">
+        if(sforce.console.isInConsole()) {
+            removeConsolePadding();
+        }
+    </script>
+    <style>
+        #bodyTable {    /* Allows the table to scroll horizontally in classic */
+            table-layout: fixed;
+        }
+
+        #mergeCaseTable td, #mergeCaseTable th {    /* results table cell sizes*/
+            min-width: 100px;
+            max-width: 400px;
+        }
+    
+        .lookupHoverDetail { /* hides the pop ups that appear when hovering over reference fields */
+            display: none !important;
+        }
+        .slds-modal {
+            transform:translate(0,-500px);
+        }
+
+        .obj-checkbox {
+            width:50%;
+        }
+
+        @media screen and (max-width: 549px) {
+            .obj-checkbox {
+                width:100%;
+            }
+        }
+
+        @media screen and (max-width: 394px) {
+            .tooltip .tooltiptext {
+                width:175px;
+            }
+        }
+    </style>
+
+    <apex:outputPanel rendered="{!inLightningConsole}">
+        <style type="text/css">
+            body {
+                background-color: white !important;
+            }
+        </style>
+    </apex:outputPanel>
+    
+    <apex:form id="theForm">
+        <apex:pageMessages id="msg"/>
+        <apex:outputPanel id="debug" layout="block" rendered="{!debug}">
+            <c:DebugLogging />
+        </apex:outputPanel>
+        <apex:actionFunction action="{!csmerge}" name="merge" oncomplete="postMerge();" reRender="pageAlertShowJS, postMergeConsoleJS"/>
+        <div class="slds-scope">
+            <div id="merge-modal" aria-hidden="true">
+                <section role="dialog" tabindex="-1" aria-labelledby="merge-modal-heading" aria-modal="true" aria-describedby="merge-modal-content" class="slds-modal">
+                    <div class="slds-modal__container">
+                      <header class="slds-modal__header">
+                        <button id="merge-modal-first-anchor" class="slds-close-button slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="hideMergeModal(); return false;">
+                            <img src="{!URLFOR($Resource.CaseMergePremiumAssets, 'case-merge-premium-assets/img/custom-icons/icons/utility/close_white_60.png')}" alt="close" class="slds-button__icon slds-button__icon_large"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="merge-modal-heading" class="slds-text-heading_medium slds-hyphenate"></h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="merge-modal-content">
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick="hideMergeModal(); return false;">Cancel</button>
+                        <button id="merge-modal-last-anchor" class="slds-button slds-button_brand" onclick="performMerge(); return false;">Merge</button>
+                    </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop"></div>
+            </div>
+
+            <div id="merge-select-page" tab-index="0" aria-hidden="false">
+                <c:CsMrgPageHeader title="Merge Cases" showContactUsButton="false"/>
+                
+                <c:PageAlert />
+
+                <apex:inputHidden value="{!masterCaseId}" id="h_master_case"/>
+                <div class="slds-scrollable_x">
+                    <table id='mergeCaseTable' class="slds-table slds-table_bordered slds-table_cell-buffer slds-no-row-hover">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col" class="slds-text-align_center">Master Case</th>
+                                <apex:repeat value="{!$ObjectType.Case.FieldSets.csmrgp__Case_Merge_Select}" var="f">
+                                    <th scope="col"><apex:outputText value="{!IF(CONTAINS(f.fieldPath, '.'), f.fieldPath, IF(f.type == 'reference', LEFT(f.label, LEN(f.label) - 3), f.label))}"/></th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!mergeCases}" var="mc">
+                                <tr>
+                                    <th scope="row">
+                                        <span class="slds-radio slds-align_absolute-center">
+                                            <input case-id="{!mc.id}" type="radio" id="radio-select-{!mc.id}-master" name="master-case-option" onchange="handleRadioCheck('{!$Component.h_master_case}','{!mc.id}')"/>
+                                            <label class="slds-radio__label" for="radio-select-{!mc.id}-master">
+                                                <span class="slds-radio_faux"></span>
+                                            </label>
+                                        </span>
+                                    </th>
+                                    <apex:repeat value="{!$ObjectType.Case.FieldSets.csmrgp__Case_Merge_Select}" var="f">
+                                        <td data-label="{!f.label}">
+                                            <div class="slds-truncate">
+                                                <apex:variable value="{!RIGHT(LOWER(f.fieldPath), 3) == '.id'}" var="IsDotIdField"/>
+                                                <apex:variable value="{!RIGHT(LOWER(f.fieldPath), 6) == '__r.id'}" var="IsDotIdCustomField"/>
+                                                <apex:variable value="{!IF(IsDotIdCustomField, LEFT(f.fieldPath, LEN(f.fieldPath) - 6) + '__c', IF(IsDotIdField, LEFT(f.fieldPath, LEN(f.fieldPath) - 3) + 'Id', f))}" var="theField"/>
+                                                <apex:outputField value="{!mc[theField]}"/>
+                                            </div>
+                                        </td>
+                                    </apex:repeat>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+                <apex:outputPanel rendered="{!!prefList.empty}">
+                    <apex:outputPanel layout="block" styleClass="slds-m-left_xx-large slds-m-top_medium slds-m-bottom_medium" rendered="{!DISPLAY_CLEAN_MERGE == 'block'}">
+                        <span class="slds-checkbox">
+                            <apex:inputCheckbox value="{!CLEAN_MERGE}" id="cleanMrgBox">
+                                <apex:actionSupport event="onchange" action="{!deselectObjects}" rerender="objPrefsSection,selectObjectOptions"/>
+                            </apex:inputCheckbox>
+                            <apex:outputLabel styleClass="slds-checkbox__label" for="{!$Component.cleanMrgBox}">
+                                <span class="slds-checkbox_faux"></span>
+                                <apex:outputText styleClass="bold slds-m-left_x-small" value="Clean Merge"/>
+                                <div class="tooltip">
+                                    <button class="slds-button slds-button_icon tooltip-button" type="button" style="background:url('{!URLFOR($Resource.CaseMergePremiumAssets, 'case-merge-premium-assets/img/custom-icons/icons/utility/tooltip_60.png')}');"/>
+                                    <span class="tooltiptext tooltip_top">
+                                        <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip">
+                                         <div class="slds-popover__body">Enable this option to close each child case as a duplicate without cloning any objects or fields. Nothing will be transferred to the master case.</div>
+                                     </div>
+                                 </span>
+                             </div>
+                            </apex:outputLabel>
+                        </span>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="slds-section slds-is-open slds-p-horizontal_small" rendered="{!DISPLAY_AD_HOC_PREFS}">
+                        <h3 class="slds-section__title">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Choose which objects will be cloned to the parent case">Choose which objects will be cloned to the parent case</span>
+                        </h3>
+                        <div aria-hidden="false" class="slds-section__content slds-p-horizontal_small slds-p-bottom_small" id="clone-objects-section">
+                            <apex:outputPanel id="selectObjectOptions">
+                                <apex:outputPanel rendered="{!!CLEAN_MERGE}" styleClass="">
+                                    <apex:commandLink action="{!selectAllObjects}" reRender="objPrefsSection" value="Select All" title="Select all objects"/>
+                                    <span>&nbsp;|&nbsp;</span>
+                                    <apex:commandLink action="{!unselectAllObjects}" reRender="objPrefsSection" value="Unselect All" title="Unselect all objects"/>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="objPrefsSection">
+                                <div class="slds-grid slds-wrap slds-m-top_small">
+                                    <apex:repeat value="{!prefList}" var="pref">
+                                        <div class="obj-checkbox">
+                                            <span class="slds-checkbox">
+                                                <apex:inputCheckbox value="{!pref.enabled}" id="prefBox" disabled="{!CLEAN_MERGE}"/>
+                                                <apex:outputLabel styleClass="slds-checkbox__label" for="prefBox">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <apex:outputText styleClass="bold slds-m-left_x-small" value="{!pref.label}"/>
+                                                </apex:outputLabel>
+                                            </span>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <div class='slds-border_top slds-p-top_small' style="display:flex; justify-content: center;">
+                    <div class="slds-button-group" role="group">
+                        <button class="slds-button slds-button_neutral" onclick="goToPreviousPage(); return false;">Cancel</button>
+                        <apex:commandButton value="Merge" disabled="{!DISABLE_MERGE}" styleClass="slds-button slds-button_brand" onclick="showMergeModal(); return false;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+    <script src="{!URLFOR($Resource.CaseMergePremiumAssets,'case-merge-premium-assets/script/action-overlays.js')}" type="application/javascript">//JS for disabling tabs when overlays are present</script>
+    <script src="{!URLFOR($Resource.CaseMergePremiumAssets,'case-merge-premium-assets/script/xml-entities.js')}" type="application/javascript"></script>
+    <script type="application/javascript">
+        // removes the annoying inline parameter when called from CsMrgDupeDetector
+        if(location.href.match(/inline=1/)) {
+            window.top.location = location.href.replace(/inline=1/, '');
+        }
+
+        sforce.console.setTabTitle('Merge Cases - Case Merge Premium');
+
+        function hideMergeModal() {
+            var mergeModal = document.getElementById('merge-modal');
+            var mergePage = document.getElementById('merge-select-page');
+            var mergeModalBackdrop = mergeModal.querySelector('.slds-backdrop');
+
+            mergeModal.querySelector('.slds-modal').setAttribute('tab-index','-1');
+            mergeModal.setAttribute('aria-hidden','true');
+
+            mergePage.setAttribute('tab-index','0');
+            mergePage.setAttribute('aria-hidden','false');
+
+            mergeModalBackdrop.classList.remove('slds-backdrop_open');
+            mergeModal.querySelector('.slds-modal').classList.remove('slds-slide-up-open');
+
+            document.onkeydown = null;
+            ACTION_OVERLAYS.setEnableTabsForPageExceptDiv(true,'merge-modal');
+        }
+
+        function showMergeModal() {
+            ACTION_OVERLAYS.setEnableTabsForPageExceptDiv(false,'merge-modal');
+            var mergeModal = document.getElementById('merge-modal');
+            var mergePage = document.getElementById('merge-select-page');
+            var mergeModalBackdrop = mergeModal.querySelector('.slds-backdrop');
+            var mergeModalHeading = mergeModal.querySelector('#merge-modal-heading');
+            var mergeModalContent = mergeModal.querySelector('#merge-modal-content');
+            clearMergeModalContent(mergeModal);
+            var mergeModalButtons = mergeModal.querySelectorAll('button');
+            for(var i = 0; i < mergeModalButtons.length; i++) {
+                var button = mergeModalButtons[i];
+                if(button.classList.contains('slds-close-button')) {
+                    button.style.display = 'block';
+                }
+                else {
+                    button.removeAttribute('disabled');
+                }
+            }
+            mergeModalContent.style.padding = "1rem";
+
+            mergeModalHeading.textContent = "Are you sure?";
+            var boldText = document.createElement('span');
+            boldText.className = "bold";
+            boldText.appendChild(document.createTextNode('Merging cannot be undone.'))
+
+            var contentTextNode = document.createTextNode(' Are you sure you want to proceed with the case merge? If the merge is successfully completed you will be taken to the master case\'s record page.');
+            mergeModalContent.appendChild(boldText);
+            mergeModalContent.appendChild(contentTextNode);
+
+
+            mergeModal.querySelector('.slds-modal').setAttribute('tab-index','0');
+            mergeModal.setAttribute('aria-hidden','false');
+
+            mergePage.setAttribute('tab-index','-1');
+            mergePage.setAttribute('aria-hidden','true');
+
+            mergeModalBackdrop.classList.add('slds-backdrop_open');
+            mergeModal.querySelector('.slds-modal').classList.add('slds-slide-up-open');
+
+            document.onkeydown = function(e) {
+                var escKeyCode = 27;
+                var enterKeyCode = 13;
+                var tabKeyCode = 9;
+
+                if(e.keyCode === escKeyCode) {
+                    hideMergeModal();
+                }
+                else if(e.keyCode === enterKeyCode) {
+                    performMerge();
+                }
+                else if(e.keyCode === tabKeyCode) {
+                    var firstAnchor = document.getElementById('merge-modal-first-anchor');
+                    var lastAnchor = document.getElementById('merge-modal-last-anchor');
+                    if(e.target == lastAnchor && !e.shiftKey) {
+                        e.preventDefault();
+                        firstAnchor.focus();
+                    }
+                    else if(e.shiftKey && e.target === firstAnchor) {
+                        e.preventDefault();
+                        lastAnchor.focus();
+                    }
+                }
+            }
+            document.getElementById('merge-modal-first-anchor').focus();
+        }
+
+        function performMerge() {
+            clearModal();
+            merge();
+        }
+
+        function clearModal() {
+            var mergeModal = document.getElementById('merge-modal');
+            var mergeModalHeading = mergeModal.querySelector('#merge-modal-heading');
+            var mergeModalContent = mergeModal.querySelector('#merge-modal-content');
+            clearMergeModalContent(mergeModal);
+            mergeModalHeading.textContent = "Merging Cases";
+
+            var spinner = document.createElement('div');
+            spinner.setAttribute('role','status');
+            spinner.className = "slds-spinner slds-spinner_brand slds-spinner_large";
+
+            var spinnerAssistiveText = document.createElement('span');
+            spinnerAssistiveText.className = "slds-assistive-text";
+            spinnerAssistiveText.appendChild(document.createTextNode('Loading'));
+
+            var spinnerDotA = document.createElement('div');
+            spinnerDotA.className = "slds-spinner__dot-a";
+
+            var spinnerDotB = document.createElement('div');
+            spinnerDotB.className = "slds-spinner__dot-b";
+
+            spinner.appendChild(spinnerAssistiveText);
+            spinner.appendChild(spinnerDotA);
+            spinner.appendChild(spinnerDotB);
+            mergeModalContent.appendChild(spinner);
+            mergeModalContent.style.padding = "2.5rem";
+
+            var mergeModalButtons = mergeModal.querySelectorAll('button');
+            for(var i = 0; i < mergeModalButtons.length; i++) {
+                var button = mergeModalButtons[i];
+                if(button.classList.contains('slds-close-button')) {
+                    button.style.display = 'none';
+                }
+                else {
+                   button.disabled = 'disabled';
+                }
+            }
+        }
+
+        function clearMergeModalContent(mergeModal) {
+            var mergeModalContent = mergeModal.querySelector('#merge-modal-content');
+            while(mergeModalContent.children.length > 0) {
+                mergeModalContent.removeChild(mergeModalContent.children[0]);
+            }
+            while(mergeModalContent.childNodes.length > 0) {
+                mergeModalContent.removeChild(mergeModalContent.childNodes[0]);
+            }
+        }
+
+        function goToPreviousPage(){
+            if (sforce.console.isInConsole() && {!NOT(inLightningConsole)})
+                sforce.console.getEnclosingPrimaryTabId(reopenTab);
+            else if (sforce.one)
+                sforce.one.back();
+            else
+                window.history.back();
+        }
+        
+        //Previous page
+        var reopenTab = function reopenTab(result) {
+            if (result.success)
+                sforce.console.openSubtab(result.id, '{!JSENCODE(tabURL)}', true, sforce.console.getEnclosingPrimaryTabId(refreshOriginalTab));
+            else
+                sforce.console.getSelectedNavigationTab(reopenNavigationTab);
+        };
+        
+        var refreshOriginalTab = function refreshOriginalTab(result){
+            sforce.console.refreshPrimaryTabById(result.id, false, sforce.console.getEnclosingTabId(closeFocusedTab));
+        };
+
+        var openUrl = function openUrl(result) {
+            sforce.console.openConsoleUrl(null, result.consoleUrl, true, false, '', sforce.console.getEnclosingTabId(checkEnclosingTab));
+        };
+        
+        var checkEnclosingTab = function checkEnclosingTab(result) {
+            if (result.success)
+                sforce.console.getFocusedSubtabId(closeFocusedTab);
+            else
+                sforce.console.refreshNavigationTab();
+        }
+
+        var closeFocusedTab = function closeFocusedTab(result) {
+            if (result.success)
+                sforce.console.closeTab(result.id);
+            else
+                sforce.console.getSelectedNavigationTab(reopenNavigationTab);
+        };
+        
+        var reopenNavigationTab = function reopenNavigationTab(result) {
+            sforce.console.setSelectedNavigationTab(null,result.navigationTabId);
+        }
+        
+        if ('{!JSENCODE(tabURL)}') {
+            sforce.console.generateConsoleUrl(['{!JSENCODE(tabURL)}'],openUrl);
+        }
+
+        // Init Radio
+        var radioButtons = document.getElementsByName("master-case-option");
+        for(var i = 0; i < radioButtons.length; i++) {
+            var radioButton = radioButtons[i];
+            var caseId = radioButton.getAttribute('case-id');
+            if(caseId) {
+                if(caseId == '{!masterCaseId}') {
+                    radioButton.checked = true;
+                    break;
+                }
+            }
+        }
+
+        function handleRadioCheck(apexHiddenInputId, caseId) {
+            document.getElementById(apexHiddenInputId).value = caseId;
+        }
+        function titleCase(string) {
+            return string.toLowerCase().replace(/^(.)|\s(.)/g, function($1) { return $1.toUpperCase(); });
+        }
+
+        function postMerge() {
+            // Check if any errors have occured, and whether or not we are in the console.
+            if(!PAGE_ALERT.showing && sforce && sforce.console && sforce.console.isInConsole()) {
+                handleConsolePostMerge();
+            }
+            else {
+                hideMergeModal();
+            }
+        }
+    </script>
+    <apex:outputPanel id="pageAlertShowJS">
+        <script type="application/javascript">
+            function handleAlert() {
+                var alertMessage = unescapeXMLEntities('{!JSENCODE(alertMessage)}');
+                var alertType = '{!JSENCODE(alertType)}';
+                var latestPageMessage = unescapeXMLEntities('{!JSENCODE(latestPageMessage)}');
+                if(alertMessage === null || alertMessage === '') {
+                    if(latestPageMessage === null || latestPageMessage === '') {
+                        PAGE_ALERT.hideAlert();
+                        return; // do not show.
+                    }
+                    else {
+                        alertMessage = latestPageMessage;
+                        alertType = '{!JSENCODE(latestPageMessageType)}';
+                    }
+                }
+
+                switch(alertType) {
+                    case 'error':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.ERROR);
+                        break;
+                    case 'success':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.SUCCESS);
+                        break;
+                    case 'warning':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.WARNING);
+                        break;
+                    default:
+                        //console.error('Invalid alert type "' + alertType + '". Valid types are "error","success"," & "warning".');
+                        PAGE_ALERT.hideAlert(); // Invalid Type.
+                        return;
+                }
+                PAGE_ALERT.setMessages([alertMessage]); 
+                PAGE_ALERT.showAlert();
+            }
+            handleAlert();
+        </script>
+    </apex:outputPanel>
+
+    <apex:outputPanel id="postMergeConsoleJS">
+        <script type="text/javascript">
+            function handleConsolePostMerge() {
+                // When in lightning console, the parent can be in an already open tab. Refresh the page to prevent issues.
+                if({!inLightningConsole}) {
+                    findMergeTab();
+                }
+                else {
+                    findPrimaryTab();
+                }
+            }
+
+            function findMergeTab(aResult) {
+                sforce.console.getEnclosingTabId(closeMergeTab);
+            }
+
+            function closeMergeTab(tab) {
+                sforce.console.closeTab(tab.id);
+                if({!inLightningConsole}) {
+                    refreshPage();
+                }
+            }
+
+            function refreshPage(closeTabResult) {
+                window.top.location.href = '{!JSENCODE(tabURL)}';
+            }
+
+            function findPrimaryTab() {
+                sforce.console.getEnclosingPrimaryTabId(refreshPrimaryTab);
+            }
+
+            function refreshPrimaryTab(primaryTab) {
+                sforce.console.refreshPrimaryTabById(primaryTab.id, false, function(refreshResult) {
+                    sforce.console.openSubtab(primaryTab.id, '/' + '{!JSENCODE(masterCaseId)}', true, '{!JSENCODE(parentCaseNumber)}', null, findMergeTab);
+                });
+            }
+        </script>
+    </apex:outputPanel>
+</apex:page>

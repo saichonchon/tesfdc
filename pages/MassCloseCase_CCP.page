@@ -1,0 +1,24 @@
+<apex:page controller="MassCloseCase_CCPController" tabStyle="case">
+<apex:pageMessages ></apex:pageMessages>
+ <apex:form >
+ <apex:pageBlock title="Case Information">
+            <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!Savefields}"/>
+             <apex:commandButton value="Cancel" action="{!Canclefields}"/>
+             </apex:pageBlockButtons>
+          <apex:pageBlockSection columns="1">
+          <apex:pageBlockSectionItem >
+         <apex:outputText value="Status"></apex:outputText>
+         <apex:selectList value="{!Status}" size="1"  disabled="false" rendered="true" > 
+            <apex:selectOption itemValue="closed" itemLabel="Closed" />
+             <apex:selectOption itemValue="Closed (No Action)" itemLabel="Closed (No Action)" />
+        </apex:selectList></apex:pageBlockSectionItem>
+        <apex:inputField value="{!c1.Inquiry_Type__c}"/>
+        <apex:inputField value="{!c1.Other_Inquiry_Type__c}"/>
+        <apex:inputField value="{!c1.Close_Date_Comments__c}"/>
+        
+            
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+ </apex:form>
+</apex:page>

@@ -1,0 +1,1203 @@
+<apex:page showHeader="false" standardStylesheets="false" cache="false" controller="LiveagentCtrl"  action="{!init}"> 
+    <c:LoadingComp />
+        
+    <html xmlns="https://www.w3.org/1999/xhtml">
+       <div id="logo"/>
+       <apex:form >
+             <apex:actionFunction name="dfunction"  action="{!availableAgentButtonIds}" oncomplete="setQueryStrings();" reRender="refreshSection" status="counterStatus" >
+                <apex:param id="dname" name="type" assignTo="{!selectedCCorPIC}" value=""/>
+              </apex:actionFunction>
+       </apex:form> 
+               <script>
+               function changeCCVal(cclaid){
+                    startLoading(); 
+                    var e = document.getElementById("CC_LA_Portal");
+                    var strUser = e.options[e.selectedIndex].id;
+                    dfunction(strUser);
+                    validateData(cclaid);
+                }                                                        
+        </script> 
+        <script>
+       
+        </script>   
+
+        <script type="text/javascript">
+            if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+                      
+                    } else {
+                      
+                      $('body').addClass('deskChatWindow');
+                    }
+        </script>   
+        <head>
+            <title>Start Live Chat - TE</title> 
+            
+            <!--<meta name="viewport" content="width=980" />-->
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <!--<meta name="viewport" content = "width = device-width, initial-scale = 2.3, user-scalable = no" />
+            <meta name="viewport" content = "width = device-width, initial-scale = 2.3, minimum-scale = 1, maximum-scale = 5" />-->
+           <!-- <meta name = "viewport" content = "width = 320,initial-scale = 2.3, user-scalable = no"/> -->
+          <!--   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>-->
+<meta name="viewport" content="width=device-width,  maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, height=device-height, target-densitydpi=device-dpi" />
+<!--<script src="https://assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-8af595cb0a5a164cf41fbe049f06894afb57ea02.js"></script>
+<!--<script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-8af595cb0a5a164cf41fbe049f06894afb57ea02-staging.js"></script>-->
+<!--<script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-2fc7f9a1fc12037dd266657aafe0109cba564dc7.js"></script>-->
+<!--<script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-2fc7f9a1fc12037dd266657aafe0109cba564dc7.js"></script> -->
+<script src="{!$Setup.Live_Agent_Org_Settings__c.trackingUrl__c}"></script><!-- Js Added for Page Tracking -->
+
+            <apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/jquery.js')}"/> 
+            <apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/lvcDA_v1.0.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/elq_tracking-min.js')}"/>
+            <link rel="icon" href=" {!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/favicon.ico')}" type="image/x-icon"/>
+            <link rel="shortcut icon" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/favicon.ico')}"/>            
+            <meta property="analytics:application" content="SS" />
+            
+            <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-global-en.css')}" title="default" media="all"/> 
+            <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/standardChatWindow.css')}" title="default" media="all"/>
+            <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.te_global_css_mobile)}" title="default" media="all"/>
+            <apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/elq_lvc_submit.js')}"/>
+      <!--       <apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/modernizr-custom.js')}"/> -->
+            <apex:includeScript value="{!URLFOR($Resource.te_modernizr_js_mobile)}"/>
+            
+            <script>
+            var teV2 = window.teV2 || {};
+            teV2.ns = function() {
+                var obj = window.teV2;
+                for (var x = 0, len = arguments.length; x < len; x++) {
+                    var ns = arguments[x];
+                    obj[ns] = obj[ns] || {};
+                    obj = obj[ns];
+                }
+                return obj;
+            };
+            </script>
+            <!-- New TE.com head fragement End -->
+
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+           <!-- <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=980"/>-->
+            <meta name="description" content=""/>
+            <meta name="keywords" content=""/>
+            
+            <!--   <link rel="stylesheet" type="text/css" href="https://www.te.com/_TEincludes/ver/1165/v2/generated-src/css/te-global-en.css"/>  -->
+            <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/jquery.js')}"></script>
+            <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/elq_tracking-min.js')}"></script>
+            
+            <script>
+            var siteName = "te-demo";
+            var te = window.te || {};
+            te.ns = function(){
+                var obj = window.te;
+                for(var x = 0, len = arguments.length; x < len; x++){
+                    var ns = arguments[x];
+                    obj[ns] = obj[ns] || {};
+                    obj = obj[ns];
+                }
+                return obj;
+            }
+            
+            </script>
+           
+            <script type="text/javascript" src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/lvcDA_v1.0.js')}"></script>
+            <script type="text/javascript" src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/elq_lvc_submit.js')}"></script>
+            
+        <style>
+        input, textarea, select {
+          font-size: 16px !important;
+        }
+
+       #enabledSubmit {
+            position: fixed; 
+            bottom: 165px !important; 
+            left: 50%; 
+            transform: translateX(-50%);
+            }
+                              
+            #logo {
+            text-indent: -5000px;
+            z-index: 999999;
+            display: block;
+            width: 147px;
+            height: 77px;
+            float: left;
+            background: url("{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}") 50% 50% no-repeat;
+            position: absolute;
+            top: -1px;
+            margin-left: 15px;
+            }
+            .deskChatWindow #logo {
+            display:block !important;
+            }
+            #oo_tab div { 
+            background-image: url({!IF(VisitorLocaleLang = 'CHINESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-chinese.png'),
+            IF(VisitorLocaleLang = 'JAPANESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-japanese.png'),
+            URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-english.png')))}); 
+            
+            }  
+            #oo_tab span { 
+            background: url({!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_tab_icon.gif')}) no-repeat;
+            
+            }
+            
+            .oo_tab_right span {
+            left: 7px;
+            } 
+            .icon[role="presentation"].icon-alert:before {
+            content: URL("/img/approvals/stopsign_16x16.gif") !important;
+            }
+            /* vignesh */
+              iframe{bottom:0px !important;position:fixed !important; overflow-x:hidden;overflow-y:auto;}
+         @media screen and (-webkit-min-device-pixel-ratio: 0) {
+               body, select, select:focus, textarea:focus, input:focus {
+                        font-size: 16px !important;
+                    }
+                     input[type="text"]{height:22px !important;}
+                    iframe{bottom:0px !important;position:fixed !important;overflow:auto;} 
+             }        
+         @media (min-width: 768px) {
+    input[type="email"]:hover,
+    input[type="number"]:hover,
+    input[type="search"]:hover,
+    input[type="text"]:hover,
+    input[type="tel"]:hover,
+    input[type="url"]:hover,
+    input[type="password"]:hover,
+    textarea:hover,
+    select:hover{font-size: inherit;}
+}
+             .livechat-sub-titlebar-error{display:none !important;}
+            .livechat-form-wrapper .error-text{
+           margin-left: 90px !important;
+            }
+            @-ms-viewport { width: device-width; }
+            .livechat-form-wrapper{
+            margin:0 auto !important;
+            top:19% !important;
+            }
+            .livechat-form-wrapper .btn-block-1
+            {
+            margin-top:0px !important;
+            }
+            @media only screen and (max-width:649px){
+            #logo{
+                  display : none !important;
+              }
+              .livechat-sub-titlebar-error{display:none !important;}
+              .livechat-titlebar{ display:none;}
+              .access-MyResources-Header{top:0px !important;}
+              
+              .livechat-form-wrapper{
+            top:8% !important;
+            }
+            .livechat-chat-text{
+                    font:normal 12px Arial, Helvetica, sans-serif !important;
+                  /* margin:0px 0 3px 0 !important;*/
+                    }
+                   #enabledSubmit{
+              position: inherit !important; 
+               transform: translateX(0%);
+               margin-bottom:109px;
+               }
+              
+              }
+               @media screen and (max-width:649px) and (orientation:landscape){  
+                .livechat-sub-titlebar-error{display:none !important;}
+              
+                 #enabledSubmit{
+              position: inherit !important; 
+               transform: translateX(0%);
+               margin-bottom:175px;
+               }
+               
+               
+               }
+      @media only screen and (max-width:767px){
+        .livechat-sub-titlebar-error{display:none !important;}
+        .livechat-form-wrapper .error-text{margin:4px 20px}
+        .livechat-form-wrapper .error-text{margin-left:9px !important;}
+        .livechat-titlebar{ height:5px !important;
+        padding:8% 4%;}
+        /*.access-MyResources-Header{
+        top:0px !important;}*/
+        
+         /*#logo{
+                  display : none !important;
+              }*/
+               .access-MyResources-Header{
+                    background-color: #fff !important;
+                }
+                    body {
+                        font-size: 16px;
+                   }
+                  select, select:focus, input[type="text"]{
+                        font-size: inherit;
+                    }
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: #f2f2f2 !important;
+                        }
+                       .textfield-wrapper{
+                       padding : 0px !important;
+                       bottom:0px !important;
+                       }
+                       select {
+                    box-sizing:border-box !important;
+                        width:100% !important;
+                        height:35px !important;
+                        background:#fff !important;
+                        border:solid 1px #d9d9d9 !important;
+                        margin:0 0 5px 0 !important;
+                        padding:0 10px !important;
+                    }
+                input[type="text"]{
+                box-sizing:border-box !important;
+                    width:100% !important;
+                    height:35px !important;
+                    background:#fff !important;
+                    border:solid 1px #d9d9d9 !important;
+                    margin:0 0 5px 0 !important;
+                    padding:0 10px !important;
+                }
+                #opt-in-label{
+                font: normal 12px Arial, Helvetica, sans-serif !important;
+                    color: #757776 !important;
+                   /* margin: 0 0 65px 0 !important;*/
+                    margin: 0 0 23px 0 !important;
+                }
+            .livechat-form-wrapper{width:94% !important;}
+                .btn-block-1{
+                    background:#cccccc;
+                    margin:10px 0 20px 0;
+                }
+                .access-MyResources-Header a{
+                    font: normal 14px Arial, Helvetica, sans-serif !important;
+                }
+                
+                div#oo_tab {
+                        display: none;
+                    }
+                   
+               #enabledSubmit{
+              position: inherit !important; 
+               transform: translateX(0%);
+               margin-bottom:175px;
+               }
+        }
+           @media screen and (max-width:767px) and (orientation:landscape){  
+           
+            .livechat-sub-titlebar-error{display:none !important;}
+       .livechat-titlebar-text{
+       top:18%;
+       }
+       .livechat-form-wrapper{
+            top:14% !important;
+            }
+       div#oo_tab {
+                display: none;
+            }    
+            .liveAgentStateWaiting .waiting_div{
+            height:300px !important;
+                       }   
+              #enabledSubmit{
+              position: inherit !important; 
+               transform: translateX(0%);
+               margin-bottom:175px;
+               }
+               #logo{
+                  display : none !important;
+              }
+              .livechat-titlebar{ display:none;}
+              .access-MyResources-Header{top:0px !important;}
+       }
+        
+                .textfield-wrapper{ padding-top:0px !important;}
+                .deskChatWindow .access-MyResources-Header{
+                        /*top:76px;*/
+                        margin-top: 12% !important;
+                        }
+                        .livechat-titlebar{
+                        height:12% !important;
+                        }
+                        
+                        @media screen and (min-width:650px){
+                       /* .livechat-form-wrapper{ top:20%!important;} */
+                        }
+                
+                @media screen and (min-width:768px) and (max-width:991px) {
+                  #enabledSubmit{
+              position: inherit !important; 
+               transform: translateX(0%);
+               margin-bottom:175px;
+               }
+                
+                
+                }
+                @media screen and (min-width:992px) and (max-width:1199px) {
+                }
+        </style>
+      </head>   
+            <body onload="setQueryStrings();">       
+                
+                <div id="oo_tab" class="oo_tab_right" tabindex="0">
+                    <div>
+                    <a></a><span></span>
+                        </div>
+                <!--     <div class="screen_reader">Activate to launch comment card</div>  -->
+                    </div>
+                    <form method='post' id='prechatForm' style="display:none"> 
+                        <div class="te-page">
+                          <div class="livechat-titlebar">
+                                <div class="livechat-titlebar-text" id="livechat">{!mapHTMLTranslations['livechat']}</div>
+                                </div>
+                                <div class="access-MyResources-Header" id="accessmyresources" ><a href="{!mapHTMLTranslations['accessmyresourceslink']}"  target="_blank" onclick="javascript:window.close();"> {!mapHTMLTranslations['accessmyresources']} &gt; </a></div>
+                                    
+                                    <div class="livechat-form-wrapper"> 
+                                  <!--  <div class="livechat-startchatbar"></div>-->
+                                    
+                                     <div id="errMsg" class="livechat-sub-titlebar-error" style="display:none">
+                                            <i class="icon icon-alert icon-medium" role="presentation"></i>
+                                            Please adjust the items below
+                                            </div>
+                                            <div class="livechat-chat-text" id="livechat-chat-text">To begin your chat with TE please enter your details</div>                                            
+                                            <script type='text/javascript' src='{!$Setup.Live_Agent_Org_Settings__c.DeploymentURL__c}'></script>                                                                
+                                            <script type='text/javascript'>
+                                            //var orgid = '{!$Organization.Id}';
+                                            //var deplymntid = '{!$Setup.Live_Agent_Org_Settings__c.DeploymentID__c}';
+                                            //var initurl = '{!$Setup.Live_Agent_Org_Settings__c.initURL__c}';
+                                            //console.log('deplmntid'+deplymntid);
+                                            //orgid = orgid.substring(0, 15);
+                                            //liveagent.init(initurl, deplymntid, orgid );
+                                            </script>                                           
+                      <!-- CC Longuages --> 
+
+        <apex:outputPanel id="cclivegaentpanel" rendered="{!accountExist}" >
+        <label class="livechat-chat-text" id="SelectATopic" >{!mapHTMLTranslations['SelectATopic']}</label>    
+        <div id="CCLiveAgnet">                                                              
+        <div id="CC_LA_Portals_section">       
+             <select size="1" onchange="changeCCVal(this.id);" id="CC_LA_Portal" name="liveagent.prechat:ChatType" onblur="validateData(this.id);">
+                <option id="SELECT" value="SELECT" >{!mapHTMLTranslations['select-id']}</option> 
+                <option id="CustomerCarePortal" value="Customer Care">{!mapHTMLTranslations['CustomerCarePortal']}</option>
+                <option id="ProductInformationPortal" value="Product Information">{!mapHTMLTranslations['ProductInformationPortal']}</option>                
+            </select>                                                
+        </div>     
+         <div class="error-text" style="display:none; padding-left:20px; padding-top:15px" id="CC_LA_Portal_Err">Please select an option</div>
+           
+        </div>
+        </apex:outputPanel>     
+        <apex:outputPanel id="refreshSection">                                            
+        <apex:outputPanel id="cclivelongpanel" rendered="{!showCcLong}">
+            <label id="info">{!mapHTMLTranslations['info']}</label>
+            <select id="CC_LONG_OPTIONS" name="{!longName}" onchange="checkForSubmitReadinessforCC(this.id);"  onblur="validateData(this.id);" >
+                <option value="">{!mapHTMLTranslations['select-id']}</option>
+                <option id="Eng" value="{!cclaEnglishButtonids}">English</option>
+                <option id="Chi" value="{!cclaChineseButtonids}">中文</option>                
+                <option id="EngOff" value="English (Offline)" disabled="true">English (Offline)</option>
+                <option id="ChnOff" value="Chinese (Offline)" disabled="true">中文 (Offline)</option>  
+            </select>       
+        </apex:outputPanel>   
+        <input type="hidden" value="{!chkCcEngBtnsFlg}" id="en"/>
+        <input type="hidden" value="{!chkCcChnBtnsFlg}" id="ch"/>
+        <input type="hidden" value="{!showPicLong}" id="showPicLang"/>        
+        <input type="hidden" value="{!primarybuttonidsString}" id="idprimarybuttonids" name="{!prmName}"/>
+        <input type="hidden" value="{!chkCcPrmrBtnsFlg}" id="ccPrmryId"/>
+        
+            <div class="error-text" style="display:none; padding-left:20px; padding-top:15px" id="CC_LONG_OPTIONS_Err">Please select your chat language</div>
+        
+            <apex:outputPanel id="LangPanel" rendered="{!showPicLong}">
+                <label id="info">{!mapHTMLTranslations['info']}</label>
+            <select class="selectboxit te-drop-down country-selector-dropdown selectboxit-enabled selectboxit-btn" 
+                    id="languageCode" name="{!piclonghtmlname}" onchange="LangChanged(this.id);"  onblur="validateData(this.id);" tabindex="1">
+                <option value="">{!mapHTMLTranslations['select-id']}</option>                
+                <option id="a" value="{!ChatButtonId_ZH}">中文</option>
+                <option id="b" value="{!ChatButtonId_DE}">DEUTSCH</option> 
+                <option id="c" value="{!ChatButtonId_EN}">ENGLISH</option>  
+                <option id="d" value="{!ChatButtonId_ES}">ESPAÑOL</option> 
+                <option id="a-off" value="" disabled="true">中文 (Offline)</option>
+                <option id="b-off" value="" disabled="true">DEUTSCH (Offline)</option>
+                <option id="c-off" value="" disabled="true">English (Offline)</option>
+                <option id="d-off" value="" disabled="true">ESPAÑOL (Offline)</option>
+            </select>
+            </apex:outputPanel>
+            <input type="hidden" value="{!chkPicChnBtnsFlg}" id="pchn"/>
+            <input type="hidden" value="{!chkPicGmnBtnsFlg}" id="pgmn"/>            
+            <input type="hidden" value="{!chkPicEngBtnsFlg}" id="peng"/>
+            <input type="hidden" value="{!chkPicSpnBtnsFlg}" id="pspn"/>
+            <!-- Prabhanjan : Adding offline capability --> 
+             
+            <input type="hidden" value="{!VisitorRegion}" id="VisitorRegion"/>
+            <input type="hidden" value="{!deactivatePrechat}" id="dact"/>            
+            <input type="hidden" value="{!deactivatePrechatCC}" id="dactCC"/> 
+            <input type="hidden" value="{!deactivatePrechatPIC}" id="dactPIC"/> 
+            </apex:outputPanel>
+            
+<!--        </apex:outputPanel> -->
+          
+        <script type="text/javascript">
+        if (document.getElementById("info") != null) document.getElementById("info").style.display = "block";
+        
+        function LangChanged(LangId){
+            newLangIndex = document.getElementById(LangId).selectedIndex;
+            
+            //  console.log('1. index from htmlid...'+document.getElementById('languageCode').selectedIndex);
+            // console.log('1. index from thisid...'+document.getElementById(LangId).selectedIndex);
+             
+            checkForSubmitReadinessforPIC();
+            
+            validateData(LangId);
+            
+        }
+        
+        </script>
+        
+        <div class="error-text" style="display:none; padding-left:20px; padding-top:15px" id="languageCode_Err">Please select your chat language</div>
+        
+        <div class="textfield-wrapper">
+            <!-- Added for Live chat Phase - 2 START -->
+            <input type="text" name="liveagent.prechat:Subject" id="subject" placeholder="* Subject"  value="{!customerWrapperObject.subject}" onblur="validateData(this.id);" tabindex="2"/>
+            <div class="error-text" style="display:none; padding-left:20px" id="subject_Err">Please enter your queries</div>
+            <!-- Added for Live chat Phase - 2 END -->
+            <input type="text" name="liveagent.prechat:ContactFirstName" id="firstName" placeholder="* First Name" value="{!customerWrapperObject.fName}" onblur="validateData(this.id);" tabindex="3"/>
+            <div class="error-text" style="display:none" id="firstName_Err">Please enter your first name</div>
+            
+            <input type="text" name="liveagent.prechat:ContactLastName" id="lastName" placeholder="* Last Name" value="{!customerWrapperObject.lName}"  onblur="validateData(this.id);"  tabindex="4"/>
+            <div class="error-text" style="display:none" id="lastName_Err">Please enter your last name</div>
+            
+            <input type="text" name="liveagent.prechat:ContactEmail" id="emailAddress" placeholder="* Email Address"  value="{!customerWrapperObject.email}"  onblur="validateData(this.id);" tabindex="5"/>
+            <div class="error-text" style="display:none; padding-left:20px" id="emailAddress_Err">Please enter your email address</div>
+            
+            <!-- Prabhanjan: Used to set the visitor's name for the agent in the Console -->
+            <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
+            
+            <!-- Prabhanjan: Commenting this as it is not requested -->
+            <!-- Prabhanjan: The following tags find the contact by the emailid
+                -- and if none found creates under a dummy account, please change the acc id as per instance 
+             -->
+            <!--
+            <input type="hidden" name="liveagent.prechat:ContactRecordType" value="012E0000000NDLi" />
+            <input type="hidden" name="liveagent.prechat:ContactAccount" value="001L000000qTJrZ" />
+            -->
+            
+            <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="FirstName,ContactFirstName;LastName,ContactLastName;Email,ContactEmail;RecordTypeId,ContactRecordType;AccountId,ContactAccount" />
+            <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Email,true" />
+            <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Email,true" />
+   <!--         
+<input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Contact" value="FirstName,true;LastName,true;Email,true;RecordTypeId,true;AccountId,true" />
+-->
+            <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="CasetId" /> 
+            <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId" /> 
+            <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="false" />   
+            <input type="hidden" name="liveagent.prechat.save:Subject"  value="Subject__c" /> <!-- Added for Live chat Phase - 2 -->
+            <input type="hidden" name="liveagent.prechat.save:ContactEmail"  value="Email_Address__c" />
+            <input type="hidden" name="liveagent.prechat.save:ContactFirstName"  value="First_Name__c" />
+            <input type="hidden" name="liveagent.prechat.save:ContactLastName"  value="Last_Name__c" /> 
+            <input type="hidden" name="liveagent.prechat.save:ChatType"  value="Chat_Type__c" /> 
+            <input type="hidden" name="liveagent.prechat:AccountNumberList" id="prechat_AccountNumberList" value="{!accnumfrmurl}"/>
+            <input type="hidden" name="liveagent.prechat.save:AccountNumberList"  value="Registered_TE_com_Account__c" /> 
+            
+            <apex:outputPanel id="CounrtyPanel">
+                <select name="countryCode" id="countryCode" onchange="refreshLangPanel(this.id)" tabindex="5" style="display: block">
+                    <option value="">{!mapHTMLTranslations['Selectyourcountry']}</option>       
+                    <apex:repeat value="{!CS}" var="C">
+                        <option value="{!C.Country_Code_2_Digit__c}" >  
+                            <apex:outputPanel rendered="{!IF(VisitorLocaleLang == 'CHINESE',TRUE,FALSE)}">{!C.Chinese_Label__c}</apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(VisitorLocaleLang == 'JAPANESE',TRUE,FALSE)}">{!C.Japanese__c}</apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(VisitorLocaleLang == 'ENGLISH',TRUE,FALSE)}">{!C.English__c}</apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(VisitorLocaleLang == 'DEUTSCH',TRUE,FALSE)}">{!C.German__c}</apex:outputPanel> 
+                        </option>  
+                    </apex:repeat>                  
+                </select>
+            </apex:outputPanel>  
+            <div class="error-text" style="display:none; margin-left:-5px" id="countryCode_Err">Country is required</div>
+            
+            <div class="disclaimer" id="disclaimer" style="display: block">
+                <input type="checkbox" name="optIn" id="optIn" value="1" checked="checked" onclick="changeOptInValue();"/>
+                <label class="checkbox-label">
+                    <p id="opt-in-label">{!mapHTMLTranslations['opt-in-label']}</p>
+                </label>
+            </div>
+            
+            <input type='submit' value='Request Chat' id='prechat_submit' style="display:none"/>
+            <a id ="enabledSubmit" href="javascript:void(0);" class="btn-block-1 btn-clr-1 icon-right" onclick="submitting();" 
+               tabindex="5">{!mapHTMLTranslations['enabledSubmit']}  &nbsp;&nbsp;&nbsp; &gt;</a>
+       
+        </div>
+        
+        <script>
+        
+        if('{!VisitorCountryCode_2_Digit}'!=''){
+            document.getElementById("countryCode").value = '{!VisitorCountryCode_2_Digit}';  
+        }
+        
+        function refreshLangPanel(thisid){
+            
+            validateData(thisid);
+            var newCountry = document.getElementById(thisid).value;
+            startLoading();
+            listChatButtons(newCountry);
+        }
+        
+        </script>
+        
+    </div>
+    
+    
+    
+    <div id="noAgentMsg" class="livechat-no-agent-form-wrapper"  style="display:none">
+        <div id="logo_top"/>
+        
+        <div class="livechat-no-agent-main-header-text" id="livechat-no-agent-main-header-tex">{!mapHTMLTranslations['livechat-no-agent-main-header-tex']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text">{!mapHTMLTranslations['livechat-no-agent-header-text']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-3">{!mapHTMLTranslations['livechat-no-agent-header-text-2']} or <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div>
+        
+        <!-- Prabhanjan:00901055 Adding createupdateMissed instead of closeWindow, and closeWindow will be used in callback of createupdateMissed -->
+        
+        <div class="livechat-no-agent-button-wrapper">
+            <div class="livechat-no-agent-button">
+                <a href="{!mapHTMLTranslations['contact-support']}" onclick="createupdateMissed();" target="_blank"
+                   class="btn-block-11 btn-clr-13 login-button"> {!mapHTMLTranslations['SENDEMAILREQUEST']} <i role="presentation"> > </i> </a>
+            </div>
+        </div>        
+    </div>
+
+    <div id="noAgentMsPIC" class="livechat-no-agent-form-wrapper"  style="display:none">
+        <div id="logo_top"/>
+        
+        <div class="livechat-no-agent-main-header-text" id="livechat-no-agent-main-header-tex">{!mapHTMLTranslations['livechat-no-agent-main-header-tex']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text">{!mapHTMLTranslations['livechat-no-agent-header-text']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-3">{!mapHTMLTranslations['livechat-no-agent-header-text-3']} or <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div>
+        
+        <!-- Prabhanjan:00901055 Adding createupdateMissed instead of closeWindow, and closeWindow will be used in callback of createupdateMissed -->
+        
+        <div class="livechat-no-agent-button-wrapper">
+            <div class="livechat-no-agent-button">
+                <a href="{!mapHTMLTranslations['contact-support']}" onclick="createupdateMissed();" target="_blank"
+                   class="btn-block-11 btn-clr-13 login-button"> {!mapHTMLTranslations['SENDEMAILREQUEST']} <i role="presentation"> > </i> </a>
+            </div>
+        </div>        
+    </div>        
+
+    <div id="noAgentMsCC" class="livechat-no-agent-form-wrapper"  style="display:none">
+        <div id="logo_top"/>        
+        <div class="livechat-no-agent-main-header-text" id="livechat-no-agent-main-header-tex">{!mapHTMLTranslations['livechat-no-agent-main-header-tex']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text">{!mapHTMLTranslations['livechat-no-agent-header-text']}</div>
+        <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-2">{!mapHTMLTranslations['livechat-no-agent-header-text-2']}</div>     
+    </div>        
+        
+    
+</div>
+
+<script>
+/* Removed by Onkar : Replace opnion lab with Qualtrics
+(function() { 
+   var d=document,
+        h=d.getElementsByTagName('head')[0],
+        s=d.createElement('script');
+    s.type='text/javascript';
+    s.async=true;
+    s.src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_optimized.js')}";
+    s.charset='windows-1252'
+    h.appendChild(s);
+}());
+*/
+
+function setQueryStrings() {
+    
+    
+   /* removed by Onkar kumar value is controller by Apex Class 
+   document.getElementById('firstName').value=getParameterByName('First_Name');
+    document.getElementById('lastName').value=getParameterByName('Last_Name');
+    var emailFromURL = decodeURIComponent(getParameterByName('Email'));
+    document.getElementById('emailAddress').value=emailFromURL; 
+    document.getElementById('TECewt7').value = getParameterByName('TECewt7');
+   */
+    
+        $('.loadingBox').hide();
+        var shoNoAgent =document.getElementById("dact").value;
+        var shoPic =document.getElementById("showPicLang").value;
+        var shoNoAgentCC =document.getElementById("dactCC").value;
+        var shoNoAgentPIC =document.getElementById("dactPIC").value;     
+        if(shoNoAgentCC == "true"){
+            $('#noAgentMsCC').show(); 
+            _satellite.track("agentsUnavailableCC"); // Code Added for Tracking
+        }     
+    else{
+         $('#prechatForm').show(); 
+        }
+        
+        if(shoNoAgentPIC == "true"){
+            $('#noAgentMsPIC').show(); 
+             _satellite.track("agentsUnavailablePIC"); // Code Added for Tracking
+        }    
+    else{
+         $('#prechatForm').show(); 
+        }
+
+    
+        var ccPrmyAvl = document.getElementById("ccPrmryId").value;     
+                if(ccPrmyAvl == "true" && document.getElementById('CC_LA_Portal').value !='SELECT' ){        
+                        
+                }
+                
+        
+    
+        var picchn= "false";
+        var picgmn= "false";     
+        var piceng= "false";
+        var picspn= "false";
+        var ccenn= "false";
+        var ccchn= "false";
+    
+    setLang();
+    checkSubscribed();
+        
+   checkValidEmailFromId(null);
+
+}
+
+    function addremovelang(){
+             
+        var shoNoAgent =document.getElementById("dact").value;
+        var shoPic =document.getElementById("showPicLang").value;
+        var shoNoAgentCC =document.getElementById("dactCC").value;
+        var shoNoAgentPIC =document.getElementById("dactPIC").value;     
+        if(shoNoAgentCC == "true"){
+            $('#noAgentMsCC').show(); 
+        }     
+    else{
+         $('#prechatForm').show(); 
+        }
+        
+        if(shoNoAgentPIC == "true"){
+            $('#noAgentMsPIC').show(); 
+        }    
+    else{
+         $('#prechatForm').show(); 
+        }
+ 
+        var ccPrmyAvl = document.getElementById("ccPrmryId").value;     
+                if(ccPrmyAvl == "true" && document.getElementById('CC_LA_Portal').value !='SELECT' ){        
+                        
+                }
+                 
+        var picchn= "false";
+        var picgmn= "false";     
+        var piceng= "false";
+        var picspn= "false";
+        var ccenn= "false";
+        var ccchn= "false";
+        
+        picchn=document.getElementById("pchn").value;
+        picgmn=document.getElementById("pgmn").value;      
+        piceng=document.getElementById("peng").value;
+        picspn=document.getElementById("pspn").value; 
+        ccenn=document.getElementById("en").value;
+        ccchn=document.getElementById("ch").value;  
+        var CC_PIC_OPT='';
+       if (document.getElementById("CC_LA_Portal") !=null) CC_PIC_OPT = document.getElementById("CC_LA_Portal").value;   
+        
+        <!-- Checking available longuages for PIC --> 
+
+
+               
+        if(shoPic == "true" || CC_PIC_OPT == "Product Information"){           
+            if(picchn == "true"){                            
+                j$("#a-off").remove();
+            }
+            if(picgmn == "true"){
+                j$("#b-off").remove();
+            }
+            if(piceng == "true"){
+                j$("#c-off").remove();
+            }
+            if(picspn == "true"){
+                j$("#d-off").remove();
+            }    
+            if(picchn == "false"){        
+                j$("#a").remove();
+            }
+            if(picgmn == "false"){    
+                j$("#b").remove();
+            }
+            if(piceng == "false"){      
+                j$("#c").remove();
+            }
+            if(picspn == "false"){       
+                j$("#d").remove();
+            }            
+        }                            
+        
+        <!-- Checking available longuages for CC -->
+            
+            if(CC_PIC_OPT == "Customer Care"){
+                if(ccenn == "false"){
+                    j$("#Eng").remove();
+                }     
+                if(ccchn == "false"){
+                    j$("#Chi").remove();
+                }
+                if(ccenn == "true"){
+                    j$("#EngOff").remove();
+                }
+                if(ccchn == "true"){
+                    j$("#ChnOff").remove();
+                }                    
+            }                                  
+       
+    
+        }
+    
+    function checkForSubmitReadinessforCC(cclangid){
+ 
+        /*
+        if(emailFromURL!=''&&checkValidEmail(emailFromURL) 
+           && document.getElementById('CC_LA_Portal').value !='SELECT' 
+           && document.getElementById('CC_LONG_OPTIONS').value !='SELECT'){
+            j$('#enabledSubmit').show();
+            j$('#disabledSubmit').hide();
+        }   
+        else{
+            j$('#enabledSubmit').hide();
+            j$('#disabledSubmit').show();
+        }
+        */
+        validateData(cclangid);
+        checkValidEmailFromId(null);
+     
+    }
+    function checkForSubmitReadinessforPIC(){
+    checkValidEmailFromId(null);
+  /*  alert(document.getElementById('languageCode').value);
+        var emailFromURL = decodeURIComponent(getParameterByName('Email'));  
+        if(emailFromURL!=''&&checkValidEmail(emailFromURL) 
+           && document.getElementById('languageCode').value !='SELECT'){
+            j$('#enabledSubmit').show();
+            j$('#disabledSubmit').hide();
+        }   
+        else{
+            j$('#enabledSubmit').hide();
+            j$('#disabledSubmit').show();
+        } */
+        
+     
+    }
+</script> 
+
+<script>
+
+var newLang = '';
+var newLangIndex = '';
+
+var j$ = jQuery.noConflict();
+
+(function() { function handlePageLoad() {
+    var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+    var additionalInfovar = getParameterByNameaddinfo('additionalInfo');
+    
+    document.getElementById('prechatForm').setAttribute('action',
+                                                        decodeURIComponent(endpointMatcher.exec(document.location.search)[1]) + '&additionalInfo=' + additionalInfovar);
+                                                        
+    //alert(document.getElementById('prechatForm').action);
+} if (window.addEventListener) {
+    window.addEventListener('load', handlePageLoad, false);
+} else { window.attachEvent('onload', handlePageLoad, false);
+       }})();
+
+        function getParameterByNameaddinfo(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.search);
+            if(results == null)
+                return "";
+            else
+                return decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        function getParameterByName(variable) {
+
+        var additionalInfovar = getParameterByNameaddinfo('additionalInfo');
+        if(additionalInfovar != null){
+        var decodedadditionalInfo = atob(additionalInfovar);
+            var vars = decodedadditionalInfo.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                    if (decodeURIComponent(pair[0]) == variable) {
+                    return decodeURIComponent(pair[1]);                  
+                   }
+                   
+            }
+        }
+       }
+ 
+
+function setLang(){ 
+    
+    addremovelang();
+    
+    if (newLangIndex !=null) console.log('2. set lang called...'+newLangIndex);
+    //console.log('2. language value..'+document.getElementById('languageCode').value);
+    //if(newLangIndex!=''){ 
+    if(newLangIndex !=null && newLangIndex!='' && document.getElementById('languageCode') != null){ 
+        document.getElementById('languageCode').selectedIndex = newLangIndex;
+    }
+    else{
+
+        /*
+        // Prabhanjan: Sorting all the languages set in Chinese, Deutsch, English and Spanish 1,2,3 and 4 respectively.
+        
+        var langCode = getParameterByName('Language');
+        if(langCode=='zh' && j$('#573E0000000blJJ-on').is(':visible'))  
+            document.getElementById('languageCode').selectedIndex= "1";
+        else if(langCode=='de' && j$('#573E0000000blJi-on').is(':visible'))  
+            document.getElementById('languageCode').selectedIndex= "2";
+            else if(langCode=='es' && j$('#573E0000000blJn-on').is(':visible'))  
+                document.getElementById('languageCode').selectedIndex= "4"; 
+                else if(langCode=='en' && (j$('#573E0000000blJT-on').is(':visible') || k$('#573E0000000blJY-on').is(':visible') || k$('#573E0000000blJd-on').is(':visible')))
+                    document.getElementById('languageCode').selectedIndex= "3";
+                    else 
+                        document.getElementById('languageCode').selectedIndex= "0";
+        */
+       
+        if (document.getElementById('languageCode') != null) 
+            {
+                console.log('2. language value..'+document.getElementById('languageCode').value);
+                // Prabhanjan: Sorting all the languages set in Chinese, Deutsch, English and Spanish 1,2,3 and 4 respectively.
+                //console.log($('#languageCode option[value='c']').length);
+                //console.log('j$('#c')....'+j$('#c').is(':visible'));
+                var exists = 0;
+                var existsEnglish = $('#languageCode option[id=c]').length;
+                var existsSpanish = $('#languageCode option[id=d]').length;
+                var existsChinese = $('#languageCode option[id=a]').length;
+                var existsGerman = $('#languageCode option[id=b]').length;
+                console.log(' existsEnglish- ' + existsEnglish);
+                console.log(' existsSpanish- ' + existsSpanish);
+                console.log(' existsChinese- ' + existsChinese);
+                console.log(' existsGerman- ' + existsGerman);
+                
+                //var exists2 = j$('#c').;
+                ///console.log(' exists 2- ' + exists2);
+                console.log('option id- ' + document.getElementById('languageCode').options[1].id);
+                var langCode = getParameterByName('Language');
+                console.log('-->langCode...-->'+langCode);
+                if(langCode=='zh' && existsChinese>0)  
+                    //document.getElementById('languageCode').selectedIndex= "1";
+                    j$('#a').prop('selected', true);
+                else if(langCode=='de' && existsGerman>0)  
+                    //document.getElementById('languageCode').selectedIndex= "2";
+                    j$('#b').prop('selected', true);
+                    else if(langCode=='es' && existsSpanish>0)  
+                        //document.getElementById('languageCode').selectedIndex= "4"; 
+                        j$('#d').prop('selected', true);
+                        else if(langCode=='en' && existsEnglish>0)  
+                            //document.getElementById('languageCode').selectedIndex= "3";
+                            //$('#languageCode option[id=c]').prop('selected', true);
+                             j$('#c').prop('selected', true);
+                            else 
+                                document.getElementById('languageCode').selectedIndex= "0";
+            }
+
+        
+        
+    } 
+    endLoading();
+}
+
+function checkSubscribed(){
+    var Subscribed = getParameterByName('Subscribed');
+    
+    Subscribed = Subscribed.toUpperCase();
+    if(Subscribed == 'YES'){
+        j$('#disclaimer').hide();
+    }
+    
+}
+
+function checkValidEmailFromId(emailidfromkeyup){
+
+    var emailfromform = document.getElementById('emailAddress').value;      
+    
+    var langOptionVisible = false;
+    //alert(document.getElementById("CC_LONG_OPTIONS").value);
+    var CC_LA_Portal_Visible = false;
+    if (document.getElementById("CC_LA_Portal") != null) CC_LA_Portal_Visible = true;
+    
+    var langOptionValue = '';
+    var langOptionIndex = 0;
+    
+    if (document.getElementById("languageCode") != null || document.getElementById("CC_LONG_OPTIONS") != null)  langOptionVisible = true; 
+        
+    if (document.getElementById("languageCode") != null) langOptionValue = document.getElementById("languageCode").value;
+    if (document.getElementById("CC_LONG_OPTIONS") != null) langOptionValue = document.getElementById("CC_LONG_OPTIONS").value;
+    if (document.getElementById("languageCode") != null) langOptionIndex = document.getElementById("languageCode").selectedIndex ;
+    if (document.getElementById("CC_LONG_OPTIONS") != null) langOptionIndex = document.getElementById("CC_LONG_OPTIONS").selectedIndex ;
+    //alert('langOptionIndex = ' + langOptionIndex + '---langOptionVisible = ' + langOptionVisible + '---CC_LA_Portal_Visible = ' + CC_LA_Portal_Visible);
+    //alert(langOptionVisible);
+       
+    
+}
+    
+    //Prabhanjan May-10 Removing the getToChat() as handling the chat submit from Submit() jquery
+    /*
+    function getToChat(){
+        document.getElementById("prechat_field_name").value =  
+            document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+        //alert('---' + document.getElementById('prechatForm').action);
+        document.getElementById("prechat_submit").click();
+        
+    }
+    */
+    
+
+j$( document ).ready(function() {
+    
+    optInCheck(j$('#countryCode').val());
+    
+    j$('#countryCode').change(function(){
+        
+        optInCheck(j$('#countryCode').val());
+        validateData('countryCode');
+    });  
+    
+    //Prabhanjan May-10 , commenting it out as "chat now" is always enabled.
+    /* 
+    //Prabhanjan: this's been used to enable chat button after, 3 seconds, everything is laoded properly
+    setTimeout(function(){  
+        if(j$("#firstName" ).val()!=''){
+            j$("#firstName" ).blur();  
+        }
+    }, 3000);   
+    
+    */ 
+    
+       j$("form").submit(function(e){
+           var gotError = false;
+           
+           if(j$("#CC_LA_Portal").prop("selectedIndex")==0){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'CC_LA_Portal', 'Please select a value');
+               }
+           if(j$("#CC_LONG_OPTIONS").prop("selectedIndex")==0){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'CC_LONG_OPTIONS', 'Please select a language from available list');
+               }
+           if(j$("#languageCode").prop("selectedIndex")==0){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'languageCode', 'Please select a language from available list');
+               }
+           if(j$("#firstName").val()==''){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'firstName', 'Please enter your first name');
+               }
+           
+           if(j$("#lastName").val()==''){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'lastName', 'Please enter your last name');
+               }
+           
+           if((checkValidEmail(j$("#emailAddress").val())==false)||(j$("#emailAddress").val()=='')){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'emailAddress', 'Please Enter valid email address');
+               }
+           
+           if(j$("#countryCode").prop("selectedIndex")==0){
+               e.preventDefault(e); 
+               gotError=true;
+               showHideErrorMsg('S', 'countryCode', 'Please select your country');
+               }
+            
+           if(gotError==false){ 
+               submitToEloquaAndChat();
+               setTimeout(console.log("sent to eloqua"), 3500);    
+               document.getElementById("prechat_field_name").value = document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+               
+           }
+           
+            });
+    
+});
+
+    //Prabhanjan May-10 Adding Submitting for click
+    function submitting(){
+        <!-- Live chat phase - 2 START -->
+        SetCookie('vistorInfo',j$("#subject").val() + ',' + j$("#firstName").val() + ',' + j$("#lastName").val() + ',' + j$("#emailAddress").val());
+        <!-- Live chat phase - 2 END -->
+
+        document.getElementById("prechat_submit").click();
+        }
+    
+var optInCheck = function(Code2){
+    
+    if(Code2 =='CA' || Code2 =='GR' || Code2 =='DE'){
+        j$("#optIn").prop("checked", false);
+    }
+    else{
+        j$("#optIn").prop("checked", true);
+    }
+}  
+
+function submitToEloquaAndChat(){
+    $(document).ready(function() { 
+          
+        var lvcForm = document.getElementById("prechatForm");
+        var elqForm = document.getElementById("eloquaForm");
+        
+        var url = elqForm.action;
+        
+        var elqCampaignId = "1";
+        var eloquaCampaignId = "1";
+        
+        var firstName = lvcForm.firstName.value;
+        var lastName = lvcForm.lastName.value;
+        var emailId = lvcForm.emailAddress.value;
+        var formName = elqForm.elqFormName.value;
+        var elqSiteId = elqForm.elqSiteId.value;
+        var elqCkWrite = elqForm.elqCookieWrite.value; 
+        var elqGUID = elqForm.elqCustomerGUID.value; 
+        var ewt7 = elqForm.tecEwt7.value; 
+        var country = lvcForm.countryCode.value;
+        var subscription =   lvcForm.optIn.value;
+        /*
+                try{
+                    elqCampaignId = window.sessionStorage.getItem('elqCampaignID');
+                    if(elqCampaignId == null){
+                        throw "No elqCampaignID found";
+                    }           
+                    eloquaCampaignId = elqCampaignId;
+                }catch (e) {
+                    console.log(e);
+                    elqCampaignId = 1;
+                }
+                */
+                        
+                        emailId = encodeURIComponent(emailId);
+                        
+                        url = url +"?firstName="+firstName+"&lastName="+lastName+"&emailAddress="+emailId+"&elqFormName="+formName;
+                        url = url +"&elqSiteId="+elqSiteId+"&elqCookieWrite="+elqCkWrite+"&elqCustomerGUID="+elqGUID+"&tECewt71="+ewt7;
+                        url = url +"&keepMeInformed1="+subscription+"&elqCampaignId="+elqCampaignId+"&eloquaCampaignId="+eloquaCampaignId;
+                        url = url +"&country="+country;//Subscription condition for country selection removed
+                        
+                        
+                        var d = document.createElement("script");
+                        d.type = "text/javascript";
+                        d.src = url;
+                        document.getElementsByTagName("head")[0].appendChild(d);
+                        
+        //     setTimeout(getToChat, 3500);
+                        
+                    });
+                    
+                }
+
+</script>
+
+</form>
+
+<form name="eloquaForm" id="eloquaForm" action="{!$Setup.Live_Agent_Eloqua_Settings__c.eloquaForm__c}" method="post">
+    <input type="hidden" name="elqFormName" value="{!$Setup.Live_Agent_Eloqua_Settings__c.elqFormName__c}" />
+    <input type="hidden" name="elqSiteId" value="{!$Setup.Live_Agent_Eloqua_Settings__c.elqSiteId__c}"/>
+    <input type="hidden" name="elqCookieWrite" value="{!$Setup.Live_Agent_Eloqua_Settings__c.elqCookieWrite__c}"/>
+    <input type="hidden" name="elqCustomerGUID" value=""/>
+    <input type="hidden" name="tecEwt7" id="TECewt7" value="xxx"/>
+    <input type="hidden" name="eloquaLookupId" value="{!$Setup.Live_Agent_Eloqua_Settings__c.eloquaLookupId__c}"/>
+</form>
+
+</body>
+
+<apex:form >
+    <apex:actionFunction name="listChatButtons" action="{!listChatButtons}" reRender="LangPanel" oncomplete="setLang();">
+        <apex:param name="newCountry" value=""/>
+    </apex:actionFunction>
+    
+</apex:form>
+
+</html> 
+<apex:remoteObjects jsNamespace="RemoteObjectModel">
+    <apex:remoteObjectModel name="LiveAgent_Missed_chats__c" fields="Id,Country__c,Custmer_Name__c,Customer_Language__c,Region__c,Customer_Email__c,Send_Email_Request__c"> 
+    </apex:remoteObjectModel>
+</apex:remoteObjects>
+
+<!-- JavaScript to make Remote Objects calls -->
+<script>
+
+var visitorId ='';
+ 
+function createupdateMissed(){
+     
+    var $j = jQuery.noConflict();
+    
+    var region = '';
+    var regionCode =  $j('#VisitorRegion').val(); 
+    if(regionCode=='0002') { region = 'Americas'; }
+    else if(regionCode=='0401') { region = 'EMEA'; }
+    else if(regionCode=='0442') { region = 'APAC'; }
+    
+    var custName = getParameterByName('First_Name')+' '+getParameterByName('Last_Name');
+    var ROData = { Custmer_Name__c: custName, 
+                      Customer_Email__c : decodeURIComponent(getParameterByName('Email')),
+                      Country__c : $j('#countryCode').val(),
+                      Region__c : region,
+                      Customer_Language__c : getParameterByName('Language')
+                      
+                    };
+    var RO = new RemoteObjectModel.LiveAgent_Missed_chats__c();
+    if(visitorId==''){
+        RO.create(ROData, function(err) {
+            //Prabhanjan: displaying noagentmsg ...
+            endLoading();
+            $('#noAgentMsg').show();
+            if(err) { 
+                console.log(err);
+            }
+            else { 
+                visitorId = RO.get('Id'); // Id is set when create completes
+            }
+        });
+    }
+    else{
+    
+
+        visitorId = visitorId.substring(0,15);
+        
+        RO.set('Id', visitorId);
+        RO.set('Send_Email_Request__c', true);
+        RO.update(updateCallback);
+        
+    }
+    endLoading();
+} 
+
+// Callback to handle DML Remote Objects calls
+function updateCallback(err, ids){
+    /*
+    if (err) { 
+        console.log(err); 
+    } else {
+         console.log('visitor is successfully created...!!!'); 
+    }
+    */
+    window.close();
+}
+
+</script> 
+
+<script type="text/javascript">_satellite.pageBottom();</script>
+
+<!-- Live chat phase - 2 START -->
+<script>
+
+function SetCookie(cookieName,cookieValue) {
+    var expire = new Date();
+    expire.setTime(expire.getTime() + (30 * 60 * 1000));
+    document.cookie = cookieName+"="+escape(cookieValue) + ";expires="+expire.toGMTString();             
+
+}
+</script>
+<!-- Live chat phase - 2 END  -->
+
+</apex:page>

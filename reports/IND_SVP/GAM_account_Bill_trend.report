@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM - BBB_Month_Bill_Book_Cust__c.Bill_Cost_Amount__c:SUM) / BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Standard Margin By GAM</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Standard Margin</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM / BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>book to bill YTD</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Book to Bill YTD</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Account.Monthly_BBBs__r$Bill_Amount_USD__c</column>
+        </chartSummaries>
+        <chartType>HorizontalBarStacked</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account$GAMDESC__c</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>Account.Monthly_BBBs__r$Bill_Type__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>GAM report for VP dashboard</description>
+    <filter>
+        <criteriaItems>
+            <column>Account$GAMCD__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>G030,G037,G038,G046,G064,G130,G131,G132,G135,G192,G215,G284,G285</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$SAP_Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Rail,Solar,IB,A&amp;C,Mefa,Comm &amp; Bldg Equip,Relay Products - Ind</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$GAMDESC__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Bill_Type__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>GAM account Bill trend</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Billings_Bookings_by_Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Sales_Period__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

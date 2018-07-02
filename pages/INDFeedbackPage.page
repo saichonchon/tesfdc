@@ -1,0 +1,136 @@
+<apex:page standardController="Learning_Response_Result__c" extensions="IND_FeedbackController" showHeader="False" sidebar="False"  >
+
+  <apex:form >
+  <apex:panelGrid style="background-color:#58ACFA;width:100%;text-align:center;">
+      <apex:outputLabel value="Hello {!$User.FirstName} {!$User.LastName}, Please give your valuable feedback for : {!tr.Name}" style="font-family:aerial;color:#FFFFFF;font-size:20px;text-align:center;" ></apex:outputLabel>
+  </apex:panelGrid>
+  <apex:messages style="color:Blue; font-family:verdana; font-size:120%;"/>
+           
+         <apex:pageBlock rendered="{!if(statusl == false,true,false)}">
+          
+             <apex:panelGrid style="width:100%;height=100%" border="2" >
+             <apex:outputPanel >
+             <table border="2" width="100%" Height="100%">
+         
+                  <thead>
+                       <tr>
+                          <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00">Please consider '1' as Very Poor and '10' as Excellent/Outstanding </td>
+                       </tr>
+                 </thead>
+                <tbody>
+                 <tr>
+                         <th width="80%" style="font-family:arial;color:#FFFFFF;font-size:20px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value=" Feedback Questions" ></apex:outputLabel>     
+                         </th>
+                         <th  width="20%" style="font-family:arial;color:#FFFFFF;font-size:20px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value="Your Response" ></apex:outputLabel>     
+                         </th>
+                 </tr>   
+                 
+                 
+                 <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_1__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_1__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_1_Response__c}">
+                      <apex:selectoptions value="{!types1}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                 <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_2__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_2__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_2_Response__c}">
+                      <apex:selectoptions value="{!types2}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                  <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_3__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_3__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_3_Response__c}">
+                      <apex:selectoptions value="{!types3}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                  <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_4__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_4__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_4_Response__c}">
+                      <apex:selectoptions value="{!types4}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                  <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_5__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_5__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_5_Response__c}">
+                      <apex:selectoptions value="{!types5}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                  <tr style="display: {!IF(ISBLANK(tr.Feedback_Question_6__c), 'none' ,'table-row')};">
+                   
+                   <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" bgcolor="#CECEF6">
+                      <apex:outputfield value="{!tr.Feedback_Question_6__c}" /> 
+                   </td>
+                    
+                  <td style="font-family:arial;color:#000000;font-size:15px;text-align:center;" bgcolor="#F5F6CE">
+                      <apex:selectRadio value="{!llr.Feedback_Question_6_Response__c}">
+                      <apex:selectoptions value="{!types6}"></apex:selectoptions>
+                      </apex:selectRadio>
+                  </td>
+                    
+                 </tr>
+                 
+                 
+                 
+              </tbody>
+             </table>
+             </apex:outputPanel>
+             </apex:panelGrid>
+         
+         </apex:pageBlock>  
+      
+        <apex:panelGrid style="background-color:#D8F6CE;width:100%;text-align:center;">
+        
+        <apex:outputPanel >
+        
+        <apex:outputLabel value="Any Feedback Comment" style="font-family:arial;color:#000000;font-size:20px;text-align:center;"/><br/>
+        <apex:inputTextarea cols="180" rows="10" id="newDesc" value="{!llr.Feedback_Comment__c}"/><br/><br/><br/>
+        <apex:commandButton value="Submit Feedback" action="{!SubmitFeedback}"/>
+        
+        </apex:outputPanel>
+      
+        </apex:panelGrid>
+  </apex:form>         
+</apex:page>

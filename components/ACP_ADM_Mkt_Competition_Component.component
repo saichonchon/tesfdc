@@ -1,0 +1,73 @@
+<apex:component controller="ACP_DataTable_Ctrl" allowDML="true">
+   <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+   <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+   <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300" />
+   <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff" />
+   <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+   <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+   <apex:attribute name="tableId" description="This is the value for Table ID" type="String" required="true" assignTo="{!tableType}"/>
+   <apex:attribute name="fields" description="This is the value for FieldSet" type="String[]"  />
+   <apex:attribute name="sObjectName" description="This is the value for Object API" type="String" required="true" />
+   <!--apex:attribute name="strategyList" type="ACP_Strategy__c[]" description="" assignTo="{!strategiesList}" /-->
+   <!--apex:attribute name="supplierEvlList" type="ACP_TE_Supplier_Evaluation__c[]" description="" assignTo="{!supplierEvaluationList}" /-->
+ <!--<apex:attribute name="marketList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!MarketData}"/>-->
+   <apex:attribute name="admList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!ADMData}"/>
+   <apex:attribute name="oppTAMRevList" type="ACP_Opportunity_TAM_Revenue__c[]" description="" assignTo="{!OppTAMList}"/>
+   <apex:attribute name="user_BU" type="String" description="curren User's BU" assignTo="{!userBU}"/> 
+   <apex:attribute name="sectionSettingRec" type="ACP_Section_Detail__c" assignTo="{!admmarkrec}" description="ACP Section Detail" />
+ <!--  <apex:attribute name="markSettingRec" type="ACP_Section_Detail__c" assignTo="{!markrec}" description="ACP Section Detail" />-->
+  
+   <script>    
+     function focusAndSaveADM() {
+    
+        document.getElementById('focusMeADM').click();
+        saveFieldsADM();
+    }
+    </script> 
+   <apex:pageBlock mode="maindetail" id="admPanel">
+
+   
+
+ <!-------------------------------------------------  Market and Competition Summary--------------------------------------------------- ------------------>
+<div id = "MarkComp">
+<apex:outputPanel id="admPanel" rendered="{!IF(ADMData== null, false, true)}">
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+           <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonADM" action="{!addADMMarketComp}" style="float:right" disabled="{!If(admData.size < admmarkrec.ACP_No_Of_Records__c,false, true)}"/>
+           <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonADM" onclick="focusAndSaveADM();" style="float:right; display:none" reRender="admPanel"/>
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonADM" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" reRender="admPanel"/>
+           <input type="text" id="focusMeADM" style="display:none" />
+            <div class="panel-title">
+                <h4 style="color:{!headerTextColor};"> {!title}</h4>
+            </div>
+        </div>
+           
+            <apex:pageBlockTable value="{!admData}" var="ADM"  styleClass="table table-bordered" > 
+            <apex:column >
+                                <a href="javascript:if (window.confirm('Are you sure?')) DeleteAdm1('{!ADM.Id}');">Del</a>
+                            </apex:column>
+          <!--  <apex:column headerValue="{!$Label.ACP_Product_Group}" headerClass="columnHeader" >
+            <apex:commandLink action="/apex/ACP_ADM_Edit_CBC?macId={!ADM.Id}&acpId={!acpid}" value="{!ADM.ACP_CBC__c}">
+           </apex:commandLink>
+            </apex:column>-->
+                    <apex:repeat value="{!fields}" var="fieldADM">  
+                        <apex:column headerValue="{!$ObjectType[sObjectName].fields[fieldADM].Label}" >
+                        <apex:outputField value="{!ADM[fieldADM]}" > 
+                        <apex:inlineEditSupport showOnEdit="saveButtonADM, cancelButtonADM" hideOnEdit="addButtonADM" event="ondblclick"/>            
+                        </apex:outputField>
+                      </apex:column>
+                    </apex:repeat> 
+                </apex:pageBlockTable> 
+               
+    </div>
+    </apex:outputPanel>
+</div>
+     
+        
+   </apex:pageBlock>
+   <apex:actionFunction action="{!actionSaveADM}" name="saveFieldsADM" reRender="admPanel"/>
+   <apex:actionFunction action="{!DeleteAdm}" name="DeleteAdm1" reRender="admPanel" >
+    <apex:param name="admid" value="" assignTo="{!admId}"/>
+    </apex:actionFunction>
+</apex:component>

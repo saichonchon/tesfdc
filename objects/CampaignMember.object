@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ConvertLead</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CreateOpportunity</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Account_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact.Account.Owner.FirstName + &quot; &quot; + Contact.Account.Owner.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Owner</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Actual_sent_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual sent date</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Answer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>LKP to Answer</description>
+        <externalId>false</externalId>
+        <label>Answer</label>
+        <referenceTo>Answer__c</referenceTo>
+        <relationshipLabel>Campaign Members</relationshipLabel>
+        <relationshipName>Campaign_Members</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Appliance__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Appliance</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_Distributor__c</fullName>
+        <description>The Assigned Distributor for the associated Lead/Contact</description>
+        <externalId>false</externalId>
+        <formula>IF ( NOT ( ISBLANK ( ContactId ) ),
+ TEXT(Contact.Assigned_Distributor__c)  ,
+ TEXT(Lead.Communities_Distributor__c)  )</formula>
+        <inlineHelpText>The Assigned Distributor for the associated Lead/Contact</inlineHelpText>
+        <label>Assigned Distributor</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CampaignId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Campaign_Reporting__c</fullName>
+        <externalId>false</externalId>
+        <label>Campaign Reporting</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>YES</fullName>
+                    <default>false</default>
+                    <label>YES</label>
+                </value>
+                <value>
+                    <fullName>NO</fullName>
+                    <default>false</default>
+                    <label>NO</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Campaign_Survey_Cycle__c</fullName>
+        <externalId>false</externalId>
+        <label>Campaign Survey Cycle</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                    <label>1</label>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                    <label>2</label>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                    <label>3</label>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                    <label>4</label>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                    <label>5</label>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                    <label>6</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Campaign_start_date__c</fullName>
+        <description>This formula allows to have the campaign start date as a field on Campaign Member.</description>
+        <externalId>false</externalId>
+        <formula>Campaign.StartDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Campaign start date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>City</fullName>
+    </fields>
+    <fields>
+        <fullName>CompanyOrAccount</fullName>
+    </fields>
+    <fields>
+        <fullName>Company_Name__c</fullName>
+        <description>Exposes company name for custom reports</description>
+        <externalId>false</externalId>
+        <formula>CompanyOrAccount</formula>
+        <inlineHelpText>Exposes company name for custom reports</inlineHelpText>
+        <label>Company Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContactId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Campaign_Members</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Country</fullName>
+    </fields>
+    <fields>
+        <fullName>Customer_Industry__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact.Account.Customer_Industry__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Customer Industry from contact</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Industry_from_Lead_form__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+TEXT(Lead.Industry),&quot;Automation &amp; Control&quot;, &quot;Industrial&quot;, &quot;Alternative Energy&quot;, &quot;Industrial&quot;, &quot;HVAC&quot;, &quot;Industrial&quot;, &quot;Industrial Machinery&quot;, &quot;Industrial&quot;, &quot;Lighting&quot;, &quot;Industrial&quot;, &quot;Railway and Mass Transportation&quot;, &quot;Industrial&quot;, &quot;Other&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Customer Industry from Lead form</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Derived_Industry__c</fullName>
+        <description>Takes the customer industry either from the lead entry form or from the contact&apos;s account)</description>
+        <externalId>false</externalId>
+        <formula>IF(
+ ContactId =&quot;&quot;,  Customer_Industry_from_Lead_form__c  , Customer_Industry__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Derived Industry</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>DoNotCall</fullName>
+    </fields>
+    <fields>
+        <fullName>Email</fullName>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Energy Record Id</description>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>20</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>External_NPS_OPT_OUT_link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com/apex/ctrlnpsoptoutpage?id=&quot; &amp;   Id   , &quot;NPS OPT OUT&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>External NPS OPT OUT link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>External_NPS_Survey_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com/?id=&quot; &amp; Id, &quot;NPS Survey&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>External NPS Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fax</fullName>
+    </fields>
+    <fields>
+        <fullName>FirstName</fullName>
+    </fields>
+    <fields>
+        <fullName>FirstRespondedDate</fullName>
+    </fields>
+    <fields>
+        <fullName>First_Follow_up_to_Contact_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.First_Follow_Up_Owner__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>First Follow up to Contact Owner</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>First_Reminder_Contact_Owner_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.First_Reminder_Contact_Owner_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>First Reminder Contact Owner Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>First_Reminder_Customer_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.First_Reminder_Customer_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>First Reminder Customer Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>First_Responded_Date__c</fullName>
+        <description>To expose the First Responded Date on layout list views</description>
+        <externalId>false</externalId>
+        <formula>FirstRespondedDate</formula>
+        <label>First Responded Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HasOptedOutOfEmail</fullName>
+    </fields>
+    <fields>
+        <fullName>HasOptedOutOfFax</fullName>
+    </fields>
+    <fields>
+        <fullName>HasResponded</fullName>
+    </fields>
+    <fields>
+        <fullName>Inquiry_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>Lead.TEMarketing__Stage__c &amp; Text(Contact.TEMarketing__Inquiry_Status__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Inquiry Status</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Internal_NPS_OPT_OUT_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/ctrlnpsoptoutpage?id=&quot; &amp; Id, &quot;NPS OPT OUT&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Internal NPS OPT OUT Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Internal_NPS_Survey_Link__c</fullName>
+        <description>This formula field defines the hyperlink to the NPS Survey to start for a SFDC User.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/ctrlTakeSurvey?id=&quot; &amp; Id, &quot;NPS Survey&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Internal NPS Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Japan_External_Survey_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com?id=&quot; &amp;Id, &quot;NPS 顧客意見調査&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Japan External Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Korean_Survey_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com?id=&quot; &amp; Id , &quot;NPS고객측량&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Korean Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LastName</fullName>
+    </fields>
+    <fields>
+        <fullName>LeadId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>LeadSource</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Lead_Contact_Owner_GIBU__c</fullName>
+        <externalId>false</externalId>
+        <formula>TExt(Contact_Owner__r.GIBU__c) &amp;  TEXT(Lead.Owner:User.GIBU__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lead / Contact Owner GIBU</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Contact_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact_Owner__r.FirstName &amp; &quot; &quot; &amp;  Contact_Owner__r.LastName &amp;  Lead.Owner:User.FirstName  &amp; &quot; &quot; &amp; Lead.Owner:User.LastName &amp; Lead.Owner:Queue.QueueName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lead / Contact Owner</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Letter_Salutation__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact.ITBsalutations__Letter_Salutation__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Letter Salutation</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Link_to_Report__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+	AND(
+		$Organization.Id = &quot;00Dc0000001KXGR&quot;, 
+		Customer_Industry__c &lt;&gt; &quot;Appliances&quot;
+	), 
+	HYPERLINK(&quot;https://c2s--qa.cs14.my.salesforce.com/00OE0000001qwYR&quot;, &quot;Link to Report&quot;),
+		IF(
+			AND(
+				$Organization.Id = &quot;00Dc0000001KXGR&quot;, 
+				Customer_Industry__c = &quot;Appliances&quot;
+			), 
+			HYPERLINK(&quot;https://c2s--qa.cs14.my.salesforce.com/00OE00000027C5X&quot;, &quot;Link to Report&quot;),
+				IF(
+					AND(
+						$Organization.Id = &quot;00D4C0000008brT&quot;, 
+						Customer_Industry__c &lt;&gt; &quot;Appliances&quot;
+					),
+					HYPERLINK(&quot;https://c2s.my.salesforce.com/00OE0000001qwYR&quot;, &quot;Link to Report&quot;),
+					HYPERLINK(&quot;https://c2s.my.salesforce.com/00OE00000027C5X&quot;, &quot;Link to Report&quot;)
+				)
+		)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Link to Report</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MQL_Date__c</fullName>
+        <description>MQL Date from the related MQL</description>
+        <externalId>false</externalId>
+        <formula>TEMarketing__MQLRecord__r.TEMarketing__MQL_Date__c</formula>
+        <inlineHelpText>MQL Date from the related MQL</inlineHelpText>
+        <label>MQL Date</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Member_Type__c</fullName>
+        <description>Member type exposed for custom reporting</description>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK( ContactId ), &apos;Lead&apos;, &apos;Contact&apos;)</formula>
+        <inlineHelpText>Member type exposed for custom reporting</inlineHelpText>
+        <label>Member Type</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MobilePhone</fullName>
+    </fields>
+    <fields>
+        <fullName>NPS_First_Follow_Up_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.First_Follow_Up_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NPS First Follow Up Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NPS_Language__c</fullName>
+        <externalId>false</externalId>
+        <label>NPS Language</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CN</fullName>
+                    <default>false</default>
+                    <label>CN</label>
+                </value>
+                <value>
+                    <fullName>DE</fullName>
+                    <default>false</default>
+                    <label>DE</label>
+                </value>
+                <value>
+                    <fullName>EN</fullName>
+                    <default>false</default>
+                    <label>EN</label>
+                </value>
+                <value>
+                    <fullName>ES</fullName>
+                    <default>false</default>
+                    <label>ES</label>
+                </value>
+                <value>
+                    <fullName>FR</fullName>
+                    <default>false</default>
+                    <label>FR</label>
+                </value>
+                <value>
+                    <fullName>IT</fullName>
+                    <default>false</default>
+                    <label>IT</label>
+                </value>
+                <value>
+                    <fullName>JP</fullName>
+                    <default>false</default>
+                    <label>JP</label>
+                </value>
+                <value>
+                    <fullName>KR</fullName>
+                    <default>false</default>
+                    <label>KR</label>
+                </value>
+                <value>
+                    <fullName>PT</fullName>
+                    <default>false</default>
+                    <label>PT</label>
+                </value>
+                <value>
+                    <fullName>RU</fullName>
+                    <default>false</default>
+                    <label>RU</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>NPS_OPT_OUT__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NPS OPT OUT</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NPS_Second_Follow_Up_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.Second_Follow_Up_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NPS Second Follow Up Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NPS_Survey_Cycle__c</fullName>
+        <externalId>false</externalId>
+        <label>NPS Survey Cycle</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                    <label>1</label>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                    <label>2</label>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                    <label>3</label>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                    <label>4</label>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                    <label>5</label>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                    <label>6</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Owner_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+AND(
+ Lead.Owner:User.Id=&quot;&quot; ,  Contact_Owner__r.Id=&quot;&quot; ) ,  Lead.Owner:Queue.QueueName , &quot;Sales&quot;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Owner Type</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone</fullName>
+    </fields>
+    <fields>
+        <fullName>PostalCode</fullName>
+    </fields>
+    <fields>
+        <fullName>Qualtrics_Country__c</fullName>
+        <externalId>false</externalId>
+        <formula>Country</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Qualtrics Country</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Qualtrics_Schedule_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Qualtrics Schedule Date</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Qualtrics_Schedule_Reminder1__c</fullName>
+        <externalId>false</externalId>
+        <label>Qualtrics Schedule Reminder1</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Qualtrics_Schedule_Reminder2__c</fullName>
+        <externalId>false</externalId>
+        <label>Qualtrics Schedule Reminder2</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Qualtrics_Survey_Sent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Qualtrics Survey Sent</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Response_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(Status, &quot;Responded&quot;), 1, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Response Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Salutation</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Second_Follow_Up_to_Contact_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.Second_Follow_Up_Owner__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Second Follow Up to Contact Owner</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Second_Reminder_Contact_Owner_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.Second_Reminder_Contact_Owner_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Second Reminder Contact Owner Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Second_Reminder_Customer_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.Second_Reminder_Customer_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Second Reminder Customer Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Simpl_Chinese_External_NPS_Survey_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com?id=&quot; &amp; Id, &quot;NPS 客户问卷调查&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Simpl Chinese External NPS Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State</fullName>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Street</fullName>
+    </fields>
+    <fields>
+        <fullName>Survey_Responded__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Survey Responded</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Survey Type</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Phone</fullName>
+                    <default>false</default>
+                    <label>Phone</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__Include_In_Opportunity_ROI__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Campaign.TEMarketing__Include_In_Opportunity_ROI__c</formula>
+        <inlineHelpText>Campaigns that have Include in Opportunity ROI unchecked will not be used to create OpportunityAttribution Records back to a campaign.</inlineHelpText>
+        <label>Include In Opportunity ROI</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__MQLRecord__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The MQL Record that was created wholly or in part because of this campaign member.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The MQL Record that was created wholly or in part because of this campaign member.</inlineHelpText>
+        <label>MQL Record</label>
+        <referenceTo>TEMarketing__MQLRecord__c</referenceTo>
+        <relationshipLabel>Campaign Members</relationshipLabel>
+        <relationshipName>Campaign_Members</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__MQL_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>depricated</inlineHelpText>
+        <label>MQL Date</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>TEMarketing__MQL_Weight__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>MQL Weight</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Title</fullName>
+    </fields>
+    <fields>
+        <fullName>TradTrad_Chinese_External_NPS_Survey_Lin__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://crm.te.com/?id=&quot; &amp; Id, &quot;NPS 顧客問卷調查&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Trad Chinese External NPS Survey Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Unsubscribe__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Unsubscribe</label>
+        <type>Checkbox</type>
+    </fields>
+    <sharingModel>ControlledByCampaign</sharingModel>
+</CustomObject>

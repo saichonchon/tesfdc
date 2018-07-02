@@ -1,0 +1,1236 @@
+<apex:page standardController="Budget__c" extensions="ExtBudgetPlanning" sidebar="false" action="{!checkBudgetFQValue}">
+    <apex:stylesheet value="{!$Resource.BudgetPlanningCss}"/>
+    <script src="/soap/ajax/22.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/22.0/apex.js" type="text/javascript"></script>   
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <apex:includeScript value="{!URLFOR($Resource.ExtBudgetPlanningLimitJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.CommonJS)}" />
+    <style type='text/css'>     
+        body{background-color:#fff !important;}
+        .hideTableListButton {
+            background: url({!URLFOR($Resource.iconCollapse)}) no-repeat scroll 0 -0px transparent !important;
+            height:15px !important;
+            width:10px !important;
+        } 
+        .showTableListButton {
+            background: url({!URLFOR($Resource.iconExpand)}) no-repeat scroll 0 -0px transparent !important;    
+            height:15px !important;
+            width:10px !important;
+        }   
+        .inlineTable .inlineTableTd {padding: 0px;} 
+        .inlineTable .inlineTableTd .list tr td,.inlineTable .inlineTableTd .list tr th{height:24px;padding:0px 5px;}   
+        .inlineTable .inlineTableTd .tableNoLeftBorder{min-width:950px;}
+        
+        div.container table#accountTable tbody tr.dataRow td.dataCell span{display:inline;vertical-align:middle;}
+        div.container table#accountTable tbody tr.dataRow td.dataCell span.helpButton img,
+        div.container table#accountTable tbody tr.dataRow td.dataCell span.helpButtonOn img{right:1px;position:relative;}
+    </style>
+    <apex:form id="budgetForm">
+        
+        <br/>
+        <apex:pageBlock tabstyle="Budget__c" id="budgetPB" mode="maindetail">                                                   
+            <apex:pageMessages id="messages" />
+            <input type="hidden" value="{!format}" id="localFormat"/>
+            <div id="btndivid" style="width:75%;text-align:center; display:{!IF(showNext,'none','')}" >
+            	<input type="hidden" id="budgethiddid" value="{!budget.Id}" />
+                <input type="button" class="btn" value="{!$Label.Edit}" style="display:{!IF(AND(mode=='view', showEdit), '', 'none')}" onclick="editBudget();" />
+                <apex:actionFunction name="editBudget" action="{!editBudget}" status="statusLoad" rerender="budgetForm" oncomplete="conFormatNum('accountTable');" immediate="true"/>
+                    
+                <input type="button" class="btn btnsavecls " value="{!$Label.SaveButton}" style="display:{!IF(mode=='edit', '', 'none')}"  onclick="conUnformatNum('accountTable'); saveBudget();" />
+                <apex:actionFunction name="saveBudget" action="{!saveBudget}" status="statusLoad" rerender="budgetForm" oncomplete="conFormatNum('accountTable');"/>
+                  
+                <input type="button" class="btn btnnextcls " value="{!$Label.Next}" style="display:{!IF(mode=='edit', '', 'none')}"  onclick="if(confirm('{!$Label.Break_Down_Confirm}')){conUnformatNum('accountTable'); saveBudgetAndNext();}" />
+                <apex:actionFunction name="saveBudgetAndNext" action="{!saveBudgetAndNext}" status="statusLoad" rerender="budgetForm" oncomplete="conFormatNum('accountBDDataTable');"/>
+                     
+                <input type="button" class="btn" value="{!$Label.Back}" onclick="backToView();" style="display:{!IF(!invalidBudget,'','none')}"/>
+                <apex:actionFunction name="backToView" action="{!backToView}" immediate="true"/>
+<!-- 
+                <input type="button" class="btn" value="{!$Label.Back}" onclick="backToView();" style="display:{!IF(invalidBudget,'','none')}"/>
+                <apex:actionFunction name="backToView" action="{!backToBudgetPlanning}" immediate="true"/>
+ -->
+                                
+                <input type="button" class="btn" value="{!$Label.Break_Down}" style="display:{!IF(AND(mode=='view', budget.id!=null, showEdit, sameTerriotry), '', 'none')}" onclick="goToBreakDown();" />
+                <apex:actionFunction name="goToBreakDown" action="{!goToBreakDown}" status="statusLoad" rerender="budgetForm" oncomplete="conFormatNum('accountBDDataTable');" immediate="true"/>
+                
+                <apex:outputPanel rendered="{!AND(mode='edit', !isNew, sameTerriotry)}">
+                    &nbsp;&nbsp;<b>{!$Label.Recalculate}</b><apex:inputCheckBox value="{!isRecalculate}" onclick="conUnformatNum('accountTable'); recalculateBudget();"/>
+                    <apex:actionFunction name="recalculateBudget" action="{!recalculateBudget}" status="statusLoad" rerender="budgetTablePBSection,messages" oncomplete="conFormatNum('accountTable');"/>
+                </apex:outputPanel> 
+                <apex:actionStatus startText="" stopText="" id="statusLoad" onstart="$('#loading-curtain-div').show();" onstop="$('#loading-curtain-div').hide();"/>                       
+            </div>  
+            <div style="width:75%;text-align:center; " id="selectdivid">
+                <apex:actionRegion >                                        
+                <apex:PageBlockSection id="headerPBSection" rendered="{!!showNext}">
+                    <apex:pageBlockSectionItem id="territoryItem">
+                        <apex:outputLabel >{!$Label.Territory}</apex:outputLabel>
+                        <apex:outputPanel >
+                            <apex:selectList styleClass="territorycls" size="1" value="{!theTerritory}" disabled="{!IF(isNew, false, true)}" >
+                                <apex:selectOptions value="{!list_territoryItems}" />                       
+                                <apex:actionSupport event="onchange" rerender="budgetTablePBSection, headerPBSection,messages" status="statusLoad" action="{!selectBudgetYear}" oncomplete="conFormatNum('accountTable'); checkhasTerrComplete();"/>                                                             
+                            </apex:selectList>
+                        </apex:outputPanel>             
+                    </apex:pageBlockSectionItem>                
+                    
+                    <apex:pageBlockSectionItem id="yearItem">
+                        <apex:outputLabel >{!$Label.Year}</apex:outputLabel>
+                        <apex:outputPanel >
+                            <!-- <apex:outputText value="{!budget.Year__c}" rendered="{!!isNew}" /> -->
+                            <apex:selectList styleClass="yearcls" size="1" value="{!budget.Year__c}" disabled="{!IF(isNew, false, true)}">
+                                <apex:selectOptions value="{!list_yearItems}" />                                                                                            
+                                <apex:actionSupport event="onchange" rerender="budgetTablePBSection, headerPBSection,messages" status="statusLoad" action="{!selectBudgetTerritory}" oncomplete="conFormatNum('accountTable'); checkhasYearComplete();"/>    
+                            </apex:selectList>      
+                        </apex:outputPanel>                 
+                    </apex:pageBlockSectionItem>                
+                </apex:PageBlockSection>
+                </apex:actionRegion>
+            </div>
+            <apex:PageBlockSection id="budgetTablePBSection" columns="1" rendered="{!!showNext}">
+                <input id="otherBPJsonStrId" name="otherBPJsonStrId" type="hidden" value="{!otherBPJsonStr}" />
+                <apex:outputPanel layout="block" styleClass="container" style="text-align:center;" rendered="{!AND(theTerritory!='',budget.Year__c!='')}">  
+                    <table class="list" cellspacing="0" cellpadding="0" border="0" style="width:95%;border-left-width: 0 !important;border-right-width: 0 !important;border-bottom-width: 0 !important;" id="accountTable">
+                        <thead>
+                            <tr class="headerRow">
+                                <th class="headerCenter trleftBorder" style="width:20px"><img class="showTableListButton" title="Show" onclick="showAllDisplays(this.id, 'accountTable');" id="allAccountBtn" style="cursor:pointer;"  src="/s.gif"/></th>
+                                <th class="headerCenter" />
+                                <th class="headerCenter " style="width:155px;border-left-width: 0 !important;"/>
+                                <th class="headerCenter tdTwo" style="width:15%;">{!$Label.Direct}</th>
+                                <th class="headerCenter tdTwo" style="width:15%;">{!$Label.POS}</th>
+                                <th class="headerCenter tdTwo" style="width:15%;">{!$Label.CMA}</th>
+                                <th class="headerCenter trrightBorder tdTwo" style="width:15%;">{!$Label.Total}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!---------------------------------------- Each Account ----------------------------------------------->            
+                            <apex:repeat value="{!BudgetPlanStructureList}" var="budgetPlanStructure">
+                                <tr data-sort="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="mainTr  itbprevreturn dataRow accountBtn_{!budgetPlanStructure.accountId}" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell tdOne trleftBorder" ><img class="showTableListButton" title="Show" onclick="showDisplays('{!budgetPlanStructure.accountId}', this.id, this.title, 'accountTable')" id="{!budgetPlanStructure.accountId}_accountBtn" style="cursor:pointer;"  src="/s.gif"/></td>
+                                    <td class="dataCell tdOne" colspan="2">
+                                        <apex:outPutText rendered="{!link_BudgetPlanAccounts = ''}" value="{!budgetPlanStructure.accountInfo}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_BudgetPlanAccounts != ''}" value="{!link_BudgetPlanAccounts}{!budgetPlanStructure.AccountId4Report}&pv1={!budgetPlanStructure.AccountId4Report}" id="theLink">{!budgetPlanStructure.accountInfo}</apex:outputLink>
+                                    </td> 
+                                    
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.TotalBudget}" id="AD_TB_D" /></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.TotalBudget}" id="AD_TB_P" /></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.TotalBudget}" id="AD_TB_C" /></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.TotalBudget}" id="AD_TB_T" /></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder" />
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.BillingsLY}" id="outputADBLYD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.BillingsLY}" id="outputADBLYP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.BillingsLY}" id="outputADBLYC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.BillingsLY}" id="outputADBLYT"/></td>
+                                </tr>                                                                                    
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder" />
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.BillingsYTDCY}" id="outputADBCYTDD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.BillingsYTDCY}" id="outputADBCYTDP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.BillingsYTDCY}" id="outputADBCYTDC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.BillingsYTDCY}" id="outputADBCYTDT"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder" />
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.BillingsRRCY}" id="outputADBCYRRD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.BillingsRRCY}" id="outputADBCYRRP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.BillingsRRCY}" id="outputADBCYRRC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.BillingsRRCY}" id="outputADBCYRRT"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder" />
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Backlog__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.Backlog}" id="outputADBLD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.Backlog}" id="outputADBLP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.Backlog}" id="outputADBLC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.Backlog}" id="outputADBLT"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"/>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.EstimatedFinalCY}" id="AD_FCY_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'FCY')" rendered="{!mode='edit'}"/>
+                                        <b><apex:outputText value="{!budgetPlanStructure.detailDirect.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputADFCYD"/></b>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.EstimatedFinalCY}" id="AD_FCY_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'FCY')" rendered="{!mode='edit'}"/>
+                                        <b><apex:outputText value="{!budgetPlanStructure.detailPOS.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputADFCYP"/></b>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.EstimatedFinalCY}" id="AD_FCY_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'FCY')" rendered="{!mode='edit'}"/>
+                                        <b><apex:outputText value="{!budgetPlanStructure.detailCMA.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputADFCYC"/></b>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!budgetPlanStructure.detailTotal.EstimatedFinalCY}" id="AD_FCY_T" /></b></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"/>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.ObsoletionEOL}" id="AD_OEOL_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.ObsoletionEOL}" rendered="{!mode='view'}" id="outputADOEOLD"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.ObsoletionEOL}" id="AD_OEOL_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.ObsoletionEOL}" rendered="{!mode='view'}" id="outputADOEOLP"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.ObsoletionEOL}" id="AD_OEOL_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.ObsoletionEOL}" rendered="{!mode='view'}" id="outputADOEOLC"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.ObsoletionEOL}" id="AD_OEOL_T" /></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"/>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.TransferOut}" id="AD_TO_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TO')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.TransferOut}" rendered="{!mode='view'}" id="outputADTOD"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.TransferOut}" id="AD_TO_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TO')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.TransferOut}" rendered="{!mode='view'}" id="outputADTOP"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.TransferOut}" id="AD_TO_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TO')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.TransferOut}" rendered="{!mode='view'}" id="outputADTOC"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.TransferOut}" id="AD_TO_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"/>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.TransferIn}" id="AD_TI_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.TransferIn}" rendered="{!mode='view'}" id="outputADTID"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.TransferIn}" id="AD_TI_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.TransferIn}" rendered="{!mode='view'}" id="outputADTIP"/>
+                                    </td>                               
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.TransferIn}" id="AD_TI_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.TransferIn}" rendered="{!mode='view'}" id="outputADTIC"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.TransferIn}" id="AD_TI_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.TAMDTAM}" id="AD_TAM_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TAM')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.TAMDTAM}" rendered="{!mode='view'}" id="outputADTAMD"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.TAMDTAM}" id="AD_TAM_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TAM')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.TAMDTAM}" rendered="{!mode='view'}" id="outputADTAMP"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.TAMDTAM}" id="AD_TAM_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'TAM')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.TAMDTAM}" rendered="{!mode='view'}" id="outputADTAMC"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.TAMDTAM}" id="AD_TAM_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailDirect.RepeatBusiness}" id="AD_RRB_D"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailPOS.RepeatBusiness}" id="AD_RRB_P"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailCMA.RepeatBusiness}" id="AD_RRB_C"/></b></td>
+                                    <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!budgetPlanStructure.detailTotal.RepeatBusiness}" id="AD_RRB_T"/></b></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.CustomerGrowth}" id="AD_MG_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'MG')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.CustomerGrowth}" id="outputADMGD" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.CustomerGrowth}" id="AD_MG_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'MG')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.CustomerGrowth}" id="outputADMGP" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.CustomerGrowth}" id="AD_MG_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'MG')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.CustomerGrowth}" id="outputADMGC" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.CustomerGrowth}" id="AD_MG_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.PriceIncrease}" id="AD_PI_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'PI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.PriceIncrease}" id="outputADPID" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.PriceIncrease}" id="AD_PI_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'PI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.PriceIncrease}" id="outputADPIP" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.PriceIncrease}" id="AD_PI_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'PI')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.PriceIncrease}" id="outputADPIC" rendered="{!mode='view'}"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.PriceIncrease}" id="AD_PI_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailDirect.AdjRepeatBusiness}" id="AD_AB_D"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailPOS.AdjRepeatBusiness}" id="AD_AB_P"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailCMA.AdjRepeatBusiness}" id="AD_AB_C"/></b></td>
+                                    <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!budgetPlanStructure.detailTotal.AdjRepeatBusiness}" id="AD_AB_T"/></b></td>
+                                </tr>
+                            
+                                <!--  Won Opportunities  -->
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">
+                                        <apex:outPutText rendered="{!link_WonOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_WonOpportunities != ''}" value="{!link_WonOpportunities}" id="theLinkWonOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}</apex:outputLink>
+                                        <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                    </td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.OpportunitiesWon}" id="AD_OW_D"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.OpportunitiesWon}" id="AD_OW_P"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.OpportunitiesWon}" id="AD_OW_C"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.OpportunitiesWon}" id="AD_OW_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailDirect.Forecast}" id="AD_CB_D"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailPOS.Forecast}" id="AD_CB_P"/></b></td>
+                                    <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.detailCMA.Forecast}" id="AD_CB_C"/></b></td>
+                                    <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!budgetPlanStructure.detailTotal.Forecast}" id="AD_CB_T"/></b></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">
+                                        <apex:outPutText rendered="{!link_CommitOpportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_CommitOpportunities != ''}" value="{!link_CommitOpportunities}" id="theLinkCommitOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}</apex:outputLink>
+                                        <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                    </td>
+                                    
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.OpportunitiesCommit}" id="outputADOPPMD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.OpportunitiesCommit}" id="outputADOPPMP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.OpportunitiesCommit}" id="outputADOPPMC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.OpportunitiesCommit}" id="outputADOPPMT"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">
+                                        <apex:outPutText rendered="{!link_LikelyOpportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_LikelyOpportunities != ''}" value="{!link_LikelyOpportunities}" id="theLinkLikelyOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}</apex:outputLink>
+                                        <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                    </td>
+                                    
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.OpportunitiesLikely}" id="outputADOPPLD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.OpportunitiesLikely}" id="outputADOPPLP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.OpportunitiesLikely}" id="outputADOPPLC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.OpportunitiesLikely}" id="outputADOPPLT"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    
+                                    <td class="dataCell tdOne">
+                                        <apex:outPutText rendered="{!link_5050Opportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_5050Opportunities != ''}" value="{!link_5050Opportunities}" id="theLink5050Opportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}</apex:outputLink>
+                                        <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                    </td>
+                                    
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.Opportunities5050}" id="outputADOPP5D"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.Opportunities5050}" id="outputADOPP5P"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.Opportunities5050}" id="outputADOPP5C"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.Opportunities5050}" id="outputADOPP5T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">
+                                        <apex:outPutText rendered="{!link_WeakOpportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}"/>
+                                        <apex:outputLink target="_blank" rendered="{!link_WeakOpportunities != ''}" value="{!link_WeakOpportunities}" id="theLinkWeakOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}</apex:outputLink>
+                                        <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                    </td>
+                                   
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.OpportunitiesWeak}" id="outputADOPPWD"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.OpportunitiesWeak}" id="outputADOPPWP"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.OpportunitiesWeak}" id="outputADOPPWC"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.OpportunitiesWeak}" id="outputADOPPWT"/></td>
+                                </tr>                                
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId}" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.Adjustment}" id="AD_AJ_D" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'AJ')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.Adjustment}" rendered="{!mode='view'}" id="outputADAJD"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailPOS.Adjustment}" id="AD_AJ_P" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'AJ')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailPOS.Adjustment}" rendered="{!mode='view'}" id="outputADAJP"/>
+                                    </td>
+                                    <td class="dataCell tdTwo">
+                                        <apex:inputText value="{!budgetPlanStructure.detailCMA.Adjustment}" id="AD_AJ_C" styleClass="inputItem" onchange="executeCal(this.id, 'AD', 'AJ')" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailCMA.Adjustment}" rendered="{!mode='view'}" id="outputADAJC"/>
+                                    </td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.Adjustment}" id="AD_AJ_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId} itbtablereturn" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$Label.GrowthPer}<apex:outPutPanel styleClass="helpButton" ><img class="helpOrb" title="{!$Label.Growth_Help_Text}" alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailDirect.Growth}" id="AD_GR_D"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailPOS.Growth}" id="AD_GR_P"/></td>
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.detailCMA.Growth}" id="AD_GR_C"/></td>
+                                    <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budgetPlanStructure.detailTotal.Growth}" id="AD_GR_T"/></td>
+                                </tr>
+                                <tr data-info="{!budgetPlanStructure.accountInfo}{!budgetPlanStructure.accountId}" class="dataRow accountData_{!budgetPlanStructure.accountId} itbtablereturn" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                    <td class="dataCell trleftBorder"></td>
+                                    <td class="dataCell " />
+                                    <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Comments__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Comments__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Comments__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                    <td class="dataCell tdOne trrightBorder" colspan="4">
+                                        <apex:inputText value="{!budgetPlanStructure.detailDirect.Comments}" styleClass="comments" style="width:95%;" rendered="{!mode='edit'}"/>
+                                        <apex:outputText value="{!budgetPlanStructure.detailDirect.Comments}" id="comments" rendered="{!mode='view'}"/>
+                                    </td>
+                                </tr>
+                            </apex:repeat> 
+                            
+                            <!---------------------------------------- Total Accounts ---------------------------------------------->
+                            <tr class="dataRow notIn" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell tdOne" colspan="2"><b>{!$Label.Total_Accounts}</b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.TotalAccountBudget}" id="AD_TA_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.TotalAccountBudget}" id="AD_TA_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.TotalAccountBudget}" id="AD_TA_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.TotalAccountBudget}" id="AD_TA_T"/></b></td>
+                            </tr>
+                            
+                            
+                            <!---------------------------------------- Other Accounts ---------------------------------------------->
+                            <tr class="dataRow notIn accountBtn_otherAccounts" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell tdOne trleftBorder" ><img class="showTableListButton" title="Show" onclick="showDisplays('otherAccounts', this.id, this.title, 'accountTable')" id="otherAccounts_accountBtn" style="cursor:pointer;"  src="/s.gif"/></td>
+                                <td class="dataCell tdOne" colspan="2">
+                                    <apex:outPutText rendered="{!link_OtherAccountsInTerritory = ''}" value="{!$Label.Other_Accounts_in_Territory}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_OtherAccountsInTerritory != ''}" value="{!link_OtherAccountsInTerritory}{!TerritoryCode4Report}" id="theLink">{!$Label.Other_Accounts_in_Territory}</apex:outputLink>
+                                </td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.TotalBudget}" id="OAD_TB_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.TotalBudget}" id="OAD_TB_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.TotalBudget}" id="OAD_TB_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.TotalBudget}" id="OAD_TB_T"/></td>
+                            </tr>
+                            <tr class="itbprevreturn dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.BillingsLY}" id="outputOADBLYD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.BillingsLY}" id="outputOADBLYP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.BillingsLY}" id="outputOADBLYC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.BillingsLY}" id="outputOADBLYT"/></td>
+                            </tr>                                                                                    
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.BillingsYTDCY}" id="outputOADBCYTDD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.BillingsYTDCY}" id="outputOADBCYTDP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.BillingsYTDCY}" id="outputOADBCYTDC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.BillingsYTDCY}" id="outputOADBCYTDT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.BillingsRRCY}" id="OAD_BCYRR_D" /></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.BillingsRRCY}" id="OAD_BCYRR_P" /></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.BillingsRRCY}" id="OAD_BCYRR_C" /></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.BillingsRRCY}" id="outputOADBCYRRT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Backlog__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Backlog}" id="outputOADBLD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.Backlog}" id="outputOADBLP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.Backlog}" id="outputOADBLC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.Backlog}" id="outputOADBLT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.EstimatedFinalCY}" id="OAD_FCY_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'FCY')" rendered="{!mode='edit'}"/>
+                                    <b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputOADFCYD"/></b>
+                                </td>
+                                <td class="dataCell tdTwo">                                         
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.EstimatedFinalCY}" id="OAD_FCY_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'FCY')" rendered="{!mode='edit'}"/>
+                                    <b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputOADFCYP"/></b>
+                                </td>
+                                <td class="dataCell tdTwo">                                        
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.EstimatedFinalCY}" id="OAD_FCY_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'FCY')" rendered="{!mode='edit'}"/>
+                                    <b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.EstimatedFinalCY}" rendered="{!mode='view'}" id="outputOADFCYC"/></b>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.EstimatedFinalCY}" id="OAD_FCY_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.ObsoletionEOL}" id="OAD_OEOL_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.ObsoletionEOL}" rendered="{!mode='view'}" id="outputOADOEOLD"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.ObsoletionEOL}" id="OAD_OEOL_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.ObsoletionEOL}" rendered="{!mode='view'}" id="outputOADOEOLP"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.ObsoletionEOL}" id="OAD_OEOL_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'OEOL')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.ObsoletionEOL}" rendered="{!mode='view'}" id="outputOADOEOLC"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.ObsoletionEOL}" id="OAD_OEOL_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.TransferOut}" id="OAD_TO_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TO')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.TransferOut}" rendered="{!mode='view'}" id="outputOADTOD"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.TransferOut}" id="OAD_TO_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TO')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.TransferOut}" rendered="{!mode='view'}" id="outputOADTOP"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.TransferOut}" id="OAD_TO_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TO')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.TransferOut}" rendered="{!mode='view'}" id="outputOADTOC"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.TransferOut}" id="OAD_TO_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.TransferIn}" id="OAD_TI_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.TransferIn}" rendered="{!mode='view'}" id="outputOADTID"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.TransferIn}" id="OAD_TI_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.TransferIn}" rendered="{!mode='view'}" id="outputOADTIP"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.TransferIn}" id="OAD_TI_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.TransferIn}" rendered="{!mode='view'}" id="outputOADTIC"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.TransferIn}" id="OAD_TI_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.TAMDTAM}" id="OAD_TAM_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TAM')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.TAMDTAM}" rendered="{!mode='view'}" id="outputOADTAMD"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.TAMDTAM}" id="OAD_TAM_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'TAM')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.TAMDTAM}" rendered="{!mode='view'}" id="outputOADTAMP"/>
+                                </td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.TAMDTAM}" id="OAD_TAM_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.TAMDTAM}" id="OAD_TAM_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.RepeatBusiness}" id="OAD_RRB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.RepeatBusiness}" id="OAD_RRB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.RepeatBusiness}" id="OAD_RRB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.RepeatBusiness}" id="OAD_RRB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.CustomerGrowth}" id="OAD_MG_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'MG')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.CustomerGrowth}" id="outputOADMGD" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.CustomerGrowth}" id="OAD_MG_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'MG')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.CustomerGrowth}" id="outputOADMGP" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.CustomerGrowth}" id="OAD_MG_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'MG')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.CustomerGrowth}" id="outputOADMGC" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.CustomerGrowth}" id="OAD_MG_T"/></td>
+                            </tr>
+<!--                                 <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';"> -->
+<!--                                     <td class="dataCell trleftBorder"></td> -->
+<!--                                     <td class="dataCell " /> -->
+<!--                                     <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td> -->
+<!--                                     <td class="dataCell tdTwo"> -->
+<!--                                         <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.MarketPriceChange}" id="OAD_PC_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PC')" rendered="{!mode='edit'}"/> -->
+<!--                                         <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.MarketPriceChange}" id="outputOADPCD" rendered="{!mode='view'}"/> -->
+<!--                                     </td> -->
+<!--                                     <td class="dataCell tdTwo"> -->
+<!--                                         <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.MarketPriceChange}" id="OAD_PC_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PC')" rendered="{!mode='edit'}"/> -->
+<!--                                         <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.MarketPriceChange}" id="outputOADPCP" rendered="{!mode='view'}"/> -->
+<!--                                     </td> -->
+<!--                                     <td class="dataCell tdTwo"> -->
+<!--                                         <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.MarketPriceChange}" id="OAD_PC_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PC')" rendered="{!mode='edit'}"/> -->
+<!--                                         <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.MarketPriceChange}" id="outputOADPCC" rendered="{!mode='view'}"/> -->
+<!--                                     </td> -->
+<!--                                     <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.MarketPriceChange}" id="OAD_PC_T"/></td> -->
+<!--                                 </tr> -->
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.PriceIncrease}" id="OAD_PI_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.PriceIncrease}" id="outputOADPID" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.PriceIncrease}" id="OAD_PI_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.PriceIncrease}" id="outputOADPIP" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.PriceIncrease}" id="OAD_PI_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'PI')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.PriceIncrease}" id="outputOADPIC" rendered="{!mode='view'}"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.PriceIncrease}" id="OAD_PI_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.AdjRepeatBusiness}" id="OAD_AB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.AdjRepeatBusiness}" id="OAD_AB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.AdjRepeatBusiness}" id="OAD_AB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.AdjRepeatBusiness}" id="OAD_AB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_WonOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_WonOpportunities != ''}" value="{!link_WonOpportunities}" id="theLinkWonOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.OpportunitiesWon}" id="OAD_OW_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.OpportunitiesWon}" id="OAD_OW_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.OpportunitiesWon}" id="OAD_OW_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.OpportunitiesWon}" id="OAD_OW_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Forecast}" id="OAD_CB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.Forecast}" id="OAD_CB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.Forecast}" id="OAD_CB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.Forecast}" id="OAD_CB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_CommitOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_CommitOpportunities != ''}" value="{!link_CommitOpportunities}" id="theLinkCommitOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo ttttttttttttttttttttttttttttt"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.OpportunitiesCommit}" id="outputOADOPPMD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.OpportunitiesCommit}" id="outputOADOPPMP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.OpportunitiesCommit}" id="outputOADOPPMC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.OpportunitiesCommit}" id="outputOADOPPMT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_LikelyOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_LikelyOpportunities != ''}" value="{!link_LikelyOpportunities}" id="theLinkLikelyOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.OpportunitiesLikely}" id="outputOADOPPLD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.OpportunitiesLikely}" id="outputOADOPPLP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.OpportunitiesLikely}" id="outputOADOPPLC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.OpportunitiesLikely}" id="outputOADOPPLT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_5050Opportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_5050Opportunities != ''}" value="{!link_5050Opportunities}" id="theLink5050Opportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Opportunities5050}" id="outputOADOPP5D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.Opportunities5050}" id="outputOADOPP5P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.Opportunities5050}" id="outputOADOPP5C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.Opportunities5050}" id="outputOADOPP5T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_WeakOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_WeakOpportunities != ''}" value="{!link_WeakOpportunities}" id="theLinkWeakOpportunities">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.OpportunitiesWeak}" id="outputOADOPPWD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.OpportunitiesWeak}" id="outputOADOPPWP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.OpportunitiesWeak}" id="outputOADOPPWC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.OpportunitiesWeak}" id="outputOADOPPWT"/></td>
+                            </tr>                          
+                            <tr class="dataRow accountData_otherAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.Adjustment}" id="OAD_AJ_D" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'AJ')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Adjustment}" rendered="{!mode='view'}" id="outputOADAJD"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailPOS.Adjustment}" id="OAD_AJ_P" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'AJ')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.Adjustment}" rendered="{!mode='view'}" id="outputOADAJP"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailCMA.Adjustment}" id="OAD_AJ_C" styleClass="inputItem" onchange="executeCal(this.id, 'OAD', 'AJ')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.Adjustment}" rendered="{!mode='view'}" id="outputOADAJC"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.Adjustment}" id="OAD_AJ_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts  itbtablereturn" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$Label.GrowthPer}<apex:outPutPanel styleClass="helpButton" ><img class="helpOrb" title="{!$Label.Growth_Help_Text}" alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Growth}" id="OAD_GR_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailPOS.Growth}" id="OAD_GR_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailCMA.Growth}" id="OAD_GR_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!otherBudgetPlanStructuretemp.detailTotal.Growth}" id="OAD_GR_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_otherAccounts itbtablereturn" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Comments__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Comments__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Comments__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdOne trrightBorder" colspan="4">
+                                    <apex:inputText value="{!otherBudgetPlanStructuretemp.detailDirect.Comments}" styleClass="comments" style="width:95%;" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!otherBudgetPlanStructuretemp.detailDirect.Comments}" id="comments" rendered="{!mode='view'}"/>
+                                </td>
+                            </tr>
+                                
+                            <!---------------------------------------- Total Budget & Total Budget Detail----------------------------------------------->
+                            <tr class="dataRow accountBtn_totalAccounts" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell tdOne trleftBorder"><img class="showTableListButton" title="Show" onclick="showDisplays('totalAccounts', this.id, this.title, 'accountTable')" id="totalAccounts_accountBtn" style="cursor:pointer;"  src="/s.gif"/></td>
+                                <td class="dataCell tdOne" colspan="2"><b>{!$Label.Total_Budget}</b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.TotalBudget}" id="TB_TB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.TotalBudget}" id="TB_TB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.TotalBudget}" id="TB_TB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.TotalBudget}" id="TB_TB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.BillingsLY}" id="outputTBBLYD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.BillingsLY}" id="outputTBBLYP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.BillingsLY}" id="outputTBBLYC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.BillingsLY}" id="outputTBBLYT"/></td>
+                            </tr>                                                                                    
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.BillingsYTDCY}" id="outputTBBCYTDD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.BillingsYTDCY}" id="outputTBBCYTDP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.BillingsYTDCY}" id="outputTBBCYTDC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.BillingsYTDCY}" id="outputTBBCYTDT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.BillingsRRCY}" id="outputTBBCYRRD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.BillingsRRCY}" id="outputTBBCYRRP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.BillingsRRCY}" id="outputTBBCYRRC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.BillingsRRCY}" id="outputTBBCYRRT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder" />
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Backlog__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Backlog__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.Backlog}" id="outputTBBLD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.Backlog}" id="outputTBBLP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.Backlog}" id="outputTBBLC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.Backlog}" id="outputTBBLT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.EstimatedFinalCY}" id="TB_FCY_D" /></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.EstimatedFinalCY}" id="TB_FCY_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.EstimatedFinalCY}" id="TB_FCY_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.EstimatedFinalCY}" id="TB_FCY_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Obsoletion_EOL__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.ObsoletionEOL}" id="TB_OEOL_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.ObsoletionEOL}" id="TB_OEOL_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.ObsoletionEOL}" id="TB_OEOL_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.ObsoletionEOL}" id="TB_OEOL_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_Out__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.TransferOut}" id="TB_TO_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.TransferOut}" id="TB_TO_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.TransferOut}" id="TB_TO_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.TransferOut}" id="TB_TO_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"/>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Transfer_In__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.TransferIn}" id="TB_TI_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.TransferIn}" id="TB_TI_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.TransferIn}" id="TB_TI_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.TransferIn}" id="TB_TI_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.TAM_DTAM__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.TAMDTAM}" id="TB_TAM_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.TAMDTAM}" id="TB_TAM_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.TAMDTAM}" id="TB_TAM_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.TAMDTAM}" id="TB_TAM_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Run_Rate_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.RepeatBusiness}" id="TB_RRB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.RepeatBusiness}" id="TB_RRB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.RepeatBusiness}" id="TB_RRB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.RepeatBusiness}" id="TB_RRB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Market_Growth__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.CustomerGrowth}" id="TB_MG_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.CustomerGrowth}" id="TB_MG_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.CustomerGrowth}" id="TB_MG_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.CustomerGrowth}" id="TB_MG_T"/></td>
+                            </tr>
+                            <!--                                 <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';"> -->
+                            <!--                                     <td class="dataCell trleftBorder"></td> -->
+                            <!--                                     <td class="dataCell " /> -->
+                            <!--                                     <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td> -->
+                            <!--                                     <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.MarketPriceChange}" id="TB_PC_D"/></td> -->
+                            <!--                                     <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.MarketPriceChange}" id="TB_PC_P"/></td> -->
+                            <!--                                     <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.MarketPriceChange}" id="TB_PC_C"/></td> -->
+                            <!--                                     <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.MarketPriceChange}" id="TB_PC_T"/></td> -->
+                            <!--                                 </tr> -->
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Price_Change__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.PriceIncrease}" id="TB_PI_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.PriceIncrease}" id="TB_PI_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.PriceIncrease}" id="TB_PI_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.PriceIncrease}" id="TB_PI_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjusted_Business__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.AdjRepeatBusiness}" id="TB_AB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.AdjRepeatBusiness}" id="TB_AB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.AdjRepeatBusiness}" id="TB_AB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.AdjRepeatBusiness}" id="TB_AB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_WonOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_WonOpportunities != ''}" value="{!link_WonOpportunities}" id="theLinkWonOpportunities2">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Won__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.OpportunitiesWon}" id="TB_OW_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.OpportunitiesWon}" id="TB_OW_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.OpportunitiesWon}" id="TB_OW_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.OpportunitiesWon}" id="TB_OW_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne"><b>{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.label}</b><apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Calculated_Budget__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailDirect.Forecast}" id="TB_CB_D"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailPOS.Forecast}" id="TB_CB_P"/></b></td>
+                                <td class="dataCell tdTwo"><b><apex:outputText value="{!totalBudgetPlan.detailCMA.Forecast}" id="TB_CB_C"/></b></td>
+                                <td class="dataCell tdTwo trrightBorder"><b><apex:outputText value="{!totalBudgetPlan.detailTotal.Forecast}" id="TB_CB_T"/></b></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_CommitOpportunities = ''}" value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_CommitOpportunities != ''}" value="{!link_CommitOpportunities}" id="theLinkCommitOpportunities2">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Commit__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.OpportunitiesCommit}" id="outputTBOPPMD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.OpportunitiesCommit}" id="outputTBOPPMP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.OpportunitiesCommit}" id="outputTBOPPMC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.OpportunitiesCommit}" id="outputTBOPPMT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_LikelyOpportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_LikelyOpportunities != ''}" value="{!link_LikelyOpportunities}" id="theLikelyOpportunities2">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Likely__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.OpportunitiesLikely}" id="outputTBOPPLD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.OpportunitiesLikely}" id="outputTBOPPLP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.OpportunitiesLikely}" id="outputTBOPPLC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.OpportunitiesLikely}" id="outputTBOPPLT"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_5050Opportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_5050Opportunities != ''}" value="{!link_5050Opportunities}" id="theLink5050Opportunities2">{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities50_50__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.Opportunities5050}" id="outputTBOPP5D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.Opportunities5050}" id="outputTBOPP5P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.Opportunities5050}" id="outputTBOPP5C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.Opportunities5050}" id="outputTBOPP5T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">
+                                    <apex:outPutText rendered="{!link_WeakOpportunities = ''}"  value="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}"/>
+                                    <apex:outputLink target="_blank" rendered="{!link_WeakOpportunities != ''}" value="{!link_WeakOpportunities}" id="theLinkWeakOpportunities2">{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.label}</apex:outputLink>
+                                    <apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Opportunities_Weak__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel>
+                                </td>
+                                
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.OpportunitiesWeak}" id="outputTBOPPWD"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.OpportunitiesWeak}" id="outputTBOPPWP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.OpportunitiesWeak}" id="outputTBOPPWC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.OpportunitiesWeak}" id="outputTBOPPWT"/></td>
+                            </tr>                                
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.label}<apex:outPutPanel styleClass="helpButton" rendered="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText!=''}"><img class="helpOrb" title="{!$ObjectType.Budget_Detail__c.fields.Adjustment__c.inlineHelpText} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.Adjustment}" id="TB_AJ_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.Adjustment}" id="TB_AJ_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.Adjustment}" id="TB_AJ_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.Adjustment}" id="TB_AJ_T"/></td>
+                            </tr>
+                            <tr class="dataRow accountData_totalAccounts" style="display:none;" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell " />
+                                <td class="dataCell tdOne">{!$Label.GrowthPer}<apex:outPutPanel styleClass="helpButton" ><img class="helpOrb" title="{!$Label.Growth_Help_Text} " alt="" src="/s.gif" /></apex:outPutPanel></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.Growth}" id="TB_GR_D"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.Growth}" id="TB_GR_P"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.Growth}" id="TB_GR_C"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.Growth}" id="TB_GR_T"/></td>
+                            </tr>
+                            <!-- Start by Bin Yuan 2013-10-21 due to fix Budget NY bug -->
+                            <!--  
+<tr class="dataRow" style="display:{!IF(AND(mode=='view', budget.Total_Budget_TBR_NY_Rollup__c > 0),'','none')};" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+<td class="dataCell trleftBorder"></td>
+<td class="dataCell tdOne" colspan="2">{!$Label.TBR_NY}</td>
+<td class="dataCell tdTwo"><apex:outputText value="{!budget.Total_Direct_Budget_TBR_NY_Rollup__c}" id="outputBTND"/></td>
+<td class="dataCell tdTwo"><apex:outputText value="{!budget.Total_POS_Budget_TBR_NY_Rollup__c}" id="outputBTNP"/></td>
+<td class="dataCell tdTwo"><apex:outputText value="{!budget.Total_CMA_Budget_TBR_NY_Rollup__c}" id="outputBTNC"/></td>
+<td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!budget.Total_Budget_TBR_NY_Rollup__c}" id="outputBTNT"/></td>
+</tr>
+-->
+                            <tr class="dataRow" style="display:{!IF(AND(mode=='view', totalBudgetPlan.detailTotal.budgetNY > 0),'','none')};" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                <td class="dataCell trleftBorder"></td>
+                                <td class="dataCell tdOne" colspan="2">{!$Label.TBR_NY}</td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailDirect.budgetNY}" id="outputBTND"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailPOS.budgetNY}" id="outputBTNP"/></td>
+                                <td class="dataCell tdTwo"><apex:outputText value="{!totalBudgetPlan.detailCMA.budgetNY}" id="outputBTNC"/></td>
+                                <td class="dataCell tdTwo trrightBorder"><apex:outputText value="{!totalBudgetPlan.detailTotal.budgetNY}" id="outputBTNT"/></td>
+                            </tr>
+                            <!-- End by Bin Yuan 2013-10-21-->
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder" colspan="2">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td> 
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                            </tr>
+                            <tr class="dataRow" style="display:{!IF(budget.Stage__c = 'Final', '','none')}">
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder" colspan="2">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder"><b>{!$Label.Manager_Target}</b></td>
+                                <td class="dataCell noBorder" align="right"><b><apex:outputText value="{!budget.Manager_Final_Budget__c}" id="outputMFB"/></b></td>
+                            </tr>                                
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder" colspan="2">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell noBorder">&nbsp;</td>
+                                <td class="dataCell tdTwo noBorder">&nbsp;</td>
+                            </tr>
+                            <tr class="headerRow itbprevreturn" >
+                                <th class="headerCenter noBorder">&nbsp;</th>
+                                <th class="headerCenter noBorder">&nbsp;</th>
+                                <th class="headerCenter borderTop" >&nbsp;</th>
+                                <th class="headerCenter borderTop tdTwo" style="width:100px;">{!$Label.Direct}</th>
+                                <th class="headerCenter borderTop tdTwo" style="width:100px;">{!$Label.POS}</th>
+                                <th class="headerCenter borderTop tdTwo" style="width:100px;">{!$Label.CMA}</th>
+                                <th class="headerCenter borderTop trrightBorder tdTwo" style="width:100px;">{!$Label.Total}</th>
+                            </tr>
+                            
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell tdTwo trleftBorder" ><b>{!$Label.FQ1}</b></td>
+                                <td class="dataCell tdTwo ">
+                                    <apex:inputText value="{!budget.FQ1_Direct__c}" id="QB_FQ1_D" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_D}', this.id, 'FQ1')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ1_Direct__c}" rendered="{!mode='view'}" id="outputQBFQ1D"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ1_POS__c}" id="QB_FQ1_P" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_P}', this.id, 'FQ1')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ1_POS__c}" rendered="{!mode='view'}" id="outputQBFQ1P"/>
+                                </td>
+                                <td class="dataCell tdTwo ">
+                                    <apex:inputText value="{!budget.FQ1_CMA__c}" id="QB_FQ1_C" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_C}', this.id, 'FQ1')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ1_CMA__c}" rendered="{!mode='view'}" id="outputQBFQ1C"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">                                       
+                                    <apex:outputText value="{!budget.FQ1_Total__c}" id="QB_FQ1_T" />
+                                    <apex:inputHidden value="{!budget.FQ1_Total__c}" id="HQB_FQ1_T" />
+                                </td>
+                            </tr>
+                            
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell tdTwo trleftBorder" ><b>{!$Label.FQ2}</b></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ2_Direct__c}" id="QB_FQ2_D" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_D}', this.id, 'FQ2')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ2_Direct__c}" rendered="{!mode='view'}" id="outputQBFQ2D"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ2_POS__c}" id="QB_FQ2_P" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_P}', this.id, 'FQ2')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ2_POS__c}" rendered="{!mode='view'}" id="outputQBFQ2P"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ2_CMA__c}" id="QB_FQ2_C" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_C}', this.id, 'FQ2')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ2_CMA__c}" rendered="{!mode='view'}" id="outputQBFQ2C"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">
+                                    <apex:outputText value="{!budget.FQ2_Total__c}" id="QB_FQ2_T" />
+                                    <apex:inputHidden value="{!budget.FQ2_Total__c}" id="HQB_FQ2_T" />
+                                </td>
+                            </tr>  
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell tdTwo trleftBorder" ><b>{!$Label.FQ3}</b></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ3_Direct__c}" id="QB_FQ3_D" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_D}', this.id, 'FQ3')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ3_Direct__c}" rendered="{!mode='view'}" id="outputQBFQ3D"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ3_POS__c}" id="QB_FQ3_P" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_P}', this.id, 'FQ3')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ3_POS__c}" rendered="{!mode='view'}" id="outputQBFQ3P"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:inputText value="{!budget.FQ3_CMA__c}" id="QB_FQ3_C" styleclass="inputItem" onchange="calQuarterBudget('{!$Component.TB_TB_C}', this.id, 'FQ3')" rendered="{!mode='edit'}"/>
+                                    <apex:outputText value="{!budget.FQ3_CMA__c}" rendered="{!mode='view'}" id="outputQBFQ3C"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">
+                                    <apex:outputText value="{!budget.FQ3_Total__c}" id="QB_FQ3_T" />
+                                    <apex:inputHidden value="{!budget.FQ3_Total__c}" id="HQB_FQ3_T" />
+                                </td>
+                            </tr>
+                            <tr class="dataRow" >
+                                <td class="dataCell noBorder" ></td>
+                                <td class="dataCell noBorder"></td>
+                                <td class="dataCell tdTwo trleftBorder" ><b>{!$Label.FQ4}</b></td>
+                                <td class="dataCell tdTwo">
+                                    <apex:outputText value="{!budget.FQ4_Direct__c}" id="QB_FQ4_D"/>
+                                    <apex:inputHidden value="{!budget.FQ4_Direct__c}" id="HQB_FQ4_D"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:outputText value="{!budget.FQ4_POS__c}" id="QB_FQ4_P"/>
+                                    <apex:inputHidden value="{!budget.FQ4_POS__c}" id="HQB_FQ4_P"/>
+                                </td>
+                                <td class="dataCell tdTwo">
+                                    <apex:outputText value="{!budget.FQ4_CMA__c}" id="QB_FQ4_C"/>
+                                    <apex:inputHidden value="{!budget.FQ4_CMA__c}" id="HQB_FQ4_C"/>
+                                </td>
+                                <td class="dataCell tdTwo trrightBorder">
+                                    <apex:outputText value="{!budget.FQ4_Total__c}" id="QB_FQ4_T"/>
+                                    <apex:inputHidden value="{!budget.FQ4_Total__c}" id="HQB_FQ4_T" />
+                                </td>
+                            </tr>                                                                                                                                                 
+                        </tbody>
+                    </table>
+                </apex:outputPanel>
+            </apex:PageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;display:none;background-color:#FFF;opacity:0.85;position:fixed;z-index:5000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');" title="Please Wait..."></div>
+    
+    
+    <script type="text/javascript">
+    //	"use strict";
+    //	window.onload = initDocumentPage;
+    	addListener(window, 'load', initDocumentPage);
+    	
+    	function addListener (element, event, fn) {
+			if (window.attachEvent) {
+				element.attachEvent('on' + event, fn);
+			} else {
+				element.addEventListener(event, fn, false);
+			}
+		}
+    	
+    	;function initDocumentPage(){
+    		var $divBtn = $('#btndivid'), $divSelect = $('#selectdivid'),
+    			$btnSave = $divBtn.find('input[type="button"].btnsavecls'), $btnNext = $divBtn.find('input[type="button"].btnnextcls'),
+    			$selectTerr = $divSelect.find('select.territorycls'), $selectYear = $divSelect.find('select.yearcls'),
+				terr_len = $selectTerr.find('option').length, year_len = $selectYear.find('option').length, budget_id = $.trim( $('#budgethiddid').val() );
+
+			if( typeof(budget_id) == 'undefined' || budget_id == '' ){
+				$btnSave.hide();
+   				$btnNext.hide();
+			}
+			if(terr_len == 2 && budget_id == ''){
+				$selectTerr.find('option').each(function(idx){
+					$(this).removeAttr('selected');
+					if(idx == 1){
+						$(this).attr({'selected':'selected'});
+					}
+				});
+				$selectTerr.change();
+			}
+			//start
+			var mode = '{!mode}';
+			if(mode == 'edit') {
+				var fq1dId = $('[id*=QB_FQ1_D]').attr('id');
+				var fq1dIp = $('[id*=QB_FQ1_P]').attr('id');
+				var fq1dIc = $('[id*=QB_FQ2_C]').attr('id');
+				var tbd = $('[id*=TB_TB_D]').attr('id');
+				var tbp = $('[id*=TB_TB_P]').attr('id');
+				var tbc = $('[id*=TB_TB_C]').attr('id');
+				console.log(fq1dId);
+				console.log(fq1dIp);
+				console.log(fq1dIc);
+				calQuarterBudget(tbd, fq1dId, 'FQ1');
+				calQuarterBudget(tbp, fq1dIp, 'FQ1');
+				calQuarterBudget(tbc, fq1dIc, 'FQ1');
+			}
+            orderAccountTable();
+    	}
+    	
+    	;function orderAccountTable(){
+            var list_order=[], $body=$('#accountTable tbody');
+            $('#accountTable tbody tr.mainTr').each(function(){
+                list_order.push(this);
+            });
+            $body.find('tr.mainTr').remove();
+            list_order.sort(function(a, b){
+                var aSort=$(a).attr('data-sort'), bSort=$(b).attr('data-sort');
+                return (aSort > bSort ? 1 : -1);
+            });
+            $body.find('tr:first').before(list_order);
+            list_order=[];
+            $body.find('tr.mainTr').each(function(){
+                var info=this.getAttribute('data-sort');
+                $(this).after( $body.find('tr[data-info="'+info+'"]') );
+            });
+            console.log('complate');
+        }
+    
+    	;function checkhasYearComplete(){
+    		var $divBtn = $('#btndivid'), $btnSave = $divBtn.find('input[type="button"].btnsavecls'), 
+    			$btnNext = $divBtn.find('input[type="button"].btnnextcls'),
+    			$selectYear = $('#selectdivid select.yearcls'), s_index = $selectYear.get(0).selectedIndex;
+   			$btnSave.hide();
+			$btnNext.hide();
+    		if(s_index != 0){
+	   			$btnSave.show();
+				$btnNext.show();
+    		}
+    	}
+    	;function checkhasTerrComplete(){
+    		var budget_id = $.trim( $('#budgethiddid').val() ), $divSelect = $('#selectdivid'), $divBtn = $('#btndivid'), 
+    			$btnSave = $divBtn.find('input[type="button"].btnsavecls'), 
+    			$btnNext = $divBtn.find('input[type="button"].btnnextcls'),
+    			$selectYear = $divSelect.find('select.yearcls'), sy_index = $selectYear.get(0).selectedIndex,
+    			$selectTerr = $divSelect.find('select.territorycls'), s_index = $selectTerr.get(0).selectedIndex;
+
+    		if( (typeof(budget_id) == 'undefined' || budget_id == '') && sy_index == 0){
+				$btnSave.hide();
+   				$btnNext.hide();
+			}else{
+				$btnSave.show();
+   				$btnNext.show();
+			}
+    		
+    	}
+    </script>
+    
+</apex:page>

@@ -1,0 +1,486 @@
+<apex:component allowDML="true">
+<apex:attribute name="pageCtrl" type="CtrlPMVCustomSettings" required="true" description="the root page controller reference" />
+<!--<link href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.css')}" rel="stylesheet"></link>-->
+<!--<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.10.2.min.js')}"></script>-->
+<!--<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.10.4.custom.min.js')}"></script>-->
+<!--<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery.json-2.4.min.js')}"></script>-->
+<!--<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>-->
+<style type="text/css">
+	form{
+		width: 99%;
+		height: auto;
+		margin: 0px auto;
+	}
+	.ui-accordion .ui-accordion-content{oveflow:none;}
+	.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, .ui-state-hover, .ui-state-focus{
+		color:#ffffff;
+		//background:linear-gradient(#fab710, #f49d02) !important;
+		background:#f49d02;
+		
+	}
+	.ui-state-active{border-width:1px 0;background:linear-gradient(#fab710, #f49d02) !important;}
+	.step-name, .ui-state-hover .step-name, .ui-state-focus .step-name {
+        color: #fff;
+    }
+    .ui-tabs-panel-active{
+    	font-family: Arial,Helvetica,sans-serif !important;
+    }
+	.step-name{
+	 	display:inline-block;
+	 	margin-left:14px;
+	 	color:#1b1b1b;
+	 }
+	.keyPlayers{
+		width:100%;
+		height:auto;
+	 }
+	.keyPlayers-note{
+		width:100%;
+		margin-top:5px;
+		overflow: hidden;
+	}
+	.keyPlayers-note-left{
+		height:100%;
+		width:100%;
+		float:left;
+	}
+	.keyPlayers-note-left p{
+		padding-left:7px;
+	}
+	.keyPlayers > div{
+		clear:both;
+	}
+	.accordion-content{
+        background-color:#f49d02;
+        background-image:none;
+    }
+    .ques-content{
+        background: #fff;   
+        padding: 6px;
+    }
+    .bPageBlock{
+    	border-top: 1px solid #eaeaea !important;
+    }
+    .pbSubheader {
+    	background-color: #f49d02 !important;
+    	border-color: #f49d02 !important;
+    }
+    .tableStyle {
+		margin: 18px auto 28px;
+		width: 98%;
+		border-collapse: collapse;
+		border: 1px solid #CFD1CD;
+	}
+	
+	.tableStyle td {
+		border: 1px solid #CFD1CD;
+		padding: 4px 2px 4px 5px;
+	}
+	.tableStyle thead tr {
+		background: #D2EBEE;
+		font-weight: bold;
+	}
+	.tableStyle thead tr td{padding-left:15px;padding-right:15px;}
+	.tableStyle tbody tr:hover {
+		background: #e3f3ff;
+	}
+	.PMVTable{width:50%;margin-left:12px}
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	 .leftTalbe , .rightTable{}
+     .leftTable td, .rightTable td, .leftTable th, .rightTable th{
+	     border: 1px solid rgb(204, 204, 204);
+	     padding-left: 5px;
+	     height: 25px;
+	     width: 100px;
+	     font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+	     white-space:nowrap;
+     }
+     .leftTable th, .rightTable th{padding-left:15px;padding-right:15px;}
+     .leftTable thead th, .rightTable thead th{
+     	background-color: rgb(201, 234, 255);
+     }
+      
+     .leftTable tbody tr, .rightTable tbody tr {
+     	background-color: rgb(255, 255, 255);
+     }
+     .rightTable tbody tr:nth-child(1) {
+     	background-color: rgb(255, 254, 232);
+     }
+     .rightDiv {
+     	overflow: auto;
+     }
+    .PMVTypeDel{
+		width:24px;
+		height:24px;
+		margin-left: 4%;
+		margin-top:15px;
+		margin-right:10px;
+		float:left;
+		cursor:pointer;
+		display:inline-block;
+		background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+		background-position: -295px 0px;
+	}
+	.processDel{
+		width:24px;
+		height:24px;
+		cursor:pointer;
+		display:inline-block;
+		background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+		background-position: -295px 0px;
+	} 
+	.recordtypediv{height:auto !important;}
+</style>
+
+<script type="text/javascript">
+	var isClick = false;
+
+    function setPMVRecordTypeId(obj,sRdId){
+    	showMask();
+    	j$(".hiddenSalesProcessId").val(sRdId);
+    	addPMVType();
+    }
+    function singleCheckLeadConversion(obj){
+    	j$(".leadConversion").each(function(){
+    		if(j$(this).attr('id') != j$(obj).attr('id')) j$(this).attr('checked',false);
+    		else j$(this).attr('checked',true);
+    	});
+    }
+    function setPMVRecordTypeIdAndIndex(obj,sRdId){
+    	if(confirm('{!$Label.PMV_Delete_PMV_Type}')){
+	    	showMask();
+	    	j$(".hiddenSalesProcessId").val(sRdId);
+	    	j$(".hiddenIndex").val(j$(obj).attr('Id'));
+	    	delPMVType();
+    	}
+    }
+    function setRecordTypeId(sRdId,pid){
+    	if(confirm('{!$Label.PMV_Delete_Record_Type}')){
+    		showMask();
+    		j$(".hiddenRecordTypeId").val(sRdId);
+    		j$(".hiddenSalesProcessId").val(pid);
+    		delProcess();
+    	}
+    }
+    function saveStage(rtId){
+    	showMask();
+    	//j$(".hiddenRecordTypeId").val(rtId);
+    	saveProcess();
+    }
+    
+    ;function confirmrecordtype(){
+    	confirmRT();
+    }
+    ;function addnewrecordtype(){
+    	var message = j$(".hiddenSameRecordType").val();
+    	var comfirmmess = '{!$Label.PMV_Add_Record_Type}';
+    	comfirmmess = comfirmmess.replace('@#@',message);
+    	if(message != ''){
+	    	if(confirm(comfirmmess)){
+	    		addNewRT();
+	
+	    	}else{
+	    		hideMask();
+	    		return false;
+	    	}
+	    }
+	    else{
+	    	addNewRT();
+	    }
+    }
+    ;function reloadRecordType(){
+    	if(confirm("{!$Label.PMV_Refersh_Record_Type}")){
+    		refershRT();
+    	}else{
+    		hideMask();
+    		return false;
+    	}
+    	
+    }
+    ;function reexpendedRT(){
+    	var processid = j$(".hiddenSalesProcessId").val();
+    	var phead = j$("#head"+processid)
+    	
+
+    }
+    function showLastOne(){
+    	var num = j$(".recordtypediv").length - 1;
+	    j$( "#accordion" ).accordion({
+        	active : num, 
+		});
+		j$(".recordtypediv").attr('height','auto');
+    }
+</script>
+	<apex:outputPanel id="samepid4rt">
+		<apex:actionFunction name="confirmRT" action="{!pageCtrl.selectSameProcessIdByRecordType}" oncomplete="addnewrecordtype();" reRender="samepid4rt" />
+		<apex:actionFunction name="addNewRT" action="{!pageCtrl.addNewRecordType}" oncomplete="reexpendedRT();showLastOne();hideMask();" reRender="samepid4rt,processPanel,Messages" />
+		<apex:inputtext value="{!pageCtrl.samerecordtype}" styleClass="hiddenSameRecordType" style="display:none;"/>
+	</apex:outputPanel>
+	<apex:outputPanel id="processPanel">
+		
+		<apex:actionFunction name="saveProcess" action="{!pageCtrl.saveWholeCustomSetting}" oncomplete="hideMask();" rerender="Messages"/>
+		<apex:actionFunction name="addPMVType" action="{!pageCtrl.addNewPMVType}" oncomplete="hideMask();" reRender="PMVTypePanel,Messages" />
+		<apex:actionFunction name="delPMVType" action="{!pageCtrl.deletePMVType}" oncomplete="hideMask();" reRender="PMVTypePanel,Messages" />
+		<apex:actionFunction name="delProcess" action="{!pageCtrl.deleteRecordType}" oncomplete="hideMask();" reRender="processPanel,Messages" />
+		<apex:actionFunction name="refershRT" action="{!pageCtrl.reloadSalesStage}" oncomplete="hideMask();" reRender="samepid4rt,processPanel,Messages" />
+		<apex:inputtext value="{!pageCtrl.recordTypeId}" styleClass="hiddenRecordTypeId" style="display:none;"/>
+		<apex:inputtext value="{!pageCtrl.salesProcessId}" styleClass="hiddenSalesProcessId" style="display:none;"/>
+		<apex:inputtext value="{!pageCtrl.PMVTypeindex}" styleClass="hiddenIndex" style="display:none;"/>
+		
+		<apex:pageMessages id="Messages"/>
+		<center>
+			
+			
+			<apex:selectList value="{!pageCtrl.selectRecordType}" size="1" rendered="{!pageCtrl.selectRecordTypeSize != 0}">
+				<apex:selectOptions value="{!pageCtrl.RecordTypeList}" />
+			</apex:selectList>
+			<input type="button" value="{!$Label.PMV_team_lab_add}" onclick="showMask();confirmrecordtype();" class="btn"/>
+		</center>
+		<center>
+			<input type="button" value="{!$Label.PMV_team_button_save}" onclick="saveStage('');" class="btn saveButton"/>&nbsp;
+			<input type="button" value="{!$Label.PMV_team_button_refersh}" onclick="reloadRecordType();" class="btn"/>
+		</center>
+		<div class="keyPlayers">
+			<div id="accordion">
+				<apex:repeat value="{!pageCtrl.listRTs}" var="list">
+					<h3 id="head{!list.salesProcessId}" class="recordtypehead rdH3">
+						<span class="step-name">{!list.recordTypeName}</span>
+					</h3>
+					<div id="content{!list.salesProcessId}" class="recordtypediv accordion-content ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active rdDiv">
+					    <div class="ques-content">
+							<div class="keyPlayers-note">
+								<apex:pageblock >
+								<apex:repeat value="{!list.recordTypeLists}" var="rtmap">
+									
+									<apex:pageblocksection >
+										<apex:pageblocksectionItem >
+											<apex:outputLabel value="{!rtmap.recordTypeName}"/>
+											<span  class="processDel" onclick="setRecordTypeId('{!rtmap.recordTypeId}','{!list.salesProcessId}');"></span>
+								    		
+							    		</apex:pageblocksectionItem>
+							    		<apex:pageblocksectionItem >
+							    			<apex:outputLabel value=""/>
+							    			<apex:outputText value="" />
+							    		</apex:pageblocksectionItem>
+							    		<apex:pageblocksectionItem >
+								    		<apex:outputLabel value="{!$Label.PMV_Setting_Label_Active}"/>
+								    		<apex:inputCheckbox value="{!rtmap.Active}"/>
+							    		</apex:pageblocksectionItem>
+							    		<apex:pageblocksectionItem >
+								    		<apex:outputLabel value="{!$Label.PMV_Setting_Label_Default}"/>
+								    		<apex:inputCheckbox value="{!rtmap.LeadConversion}" id="leadConversion" styleClass="leadConversion" onclick="singleCheckLeadConversion(this);"/>
+							    		</apex:pageblocksectionItem>
+							    		<apex:pageblocksectionItem >
+								    		<apex:outputLabel value="{!$Label.PMV_Setting_Label_IsSalesOnly}"/>
+								    		<apex:inputCheckbox value="{!rtmap.IsSalesOnly}" />
+							    		</apex:pageblocksectionItem>
+							    		<apex:pageblocksectionItem >
+								    		<apex:outputLabel value="{!$Label.PMV_Setting_Label_Migration}"/>
+								    		<apex:selectList value="{!rtmap.MigrationRecordType}"   multiselect="true" styleClass="chosen-select">
+											     <apex:selectOptions value="{!pageCtrl.allRecordType}"/>
+											</apex:selectList> 
+							    		</apex:pageblocksectionItem>
+							    	</apex:pageblocksection>
+							    	<hr style="color:linear-gradient(#fab710, #f49d02);width:100%;size:1px" />
+								</apex:repeat>
+							    
+							    	
+									<apex:pageblocksection title="{!$Label.PMV_Setting_Label_Stage}" columns="1">
+										<center>
+										 <c:CompMultiPickList selectedField="{!list.selectStagelist}"
+							               unSelectedField="{!list.unSelectStagelist}"
+							               inputHiddenIds="{!$Component.structurekey}" separators="," hiddenProcessId="{!list.salesProcessId}" />
+							              <apex:inputHidden id="structurekey" value="{!list.selectstages}"></apex:inputHidden>
+							              </center>
+									</apex:pageblocksection>
+									
+									
+									<!-- ---------------------------------PMV type-------------------------------------- -->
+									<apex:outputPanel id="PMVTypePanel">
+										<div id="ParentPMVType">
+											<div class="pbSubheader brandTertiaryBgr tertiaryPalette">
+												<img src="/s.gif" alt="Hide Section - PMV Type" class="hideListButton"  name="PMV Type" onclick="twistSection(this);" onkeypress="if (event.keyCode=='13')twistSection(this);" style="cursor:pointer;" tabindex="0" title="Hide Section - PMV Type" />
+												<h3>{!$Label.PMV_Setting_Label_PMVType}</h3>
+											</div>
+											<div id="PMVTypeInfo">
+												<center>
+													<apex:selectList value="{!pageCtrl.selectPMVType}" size="1" rendered="{!list.selectPMVTpyeSize != 0}">
+														<apex:selectOptions value="{!list.selectPMVTpye}" />
+													</apex:selectList>
+													<input type="button" value="{!$Label.PMV_team_lab_add}" onclick="setPMVRecordTypeId(this,'{!list.salesProcessId}');" style="display:{!IF(list.selectPMVTpyeSize != 0,'','none')};" class="btn"/>
+												</center>
+												<apex:repeat value="{!list.PMVTypeList}" var="sType">
+												<span class="PMVTypeDel" id="{!sType.index}" onclick="setPMVRecordTypeIdAndIndex(this,'{!list.salesProcessId}')"></span>
+													<div class="pbSubheader brandTertiaryBgr tertiaryPalette" style="width:92%;margin-left:4%;">
+														<img src="/s.gif" class="hideListButton" onclick="twistSection(this);" onkeypress="if (event.keyCode=='13')twistSection(this);" style="cursor:pointer;" tabindex="0"/>
+														<h3>{!sType.PMV_Type}</h3>
+													</div>
+													
+													<div style="width:100%;margin-left:3%;">
+														<table class="detailList" border="0" cellpadding="0" cellspacing="0" border-collapse="collapse">
+															<tbody>
+																<tr>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_DealMax}</label>
+																	</th>
+																	<td class="dataCol last">
+																		<apex:inputText value="{!sType.Deal_Size_Max}" />
+																	</td>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_DealMin}</label>
+																	</th>
+																	<td class="dataCol last">
+																		<apex:inputText value="{!sType.Deal_Size_Min}" />
+																	</td>
+																</tr>
+																<tr>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_Threshold}</label>
+																	</th>
+																	<td class="dataCol last"	>
+																		<apex:inputText value="{!sType.ProjectedToClose_Threshold}" />
+																	</td>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_ApprovalStatusSnapshots}</label>
+																	</th>
+																	<td class="dataCol last"	>
+																		<apex:selectList value="{!sType.Approval_Status_for_Snapshots}"   multiselect="true" styleClass="chosen-select">
+													            			<apex:selectOptions value="{!pageCtrl.ApprovalStatusPMV}"/>
+													        			</apex:selectList>
+																	</td>
+																	
+																</tr>
+																<tr>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_GIBU}</label>
+																	</th>
+																	<td class="dataCol last">
+																		<apex:selectList value="{!sType.GIBU}"   multiselect="true" styleClass="chosen-select">
+													            			<apex:selectOptions value="{!pageCtrl.GIBU}"/>
+													        			</apex:selectList>
+																	</td>
+																	
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_SubverticalBU}</label>
+																	</th>
+																	<td class="dataCol last">
+																		<apex:selectList value="{!sType.Subvertical_BU}"   multiselect="true" styleClass="chosen-select">
+													            			<apex:selectOptions value="{!pageCtrl.SubVerticalBU}"/>
+													        			</apex:selectList>
+																	</td>
+																</tr>
+																<tr>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label>{!$Label.PMV_Setting_Label_Initialization}</label>
+																	</th>
+																	<td class="dataCol last"	>
+																		<apex:selectList value="{!sType.PMV_Type_Initialization}" size="1">
+													            			<apex:selectOptions value="{!pageCtrl.PMVTypeInitialization}"/>
+													        			</apex:selectList>
+																	</td>
+																	<th class="labelCol vfLabelColTextWrap last" scope="row">
+																		<label></label>
+																	</th>
+																	<td class="dataCol last">
+																		
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													      <table id="mainTable" style="margin-left:3%">
+													        <tbody>
+													          <tr>
+													            <td style="vertical-align:top;">
+													              <div class="leftDiv">
+													                <table class="leftTable" style="border-collapse: collapse">
+													                  <thead>
+													                    <tr class="topHeader">
+													                      <th>
+													                        <div class="MyResourcePlanningApp_divImg"></div>
+													                        {!$Label.PMV_Setting_Label_SalesStage}
+																		  </th>
+													                    </tr>
+													                  </thead>
+													                  <tbody class="clickContent">
+													                  <apex:repeat value="{!sType.PMVSalesStageSettingList}" var="ss">
+													                    <tr>
+													                      <td >{!ss.Sales_Stage}</td>
+													                    </tr>
+													                  </apex:repeat>
+													                  </tbody>
+													                </table>
+													              </div>
+													            </td>
+													            <td>
+													              <div class="rightDiv">
+													                <table class="rightTable" style="border-collapse: collapse;">
+													                  <thead>
+													                    <tr class="topHeader">
+													                      <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Completion_Threshold__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Opportunity_Parts_Confidence__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Opportunity_Parts_Process_Status__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Production_Stage__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.On_Hold_Stage__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Priority_Stage__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Won_Stage__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Average_Duration__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Team_View_Column__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Dead_Lost_Stage__c.label}</th>
+														                  <th>{!$objecttype.PMV_Sales_Stage_Setting__c.fields.Buyer_Cycle__c.label}</th>
+														               </tr>
+													                  </thead>
+													                  <tbody class="clickContent">
+													                  <apex:repeat value="{!sType.PMVSalesStageSettingList}" var="ss">
+													                      <tr>
+												                			<td><apex:inputText value="{!ss.Completion_Threshold}" /></td>
+												                			<td>
+												                				<apex:selectList value="{!ss.Opportunity_Parts_Confidence}" size="1">
+															            			<apex:selectOptions value="{!pageCtrl.OpportunityPartsConfidence}"/>
+															        			</apex:selectList>
+												                			</td>
+												                			<td>
+												                				<apex:selectList value="{!ss.Opportunity_Parts_Process_Status}" size="1">
+															            			<apex:selectOptions value="{!pageCtrl.OpportunityPartsProcessStatus}"/>
+															        			</apex:selectList>
+												                			</td>
+												                			<td><apex:inputCheckbox value="{!ss.Production_Stage}"/></td>
+												                			<td><apex:inputCheckbox value="{!ss.On_Hold_Stage}" /></td>
+												                			<td><apex:inputCheckbox value="{!ss.Priority_Stage}" /></td>
+												                			<td><apex:inputCheckbox value="{!ss.Won_Stage}"/></td>
+												                			<td><apex:inputText value="{!ss.Average_Duration}" /></td>
+												                			<td>
+												                				<apex:selectList value="{!ss.Team_View_Column}" size="1">
+															            			<apex:selectOptions value="{!pageCtrl.TeamViewColumn}"/>
+															        			</apex:selectList>
+												                			</td>
+												                			<td><apex:inputCheckbox value="{!ss.Dead_Lost_Stage}"/></td>
+												                			<td>
+												                				<apex:selectList value="{!ss.Buyer_Cycle}" size="1">
+															            			<apex:selectOptions value="{!pageCtrl.BuyerCycle}"/>
+															        			</apex:selectList>
+												                			</td>
+													                      </tr>
+													                    </apex:repeat>
+													                  </tbody>
+													                </table>
+													              </div>
+													            </td>
+													          </tr>
+													        </tbody>
+													      </table>
+													  </div>
+												</apex:repeat>
+											</div>
+										</div>
+									</apex:outputPanel>
+								</apex:pageblock>
+							</div>
+						</div>
+					</div>
+				</apex:repeat>
+			</div>
+		</div>
+	</apex:outputPanel>
+</apex:component>

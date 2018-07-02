@@ -1,0 +1,47 @@
+<apex:component layout="block" id="compmenu">
+    <apex:attribute name="pageCtrl" type="CtrlRSMForecast" required="true" description="the root page controller reference" />
+    
+    <div class="mgauto compmenucls">
+        <table border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+            <tbody>
+                <tr>
+                    <th style="padding: 10px; padding-bottom: 0px;">
+                    		<div class="fol" style="font-size: 14px; margin-top: 12px;">
+	                    		{!$Label.rsm_pcenter} - {!$Label.rsm_region}: 
+                    		</div>
+                    		<div class="fol">
+                    			<input onclick="fullScreen(this)"  screen="small" id="fullid" title="{!$Label.rsm_full_screen}" alt="{!$Label.rsm_full_screen}" 
+                    				class="btn menuinputfull menubtnborder" value=" " type="button"
+                    				style="background: #E8E8E9 url('{!URLFOR($Resource.jQueryTool, '/img/full_icon.png')}') no-repeat !important; background-position: -1px -2px !important" />
+                    		</div>
+                		</th>
+                </tr>
+                <tr>
+                    <th style="padding: 10px;">
+                    		<div class="fol">
+	                    		<select id="region_select" class="menubtnborder" style="margin-left: 0px;padding: 4px 10px;">
+	                             <option value="none">{!$Label.rsm_please_select}</option>
+	                             <apex:repeat var="lr" value="{!pageCtrl.list_pcenter_region}">
+	                             <option value="{!lr}">{!lr}</option>
+	                             </apex:repeat>
+	                     	</select>
+	                    		<input onclick="searchrsm(this)" id="searchid" class="designedBtn" value="{!$Label.rsm_search}" type="button" />
+                    		</div>
+                        <div class="fol" style="margin-left: 30px;">
+	                        <apex:outputPanel id="opEdit" rendered="{!pageCtrl.editable}">
+	                            <input id="saveid" onclick="saveItem(this)" class="designedBtn" value="{!$Label.rsm_save}" type="button" />
+	                        </apex:outputPanel>
+							<input id="cancelid" class="designedBtn" value="{!$Label.rsm_cancel}" type="button" onclick="document.getElementById('loading-curtain-div').style.display='';window.location.href='/home/home.jsp';"/> 
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                		<td style="padding: 10px; text-align: left;">
+                			<b class="ftsize usdbox"> {!$Label.rsm_usd_label} </b>
+                		</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</apex:component>

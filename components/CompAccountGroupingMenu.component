@@ -1,0 +1,35 @@
+<apex:component layout="block">
+
+<apex:attribute name="pageCtrl" type="CtrlAccountGrouping" required="true" description="the root page controller reference" />
+
+
+
+
+<div id="menu_divid" class="menu_divcls">
+	<span style="display: inline-block; float: left;" class="">
+		<input onclick="treeAll_click(this)" value="Expand all" class="btn exp" type="button" exp="Expand all" col="Collapse all"/>
+	</span>
+    <span style="display: inline-block;" class="group_menu">
+		<input onclick="saveAcctGroup_eve(this)" id="saveactbtnid" value="{!$Label.APL_btn_save}" class="btn btnmg_left" type="button"/>
+        
+        <!-- Modified by Tangyong Li 2017-10-24 -->
+        <input onclick="nextForecast_eve(this)" data-forward="true" id="nextforecastid" value="{!$Label.APL_btn_next}" class="btn btnmg_left" type="button"/>
+        <!-- <input onclick="nextForecastTool()" data-forward="true" id="nextforecastid" value="{!$Label.APL_btn_next}" class="btn btnmg_left" type="button"/> -->
+
+<!--         <input onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.reload();" value="{!$Label.APL_btn_reload}" class="btn btnmg_left" type="button"/> -->
+	</span>
+</div>
+
+
+
+<span id="iso_option_span_id" style="display: none;">
+    <span style="display: none;" >
+        <select class="" style="display: none;">
+                <apex:repeat var="iso" value="{!pageCtrl.list_currencyIsoCodes}" >
+                <option value="{!iso}">{!iso}</option>
+                </apex:repeat>
+        </select>
+    </span>
+</span>
+
+</apex:component>

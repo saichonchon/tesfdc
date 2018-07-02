@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Collection of cases that fit CMP&apos;s duplicate criteria</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>csmrgp__Cases_Not_Merged__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Cases without Parent Cases in a duplicate group; Duplicate groups with more than one case not merged suggest potential for duplicates that should be merged. Ordinarily, only one master case should be present within a duplicate group once all duplicates are merged.</description>
+        <externalId>false</externalId>
+        <label>Cases Not Merged</label>
+        <summaryFilterItems>
+            <field>csmrgp__Duplicate_Case__c.csmrgp__Has_Parent__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>csmrgp__Duplicate_Case__c.csmrgp__Is_Deleted__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryForeignKey>csmrgp__Duplicate_Case__c.csmrgp__Duplicate_Group__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Created_by_Batch_Job__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Created by Batch Job</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Duplicate_Case_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Count of Duplicate Cases within a Duplicate Group.</description>
+        <externalId>false</externalId>
+        <label>Duplicate Case Count</label>
+        <summaryForeignKey>csmrgp__Duplicate_Case__c.csmrgp__Duplicate_Group__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Group_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For counting groups in reports. See http://help.salesforce.com/apex/HTViewSolution?id=000182022 for details.</description>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Group Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Initial_Case_Created_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Earliest created date for related cases used analytics.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Earliest created date for related cases used analytics.</inlineHelpText>
+        <label>Initial Case Created Date</label>
+        <summarizedField>csmrgp__Duplicate_Case__c.csmrgp__Case_Created_Date__c</summarizedField>
+        <summaryForeignKey>csmrgp__Duplicate_Case__c.csmrgp__Duplicate_Group__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>Duplicate Group</label>
+    <listViews>
+        <fullName>csmrgp__All</fullName>
+        <columns>NAME</columns>
+        <columns>csmrgp__Duplicate_Case_Count__c</columns>
+        <columns>csmrgp__Created_by_Batch_Job__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>csmrgp__Last_30_Days</fullName>
+        <columns>NAME</columns>
+        <columns>csmrgp__Duplicate_Case_Count__c</columns>
+        <columns>csmrgp__Created_by_Batch_Job__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:30</value>
+        </filters>
+        <label>Last 30 Days</label>
+    </listViews>
+    <nameField>
+        <displayFormat>DG-{00000}</displayFormat>
+        <label>Duplicate Group Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Duplicate Groups</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>csmrgp__Duplicate_Case_Count__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>csmrgp__Created_by_Batch_Job__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

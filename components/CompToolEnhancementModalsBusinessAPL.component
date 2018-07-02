@@ -1,0 +1,77 @@
+<apex:component layout="none">
+    
+    <apex:attribute name="pageCtrl" type="CtrlOppyForecastToolEnhancementAPL" required="true" description="the root page controller reference" />
+    
+    <apex:outputPanel layout="block" style="ition: relative;" rendered="{!pageCtrl.co.map_sectionConfig['business']}"> 
+    <div id="modalBusiness" class="slds-hide">
+    
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            
+            <div style="height: auto; margin-top: 10%;" class="slds-modal__container">
+            	<div id="slds-spinner-modal-lost" class="custom-spinner-size slds-hide">
+			        <div class="slds-spinner_container">
+			            <div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+			                <div class="slds-spinner__dot-a"></div>
+			                <div class="slds-spinner__dot-b"></div>
+			            </div>
+			        </div>
+			    </div>
+            
+                <header class="slds-modal__header">
+                    <button onclick="event_newBusinessLostClose_click(this)" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" type="button">
+                        <svg class="slds-button__icon slds-button__icon_large">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <p class="slds-m-top_x-small slds-text-align--left" style="margin-top: 0;">APL Lost Dead Project</p>
+					<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate slds-text-align--left" style="font-weight: bold;"></h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div>
+                        <div class="slds-grid slds-wrap slds-grid_pull-padded">
+                            <apex:repeat value="{!$ObjectType.APL_Lost_Dead_Project__c.FieldSets.APLLostDeadProjectFieldModal}" var="f">
+                            <div class="slds-p-horizontal_small slds-size_1-of-2 slds-tp">
+                            	<div class="slds-form slds-form_stacked">
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label" for="input-{!f.FieldPath}">
+                                            <apex:outputPanel rendered="{!f.Required}"> 
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </apex:outputPanel>
+                                            {!f.Label}
+                                        </label>
+                                        <div id="input-{!f.FieldPath}" data-required="{!f.Required}"  data-type="{!f.Type}" data-api="{!f.FieldPath}" class="slds-form-element__control slds-input-field-cls">
+                                            <apex:inputField rendered="{!if(f.FieldPath != 'Account_Name__c', true, false)}" styleClass="slds-input" value="{!pageCtrl.aplProject[f]}"/>
+                                            
+                                            <apex:outputpanel rendered="{!if(f.FieldPath = 'Account_Name__c', true, false)}">
+				                                <span class="lookupInput">
+					                                <input onchange="event_account_change(this)" class="slds-input" id="accountInput" data-id="{!pageCtrl.aplProject.Account_Name__c}" value="{!pageCtrl.aplProject.Account_Name__r.Name}" type="text" data-api="{!f.FieldPath}"/>
+					                                <a href="javascript:void(0)" onclick="event_accountLockup_click(event, this)" class="slds-input" title="Account Lookup (New Window)">
+					                                    <img src="/img/s.gif" alt="Account Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Option Account Lookup (New Window)" />
+					                                </a>
+				                                </span>
+				                                <span style="display: none;">
+				                                    <apex:inputField id="accountField" styleClass="slds-input" value="{!pageCtrl.aplProject[f]}" />
+				                                </span>
+				                            </apex:outputpanel>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>		
+                            </apex:repeat>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button onclick="event_saveBusinessLost_click(this)" id="btnSaveBusinessLost" data-id="" class="slds-button slds-button_brand" type="button">Save</button>
+                    <button onclick="event_newBusinessLostClose_click(this)" class="slds-button slds-button_neutral" type="button">Cancel</button>
+                </footer>
+            </div>
+        
+        </section>
+        <div class="slds-modal-bg"></div>
+        
+    </div>
+    </apex:outputPanel>
+</apex:component>

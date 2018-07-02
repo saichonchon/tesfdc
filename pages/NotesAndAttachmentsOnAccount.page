@@ -1,0 +1,83 @@
+<apex:page standardController="Account" extensions="NotesAndAttachmentsOnAccount" showHeader="false" sidebar="false">
+    
+    
+    <!-- showing status of the of the form loading when action performed -->
+    <apex:actionStatus id="loadStatus" >
+        <apex:facet name="start" >
+            <img src="/img/loading.gif" />                    
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <head>
+        <!-- script for popup -->
+        <script type='text/javascript'>
+        function deletefunction(recId){
+            if(confirm('Are you sure?')){
+                document.getElementById('{!$Component.form1.delRecID}').value = recId;
+                delRecAction();
+            }
+        }
+        </script>
+    </head>
+    
+    <apex:form id="form1">
+        
+        <apex:actionFunction name="delRecAction" action="{!DeleteNoteattachment}" status="loadStatus" reRender="PGB" />
+        <apex:inputHidden value="{!Selectednttattid}" id="delRecID"></apex:inputHidden> 
+        <!-- Displaying Notes and Attachments in a Table -->
+        <apex:pageBlock title="Notes & Attachments added to this account" id="PGB" >
+            <apex:pageBlockTable value="{!Notesandattachments }" var="a">
+                
+                <apex:column headerValue="Action" style="width:100px" >
+                    
+                    
+                    <apex:outputLink title="" target="_parent" value="/{!a.id}/e?retURL=/{!$CurrentPage.Parameters.Id}" style="color:#015ba7">Edit</apex:outputLink>
+                    
+                    <apex:outputPanel style="color:#999" >
+                        &nbsp;|&nbsp;         
+                    </apex:outputPanel>
+                    
+                    <apex:outputLink title="" target="_blank" value="/servlet/servlet.FileDownload?file={!a.id}" style="color:#015ba7" rendered="{!a.Type = 'Attachment'}">View</apex:outputLink>
+                    
+                    <apex:outputPanel rendered="{!a.Type = 'Attachment'}" style="color:#999" >
+                        &nbsp;|&nbsp;         
+                    </apex:outputPanel>
+                    
+                    <a href="#" onclick="deletefunction('{!a.id}')" style="color:#015ba7" >Del
+                    </a>
+                </apex:column>
+                
+                <apex:column headerValue="Type" value="{!a.Type}"/>
+                
+                <apex:column headerValue="Title">
+                    <apex:outputLink target="_parent" value="/{!a.Id}" >
+                        {!a.name}
+                    </apex:outputLink>                
+                </apex:column>
+                <apex:column headerValue="Related To">
+                    <apex:outputLink target="_parent" value="/{!$CurrentPage.Parameters.Id}" >
+                        {!a.parentName }
+                    </apex:outputLink> 
+                </apex:column>
+                <apex:column headerValue="Last Modified" value="{!a.LastModifiedDate}" >
+                    
+                </apex:column>
+                
+                <apex:column headerValue="Created By">
+                    <apex:outputLink target="_parent" value="/_ui/core/userprofile/UserProfilePage?u={!a.CreatedbyId}" >
+                        {!a.CreatedBy}
+                    </apex:outputLink>
+                </apex:column>
+                
+            </apex:pageBlockTable>            
+            
+            <apex:pageBlockButtons location="TOP">
+                <apex:commandButton value="New Note" onclick="window.open('/002/e?parent_id='+'{!$CurrentPage.Parameters.Id}'+'&retURL='+'{!$CurrentPage.Parameters.Id}','_parent');"/>
+                <apex:commandButton value="New Attachment" onclick="window.open('/p/attach/NoteAttach?pid='+'{!$CurrentPage.Parameters.Id}'+'&retURL='+'{!$CurrentPage.Parameters.Id}','_parent');"/>
+                
+                <apex:commandButton value="View All" onclick="window.open('/ui/content/ViewAllNotesPage?id='+'{!$CurrentPage.Parameters.Id}'+'&retURL='+'{!$CurrentPage.Parameters.Id}','_parent');"/> 
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

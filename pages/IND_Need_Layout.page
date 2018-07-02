@@ -1,0 +1,76 @@
+<apex:page standardController="Custom_Opportunity_Contact_Role__c" extensions="IND_NEED_Controller" showHeader="false" showQuickActionVfHeader="false" showChat="false" sidebar="false">
+  
+    <script>
+            // force the browser to reload the 'top' page using the current URL
+          function refreshPage(){            
+            var currentURL =  "https://{!URLForPage}/{!iddcon}";
+            top.location.href = currentURL;
+        }
+   </script>
+    
+    <html>
+    <apex:form >
+      
+     <apex:pageBlock mode="inlineEdit" >
+     
+     
+            <apex:pageBlockButtons location="Top">
+                
+                <apex:commandButton action="{!Customsave}" id="saveButton" value="Save" oncomplete="refreshPage();"/>
+               <!-- <apex:commandButton onclick="resetInlineEdit()" id="cancelButton" value="Cancel"/> -->
+            </apex:pageBlockButtons>
+            
+       <apex:panelGrid border="0" columns="4" width="100%" >
+          <apex:panelGroup >
+         <apex:outputPanel id="Needlayout">
+           
+           <apex:pageMessages ></apex:pageMessages>
+            <table width="100%" cellpadding="2px" cellspacing="1" border="2px solid #000000">
+             
+             <tr>
+                  <td style="width: 80%; text-align: center; background: #58ACFA;color: #FFFFFF; font-size: 15px;">
+                   <Strong> <apex:outputText value="Need" /></Strong>
+                  </td>
+                  
+                  <td style="width: 10%; text-align: center; background: #58ACFA;color: #FFFFFF; font-size: 15px;">
+                   <Strong> <apex:outputText value="Need Status" /></Strong>
+                  </td>   
+                  
+                  <td style="width: 10%; text-align: center; background: #58ACFA;color: #FFFFFF; font-size: 15px;">
+                   <Strong> <apex:outputText value="Need Type" /></Strong>
+                  </td> 
+                   
+              </tr>
+            <apex:repeat value="{!ListNeed}" var="Need" id="theRepeat">      
+             <tr>
+                  <td style="text-align: center;">
+                    <apex:outputField value="{!Need.Need__c}" >
+                     <apex:inlineEditSupport showOnEdit="saveButton, cancelButton" 
+                         event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                    </apex:outputField>
+                  </td>
+                  
+                  <td style="text-align: center;">
+                    <apex:outputField value="{!Need.Need_Status__c}" />
+                  </td>   
+                  
+                  <td style="text-align: center;">
+                    <apex:outputField value="{!Need.Need_Type__c}" />
+                  </td> 
+                   
+              </tr>  
+            </apex:repeat>        
+            </table>    
+           
+                 
+            </apex:outputPanel>     
+           <apex:commandLink value="Add New Need" action="{!AddNeed}" reRender="Needlayout" />      
+                 
+         </apex:panelGroup>       
+             
+       </apex:panelGrid>
+       
+     </apex:pageBlock> 
+    </apex:form>
+    </html>
+</apex:page>

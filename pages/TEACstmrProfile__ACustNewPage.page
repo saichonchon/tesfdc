@@ -1,0 +1,629 @@
+<apex:page standardController="TEACstmrProfile__A_Customer_Profile__c" extensions="TEACstmrProfile.ACustomerControllerEdit">
+    <style>
+        .datatable TD 
+        { padding:4px; border-collapse:collapse;   }
+        .headerrow TD
+        { vertical-align: bottom; background-color:#94D3E7; font-weight: bold; }    
+    </style>
+    <apex:sectionHeader title="New Customer Profile"/>
+    <apex:form >
+        <apex:pageBlock mode="edit" >
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveone}" value="Save"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            <apex:outputpanel rendered="{!DisplayError}"><div class="pbError">Error: Invalid Data.<br/>Review all error messages below to correct your data.</div></apex:outputpanel>        
+            
+            <apex:pageBlockSection columns="1">                                             
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Customer Name</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.Name}"/></div>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Business Unit</apex:outputLabel>
+                    <apex:outputpanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Business_Unit__c}"/></div>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Plan Year</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Plan_Year__c}"/></div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.TEACstmrProfile__A_Customer_Profile__c.Fields.TEACstmrProfile__Account_Definition__c.inlineHelpText}">
+                    <apex:outputLabel >Account Definition</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Definition__c}"/></div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__GAM_Code__c}"/>
+                <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Worldwide_Account__c}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >TE Sales Figures Makeup</apex:outputLabel>
+                    <apex:outputpanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Figures_Makeup__c}"/></div>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.TEACstmrProfile__A_Customer_Profile__c.Fields.TEACstmrProfile__Customer_Type__c.inlineHelpText}">
+                    <apex:outputLabel >Customer Type</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Type__c}"/></div>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>                                                                      
+                <apex:pageBlockSectionItem >  
+                     <apex:outputLabel >Select file to upload company logo</apex:outputLabel>
+                     <apex:outputPanel >
+                          <apex:inputFile value="{!LogoBody}" filename="{!LogoName}" style="width:500px" />                 
+                     </apex:outputPanel>
+                 </apex:pageblockSectionItem>
+        
+            </apex:pageBlockSection>
+            <br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Customer Overview </font></h2><br/><br/></table>
+            <table width="60%" border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center" style="font-weight:normal"> <i>All figures in Millions, USD</i> </td>
+                    <td colspan="3" align="center">Customer's Revenue</td>               
+                </tr> 
+                <tr class="headerrow">
+                    <td align="center"><b>Category <img class="helpOrb" title="Name of Customer Revenue major grouping. This could represent products, industry, etc…" alt="" src="/s.gif" /> </b></td>
+                    <td align="center"><b>Plan Year -3</b></td>
+                    <td align="center"><b>Plan Year -2</b></td>
+                    <td align="center"><b>Plan Year -1</b></td>                             
+                </tr>        
+                <tr><b>
+                    <td align="center"><b>Total</b></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_3__c}" style="width:75px" /></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_2__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_1__c}" style="width:75px"/></td>
+                </b></tr>                       
+                <tr>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Name__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_3__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_2__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_1__c}" style="width:75px"></apex:inputField></td>
+                </tr>        
+                <tr>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Name__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_3__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_2__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_1__c}" style="width:75px"></apex:inputField></td>
+                </tr>        
+                <tr>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Name__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_3__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_2__c}" style="width:75px"></apex:inputField></td>
+                    <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_1__c}" style="width:75px"></apex:inputField></td>
+                </tr>
+            </table>
+            <br/><br/>
+            <apex:pageBlockSection showHeader="false" columns="1">                          
+                <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Industry_Segment__c}" style="width:300px"/>                
+                <apex:pageblockSectionItem helpText="{!$ObjectType.TEACstmrProfile__A_Customer_Profile__c.Fields.TEACstmrProfile__Key_Product_Percent_Title__c.inlineHelpText}">
+                    <apex:outputLabel >Key Product Percent Title</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_Percent_Title__c}"/></div>
+                    </apex:outputPanel>
+                </apex:pageblockSectionItem>                
+            </apex:pageBlockSection>
+            <br/>
+            <table width="60%" border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center"></td>  
+                    <td align="left">  <b>Customer's Key Products</b></td>                    
+                    <td align="center"><b>Percent</b></td>
+                    <td align="center"><b>Outlook</b></td>
+                </tr>
+                <tr>
+                    <td align="center"><b>1</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Outlook__c}"/></div></td>                     
+                </tr>
+                <tr>
+                    <td align="center"><b>2</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Outlook__c}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="center"><b>3</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Outlook__c}"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>4</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Outlook__c}"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>5</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Outlook__c}"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>6</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Pct__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Outlook__c}"/></td>                     
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">TE Performance Overview</font></h2><br/><br/></table>
+            <apex:pageBlockSection showHeader="false" columns="1">  
+                <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >TE Performance Status</apex:outputLabel>
+                    <apex:outputpanel >                       
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Performance_Status__c}"/></div>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>                
+            </apex:pageBlockSection>
+            <br/>
+            <table border="1" cellpadding="6" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center" style="font-weight: normal;"><i>All&nbsp;figures&nbsp;in&nbsp;Millions, USD</i></td>
+                    <td colspan="1" align="center">Actual</td>
+                    <td colspan="2" align="center">Forecast (Plan Year)</td>
+                    <td colspan="4" align="center">Annual Plan</td>
+                </tr> 
+                <tr class="headerrow">
+                    <td align="center" style="font-weight: normal;"><i>Fiscal Years</i></td>
+                    <td align="center">Plan Year -1</td>
+                    <td align="center">YTD Actuals</td>
+                    <td align="center">Forecast</td>
+                    <td align="center">Plan Year </td>
+                    <td align="center">Plan Year +1</td>
+                    <td align="center">Plan Year +4</td>
+                </tr>               
+                <tr>
+                    <td align="center"><b>TE</b></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Prior_Yr_Actual_M__c}" style="width:75px"/></td>  
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_YTD_Actual_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_CY_Forecast_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_1_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_4_M__c}" style="width:75px"/></td>
+                </tr>
+                <tr>
+                    <td align="center"><b>Business Unit</b></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Prior_Yr_Actual_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_YTD_Actual_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_CY_Forecast_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_1_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_4_M__c}" style="width:75px"/></td>
+                </tr>
+                <tr>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Revenue_TAM_SAM__c}" style="width:75px"/><img class="helpOrb" title="Specify whether you will be supplying figures for TAM or for SAM." alt="" src="/s.gif" /> </div></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Prior_Yr_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"></td>
+                    <td align="center" style="background-color: lightyellow"></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Year_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Yr_1_M__c}" style="width:75px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Yr_4_M__c}" style="width:75px"/></td>
+                </tr>
+            </table>
+            <br/>
+            <table width="60%" border="0" cellpadding="4" cellspacing="0" >
+                <tr><i>
+                    <td align="left"><font color="0073AE"><b>TAM</b> (Total Available Market)</font></td>  
+                    <td align="left">The market potential value of <b>all products in TE product categories</b>, regardless of <b>whether or not we have a product</b> to meet the need.</td>                    
+                </i></tr>
+                <tr><i>
+                    <td align="left"><font color="0073AE"><b>SAM</b> (Supplier Available Market)</font></td>  
+                    <td align="left">The market potential value of <b>all products TE produces or is capable of producing.</b>  SAM is the subset of TAM that TE <b>can</b> currently produce.  If the product is within our technology and nothing 
+                                     is preventing us from making it other than a business decision, include it when estimating SAM.</td>                    
+                </i></tr>
+            </table>
+            <br/>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center" width="25%">Relationships</td>
+                    <td align="center" width="25%">Status</td>
+                    <td align="center" width="50%">Comments</td>                                                                                                                                       
+                </tr>
+                <tr>
+                    <td align="center"><b>Executive</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship__c}"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship_Comments__c}" style="width:300px"/></td>                     
+                </tr>  
+                <tr>
+                    <td align="center"><b>Purchasing</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship__c}"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship_Comments__c}" style="width:300px"/></td>                     
+                </tr>  
+                <tr>
+                    <td align="center"><b>Engineering</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship__c}"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship_Comments__c}" style="width:300px"/></td>                     
+                </tr>
+            </table>
+            <br/>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">              
+                    <td/> 
+                    <td align="left">  <b>Sales Breakdown Description</b></td>                    
+                    <td align="center"><b>Percent</b></td>                     
+                </tr>
+                <tr>
+                    <td align="center">1</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_1_Description__c}" style="width:150px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField id="salesbreakdown" value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_1_Percent__c}"  style="width:50px" /></td>                                                            
+                </tr>  
+                <tr>
+                    <td align="center">2</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_2_Description__c}" style="width:150px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_2_Percent__c}" style="width:50px"/></td>                                                            
+                </tr>  
+                <tr>
+                    <td align="center">3</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_3_Description__c}" style="width:150px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_3_Percent__c}" style="width:50px"/></td>                                                            
+                </tr>                
+                <tr>
+                    <td align="center">4</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_4_Description__c}" style="width:150px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_4_Percent__c}" style="width:50px"/></td>                                                            
+                </tr>                
+                <tr>
+                    <td align="center">5</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_5_Description__c}" style="width:150px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Breakdown_5_Percent__c}" style="width:50px"/></td>                                                            
+                </tr>
+            </table>
+            <br/>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">              
+                    <td align="center"></td> 
+                    <td align="left">  <b>Competitors</b></td>                    
+                    <td align="center"><b>Market Share %</b></td>
+                    <td align="center"><b>Market Share Trend</b></td>
+                    <td align="left">  <b>Comments</b></td> 
+                </tr>
+                <tr>
+                    <td align="center">1</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_MS_Trend__c}"/></div    ></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_Comments__c}" style="width:300px"/></td>                     
+                 </tr>          
+                <tr>
+                    <td align="center">2</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_MS_Trend__c}"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_Comments__c}" style="width:300px"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">3</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_MS_Trend__c}"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_Comments__c}" style="width:300px"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">4</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_MS_Trend__c}"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_Comments__c}" style="width:300px"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">5</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_MS_Trend__c}"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_Comments__c}" style="width:300px"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">6</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6__c}" style="width:300px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_Market_Share__c}" style="width:50px"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_MS_Trend__c}"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_Comments__c}" style="width:300px"/></td>                     
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Strategies</font></h2><br/><br/></table>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td/>
+                    <td align="left">  <b>Strategic Account Objectives <img class="helpOrb" title="What are the goals for this account?" alt="" src="/s.gif" /> </b></td>                                                                                                                                       
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_1__c}" style="width:700px" /></td>                    
+                </tr> 
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_2__c}" style="width:700px" /></td>                    
+                </tr> 
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_3__c}" style="width:700px" /></td>                    
+                </tr> 
+                <tr>
+                    <td align="center">4</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_4__c}" style="width:700px" /></td>                    
+                </tr> 
+                <tr>
+                    <td align="center">5</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_5__c}" style="width:700px" /></td>                    
+                </tr> 
+            </table>
+            <br/> 
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center"></td> 
+                    <td align="left">  <b>Strategic Initiatives/Penetration Plan <img class="helpOrb" title="How will the goals for this account be achieved?" alt="" src="/s.gif" /> </b></td>                    
+                    <td align="center"><b>Target</b></td>
+                    <td align="left">  <b>Status</b></td>                              
+                </tr>
+                <tr>
+                    <td align="center" >1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Target__c}"/></div></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Status__c}"/></div></td>                        
+                </tr>                
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">5</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">6</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">7</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">8</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">9</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Status__c}"/></td>                        
+                </tr>                
+                <tr>
+                    <td  align="center">10</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Target__c}"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Status__c}"/></td>                        
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Key Projects/Opportunities</font></h2><br/><br/></table>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td/> 
+                    <td align="left">  <b>Project/Opportunity</b></td>
+                    <td align="center" nowrap="nowrap"><b>5 Yr Value<img class="helpOrb" title="Value in Millions, USD" alt="" src="/s.gif"/></b></td>                    
+                    <td align="center"><b>Start Date<img class="helpOrb" title="Expected Start Date or Initial Order Date" alt="" src="/s.gif" /> </b></td>                              
+                </tr>
+                <tr>
+                    <td align="center" >1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1_Start_Date__c}"/></td>                        
+                </tr>      
+                <tr>
+                    <td align="center" >2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2_Start_Date__c}"/></td>                        
+                </tr>      
+                <tr>
+                    <td align="center" >3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3_Start_Date__c}"/></td>                        
+                </tr>      
+                <tr>
+                    <td align="center" >4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4_Start_Date__c}"/></td>                        
+                </tr>      
+                <tr>
+                    <td  align="center" >5</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5_Start_Date__c}"/></td>                        
+                </tr>      
+                <tr>
+                    <td  align="center" >6</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6_Start_Date__c}"/></td>                        
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Breakthrough Programs</font></h2><br/><br/></table>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td  align="center"></td>                     
+                    <td align="left">  <b>Program <img class="helpOrb" title="What are the major technology innovations for this customer?" alt="" src="/s.gif" /> </b></td>
+                    <td align="center"><b>Status</b></td>
+                    <td align="left">  <b>Comments</b></td>
+                </tr>
+                <tr>
+                    <td  align="center" >1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_1__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Status__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Comments__c}" style="width:250px"/></td>                        
+                </tr>       
+                <tr>
+                    <td  align="center" >2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_2__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Status__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Comments__c}" style="width:250px"/></td>                        
+                </tr>       
+                 <tr>
+                    <td  align="center" >3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_3__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Status__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Comments__c}" style="width:250px"/></td>                        
+                </tr>       
+                 <tr>
+                    <td  align="center" >4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_4__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Status__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Comments__c}" style="width:250px"/></td>                        
+                </tr>       
+           </table>
+               
+         <br/><br/>     
+         
+         <table width="100%"><hr/><h2><font color="0073AE" size="4px">Obstacles</font></h2><br/><br/></table>   
+              <table border="1" cellpadding="4" cellspacing="0">            
+                <tr class="headerrow">
+                    <td/>
+                    <td align="left"><b>Obstacle/Headwind </b></td>                                                                                                             
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_1__c}" style="width:700px" /></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_2__c}" style="width:700px" /></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_3__c}" style="width:700px" /></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">4</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_4__c}" style="width:700px" /></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">5</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_5__c}" style="width:700px" /></td>                    
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Recent Big Wins</font></h2><br/><br/></table>
+            <table width="65%" border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td/> 
+                    <td align="left">  <b>Recent Big Win</b></td>
+                    <td align="center" nowrap="nowrap"><b>5 Yr Value<img class="helpOrb" title="Value in Millions, USD" alt="" src="/s.gif"/></b></td>                    
+                    <td align="center"><b>Date Won</b></td>
+                    <td align="left">  <b>Comments</b></td>                              
+                </tr>
+                 <tr>
+                    <td align="center">1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Date_Won__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Comments__c}" style="width:250px"/></td>
+                </tr>
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Date_Won__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Comments__c}" style="width:250px"/></td>
+                </tr>                  
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Date_Won__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Comments__c}" style="width:250px"/></td>
+                </tr>   
+                <tr>
+                    <td align="center">4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Date_Won__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Comments__c}" style="width:250px"/></td>
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Recent Losses</font></h2><br/><br/></table>
+            <table width="65%" border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td/> 
+                    <td align="left">  <b>Recent Loss</b></td>
+                    <td align="center" nowrap="nowrap"><b>5 Yr Value<img class="helpOrb" title="Value in Millions, USD" alt="" src="/s.gif"/></b></td>                    
+                    <td align="center"><b>Date Lost</b></td>
+                    <td align="left">  <b>Comments</b></td>                              
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Date__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Comments__c}" style="width:250px"/></td>
+                </tr>
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Date__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Comments__c}" style="width:250px"/></td>
+                </tr>                  
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Date__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Comments__c}" style="width:250px"/></td>
+                </tr>   
+                <tr>
+                    <td align="center">4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4__c}" style="width:500px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Value_M__c}" style="width:50px"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Date__c}"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Comments__c}" style="width:250px"/></td>
+               </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">Customer Scorecard</font></h2><br/><br/></table>
+            <apex:pageBlockSection showHeader="false" title="Customer Scorecard" columns="1">
+                <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Scorecard__c}" style="width:700px"/>
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel >Comments</apex:outputLabel>
+                     <apex:inputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Scorecard_Comments__c}" style="width:700px"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,32 @@
+<aura:component >
+	
+    <aura:attribute name="uniqueId" 				type="String" />
+    <aura:attribute name="selected" 				type="String" />
+    <aura:attribute name="fc" 						type="Object" />
+    <aura:attribute name="dependValue" 				type="String" />
+    
+    <aura:attribute name="oStatus" 					type="String" />
+    <aura:attribute name="profile" 					type="Object" />
+    <aura:attribute name="opportunity" 				type="Object" />
+    
+    <aura:attribute name="map_ps" 					type="Map" />
+    <aura:attribute name="list_ps" 					type="List" />
+
+    
+	<aura:handler name="init" 		value="{!this}" 							action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.dependValue}" action="{!c.handlerdependValueChange}"/>
+    <aura:registerEvent name="dpChangeEvent" type="c:LtngOpportunityForecastEditDependPickListChangeEvt"/> 
+    
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container custom-td-container">
+                <select onchange="{!c.event_processStatus_change}" class="slds-select custom-td-select custom-process-status">
+                    <aura:iteration items="{!v.list_ps}" var="ps" >
+                        <option selected="{!(ps == v.selected ? 'selected' : '')}" value="{!ps}">{!ps}</option>
+                    </aura:iteration>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

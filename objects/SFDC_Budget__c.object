@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Assign a budget to a given account. This is used especially for accrual based MDF.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Assign the budget to a specific account</inlineHelpText>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Budgets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Optionally set this value and use subsequently to exclude inactive budgets</description>
+        <externalId>false</externalId>
+        <label>Active</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Claims__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Sum of all approved claims. This field is calculated automatically and should not be entered manually.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Sum of all approved claims. This field is calculated automatically and should not be entered manually.</inlineHelpText>
+        <label>Approved Claims</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Requests__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Sum of all approved requests. This field is calculated automatically and should not be entered manually.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Sum of all approved requests. This field is calculated automatically and should not be entered manually.</inlineHelpText>
+        <label>Approved Requests</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Available_Budget__c</fullName>
+        <description>Total budget less approved requests</description>
+        <externalId>false</externalId>
+        <formula>Total_Active_Budget__c -  Approved_Requests__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Available Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <description>Optionally assign an end date to the budget. Frequently used for accrual based budgets</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Optionally assign an end date to the budget. Frequently used for accrual based budgets</inlineHelpText>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Last_Refresh_Date__c</fullName>
+        <description>The date &amp; time the budget was last refreshed/ calculated. The budget recalculates when a request or claim is approved, or a previously approved record is rejected</description>
+        <externalId>false</externalId>
+        <label>Last Refresh Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <description>Optionally assign a start date to the budget. Frequently used for accrual based budgets</description>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Total_Active_Budget__c</fullName>
+        <description>The total budget summed up from &apos;Active&apos; budget entries</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total budget summed up from &apos;Active&apos; budget entries</inlineHelpText>
+        <label>Total Active Budget</label>
+        <summarizedField>SFDC_Budget_Entry__c.Total__c</summarizedField>
+        <summaryFilterItems>
+            <field>SFDC_Budget_Entry__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </summaryFilterItems>
+        <summaryForeignKey>SFDC_Budget_Entry__c.Budget__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Unclaimed__c</fullName>
+        <description>The value of total approved requests less total approved claims to date</description>
+        <externalId>false</externalId>
+        <formula>Approved_Requests__c  -  Approved_Claims__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unclaimed Requests</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Budget</label>
+    <listViews>
+        <fullName>ActiveBudgets</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Approved_Requests__c</columns>
+        <columns>Available_Budget__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Active Budgets</label>
+    </listViews>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>CoopAccrualBasedBudgets</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Approved_Requests__c</columns>
+        <columns>Available_Budget__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>SFDC_Budget__c.Coop</value>
+        </filters>
+        <label>Co-op/ Accrual Based Budgets</label>
+    </listViews>
+    <listViews>
+        <fullName>MDFBasedBudgets</fullName>
+        <columns>NAME</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Total_Active_Budget__c</columns>
+        <columns>Approved_Requests__c</columns>
+        <columns>Available_Budget__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>SFDC_Budget__c.MDF</value>
+        </filters>
+        <label>MDF Based Budgets</label>
+    </listViews>
+    <nameField>
+        <label>Budget Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Budgets</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Coop</fullName>
+        <active>true</active>
+        <description>Use to fund specific partner account requests</description>
+        <label>Co-op</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>MDF</fullName>
+        <active>false</active>
+        <description>Use for discretionary marketing funds.</description>
+        <label>MDF</label>
+    </recordTypes>
+    <searchLayouts>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>RECORDTYPE</lookupFilterFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>No_Account_For_MDF_Budget</fullName>
+        <active>true</active>
+        <description>Requires the MDF budget record not have an account entry. This is used when the user switches the record type to MDF from an accrual record and the record still has the account value.</description>
+        <errorConditionFormula>AND( RecordTypeId = &quot;012300000001reS&quot;, LEN( Account__c )&gt;0)</errorConditionFormula>
+        <errorDisplayField>Account__c</errorDisplayField>
+        <errorMessage>MDF record types should not reference an account. Please null the account field before saving the record</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

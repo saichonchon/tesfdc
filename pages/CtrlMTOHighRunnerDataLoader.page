@@ -1,0 +1,161 @@
+<!--
+Author:           Buwen Guo <buwen.guo@capgemini.com>
+Description:      Visualforce page to import and export the csv file of MTO High Runner.
+			      The user story number is W-00152.
+Controller class: CtrlMTOHighRunnerDataLoader
+Test Class:       CtrlMTOHighRunnerDataLoader_Test
+History
+2017-07-20 	      Buwen Guo <buwen.guo@capgemini.com> created 
+-->
+<apex:page Controller="CtrlMTOHighRunnerDataLoader" id="CtrlMTOHighRunnerDataLoader" showHeader="true" sidebar="false" standardStylesheets="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">
+	<!--  -->
+	<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+	<apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/base64.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/csv2arr.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/jschardet.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/papaparse.js')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <!-- <apex:includeScript value="{!URLFOR($Resource.CtrlMTOHighRunnerDataLoader,'/CtrlMTOHighRunnerDataLoaderResource/CtrlMTOHighRunnerDataLoaderJS.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CtrlMTOHighRunnerDataLoader,'/CtrlMTOHighRunnerDataLoaderResource/CtrlMTOHighRunnerDataLoaderCSS.css')}" />	 -->
+	<apex:includeScript value="{!URLFOR($Resource.CtrlMTOHighRunnerDataLoaderJS)}" />
+	<apex:stylesheet value="{!URLFOR($Resource.CtrlMTOHighRunnerDataLoaderCSS)}" />
+	
+	<body>
+		<div id="div_main">
+		
+		<!-- file section start -->
+		<br/>
+		<div class="div_file_section_class">
+			<div class="div_file_section_float_class">
+				<a href="javascript:;" class="file">Please select a file
+					<div id="form_file_main">
+					    <input id="input_file_main" type="file" onchange="getFileContents(this);"/>
+				    </div>
+				</a>
+			</div>
+		</div>
+		<br/>
+		<!-- file section end -->
+		
+		<div id="div_content">
+		</div>
+		
+		<!-- button section start -->
+		<apex:outputPanel id="theButtonSelectPanel">
+		<div id="div_button_section" class="div_button_section_class">
+			<div id="div_button_section_float" class="div_button_section_float_class">
+				<button class="slds-button slds-button--neutral " onclick="ImportData();">Import</button>
+				<select id="select_reason"  class="slds-select select_filename_class" >
+			    	<apex:repeat id="fileNameSelect" value="{!list_fileNames}" var="fileName">
+                        <option value="{!fileName}" >{!fileName}</option>
+                    </apex:repeat>
+			    </select>
+				<button class="slds-button slds-button--neutral " onclick="loadDataToCreateCSV('');">Export</button>
+				<!-- <button class="slds-button slds-button--neutral " onclick="clearFile();">Clear</button> -->
+			</div>
+		</div>
+		</apex:outputPanel>
+		<div id="div_linkSection_forchrome" style="display:none;"></div>
+		<br/>
+		<!-- button section end -->
+		
+		
+		
+		<!-- result dataTable start -->
+		<div id="div_table_result">
+			<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+				<thead>
+					<tr class="slds-text-title--caps" style="border-top:1px solid #163767;border-bottom:1px solid #d8dde6;">
+						<th>
+							<div class="slds-truncate" style="font-weight: bold;">Total Records</div>
+						</th>
+						<th>
+							<div class="slds-truncate" style="font-weight: bold;">Total Success</div>
+						</th>
+						<th>
+							<div class="slds-truncate" style="font-weight: bold;">Total Errors</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>
+							<div class="slds-truncate">
+								<input id="input_result_totalRecords" class="input_result_class" type="text" disabled="disabled" value="0"/>
+							</div>
+						</th>
+						<td>
+							<div class="slds-truncate">
+								<input id="input_result_totalSuccess" class="input_result_class" type="text" disabled="disabled" value="0"/>
+							</div>
+						</td>
+						<td>
+							<div class="slds-truncate">
+								<input id="input_result_totalErrors" class="input_result_class" type="text" disabled="disabled" value="0"/>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+		<br/>
+		<!-- result dataTable end -->
+		
+		<!-- hide export dataTable start -->
+		<apex:outputPanel id="list_te">
+	    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-hide" id="teTable">
+	        <thead>
+	            <tr id="tr_dataTable_teTable" class="slds-text-heading--label">
+
+	            </tr>
+	        </thead>
+	        <tbody id="tbody_dataTable_teTable">
+
+	        </tbody>
+	    </table>
+	    </apex:outputPanel>
+	    <!-- hide export dataTable end -->
+		
+		<!-- Loading panel start -->
+		<div id="Loading_Panel" style="display:none;">
+			<div style="position:fixed;" class="slds-spinner_container">
+				<div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+		            <span class="slds-assistive-text">Loading</span>
+		            <div class="slds-spinner__dot-a"></div>
+		            <div class="slds-spinner__dot-b"></div>
+				</div>
+			</div>
+	    </div>
+	    <!-- Loading panel end -->  
+	    
+	    <apex:form id="theDataForm">
+	    	<!-- Import function -->
+	    	<apex:actionFunction name="importFile" oncomplete="importRecords()" rerender="themsg,theButtonSelectPanel,theParamsPanel" action="{!saveUploadFileName}"/>
+        	<apex:actionFunction name="importRecords" oncomplete="checkResponse()" rerender="themsg,theButtonSelectPanel,theParamsPanel" action="{!importRecords}"/>
+        	<apex:actionFunction name="refreshFileNames" oncomplete="hideLoading()" rerender="themsg,theButtonSelectPanel,theParamsPanel" action="{!getFileNames}"/>
+        	
+        	<!-- Export function -->
+        	<apex:actionFunction name="loadDataFromFileName" oncomplete="keepOnLoadDataToCreateCSV()" rerender="themsg,theParamsPanel" action="{!exportRecordsForDataLoader}"/>
+			
+			<div id="dmsgid" >
+				<apex:pageMessages id="themsg"/>
+			</div>
+			<apex:outputPanel id="theParamsPanel">
+				<!-- Import params -->
+				<apex:inputHidden value="{!str_newSaveFileName}" id="hidden_param_newFileName" />
+				<apex:inputHidden value="{!str_mtoRunnerRecordsJson}" id="hidden_param_records" />
+				<apex:inputHidden value="{!str_lastRecordId}" id="hidden_param_lastRecordId" />
+				
+				<input type="hidden" id="hidden_param_fieldMapping" value="{!str_mtoImportFieldsMappingJson}" />
+				<input type="hidden" id="hidden_param_existFileNames" value="{!str_fileNamesJson}" />
+				<input type="hidden" id="hidden_param_importResponse" value="{!str_importResponseJson}" />
+				
+				<!-- Export params -->
+				<apex:inputHidden value="{!str_selectedFileName}" id="hidden_param_selectFileName" />
+				
+				<input type="hidden" id="hidden_param_datas" value="{!str_mtoExportReocrdsJson}" />
+			</apex:outputPanel>
+        </apex:form>
+	</body>
+</apex:page>

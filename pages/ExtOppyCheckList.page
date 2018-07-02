@@ -1,0 +1,117 @@
+<apex:page standardController="Opportunity" extensions="ExtOppyCheckList" id="ExtOppyCheckList"  sidebar="false" standardStylesheets="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">
+	<!--  -->
+	<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" /> 
+	
+	<apex:includeScript value="{!URLFOR($Resource.ExtOppyCheckListJS)}" /> 
+	<apex:stylesheet value="{!URLFOR($Resource.ExtOppyCheckListCSS)}" />
+	
+	<style type="text/css">
+
+	</style>
+	
+	<script>
+	
+	window.onload = function(){
+		showLoading();
+		initCommentHideParams();
+		hideDetailChecklist();
+		populateAnswer();
+		disableSaveButton();
+		$(".inputElement").change(function(){
+			$("*[id*='themsg']").hide();
+			activateSaveButton();
+		});
+		$('textarea').bind('input propertychange', function() {
+			$("*[id*='themsg']").hide();
+			activateSaveButton();
+		});
+	}
+	
+	
+	</script>
+	
+	
+	<body>
+	<apex:pageMessages id="themsg"/>
+	<div id="div_main">
+		<apex:form id="theDataForm">
+		<apex:pageMessages id="themsg"/>
+        
+		<div>
+		<apex:pageBlock id="total" title="Check List" mode="edit">
+			<apex:repeat value="{!list_checklistCategory}" var="category" id="theCategoryRepeat">
+				<div class="div_category_class" html-num="{!category.str_categoryNumber}" >
+					
+					<div class="fixPaddingLeft pbSubheader brandTertiaryBgr first tertiaryPalette" style="{!IF(category.str_categoryNumber == 1,'background-color:blue;border-color:blue;','')}">
+						<div class="img_down img_arrow_class" html-num="{!category.str_categoryNumber}" html-arrow="down" onclick="toggleCategory(this);" style="width:16px;height:16px;"></div>
+						<h3>{!category.str_categoryText}</h3>
+					</div>
+					
+					<div class="pbSubsection">
+						<table data-category="{!category.str_categoryNumber}" class="detailList table_form_class" border="0" cellpadding="0" cellspacing="0">
+							<tbody>
+							<apex:repeat value="{!category.list_questions}" var="question" id="theQuestionRepeat">
+							<tr>
+								<td style="width:50%;">
+									{!question.str_questionNumber}. 
+									{!question.str_questionText}
+									<img src="/img/s.gif" alt="" style="{!IF(question.str_questionHelpText == '','display:none;','')}" class="img_help_icon" title="{!question.str_questionHelpText}"/>
+								</td>
+								<td style="width:10%;padding-left:10px;" class="td_radio_class" html-qid="{!question.str_questionId}" html-qans="{!question.str_questionAnswer}" html-aid="{!question.str_questionAnswerId}" html-cNum="{!question.str_categoryNumber}" html-qNum="{!question.str_questionNumber}">
+									<label><input class="inputElement input_radio_class" name="{!question.str_questionId}" type="radio" value="True" onclick="checkRadioValue(this,true);" html-cNum="{!question.str_categoryNumber}" html-qNum="{!question.str_questionNumber}"/>Yes </label> 
+									<label><input class="inputElement input_radio_class" name="{!question.str_questionId}" type="radio" value="False" onclick="checkRadioValue(this,false);" html-cNum="{!question.str_categoryNumber}" html-qNum="{!question.str_questionNumber}"/>No </label>
+								</td>
+								<td style="width:30%;padding-left:10px;">
+									<span style="display:none;" class="span_commentYes_class"><apex:outputText value="{!question.str_commentYesText}" escape="false" /></span>
+									<span style="display:none;" class="span_commentNo_class"><apex:outputText value="{!question.str_commentNoText}" escape="false" /></span>
+								</td>
+								<td style="width:10%;padding-left:10px;padding-bottom:10px;">
+									<textarea html-qid="{!question.str_questionId}" html-cnum="{!question.str_categoryNumber}" html-qnum="{!question.str_questionNumber}" rows="2" cols="20" style="{!IF(question.str_categoryNumber == 0,'display:none;','overflow:hidden;')}">{!question.str_questionComment}</textarea>
+								</td>
+							</tr>
+							</apex:repeat>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</apex:repeat>
+			
+
+		</apex:pageBlock>
+		</div>
+			
+			<apex:actionFunction name="saveActionFunction" oncomplete="initActionFunction();" rerender="themsg,theParamsPanel" action="{!saveAnswers}"/>
+			<apex:actionFunction name="initActionFunction" oncomplete="disableSaveButton();hideLoading();" action="{!init}"/>
+		
+			<apex:outputPanel id="theParamsPanel">
+				<apex:inputHidden value="{!str_saveAnswersJson}" id="hidden_param_saveAnswerJson" />
+				<apex:inputHidden value="{!str_formCompleted}" id="hidden_param_formCompleted" />
+			</apex:outputPanel>
+			
+		</apex:form>
+
+		<!-- Loading panel start -->
+		<div id="Loading_Panel" style="display:none;">
+			<div style="position:fixed;" class="slds-spinner_container">
+				<div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+		            <span class="slds-assistive-text">Loading</span>
+		            <div class="slds-spinner__dot-a"></div>
+		            <div class="slds-spinner__dot-b"></div>
+				</div>
+			</div>
+	    </div>
+	    <!-- Loading panel end -->  
+	    
+		<div id="div_save_button" style="position:fixed;bottom:0px;width:100%;height:40px;background:#ececec;">
+			<div style="width:40px;height:24px;margin-left:auto;margin-right:auto;margin-top:6px;">
+				<button id="save_btn" class="save_btn_css" onclick="saveAllQuestions();return false;" disabled="disabled">Save</button>
+			</div>
+		</div>
+	    
+	    <div style="height:40px;width:100%;">
+	    
+	    </div>
+		</div>
+	</body>
+</apex:page>

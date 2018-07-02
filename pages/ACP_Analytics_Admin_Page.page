@@ -1,0 +1,192 @@
+<apex:page Controller="ACP_Reports_Controller" standardStylesheets="false" >
+                <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+                <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'panelCSS.css')}" />
+                <style>
+.panel> .panel-default 
+{
+border : 0px solid gray !important;
+}
+td
+{
+border : 0px solid lightgray !important;
+}
+tr
+{
+border : 1px solid lightgray  !important;
+}
+
+.btn-primary {
+            line-height: 2px !important;
+        }
+        .btn-default{
+            line-height: 2px !important;
+            width : 60px !important;
+            height: 25px !important;
+        }
+.new
+{
+width : 100px !important;
+}
+
+.report
+{
+width : 280px !important;
+height : 25px !important;
+}
+
+.number
+{
+width : 110px !important;
+
+}
+  </style>
+                <div class = "bootstrap-sfdc">
+                <apex:form >
+                  <apex:pageBlock >
+                    
+                    <center>
+                    <apex:commandButton value="{! $Label.ACP_New_Analytics}" action="{!addNewAnalytics}" styleClass="btn btn-default new"/>
+                    </center><br/>
+                 <apex:pageBlockTable value="{!analyticsRecords}" var="record" styleClass="table table-condensed">
+                    <apex:column headerValue=""  >
+                    <apex:commandLink action="{!editRecord}" >{!$Label.ACP_Edit}
+                       <apex:param value="{!record.Id}" name="recordId" />
+                    </apex:commandLink>
+                    <apex:outputText > | </apex:outputText>
+                     <apex:commandLink action="{!deleteAnalytics}" onclick="if(!confirm('Are you sure?')) return false;">{!$Label.ACP_Del}
+    <apex:param value="{!record.Id}" name="recordId"/>
+</apex:commandLink>
+            
+                                </apex:column>
+                    <apex:column value="{!record.ACP_Business_Unit__c}" headerValue="Business Unit" />                    
+                    <apex:column value="{!record.ACP_Analytics_Page__c}" headerValue="Page"/>
+                    <apex:column value="{!record.Account_Plan_Type__c}" headerValue="Account Plan Type"/>
+                    <apex:column value="{!record.ACP_Active__c}" headerValue="Active"/>
+                    <apex:column value="{!record.ACP_Report_1__c}" headerValue="{!$Label.ACP_Report} 1"/>
+                    <apex:column value="{!record.ACP_Report_2__c}" headerValue="{!$Label.ACP_Report} 2"/>
+                    <apex:column value="{!record.ACP_Report_3__c}" headerValue="{!$Label.ACP_Report} 3"/>
+                    <apex:column value="{!record.ACP_Report_4__c}" headerValue="{!$Label.ACP_Report} 4"/>
+                    <apex:column value="{!record.ACP_Report_5__c}" headerValue="{!$Label.ACP_Report} 5"/>
+                    <apex:column value="{!record.ACP_Report_6__c}" headerValue="{!$Label.ACP_Report} 6"/>
+                    </apex:pageBlockTable>
+                    
+                    
+                    </apex:pageBlock>           
+                    </apex:form>
+                    
+                    
+                    
+                    <apex:pageBlock id="editBlock" rendered="{!IF(editBlock == true, true, false)}" >
+                        <apex:form >
+
+        <div class="panel panel-default">
+    <div class="panel-heading"> {!$Label.ACP_Create_New_Analytics_Record}</div>
+    <div class="panel-body" style = "border : 1px solid red;">
+        <div class = "row" style = "padding-top : 20px;">
+            <div class = "col-md-3">
+            {!$Label.ACP_Search} &nbsp;
+                <apex:inputText value="{!inputReportName }" required="false" id="searchBox"  />&nbsp;
+                <apex:commandButton value="" onclick="validate(document.getElementById('{! $component.searchBox}').value);" style="padding : 0px !important; background-color:lightgray;width:22px; height : 20px;border-width:1px;background-repeat:no-repeat;cursor:pointer;" action="{!searchReports}" image="{!URLFOR($Resource.ACP_CSS, 'lookup.PNG')}" />
+                <br/>
+                <apex:outputText style="color : red; font-size : 12px;" value="{!error}"></apex:outputText>
+            </div>
+            
+            <div class = "col-md-2">
+
+          {!$Label.ACP_Page} &nbsp; <apex:inputField value="{!analytics.ACP_Analytics_Page__c}"  />
+                
+            </div>
+            <div class="col-md-3">
+            {!$Label.ACP_Business_Unit} &nbsp; <apex:inputField value="{!analytics.ACP_Business_Unit__c}"  />
+                </div>
+                <div class="col-md-1">
+            {!$Label.ACP_Active}&nbsp;<apex:inputField value="{!analytics.ACP_Active__c}" />
+                </div>
+                <div class="col-md-3">
+            {!$Label.ACP_Account_Plan_Type}&nbsp;<apex:inputField value="{!analytics.Account_Plan_Type__c}" />
+                </div>
+        </div>
+        <div class="row" style = "border : 0px solid red; padding-top : 20px;">
+            <div class="col-md-5">
+                <div class="panel panel-default" style="border : 0px solid red;">
+                    <div class="panel-body" >
+                        <p> {!$Label.ACP_Search_Results_for} : {!inputReportName }</p>
+                        <apex:selectList size="12" styleClass="form-control" value="{!selectedReport}">
+                            <apex:selectOptions value="{!options}" />
+                        </apex:selectList>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2" style="padding-top : 8%; ">
+                <center>
+            {!$Label.ACP_Select_Report_Number}
+            
+                    <apex:selectList size="1" title="Select" value="{!selectedReportNum}" styleClass="form-control number">
+                        <apex:selectOption itemLabel="Select" itemValue="" itemDisabled="true" />
+                        <apex:selectOptions value="{!reportNumber}" />
+                    </apex:selectList>
+                    <br/>
+                    <apex:commandButton value=">>" styleClass="btn btn-default" action="{!addReportToField}" />
+                </center>
+            </div>
+            <div class="col-md-5" style="padding: 15px; ">
+                <!-- Report 1  &nbsp; &nbsp;  <apex:inputField value="{!analytics.ACP_Report_1__c}"  /><br/>-->
+                <table class="table table-bordered" id="table">
+                    <tr>
+                        <td>{!$Label.ACP_Report} 1 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_1__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{!$Label.ACP_Report} 2 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_2__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{!$Label.ACP_Report} 3 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_3__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{!$Label.ACP_Report} 4 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_4__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{!$Label.ACP_Report} 5 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_5__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{!$Label.ACP_Report} 6 : </td>
+                        <td>
+                            <apex:outputText value="{!analytics.ACP_Report_6__c}" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+    <center>
+        <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" immediate="true" action="{!pageRedirection}" /> &nbsp;
+                        
+        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-primary" action="{!saveAnalyticRecord}" />
+        <br/>
+    </center>
+</div>
+            </apex:form>
+                    </apex:pageblock>
+                    
+                  
+                   
+                    
+                </div>
+            </apex:page>

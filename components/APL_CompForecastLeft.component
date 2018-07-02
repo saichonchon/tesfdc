@@ -1,0 +1,60 @@
+<apex:component layout="none">
+
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	<apex:attribute name="listData" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listColumns" type="List" required="false" description="the root page controller reference" />
+	
+	<apex:variable value="{!0}" var="rowNums"/>
+	<apex:repeat var="total" value="{!pageCtrl['list_TotalColumns']}">
+		<tr class="level0 external  {!total['cls']}_level0 {!if(rowNums = 0, ' cp mark ', ' dn ')}  {!total['fieldName']}" id="{!total['id']}" data-fieldName="{!total['fieldName']}" data-level="level0" >
+			<td class="{!if(rowNums = 0, '', 'lev0')}">
+	            <apex:outputPanel rendered="{!total['isInput']}" >
+	                <div class="dis_ib  {!if(rowNums = 0, ' mgleft1 ', ' mgleftxx ')}" >
+	                    <apex:outputPanel rendered="{!if(rowNums = 0, true, false)}" styleClass="cellbox fcell " >+</apex:outputPanel>
+	                    <apex:outputPanel style="margin-left: 0px;" rendered="{!if(rowNums = 0, false, true)}" styleClass="cellbox pin spin">&nbsp;</apex:outputPanel>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r namecell"> {!total['name']} </span>
+	                </div>
+	            </apex:outputPanel>
+	            <apex:outputPanel rendered="{!!total['isInput']}" >
+	            	<div class="dis_ib mgleftxx" >
+	                    <span class="position_r namecell"> {!total['name']} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" ></td>
+		</tr>
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="subtotal" value="{!total.list_ChildColumn}">
+			<tr class="level0 external sublevel dn {!total['cls']}_level0 {!total['id']}_level0sub ">
+				<td class=" "></td>
+		        <td class="fieldwidth" >{!subtotal['name']}</td>
+			</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+		
+		<apex:variable var="rowNums" value="{!rowNums + 1}"/>
+	</apex:repeat>
+	
+	<apex:repeat var="level" value="{!listData}">
+	    <apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!listColumns}">
+		<tr class="level1 {!level['id']}_level1 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " data-v1="{!if(rowNum = 0, level['id'], '')}" id="{!if(rowNum = 0, level['id'], '')}" data-level="level1">
+			<td class="{!if(rowNum = 0, '', 'lev1')}">
+	            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+	                <div class="dis_ib mgleft1" >
+	                    <span class="cellbox fcell " >+</span>
+	                    <span class="cellbox pin spin" >&nbsp;</span>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r namecell"> {!level['name']} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" >{!total['fieldName']}</td>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+</apex:component>

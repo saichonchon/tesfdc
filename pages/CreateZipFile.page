@@ -1,0 +1,219 @@
+<apex:page standardController="Case" extensions="ZipfileController" showHeader="false" sidebar="false" action="{!show}">
+ 
+<head>
+    <script type="text/javascript" src="/soap/ajax/26.0/connection.js"> </script>
+ 
+    <apex:includeScript value="{!URLFOR($Resource.jQuery, '/jquery-1.8.2.min.js')}"/>
+ 
+    <apex:includeScript value="{!URLFOR($Resource.js_zip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.js_zip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.js_zip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.js_zip, '/jszip-inflate.js')}"/>
+ 
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+ 
+        j$(document).ready(function() {
+            
+            var uploadZipButton = j$('input[id$=uploadZipButton]');
+            uploadZipButton.css('display', 'none');
+             
+            var zipFile = new JSZip();
+            // j$('a[id=generateZipLink]').click(function() {
+             //j$(document).ready(function() { 
+             j$("input[name='generateZipFile']").click(function() { 
+                var checkedSize = j$("input[name='att_ids_group[]']:checked").size();
+                var count = 0;
+                if(checkedSize == 0){
+                    alert('Please select atleast one file.');
+                }
+              
+                j$("input[name='att_ids_group[]']:checked").each(function() {
+                   
+                    j$('span[id$=zipStatus]').text('Getting file...');
+                     
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.ZipfileController.getAttachment}',
+                        j$(this).val(),
+                        function(result, event){
+                            if (event.status) {
+                               
+                                j$('span[id$=zipStatus]').text('Compressing file "' + result.attName + '"...');
+ 
+                                count++;
+                                 
+                                compressFile(zipFile, result.attName, result.attEncodedBody);
+                               
+                                if (count == checkedSize) {
+                                    
+                                    j$('span[id$=zipStatus]').text('Generating zip file...');
+                                     
+                                    sendZip(zipFile);
+                                    
+                                }
+                            } else if (event.type === 'exception') {
+                                alert('Exception: ' + event.message);
+                            } else {
+                                alert('Message: ' + event.message);
+                            }
+                        }, 
+                        {escape: true}
+                    );
+ 
+                });
+            });
+             
+            function compressFile(zipFile, name, data) {
+                zipFile.file(name, data, {base64:true});
+            }
+ 
+            function sendZip(zipFile) {
+                var data = zipFile.generate();
+                         
+                var zipContent = j$('input[id$=zipContent]');
+                zipContent.val(data);
+                 
+                //Refresh zip process status
+                j$('span[id$=zipStatus]').text('Uploading zip file...');
+                 
+                var uploadZipButton = j$('input[id$=uploadZipButton]');
+                uploadZipButton.trigger('click');
+            }
+        });
+    </script>
+    
+    <style>
+    .FormButton {
+     -moz-box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+    box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+    background-color:#ededed !important;
+    -webkit-border-top-left-radius:0px !important;
+    -moz-border-radius-topleft:0px !important;
+    border-top-left-radius:0px !important;
+    -webkit-border-top-right-radius:0px !important;
+    -moz-border-radius-topright:0px !important;
+    border-top-right-radius:0px !important;
+    -webkit-border-bottom-right-radius:0px !important;
+    -moz-border-radius-bottomright:0px !important;
+    border-bottom-right-radius:0px !important;
+    -webkit-border-bottom-left-radius:0px !important;
+    -moz-border-radius-bottomleft:0px !important;
+    border-bottom-left-radius:0px !important;
+    text-indent:0px !important;
+    border:1px solid #dcdcdc !important;
+    display:inline-block !important;
+    color:#333333 !important;
+    font-family:Arial !important;
+    font-size:14px !important;
+    font-weight:bold !important;
+    font-style:normal !important;
+    height:28px !important;
+    line-height:28px !important;
+    width:100px !important;
+    text-decoration:none !important;
+    text-align:center !important;
+    text-shadow:1px 1px 0px #ffffff !important;
+    
+}
+    </style>
+</head>
+ 
+    <apex:form id="uploadZipForm" enctype="multipart/form-data">
+        <apex:includeScript value="/support/console/20.0/integration.js"/>
+        <apex:inputHidden id="zipContent" value="{!zipContent}" />
+        <apex:commandButton id="uploadZipButton" value="Upload" action="{!uploadZip}" reRender="thePageBlock" />
+    
+    <apex:pageBlock id="thePageBlock" title="Files">
+        <apex:pagemessages />
+        <apex:outputText rendered="{!!ShowDownload}">
+            <h3>
+            Select the files you want to create for SAP
+            </h3>
+        </apex:outputText>
+        <apex:outputText rendered="{!ShowDownload}">
+        <h3>
+        Your file is ready.Please click on button to download file.
+        </h3>
+        </apex:outputText>
+        <br/><br/>
+    
+    <apex:outputText rendered="{!ShowDownload}"> 
+    <center>
+        <a href="{!URLFOR($Action.Attachment.Download, AttachID )}"  class="FormButton" >Download File</a>
+    <br/><br/><br/>
+        <A HREF="#" onclick="testCloseTab();return false" >
+        Click here to close this tab</A>
+        
+        <script type="text/javascript">
+        function testCloseTab() {
+        
+        sforce.console.getEnclosingTabId(closeSubtab);
+        }
+        var closeSubtab = function closeSubtab(result) {
+        
+        var tabId = result.id;
+        sforce.console.closeTab(tabId);
+        };
+        </script>
+    </center>   
+    </apex:outputText>
+    
+    <html>
+        <head>
+            <script language="JavaScript">
+            function toggle(source) {
+                var inputs = document.getElementsByTagName('input'); 
+                for(var i =0; i<inputs.length; i++) {
+                    if (inputs[i].type == 'checkbox' && inputs[i].name.indexOf('att_ids_group') === 0) { 
+                    inputs[i].checked = source.checked;
+                    }
+                }
+           }
+            </script> 
+        </head>
+        <body>
+            <apex:pageBlockTable value="{!vCaseAttachmentList}" var="att" id="table2" rendered="{!!ShowDownload}">
+                <apex:column >
+                <apex:facet name="header">
+                <input type='checkbox' onClick='toggle(this)' /><br />
+                </apex:facet>
+                <input type="checkbox" class="selectedId" name="att_ids_group[]"  value="{!att.Id}"/>
+                </apex:column>
+                <apex:column value="{!att.Name}" />
+                <apex:column value="{!att.ContentType}" />
+                <apex:column value="{!att.BodyLength} kb" headerValue="File Size" />
+            </apex:pageBlockTable>
+        </body>
+    </html>
+    <center>
+    <apex:outputText rendered="{!!ShowDownload}"> 
+        <input type="button" name="generateZipFile" value="Create File" class="FormButton" />
+        <input type="button" name="Cancel" value="Cancel" class="FormButton" onClick="CallCancel()" />
+        <apex:actionFunction action="{!DeleteDetailFile}" name="CalldelFun" oncomplete="testCloseTab()"/>
+        
+        <br/><br/>
+        <!--<A HREF="#" onclick="testCloseTab();return false" >
+        Click here to close this tab</A>-->
+        <script type="text/javascript">
+        function CallCancel(){
+            CalldelFun();
+        }
+        
+        function testCloseTab() {
+        
+        sforce.console.getEnclosingTabId(closeSubtab);
+        }
+        var closeSubtab = function closeSubtab(result) {
+        
+        var tabId = result.id;
+        sforce.console.closeTab(tabId);
+        };
+        </script>
+    </apex:outputText>  
+    
+    </center>
+    </apex:pageBlock>
+    </apex:form>
+    
+ </apex:page>

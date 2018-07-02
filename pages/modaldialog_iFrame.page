@@ -1,0 +1,206 @@
+<apex:page controller="modaldialog_iFramectrl" showHeader="false" action="{!onload}">
+
+<apex:form id="frm">
+<head>
+    <apex:includeScript value="{!URLFOR($Resource.JQuery_modal, '/jquery-1.8.2.min.js')}"/> 
+
+<style>
+ 
+.button.red {
+    background-color: #C53727;
+    height: 25px;
+    background-image: -webkit-linear-gradient(top,#dd4b39,#d14836);
+    background-image: -moz-linear-gradient(top,#dd4b39,#d14836); 
+    background-image: -ms-linear-gradient(top,#dd4b39,#d14836); 
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#dd4b39', endColorstr='#d14836');
+    background-image: -o-linear-gradient(top,#dd4b39,#d14836);
+    background-image: linear-gradient(top,#dd4b39,#d14836);
+    
+    border: 1px solid transparent;
+    color: white;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    font-weight:bold;
+    border: solid #666 1px;
+    font-size: 14px;
+
+}
+
+.button.red:hover {
+    background-color: #C53727;
+    background-image: -webkit-linear-gradient(top,#dd4b39,#c53727);
+    background-image: -moz-linear-gradient(top,#dd4b39,#c53727); 
+    background-image: -ms-linear-gradient(top,#dd4b39,#c53727); 
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#dd4b39', endColorstr='#c53727');
+    background-image: -o-linear-gradient(top,#dd4b39,#c53727);
+    background-image: linear-gradient(top,#dd4b39,#c53727); 
+}
+    
+    
+/* green */
+
+.button.green {
+    background-color: #3D9400;
+    height: 25px;
+    background-image: -webkit-linear-gradient(top,#3d9400,#398a00);
+    background-image: -moz-linear-gradient(top,#3d9400,#398a00);  
+    background-image: -ms-linear-gradient(top,#3d9400,#398a00); 
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d9400', endColorstr='#398a00');  
+    background-image: -o-linear-gradient(top,#3d9400,#398a00);
+    background-image: linear-gradient(top,#3d9400,#398a00);
+    
+    border: 1px solid transparent;
+    color: white;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    font-weight:bold;
+    border: solid #666 1px;
+    font-size: 14px;
+}
+
+.button.green:hover {
+    background-color: #368200;
+    background-image: -webkit-linear-gradient(top,#3d9400,#368200);
+    background-image: -moz-linear-gradient(top,#3d9400,#368200); 
+    background-image: -ms-linear-gradient(top,#3d9400,#368200);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d9400', endColorstr='#368200'); 
+    background-image: -o-linear-gradient(top,#3d9400,#368200);
+    background-image: linear-gradient(top,#3d9400,#368200);
+    
+    border: 1px solid #2D6200;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/* brownish */
+
+.button.brownish {
+    background-color: #50393f;
+    height: 25px;
+    background-image: -webkit-linear-gradient(top,#674850,#50393f);
+    background-image: -moz-linear-gradient(top,#674850,#50393f); 
+    background-image: -ms-linear-gradient(top,#674850,#50393f); 
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#674850', endColorstr='#50393f');
+    background-image: -o-linear-gradient(top,#674850,#50393f);
+    background-image: linear-gradient(top,#674850,#50393f);
+    
+    border: 1px solid transparent;
+    color: white;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    font-weight:bold;
+    border: solid #666 1px;
+    font-size: 14px;
+}
+
+.button.brownish:hover {
+    background-color: #50393f;
+    background-image: -webkit-linear-gradient(top,#674850,#463237);
+    background-image: -moz-linear-gradient(top,#674850,#463237); 
+    background-image: -ms-linear-gradient(top,#674850,#463237); 
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#674850', endColorstr='#463237');
+    background-image: -o-linear-gradient(top,#674850,#463237);
+    background-image: linear-gradient(top,#674850,#463237);
+    
+    border: 1px solid #412e33;
+}
+
+.info{
+border: 1px solid;
+margin: 10px 13px; 
+background-repeat: no-repeat;
+background-position: 10px center;
+color: #00529B;
+background-color: #BDE5F8;
+}
+
+<!-- Prabhanjan 00900749 adding css class for system alerts. -->
+.systemAlerts{
+border: 2px solid;
+margin: 10px 0px; 
+background-repeat: no-repeat;
+background-position: 10px center;
+color: #008288;
+background-color: #e98300;
+}
+</style>
+
+    <script type="text/javascript">
+        
+        var j$ = jQuery.noConflict();
+    
+    </script>
+</head>
+ 
+        
+       
+<apex:actionFunction action="{!next}" name="next"/>
+  <apex:outputPanel id="msg">   
+  
+    <!-- THE FOLLOWING SCRIPT HAS TO BE IN THE RERENDERING SECTION AS WE NEED UPDATE VALUES OF VARIABLE-C -->
+    <script>
+    
+       function check(){  
+          if({!popupscount}>{!c}){  
+              next();
+          }
+          else{  
+             window.close();
+          }
+           
+       }  
+    </script>
+    
+     <br/> 
+     <apex:outputPanel rendered="{!!popup.System_Maintenance_Alert__c}">
+    <div class="info">
+    
+     <p align='center' style="color:BLUE;font-size:18px;">
+            <img src='/img/msg_icons/warning32.png' height="50px" width="50px"/> <BR/>
+            <b>Important Alert</b>
+            <hr/>
+            </p>
+            
+        <p align='center' style="color:BLUE;font-size:14px; margin-left: 13px;">
+            <br/>            
+            <apex:outputText value="{!popup.Message__c}" escape="false"/>
+            <apex:outputPanel rendered="{!IF(popup.Message__c==null,TRUE,FALSE)}">
+            .....You Have No Messages.....
+            </apex:outputPanel>
+        </p>
+        <br/>
+      </div>
+     </apex:outputPanel>
+      <!-- Prabhanjan 00900749 Adding one more  panel for System alerts -->
+     <apex:outputPanel rendered="{!popup.System_Maintenance_Alert__c}">
+      <div class="systemAlerts">
+        <p align='center' style="color:white;font-size:18px;margin:0 5px;">
+            <img src='/img/icon/computer32.png' height="50px" width="50px"/> <BR/>
+            <b>System Maintenance Alert</b><hr/>
+            </p>
+            
+        <p align='center' style="color:white;font-size:14px;margin:0 5px;">
+<br/>            <apex:outputText value="{!popup.Message__c}" escape="false"/>
+            <apex:outputPanel rendered="{!IF(popup.Message__c==null,TRUE,FALSE)}">
+            .....You Have No Messages.....
+            </apex:outputPanel>
+        </p>
+        <br/>
+      </div>
+      </apex:outputPanel>
+             <br/> 
+    </apex:outputPanel> 
+       <!-- Buttons Section -->
+              
+            <p align='center'>
+                <apex:commandButton styleClass="button red" value="Don't Show This Again" status="actStatusId" 
+                    action="{!userPref}" oncomplete="check();" reRender="msg"/> 
+                <apex:commandButton styleClass="button green" value="Close" onclick="window.close();"/> 
+                <apex:commandButton styleClass="button brownish" value="Next" onclick="check();" reRender="msg" status="actStatusId"/> 
+                  
+                <apex:actionStatus id="actStatusId" >
+                    <apex:facet name="start" >
+                        <img src="/img/loading32.gif" />                    
+                    </apex:facet>
+                </apex:actionStatus> 
+            </p>
+                    
+</apex:form>
+  
+    </apex:page>

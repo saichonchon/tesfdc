@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>object to hold product interest tags:
+
+- created out of activity records from Eloqua
+- created manually from contact
+- created manually from opportunity</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Name_from_Contact__c</fullName>
+        <description>if we have an associated contact with the activity record, this is the account name it is linked to</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Number__c</fullName>
+        <description>the account number from the contact</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.AccountNumber__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Owner__c</fullName>
+        <description>the account owner</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Account.Owner.FirstName &amp;&quot; &quot;&amp;Contact__r.Account.Owner.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Owner</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Record_Type__c</fullName>
+        <description>the record type of the account</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Account.RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Record Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Type__c</fullName>
+        <description>the type from the account</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Account.Account_Type__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Class_Code__c</fullName>
+        <defaultValue>&apos;Sales&apos;</defaultValue>
+        <description>will be default &apos;Sales&apos; for manual and opportunity interest tags, field is sent to Key Activity Staging</description>
+        <externalId>false</externalId>
+        <label>Activity Class Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Date_Time__c</fullName>
+        <description>date and time of the activity</description>
+        <externalId>false</externalId>
+        <label>Activity Date/Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Rating_Desc__c</fullName>
+        <description>holds the type of the activity from the raw data (3D PDF, CAD etc)</description>
+        <externalId>false</externalId>
+        <label>Activity Rating Desc</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Record_Created__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>this box will be checked for the final unique opportunity interest tag when an activity record had been created</description>
+        <externalId>false</externalId>
+        <label>Activity Record Created</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Type__c</fullName>
+        <description>field is required in key activity staging. Currently only sending value &apos;cold&apos;</description>
+        <externalId>false</externalId>
+        <label>Activity Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Cold</fullName>
+                    <default>false</default>
+                    <label>Cold</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Area_of_Interest__c</fullName>
+        <description>area of interest as described in activity record</description>
+        <externalId>false</externalId>
+        <label>Area of Interest</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Region__c</fullName>
+        <description>billing region from account</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Billing_Region__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billing Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Title__c</fullName>
+        <description>The business title of the contact</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Title</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Business Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Unit_from_Contact__c</fullName>
+        <description>the business unit of the account the contact belongs to</description>
+        <externalId>false</externalId>
+        <formula>TEXT(Contact__r.Account.Industry_Code_Description__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Business Unit from Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to related campaign, if one exists</description>
+        <externalId>false</externalId>
+        <label>Campaign</label>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipName>Product_Interest_Tags</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>City__c</fullName>
+        <description>Mailing City from Contact</description>
+        <externalId>false</externalId>
+        <formula>IF( Lead__c =&quot;&quot;,Contact__r.MailingCity, Lead__r.City)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <description>free text field for comments, used for manual interest tag</description>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Completely_Converted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>this field gets checked when the raw data record has been converted into a final record</description>
+        <externalId>false</externalId>
+        <label>Completely Converted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to the contact the activity belongs to</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Product_Interest_Tags</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <description>country from Contact</description>
+        <externalId>false</externalId>
+        <formula>IF( Lead__c =&quot;&quot;,Contact__r.MailingCountry, Lead__r.Country)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Country</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email_from_Activity_or_Contact_Role__c</fullName>
+        <description>the email associated with the activity</description>
+        <externalId>false</externalId>
+        <label>Email from Activity or Contact Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email_from_Contact_or_Lead__c</fullName>
+        <description>auto-populates the email from the contact or lead</description>
+        <externalId>false</externalId>
+        <formula>IF(
+ Contact__c !=&apos;&apos;,  Contact__r.Email , 
+IF(
+Lead__c!=&apos;&apos;, Lead__r.Email, &apos;&apos;
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email from Contact or Lead</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Final_Opportunity_Tag__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>gets checked when opportunity tags are de-duped</description>
+        <externalId>false</externalId>
+        <label>Final Tag</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GPL_Info__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(GPL__c!=&apos;&apos;,GPL__r.Name &amp; &quot; - &quot; &amp; GPL__r.GPL_Description__c,
+IF(Part__c!=&apos;&apos;, Part__r.Product_Hierarchy__r.Name &amp; &quot; - &quot; &amp; Part__r.Product_Hierarchy__r.GPL_Description__c,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GPL Info</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GPL__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to the product hierarchy for manual or opportunity interest tags, filled automatically when part number is found.</description>
+        <externalId>false</externalId>
+        <label>GPL</label>
+        <referenceTo>Product_Hierarchy__c</referenceTo>
+        <relationshipName>Product_Interest_Tags</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GPL_from_Product__c</fullName>
+        <description>pulls the GPL name if a valid pn is entered</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GPL from Product</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to the lead the activity belongs to</description>
+        <externalId>false</externalId>
+        <label>Lead</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipName>Product_Interest_Tags</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>New_Product__c</fullName>
+        <description>if no part number or GPL is defined, we use this picklist to group new products. To be maintained by BU Admin</description>
+        <externalId>false</externalId>
+        <label>New Product</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Weather Node</fullName>
+                    <default>false</default>
+                    <label>Weather Node</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name__c</fullName>
+        <description>name of the opportunity the contact role belongs to</description>
+        <externalId>false</externalId>
+        <label>Opportunity Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Number__c</fullName>
+        <description>the opp number to which the contact role is related</description>
+        <externalId>false</externalId>
+        <label>Opportunity Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Part_Creation_Date__c</fullName>
+        <description>creation date of the opportunity part if tag comes from an opportunity. Sent to key activity staging object.</description>
+        <externalId>false</externalId>
+        <label>Opportunity Part Creation Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Part_Number_Name__c</fullName>
+        <description>the name of the part</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Number Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Number_Text__c</fullName>
+        <description>to hold the part number(s) in the raw data format</description>
+        <externalId>false</externalId>
+        <label>Part Number (Text)</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to the part object if the raw data is an actual part in SF</description>
+        <externalId>false</externalId>
+        <label>Part</label>
+        <referenceTo>Part__c</referenceTo>
+        <relationshipName>Product_Interest_Tags</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Phone_Number__c</fullName>
+        <description>the phone number from the contact</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Phone</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Postal_Code__c</fullName>
+        <description>postal code from Contact</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingPostalCode</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Postal Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Record_Type_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record Type Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Region_from_Lead_or_Contact__c</fullName>
+        <description>Pulls the region from Lead or contact if we have an entry for one of those.</description>
+        <externalId>false</externalId>
+        <formula>IF( Contact__c !=&apos;&apos;,   Contact__r.Account.Billing_Region__c  ,
+IF(Lead__c != &apos;&apos;,  TEXT(Lead__r.Region__c) ,&apos;&apos;
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region from Lead or Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sample_Order_Number__c</fullName>
+        <description>for sample requests, this field will hold the sample request order number</description>
+        <externalId>false</externalId>
+        <label>Sample Order Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State_Province__c</fullName>
+        <description>state or province from Contact</description>
+        <externalId>false</externalId>
+        <formula>IF( Lead__c =&quot;&quot;,Contact__r.MailingState, Lead__r.State )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>State/Province</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Street__c</fullName>
+        <description>street name from contact</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingStreet</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Unique_Key__c</fullName>
+        <description>holds a unique key of GPL ID, Contact ID and Opportunity ID</description>
+        <externalId>false</externalId>
+        <label>Unique Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>opportunity_ID__c</fullName>
+        <description>holds the ID of the opportunity if tag is of record type opportunity</description>
+        <externalId>false</externalId>
+        <label>opportunity ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Interest Tag</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>GPL__c</columns>
+        <columns>Part__c</columns>
+        <columns>Contact__c</columns>
+        <columns>opportunity_ID__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Area_of_Interest__c</columns>
+        <columns>Completely_Converted__c</columns>
+        <columns>Activity_Record_Created__c</columns>
+        <columns>Final_Opportunity_Tag__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>TAG-{00000}</displayFormat>
+        <label>Tag Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Interest Tags</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Interest_Tag_Final_3D_PDF</fullName>
+        <active>true</active>
+        <description>Record type for product interest tags when successfully converted from Raw Data record type (3D PDF)</description>
+        <label>Interest Tag Final 3D PDF</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Interest_Tag_Final_CAD</fullName>
+        <active>true</active>
+        <label>Interest Tag Final CAD</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Interest_Tag_Final_Sample_Request</fullName>
+        <active>true</active>
+        <label>Interest Tag Final Sample Request</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Manual_Interest_Tag</fullName>
+        <active>true</active>
+        <description>for records that have been created manually from a contact</description>
+        <label>Manual Interest Tag</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Opportunity_Interest_Tag</fullName>
+        <active>true</active>
+        <description>for records that have been created manually from an Opportunity</description>
+        <label>Opportunity Interest Tag</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Raw_Data</fullName>
+        <active>true</active>
+        <description>used for raw activity data from Eloqua</description>
+        <label>Raw Data</label>
+        <picklistValues>
+            <picklist>Activity_Type__c</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>New_Product__c</picklist>
+            <values>
+                <fullName>Weather Node</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>Private</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <visibility>Public</visibility>
+</CustomObject>

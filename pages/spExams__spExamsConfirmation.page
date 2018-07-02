@@ -1,0 +1,192 @@
+<apex:page controller="spExams.SPExamsCtrl" sidebar="false" showheader="false" standardStylesheets="false">
+
+    <c:spExams_Resources />
+    
+    <apex:form styleClass="container-form">
+        <apex:actionFunction name="submitExam" 
+                             action="{!submitExam}" >
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="updateUserExam" 
+                             action="{!updateUserExam}"
+                             oncomplete="submitExam()">
+			<apex:param name="remainingTime" value="" />                             
+        </apex:actionFunction>
+        
+        <div class="container">
+            <div class="hero-unit header-title">
+                <div class="timer pull-right">
+                    <span id="minutes">{!MinutesLeft}</span>:<span id="seconds">{!SecondsLeft}</span>
+                    <apex:inputText styleClass="inputMinutesLeft hide" value="{!MinutesLeft}"/>
+                    <apex:inputText styleClass="inputSecondsLeft hide" value="{!SecondsLeft}"/>
+                </div> 
+                <input id="timeExam" type="hidden" value="90"/>
+                <h4>{!IF(NOT(ISNULL(Exam)), Exam.Title__c, 'No Valid Exam')}</h4><br/><br/>
+                <b>Name:&nbsp;</b>{!IF(NOT(ISNULL(UserExam.Id)), UserExam.First_Name__c + ' ' + UserExam.Last_Name__c + ', ', 'No Valid User')}
+                <span class="pull-right">
+                    <b><a class="btn" onclick="setUpModalAction($(this), 'Submit Exam', 'Confirmation', 'Are you sure you want to submit this exam?', 'Submit', 'Cancel');"><i class="icon-ok"></i> Submit Exam</a></b>
+                </span>
+                <h3>&nbsp;</h3>
+                <apex:outputPanel styleClass="progress-bar-resume pull-right" rendered="{!AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0)}">
+                    <table class="progress-container">
+                        <tr>
+                            <td>
+                                <span class="">Progress:&nbsp;</span>
+                            </td>
+                            <td>
+                                <div class="progress">
+                                    <span>{!ROUND(100 * QuestionsCompleted / ExistingUserExamQuestionsList.size, 0)}%</span>
+                                    <div class="bar" style="width: {!100 * QuestionsCompleted / ExistingUserExamQuestionsList.size}%;"></div>
+                                </div>
+                            </td>   
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+           </div>
+        </div>    
+        
+        <div class="container">
+            <div class="hero-unit header-title">
+                <apex:outputPanel id="sumary-panel">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <h3>
+                                    Please review your answers and pending questions before submitting the exam.
+                                </h3>
+                                <apex:message />
+                            </td>
+                            <td align="right">
+                                <span class="alert alert-info">Answered</span>
+                                <span class="alert">Review Later</span> 
+                                <span class="alert alert-error">No Answered</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <apex:variable value="{!1}" var="indexSummaryQuestion"/>
+                    <apex:repeat rendered="{!AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0) && Finish}" value="{!ExistingUserExamQuestionsList}" var="finalExistingUserExamQuestion">
+                        <div class="accordion" id="accordion2">
+                            <apex:commandLink styleClass="btn link-question-{!indexSummaryQuestion} hide" action="{!goToQuestion}" value="Go">
+                                <apex:param name="indexSummaryQuestion" value="{!indexSummaryQuestion}"/>
+                            </apex:commandLink> 
+                            <div class="accordion-group" onclick="$('.link-question-' + '{!indexSummaryQuestion}').click();">
+                                <div class="accordion-heading alert {!IF(finalExistingUserExamQuestion.User_Exam_Answers__r.size == 0, 'alert-error', IF(finalExistingUserExamQuestion.Review_Later__c,  '', 'alert-info'))}">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align: top">
+                                                <b>{!indexSummaryQuestion}. </b>
+                                            </td>
+                                            <td>
+                                                <apex:OutputField value="{!finalExistingUserExamQuestion.Question__r.spExams__Content__c}"></apex:OutputField>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    </a>
+                                 </div>
+                                 <div id="One" class="accordion-body collapse">
+                                    <div class="accordion-inner">
+                                        None
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                        <apex:variable value="{!indexSummaryQuestion + 1}" var="indexSummaryQuestion"/>
+                    </apex:repeat>  
+                </apex:outputPanel>
+            </div>
+        </div>  
+    </apex:form>    
+    
+    <!-- MODAL ACTION -->
+                
+    <div class="modal fade" id="confirm-action" data-backdrop="static" action="">
+        <div class="modal-header">
+           <button class="close" data-dismiss="modal" type="button" onclick="$('#confirm-action').attr('action', 'Cancel');manageModalActionCancel();">&times;</button>
+           <div class="confirm-action-header"><h4>Confirm Delete</h4></div>
+        </div>
+        
+        <div class="modal-body">
+            <p id="action-modal-message">
+                Message
+            </p>
+        </div>
+        
+        <div class="modal-footer">
+            <b><a id="btn-modal-action-execute" class="btn pull-right" onclick="manageModalActionExecute();">Delete</a></b>
+            <b><a id="btn-modal-action-cancel" class="btn pull-right" data-dismiss="modal" onclick="$('#confirm-action').attr('action', 'Cancel');manageModalActionCancel();">Cancel</a></b>    
+        </div>
+    </div>
+     
+    <script>
+    
+        $(document).ready(function()
+        {   
+            setupSetings();
+            
+            var counter = setInterval(timer, 1000);
+            var minutesLeft = parseInt('{!MinutesLeft}');
+            var secondsLeft = parseInt('{!SecondsLeft}');
+            
+            var keepCounting = true;
+            
+            function timer()
+            { 
+                if(secondsLeft == 0 && minutesLeft == 0)
+                    submitExamJS(0);
+                else if(secondsLeft == 0)   
+                {
+                    minutesLeft--;
+                    secondsLeft = 59;
+                }
+                else                
+                    secondsLeft--;
+                    
+                if(parseInt(minutesLeft) >= 0 && keepCounting)
+                {    
+                    if (minutesLeft < 10 ) 
+                        $('#minutes').html('0' + parseInt(minutesLeft));
+                    else 
+                        $('#minutes').html(parseInt(minutesLeft));
+                    
+                    if (parseInt(secondsLeft) < 10) 
+                        $('#seconds').html('0' + secondsLeft);
+                    else 
+                        $('#seconds').html(secondsLeft);
+                }
+                $('.inputMinutesLeft').val(minutesLeft);
+                $('.inputSecondsLeft').val(secondsLeft);
+            }
+            
+            centerBodyContainer($('.container-form'));
+            $('.container-form').fadeIn(300);
+        });
+        
+        function setupSetings()
+        {
+            var sitePrefix = '{!$Site.Prefix}';
+            var backgroundImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+            var logoImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            selectorSource = $('body');
+            
+            if(sitePrefix == '' || sitePrefix == null)
+            {
+                backgroundImageurl = '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+                logoImageurl = '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            }
+            
+            //Set Background Image
+            if({!ISNULL(ExamSettings.Background_Image__c)} || {!ISBLANK(ExamSettings.Background_Image__c)})
+            {
+                if({!NOT(ISNULL(ExamSettings.Background_Color__c))} && {!NOT(ISBLANK(ExamSettings.Background_Color__c))} && 
+                   '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != '#ffffff' && '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != 'rgb(255, 255, 255)')
+                    selectorSource.css('background-color', '{!HTMLENCODE(ExamSettings.Background_Color__c)}');
+                else
+                    selectorSource.css('background-image', "url({!URLFOR($Resource.Bootstrap_Newer, 'img/pattern.png')})").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');                  
+            }
+            else
+                selectorSource.css('background-image', "url(" + "'" + backgroundImageurl + "'" + ")").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');
+        }
+    
+    </script>
+</apex:page>

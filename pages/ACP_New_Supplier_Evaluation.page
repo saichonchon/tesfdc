@@ -1,0 +1,100 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_View_Customer_Page_ctrl" tabStyle="ACP_TE_Supplier_Evaluation__c" standardStylesheets="false" showHeader="true" sidebar="false" >
+ 
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+      <apex:form >
+         <apex:pageBlock mode="maindetail" >
+           
+            <br/><br/>
+            <div style="margin-left: 5%;">
+            <apex:outputText value="{!$Label.ACP_TE_Supplier_Evaluation}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-default" >
+                     <div class="panel-heading"> {! $Label.ACP_Create_Evaluation}  </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar" >{! $Label.ACP_TE_Supplier_Evaluation_Information}</div>
+                     <br/>
+                        <div class ="col-md-6">
+                        
+                        
+                           <div class="form-group">
+                              <label><font style="color:red">*</font>{! $Label.ACP_SE_Criteria}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Criteria__c.inlineHelpText}"/></span>
+                              
+                              <apex:inputField value="{!NewSupplierEval.ACP_Criteria__c}" required="true" styleClass="form-control"/>
+                           </div>
+                           
+                           <div class="form-group" >
+                              <label>{! $Label.ACP_SE_CustExpectations}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Customers_Expectations__c.inlineHelpText}"/></span>
+                     
+                              <apex:inputField value="{!NewSupplierEval.ACP_Customers_Expectations__c}"  styleClass="form-control"/>
+                           </div>
+                           <div class="form-group">
+                              <label>{! $Label.ACP_SE_TEView}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_TE_View_of_Performance__c.inlineHelpText}"/></span>
+                              
+                              <apex:inputField value="{!NewSupplierEval.ACP_TE_View_of_Performance__c}" styleClass="form-control"/>
+                           </div>
+                           <div class="form-group">
+                              <label>{! $Label.ACP_Comments}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Comments__c.inlineHelpText}"/></span>
+                              
+                              <apex:inputField value="{!NewSupplierEval.ACP_Comments__c}" styleClass="form-control"/>
+                           </div>
+                        </div>
+                        
+                        
+                        <div class ="col-md-6">
+                        
+                        
+                           
+                             <div class="form-group">
+                              <label>{! $Label.ACP_SE_ImptoCustomer}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Importance_to_Customers__c.inlineHelpText}"/></span>
+                           
+                              <apex:inputField value="{!NewSupplierEval.ACP_Importance_to_Customers__c}"  styleClass="form-control"/>
+                           </div>
+                           <div class="form-group">
+                              <label>{! $Label.ACP_SE_CustRating}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt="" class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Customer_Rating__c.inlineHelpText}"/></span>
+                              
+                              <apex:inputField value="{!NewSupplierEval.ACP_Customer_Rating__c}" styleClass="form-control"/>
+                           </div>
+                           <div class="form-group">
+                              <label>{! $Label.ACP_SE_CustViewofPerf}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt="" class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Customer_View_of_TE_Performance__c.inlineHelpText}"/></span>
+                              
+                              <apex:inputField value="{!NewSupplierEval.ACP_Customer_View_of_TE_Performance__c}" styleClass="form-control"/>
+                           </div>
+                           
+                           <div class="form-group">
+                              <label>{! $Label.ACP_Description}</label>
+                              <span class="helpButtonOn"><img src="/s.gif" alt=""  class="helpOrb" title="{!$ObjectType.ACP_TE_Supplier_Evaluation__c.Fields.ACP_Description__c.inlineHelpText}"/></span>
+                         <apex:inputField value="{!NewSupplierEval.ACP_Description__c}" styleClass="form-control"/>
+                           </div>
+                           
+                       
+                        </div>
+                  </div>
+                       <div class = "panel-footer">
+                        <div align ="right" style="">
+                         <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="rating" />
+                         </apeX:commandLink>&nbsp; 
+                         <apex:commandButton value="{!$Label.ACP_Save_New}"  action="{!saveNewSupplierEval}" styleClass="btn btn-default" disabled="{!IF(supplierEvaluationList.size <evalrec.ACP_No_Of_Records__c-1, false, true)}" />&nbsp;
+                         <apex:commandButton action="{!saveSupplierEval}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" /></div>
+                       
+               </div>
+            </div>
+            </div>
+            </div>
+         </apex:pageBlock>
+      </apex:form>
+   </div>
+   </div>
+</apex:page>

@@ -1,0 +1,58 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	
+	<!-- total -->
+	<!-- 
+	<apex:variable value="{!0}" var="rowNum"/>
+	<apex:repeat var="total" value="{!pageCtrl.list_TotalColumns}">
+	    <tr class="{!total.cls} totcls {!if(rowNum=0, '', ' dn subtotcls ')} external">
+	        <td>
+	            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+	                <div class="dis_ib mgleft" >
+	                    <span class="search_img">
+	                        <input data-level="level1" onclick="event_popupBox_click(event, this)" id="accountbtnid" value="Search part" type="button" class="btn addsoldbtn"/>
+	                    </span>
+	                </div>
+	                <div class="dis_ib mgleft1" >
+	                    <span class="cellbox fcell " >+</span>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r fontcell"> {!if(rowNum=0, 'Total', '')} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" >{!total.fieldName}</td>
+	    </tr>
+	<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+	</apex:repeat>
+	 -->
+	<!-- total -->
+    
+    
+	<apex:repeat var="gpl" value="{!pageCtrl['list_GPLFamilyData']}">
+	    <apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!pageCtrl['list_GPLFamilyColumns']}">
+		<tr class="level1 {!gpl['id']}_level1 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " id="{!gpl['id']}" data-level="level1">
+			<td class="{!if(rowNum = 0, '', 'lev0')}">
+	            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+	                <div class="dis_ib mgleft" >
+	                    <span class="search_img">
+	                        <input data-level="level1" onclick="event_popupBox_click(event, this)" value="Search" type="button" class="btn addsoldbtn btnlevel1"/>
+	                    </span>
+	                </div>
+	                <div class="dis_ib mgleft1" >
+	                    <span class="cellbox fcell " >+</span>
+	                    <span class="cellbox pin spin" >&nbsp;</span>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r namecell"> {!gpl['name']} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" >{!total.fieldName}</td>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+</apex:component>

@@ -1,0 +1,17 @@
+<apex:page controller="ACP_Manage_Account_Plan_Ctrl" sideBar="true" showHeader="true" title="{!$ObjectType.Account_Plan__c.label}" action="{!newOrViewAccountPlan}">
+    
+    <apex:form id="theForm">
+        <apex:pageMessages />
+        <apex:pageBlock id="theBlock" mode="detail" tabStyle="ACP_Account_Plan__c">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="{!$Label.ACP_Create_Account_Plan}" action="{!createAccountPlan}" status="statusSave" rendered="{!mode == 'new'}" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" action="{!cancel}" immediate="true" rendered="{!mode == 'new'}"/>
+                <!--<apex:commandButton value="{!$Label.Create_Account_Plan}" action="{!createAccountPlan}" status="statusSave"/>
+                <apex:commandButton value="{!$Label.CancelButton}" action="{!cancel}" immediate="true"/>-->
+                <apex:actionStatus startText="" stopText="" id="statusSave" >
+                     <apex:facet name="start"><img src="/img/loading.gif"/></apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

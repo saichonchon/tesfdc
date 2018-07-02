@@ -1,0 +1,767 @@
+<apex:page controller="CtrlTakeSurvey" applyBodyTag="true" docType="html-5.0" sideBar="false" showHeader="false" cache="false">
+<head>
+	<system.webServer>
+	    <httpProtocol>
+	      <customHeaders>
+	        <clear />
+	        <add name="X-UA-Compatible" value="IE=EmulateIE8" />
+	      </customHeaders>
+	    </httpProtocol>
+	</system.webServer>
+	<meta http-equiv="X-UA-Compatible" content="IE=8,9,10" />
+	<!-- 
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+	 -->
+	<style>
+       .greydiv{
+           width: 180px;
+           height:80px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:20px;
+           padding-top:40px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.grey_img)});                
+       }
+       .greyndiv{
+           width: 40px;
+           height:32px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:16px;
+           padding-top:10px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.grey_nimg)});       
+       }
+       
+       .orangediv{
+           width: 180px;
+           height:80px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:20px;
+           padding-top:40px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.orange_img)});              
+       }
+       .orangendiv{
+           width: 40px;
+           height:32px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:16px;
+           padding-top:10px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.orange_nimg)});                 
+       }
+       
+       .bluediv{
+           width: 180px;
+           height:80px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:20px;
+           padding-top:40px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.blue_img)});                
+       }
+       .bluendiv{
+           width: 40px;
+           height:32px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:16px;
+           padding-top:10px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.blue_nimg)});               
+       }
+       
+       .greendiv{
+           width: 180px;
+           height:80px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:20px;
+           padding-top:40px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.green_img)});               
+       }
+       .greenndiv{
+           width: 40px;
+           height:32px;
+           text-align:center;
+           color:white;
+           font-weight:bold;
+           font-size:16px;
+           padding-top:10px;
+           background-repeat: no-repeat;
+           background-position: center;
+           background-image: url({!URLFOR($Resource.green_nimg)});              
+       }
+       .line{
+           border:1px dotted grey;
+       }
+       .answerTableNumber{             
+           color:black;font-weight:bold;font-size:12px;
+       }
+       .answerTitle{
+           color:black;font-weight:bold;font-size:15px;
+       }
+       .apexp .editPage .bPageBlock {
+           background-color:white;
+       }
+       .editPage .bPageBlock{
+           border-top:4px solid white;
+       } 
+   </style>
+   <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script>
+        $(document).ready(function(){
+        		try{
+	if(Sarissa._SARISSA_IS_IE && parseFloat(navigator.appVersion.substring(navigator.appVersion.indexOf("MSIE")+5)) >=7) {
+		window.XMLSerializer = function(){};
+		window.XMLSerializer.prototype.serializeToString=function(oNode){return oNode.xml;}
+	}
+}catch(e){}
+        
+            var mode = '{!mode}';
+            if(mode == 'Error'){
+                setTimeout(function(){var errorPage = '{!$Label.TE_Error_Page}'; window.location = errorPage;}, 1500);                  
+            }
+            
+        });
+        
+        
+        function populateApplicable(field){
+            var isChecked = $(field).attr('checked');
+            if(isChecked == 'checked'){
+                $(field).next().val(true);
+                $(field).parent().parent().next().next().find('input[type="radio"]').attr('checked', false);
+                $(field).parent().parent().next().next().find('.selectedAnswer').children().val('');
+            }
+            else{
+                $(field).next().val(false);
+            }               
+        }            
+     
+        function populateAnswer(field){
+            var selectedValue = field.value;
+            $(field).parent().siblings().each(function(){
+                if(this.style.display == 'none'){
+                    $(this).children('.selectedAnswer').children().val(selectedValue);
+                }
+            });
+            $(field).parentsUntil('.radioAnswer').parent().prev().prev().find('input[type="checkbox"]').attr('checked', false);
+            $(field).parentsUntil('.radioAnswer').parent().prev().prev().find('input[type="hidden"]').val(false);
+        }
+        
+        function populateCheckbox(){
+            $('#secondTable').find('input[type="checkbox"]').each(function(){
+                if($(this).next().val() == 'true') $(this).attr('checked', true);
+                else $(this).attr('checked', false);
+            });
+        }
+        
+        function populateRadio(){
+            // first table
+            var selectField1 = $('#firstTable').find('.selectedAnswer');
+            var selectedAnswer1 = '';
+            selectedAnswer1 = $(selectField1).children().val();               
+            if(selectedAnswer1 != 'undefined' && selectedAnswer1 != ''){
+                $(selectField1).parent().siblings().each(function(){
+                    if(this.style.display != 'none'){
+                        if($(this).find('input[type="radio"]').val() ==  selectedAnswer1){
+                            $(this).find('input[type="radio"]').attr('checked', true);
+                        }
+                    }
+                });
+            }
+            
+            // second table
+            $('#secondTable').find('.selectedAnswer').each(function(){
+                var seletedAnswer2 = '';                
+                selectedAnswer2 = $(this).children().val();
+                if(selectedAnswer2 != 'undefined' && selectedAnswer2 != ''){
+                    $(this).parent().siblings().each(function(){
+                        if(this.style.display != 'none'){
+                            if($(this).find('input[type="radio"]').val() ==  selectedAnswer2){
+                                $(this).find('input[type="radio"]').attr('checked', true);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        ;function surveyStatusStop(){
+        		try{
+        			populateCheckbox();
+				populateRadio();
+        		}catch(e){
+        		
+        		}finally{
+        			$('#loading-curtain-div').hide();
+        		}
+        }
+     ;function nextComplete(){
+		$('#loading-curtain-div').hide();
+        //$("#textarea1,#textarea2,#textarea3, #textarea4, #textarea5").html(textInput);
+        createTextarea();
+     }
+     ;function createTextarea(){
+     	$("span[id*='textarea']").each(function(){
+        		if(this.getAttribute('isCmt') == 'true'){
+				var textInput = '<textarea style="margin: 2px; width: 375px; height: 96px;"></textarea>',
+	        			$this = $(this), $parent = $this.parent(), $hidd = $parent.find('input[type="hidden"]');
+	        		$parent.append($(textInput).val($hidd.val()));
+        		}
+        });
+     }
+     ;function changeLanguageComplete(){
+     	$('#loading-curtain-div').hide();
+     }
+     ;function submitBtn_click(target){
+     	window.scrollTo(0,0);
+     	
+		$("span[id*='textarea']").each(function(){
+			if(this.getAttribute('isCmt') == 'true'){
+				var $parent = $(this).parent();
+				$parent.find('input[type="hidden"]').val($parent.find('textarea').val());
+			}
+        });
+
+     	submitAction();
+     }
+     ;function submitActionComplete(){
+     	if($('[id*=isSubmitError]').val() == 'true' || typeof($('td.messageCell span h4')[0]) != 'undefined'){
+     		createTextarea();
+     	}
+     }
+    </script>       
+</head>
+    
+<body>
+
+
+    <apex:form id="surveyForm">
+        <apex:inputHidden id="isSubmitError" value="{!isError}" />
+        <apex:pageMessages id="messages"/>
+        <div style="width:100%;height:20px;background-color:#FF8500;background-position:99% 0;background-repeat:no-repeat;background-size:30% 20px;background-image:url({!URLFOR($Resource.tyco_logo_bg)});"></div>
+        <apex:image url="{!$Resource.tyco_logo}"/>
+        <apex:pageBlock mode="edit" rendered="{!mode!='Error'}" id="surveyPB">                 
+            <apex:pageBlockButtons id="buttons" location="bottom">              
+                <apex:commandButton value="{!nextBtn}" action="{!next}" rerender="surveyPB,messages" status="surveyStatus" rendered="{!mode='FIRST'}" oncomplete="nextComplete()"/>
+                <apex:commandButton value="{!backBtn}" action="{!back}" rerender="surveyPB,messages" status="surveyStatus" rendered="{!mode='SECOND'}" />                
+                <input type="button" class="btn" value="{!submitBtn}" onclick="submitBtn_click(this)" style="display:{!IF(mode='SECOND', '', 'none')}" />
+                <apex:actionFunction oncomplete="submitActionComplete()" name="submitAction" action="{!submit}" rerender="surveyPB,messages" status="surveyStatus" />
+                <apex:actionStatus startText=" Loading... " stopText="" id="surveyStatus" onstart="$('#loading-curtain-div').show();" onstop="surveyStatusStop();"/>
+
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!OR(mode='LAN', mode='FIRST')}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!languageSelectLabel}" style="font-size:15px;"/> 
+                    <apex:outputpanel >
+                    <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:selectList value="{!con.NPS_Language__c}" onchange="changeLanguage();" id="selectLanguage" size="1">
+                            <apex:selectOptions value="{!languages}"/>
+                        </apex:selectList> 
+                    </div>  
+                    </apex:outputpanel>                
+<!--                    <apex:inputField id="selectLanguage"  value="{!con.NPS_Language__c}" required="true" onchange="changeLanguage();"/>-->
+                </apex:pageBlockSectionItem>                                      
+                <apex:actionFunction oncomplete="changeLanguageComplete()" name="changeLanguage" action="{!changeLanguage}" rerender="surveyPB,messages" status="surveyStatus" />                    
+            </apex:pageBlockSection>
+                        
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!OR(mode='LAN', mode='FIRST')}">
+                <apex:pageBlockSectionItem >
+                    
+                    <apex:outputLabel value="{!introduceLabel}" style="font-size:15px;"/>                       
+                    <apex:outputPanel >
+                    <!-- <apex:outputText value="{!introduction}"/>
+                    <br/><br/> commented by xia 2013-03-19-->
+                    <apex:outputText value="{!introduceBody}" style="font-size:15px;"/> 
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+            </apex:pageBlockSection> 
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!mode='THANKS'}">                                
+                <apex:outputText value="{!thanksLabel}"/>                       
+            </apex:pageBlockSection>              
+                                 
+            <table style="display:{!IF(mode='FIRST', '', 'none')}" id="firstTable">
+                 <!-- First Question -->
+                 <apex:repeat value="{!list_first}" var="firstSurveyItem">
+                     <tr>
+                         <td rowspan="{!IF(map_order_disError['1']=='none', 3, 4)}" >
+                             <div class="{!firstStyle}div" >
+                                 {!firstSurveyItem.question.Category__c}
+                             </div>
+                         </td >
+                         <td>
+                             <div class="{!firstStyle}ndiv">
+                                 {!firstSurveyItem.sortOrder}
+                             </div>
+                         </td>
+                         <td style="color:grey;font-weight:bold;font-size:15px;">
+                             {!firstSurveyItem.qString}
+                         </td>                     
+                         <td/>                                
+                     </tr>                  
+                     <tr class="answerTitle" style="display:{!IF(firstSurveyItem.question.Question_Type__c='Comment', 'none', '')}">
+                        <td></td>
+                        <td align="left">{!recommended}</td>
+                        <td align="right">{!notRecommended}</td>
+                     </tr>
+                     
+                     <tr style="display:{!IF(firstSurveyItem.question.Question_Type__c='Comment', 'none', '')}">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!firstSurveyItem.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <!-- <div class="selectedAnswer"><apex:inputHidden value="{!firstSurveyItem.answer.Answer__c}" /></div> -->
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!firstSurveyItem.theAnswer}" /></div>
+                                    </td>
+                                </tr>                            
+                            </table>
+                        </td>
+                     </tr>
+                     <tr style="display:{!map_order_disError['1']}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                     </tr>               
+                     <tr style="display:{!IF(firstSurveyItem.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/> 
+                        <td>
+                        <!-- add lili
+                        <apex:inputField value="{!firstSurveyItem.answer.Answer_txt__c}" rendered="{!firstSurveyItem.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin--> 
+                        <span Id="textarea{!firstSurveyItem.sortOrder}" isCmt="{!if(firstSurveyItem.question.Question_Type__c='Comment', 'true', 'false')}">
+                        <apex:inputHidden value="{!firstSurveyItem.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" id="theHiddenInput{!item.sortOrder}" name="theHiddenInput{!item.sortOrder}" value="{!item.answer.Answer_txt__c}"/>  -->
+                        </span>  
+                        <!-- add lili 2014.01.16 end--> 
+                        </td>
+                        <td/> 
+                    </tr>
+                </apex:repeat>                       
+            </table>
+            
+            <table style="display:{!IF(mode='SECOND', '', 'none')}" id="secondTable">
+            
+               <!-- General -->
+                <apex:repeat value="{!list_overall}" var="item">
+                    <tr>                        
+                        <td rowspan="{!spanOverall}" style="display:{!IF(item.isFirst, '', 'none')}">
+                            <div class="{!IF(item.isFirst, 'greydiv', '')}" style="display:{!IF(item.isFirst, '', 'none')}">
+                                {!item.question.Category__c}
+                            </div>
+                        </td >
+
+                        <td>
+                            <div class="greyndiv">
+                                {!item.sortOrder}
+                            </div>
+                        </td>
+                        <td style="color:grey;font-weight:bold;font-size:15px;">
+                            {!item.qString}&nbsp;&nbsp;
+                            <apex:outputLabel value="{!notAppLabel}" style="font-weight:bold" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                            <input type="checkbox" style="display:{!IF(item.question.Question_Type__c!='Comment', '', 'none')}" onclick="populateApplicable(this)"/>
+                            <apex:inputHidden value="{!item.answer.Not_Applicable__c}" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                        </td>                                
+                    </tr>                   
+                    <tr class="answerTitle" style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}">
+                        <td></td>
+                        <td align="left">{!extremelySatisfiedLabel}</td>
+                        <td align="right">{!notSatisfiedLabel}</td>
+                    </tr>
+                    
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}" class="radioAnswer">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!item.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!item.theAnswer}" /></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="display:{!map_order_disError[item.sortOrder]}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                    </tr>
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/>
+                        <td>
+                        <!-- 
+                        <apex:inputTextarea value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;" />
+                         -->
+                         <!-- add lili
+                        <apex:inputField value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin--> 
+                        <span Id="textarea{!item.sortOrder}" isCmt="{!if(item.question.Question_Type__c='Comment', 'true', 'false')}">
+                        <apex:inputHidden value="{!item.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" id="theHiddenInput{!item.sortOrder}" name="theHiddenInput{!item.sortOrder}" value="{!item.answer.Answer_txt__c}"/>  -->
+                        </span>  
+                        <!-- add lili 2014.01.16 end-->                   
+                        </td>
+                        <td></td>
+                    </tr>
+                </apex:repeat>
+                <tr style="display:{!IF(list_overall.size>0, '', 'none')}">
+                    <td/>
+                    <td/>
+                    <td colspan="2"><hr class="line" width="100%" /></td>
+                </tr>
+                
+             
+                <!-- Technology -->
+                <apex:repeat value="{!list_technology}" var="item">
+                    <tr>               
+                        <td rowspan="{!spanTechnology}" style="display:{!IF(item.isFirst, '', 'none')}">
+                            <div class="{!IF(item.isFirst, 'bluediv', '')}" style="display:{!IF(item.isFirst, '', 'none')}">
+                                {!item.question.Category__c}
+                            </div>
+                        </td >
+
+                        <td>
+                            <div class="bluendiv">
+                                {!item.sortOrder}
+                            </div>
+                        </td>
+                        <td style="color:#0066CC;font-weight:bold;font-size:15px;" colspan="2">
+                            {!item.qString}&nbsp;&nbsp;
+                            <apex:outputLabel value="{!notAppLabel}" style="font-weight:bold" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                            <input type="checkbox" style="display:{!IF(item.question.Question_Type__c!='Comment', '', 'none')}" onclick="populateApplicable(this)"/>
+                            <apex:inputHidden value="{!item.answer.Not_Applicable__c}" rendered="{!item.question.Question_Type__c!='Comment'}"/>                              
+                        </td>                               
+                    </tr>                   
+                    <tr class="answerTitle" style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}">
+                        <td/>
+                        <td align="left">{!extremelySatisfiedLabel}</td>
+                        <td align="right">{!notSatisfiedLabel}</td>
+                    </tr>
+                    
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}" class="radioAnswer">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!item.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!item.theAnswer}" /></div>                                
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="display:{!map_order_disError[item.sortOrder]}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                    </tr>
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/>
+                        <td>
+                        <!-- add lili
+                        <apex:inputField value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin--> 
+                        <span Id="textarea{!item.sortOrder}" isCmt="{!if(item.question.Question_Type__c='Comment', 'true', 'false')}">
+                        	<apex:inputHidden value="{!item.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" name="theHiddenInput{!item.sortOrder}" id="theHiddenInput{!item.sortOrder}"  value="{!item.answer.Answer_txt__c}"/> -->
+                        
+                        </span>    
+                        <!-- add lili 2014.01.16 end-->  
+                        </td>                       
+                        <td></td>
+                    </tr>
+                </apex:repeat>              
+                <tr style="display:{!IF(list_technology.size>0, '', 'none')}">
+                    <td/>
+                    <td/>
+                    <td colspan="2"><hr class="line" width="100%" /></td>
+                </tr>
+                
+                                
+                <!-- Commercial -->
+                <apex:repeat value="{!list_commercial}" var="item">
+                    <tr>                        
+                        <td rowspan="{!spanCommercial}" style="display:{!IF(item.isFirst, '', 'none')}">
+                            <div class="{!IF(item.isFirst, 'orangediv', '')}" style="display:{!IF(item.isFirst, '', 'none')}">
+                                {!item.question.Category__c}
+                            </div>
+                        </td >
+
+                        <td>
+                            <div class="orangendiv">
+                                {!item.sortOrder}
+                            </div>
+                        </td>
+                        <td style="color:#0066CC;font-weight:bold;font-size:15px;">
+                            {!item.qString}&nbsp;&nbsp;
+                            <apex:outputLabel value="{!notAppLabel}" style="font-weight:bold" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                            <input type="checkbox" style="display:{!IF(item.question.Question_Type__c!='Comment', '', 'none')}" onclick="populateApplicable(this)"/>
+                            <apex:inputHidden value="{!item.answer.Not_Applicable__c}" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                        </td>                                
+                    </tr>                   
+                    <tr class="answerTitle" style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}">
+                        <td></td>
+                        <td align="left">{!extremelySatisfiedLabel}</td>
+                        <td align="right">{!notSatisfiedLabel}</td>
+                    </tr>
+                    
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}" class="radioAnswer">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!item.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!item.theAnswer}" /></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="display:{!map_order_disError[item.sortOrder]}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                    </tr>
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/>
+                        <td>
+                        <!-- add lili
+                        	<apex:inputField value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin-->  
+                        <span Id="textarea{!item.sortOrder}" isCmt="{!if(item.question.Question_Type__c='Comment', 'true', 'false')}">
+                        	<apex:inputHidden value="{!item.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" name="theHiddenInput{!item.sortOrder}" id="theHiddenInput{!item.sortOrder}"  value="{!item.answer.Answer_txt__c}"/> -->
+                        
+                        </span>   
+                        <!-- add lili 2014.01.16 end-->  
+                        </td>
+                        <td></td>
+                    </tr>
+                </apex:repeat>
+                <tr style="display:{!IF(list_commercial.size>0, '', 'none')}">
+                    <td/>
+                    <td/>
+                    <td colspan="2"><hr class="line" width="100%" /></td>
+                </tr>
+                
+                
+                <!-- Operation -->
+                <apex:repeat value="{!list_operations}" var="item">
+                    <tr>                        
+                        <td rowspan="{!spanOperations}" style="display:{!IF(item.isFirst, '', 'none')}">
+                            <div class="{!IF(item.isFirst, 'greendiv', '')}" style="display:{!IF(item.isFirst, '', 'none')}">
+                                {!item.question.Category__c}
+                            </div>
+                        </td >
+
+                        <td>
+                            <div class="greenndiv">
+                                {!item.sortOrder}
+                            </div>
+                        </td>
+                        <td style="color:#0066CC;font-weight:bold;font-size:15px;">
+                            {!item.qString}&nbsp;&nbsp;
+                            <apex:outputLabel value="{!notAppLabel}" style="font-weight:bold" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                            <input type="checkbox" style="display:{!IF(item.question.Question_Type__c!='Comment', '', 'none')}" onclick="populateApplicable(this)"/>
+                            <apex:inputHidden value="{!item.answer.Not_Applicable__c}" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                        </td>                                
+                    </tr>                   
+                    <tr class="answerTitle" style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}">
+                        <td></td>
+                        <td align="left">{!extremelySatisfiedLabel}</td>
+                        <td align="right">{!notSatisfiedLabel}</td>
+                    </tr>
+                    
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}" class="radioAnswer">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!item.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!item.theAnswer}" /></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="display:{!map_order_disError[item.sortOrder]}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                    </tr>
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/>
+                        <td>
+                        <!-- add lili
+                        <apex:inputField value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin-->
+                        <span Id="textarea{!item.sortOrder}" isCmt="{!if(item.question.Question_Type__c='Comment', 'true', 'false')}">
+                        	<apex:inputHidden value="{!item.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" name="theHiddenInput{!item.sortOrder}" id="theHiddenInput{!item.sortOrder}"  value="{!item.answer.Answer_txt__c}"/> -->
+                        
+                        </span>
+                        <!-- add lili 2014.01.16 end-->  
+                        </td>
+                        <td></td>
+                    </tr>
+                </apex:repeat>
+                <tr style="display:{!IF(list_operations.size>0, '', 'none')}">
+                    <td/>
+                    <td/>
+                    <td colspan="2"><hr class="line" width="100%" /></td>
+                </tr>               
+                
+                
+                <!--- Others -->
+                <apex:repeat value="{!list_others}" var="item">
+                    <tr>                        
+                        <td rowspan="{!spanOthers}" style="display:{!IF(item.isFirst, '', 'none')}"/>
+                        <td>
+                            <div class="greyndiv">
+                                {!item.sortOrder}
+                            </div>
+                        </td>
+                        <td style="color:#0066CC;font-weight:bold;font-size:15px;">
+                            {!item.qString}&nbsp;&nbsp;
+                            <apex:outputLabel value="{!notAppLabel}" style="font-weight:bold" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                            <input type="checkbox" style="display:{!IF(item.question.Question_Type__c!='Comment', '', 'none')}" onclick="populateApplicable(this)"/>
+                            <apex:inputHidden value="{!item.answer.Not_Applicable__c}" rendered="{!item.question.Question_Type__c!='Comment'}"/>
+                        </td>                                
+                    </tr>                   
+                    <tr class="answerTitle" style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}">
+                        <td></td>
+                        <td align="left">{!extremelySatisfiedLabel}</td>
+                        <td align="right">{!notSatisfiedLabel}</td>
+                    </tr>
+                    
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', 'none', '')}" class="radioAnswer">
+                        <td/>
+                        <td colspan="2" align="center">
+                            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                                <tr align="center" class="answerTableNumber">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td>{!num}</td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr align="center">
+                                    <apex:repeat value="{!list_radioItem}" var="num">
+                                        <td><input type="radio" name="score{!item.sortOrder}" value="{!num}" onclick="populateAnswer(this);"/></td>
+                                    </apex:repeat>
+                                    <td style="display:none">
+                                        <div class="selectedAnswer"><apex:inputHidden value="{!item.theAnswer}" /></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="display:{!map_order_disError[item.sortOrder]}">
+                        <td/>
+                        <td>
+                            <div class="errorMsg" ><strong>{!errorLabel}:</strong>{!valueRequireLabel}</div>
+                        </td>
+                    </tr>
+                    <tr style="display:{!IF(item.question.Question_Type__c='Comment', '', 'none')}">
+                        <td/>
+ 						<td>
+                        <!-- add lili
+                        <apex:inputField value="{!item.answer.Answer_txt__c}" rendered="{!item.question.Question_Type__c='Comment'}" style="margin: 2px; width: 375px; height: 96px;"/>
+                        -->
+                        <!-- add lili 2014.01.16 begin--> 
+                        <span Id="textarea{!item.sortOrder}" isCmt="{!if(item.question.Question_Type__c='Comment', 'true', 'false')}">
+                        <apex:inputHidden value="{!item.answer.Answer_txt__c}" /> 
+<!--                         	<input type="hidden" name="theHiddenInput{!item.sortOrder}" id="theHiddenInput{!item.sortOrder}"  value="{!item.answer.Answer_txt__c}"/> -->
+                        </span>   
+                        <!-- add lili 2014.01.16 end-->  
+                         
+                        </td>
+                        <td/>
+                    </tr>
+                </apex:repeat>          
+                <tr>
+                    <td colspan="4"><hr color="grey" width="100%" /></td>
+                </tr>
+                <tr>
+                    <td align="right"><apex:image url="{!$Resource.tyco_logo}"/></td>
+                </tr>
+                                
+            </table>   
+        </apex:pageBlock>       
+    </apex:form>
+    <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;display:none;background-color:#FFF;opacity:0.85;position:fixed;z-index:5000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');" title="Please Wait..."></div>
+</body>
+
+</apex:page>

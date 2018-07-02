@@ -1,0 +1,36 @@
+<apex:component layout="block" id="compfcpopup">
+
+
+<apex:attribute name="pageCtrl" type="CtrlGSMForecast" required="true" description="the root page controller reference" />
+    
+    <div id="popCmt" class="hide"></div>
+    <div id="popCtn" class="" style="display: none;">
+        <div class="titleLine">
+        		<span id="popTitle">{!$Label.FinancialPlan_Comment}</span>
+        		<div class="icon_close" onclick="clsPop();">&times;</div>
+		</div>
+        <div id="loadCtDiv"></div>
+        <div style="height: 410px; overflow: auto;">
+            <table id="rsmcmtid" class="hdfw" border="0" cellspacing="0" cellpadding="0" style="width: 100%;table-layout: fixed;">
+                    <thead>
+	                    <tr>
+	                        <th style="height: 25px;" class="pd pdtb pdtr tl border_b1">Region</th>
+	                        <th style="height: 25px;" class="pd pdtb pdtr tr border_b1">{!$Label.FinancialPlan_Value}</th>
+	                        <th style="height: 25px; padding-left: 10px;" class="pe pdtb tl border_b1">{!$Label.FinancialPlan_Comment}</th>
+	                    </tr>
+                    </thead>
+                <tbody id="commentBodyId">
+					<apex:repeat var="item" value="{!pageCtrl.RSMComments}">
+                		<tr>
+						<td class="tl">{!item.region}</td>
+						<td class="tr">{!item.value}</td>
+						<td style=" padding-left: 10px;" class="tl">{!item.comment}</td>
+                		</tr>
+    					</apex:repeat>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+</apex:component>

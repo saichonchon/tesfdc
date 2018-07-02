@@ -1,0 +1,68 @@
+<apex:component id="langComp">
+	<apex:attribute name="pageCtrl" type="CtrlPMVCustomSettings" required="true" description="the root page controller reference" />
+	<div>					
+		<center>
+        	<input type="button" value="{!$Label.PMV_team_btn_new}" class="new_btn btn" onclick="showNewDiv(this, 'language');" />
+        </center>
+        <div id="LanguagePanel" style="overflow:auto; width:1200px;max-height:500px">
+        
+            <table class="parentTable itb-table-style-01" id="lang_table">
+                <thead>
+                	<th class="actionColumn"><span>{!$Label.PMV_Setting_Label_Action}</span></th>
+                	<th><span>{!$ObjectType.PMV_Language_Config__c.fields.Name.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Language_Config__c.fields.Language__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Language_Config__c.fields.Active__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Language_Config__c.fields.Question_text_field__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Language_Config__c.fields.Help_text_field__c.label}</span></th>
+                </thead>
+                <tbody>
+                	<apex:repeat value="{!pageCtrl.listLCs}" var="lang">
+                		<tr>
+                			<td class="actionColumn">
+                				<a onclick="editRecord(this, 'language');" class="edit" data-rid="{!lang.Id}">{!$Label.PMV_team_btn_edit}</a>
+                				&nbsp;|&nbsp;
+                				<a onclick="if(confirm('{!$Label.PMV_Setting_Delete_Message}')){deleteRecord(this, 'language');}" class="del" data-rid="{!lang.Id}">{!$Label.PMV_team_btn_del}</a>
+                			</td>
+                			<td>{!lang.Name}</td>
+                			<td>{!lang.Language}</td>
+                			<td>{!lang.Active}</td>
+                			<td>{!lang.Question_text_field}</td>
+                			<td>{!lang.Help_text_field}</td>
+                		</tr>
+                	</apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        <div class="hideClass langNewEditDiv">
+        	<apex:pageMessages id="pageMessage"/>
+        	<center class="btnCenter">
+        		<input type="button" class="btn" onclick="saveRecord('language');" value="{!$Label.PMV_team_button_save}"/>
+        		<input type="button" class="btn" onclick="cancel('langNewEditDiv');" value="{!$Label.PMV_team_button_cancel}"/>
+        	</center>
+        	<apex:pageblockSection title="{!$Label.PMV_Setting_General_Infomation}">
+	        	<apex:pageblocksectionItem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Language_Config__c.fields.Language__c.label}"/>
+        			<apex:selectList value="{!pageCtrl.entryLanguageConfig.Name}" size="1">
+            			<apex:selectOptions value="{!pageCtrl.LanguageConfigName}"/>
+        			</apex:selectList>
+        		</apex:pageblocksectionItem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Language_Config__c.fields.Active__c.label}"/>
+        			<apex:inputCheckbox value="{!pageCtrl.entryLanguageConfig.Active}"/>
+        		</apex:pageblocksectionitem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Language_Config__c.fields.Question_text_field__c.label}"/>
+        			<apex:selectList value="{!pageCtrl.entryLanguageConfig.Question_text_field}"  size="1">
+            			<apex:selectOptions value="{!pageCtrl.Questiontextfield}"/>
+        			</apex:selectList>
+        		</apex:pageblocksectionitem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Language_Config__c.fields.Help_text_field__c.label}"/>
+        			<apex:selectList value="{!pageCtrl.entryLanguageConfig.Help_text_field}"  size="1">
+            			<apex:selectOptions value="{!pageCtrl.Helptextfield}"/>
+        			</apex:selectList>
+        		</apex:pageblocksectionitem>	
+        	</apex:pageblockSection>
+        </div>
+	</div>
+</apex:component>

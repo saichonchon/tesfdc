@@ -1,0 +1,21 @@
+<apex:component layout="none">
+
+
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	<apex:attribute name="listData" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listColumns" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listDate" type="List" required="false" description="the root page controller reference" />
+	
+
+	<apex:repeat var="level" value="{!listData}">
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!listColumns}">
+		<tr class="{!if(rowNum = 0, ' v1', ' dn ')} rlevel1" data-id="{!level['id']}">
+			<apex:repeat var="fd" value="{!listDate}">
+	        <td class="  {!if(fd['isFutrue'], 'td_input', '')} " data-old="{!level['csFC'][fd['mLabel']]}" data-pmfc="{!if(fd['isInput'],level['pmFC'][fd['mLabel']], '')}" data-dcfc="{!if(fd['isInput'], level['dcFC'][fd['mLabel']], '')}"></td>
+	        </apex:repeat>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+</apex:component>

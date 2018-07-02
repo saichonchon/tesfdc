@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CAMPAIGN_NAME</field>
+    </columns>
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>Contact.NPS_Status__c</field>
+    </columns>
+    <columns>
+        <field>Contact.NPS_Score__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>contains a list of all NPS survey (Dec&apos;14) where status = not responsed and Score &gt; 0</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact.NPS_Score__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Contact.NPS_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>No-Response</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>NPS No-Response with NPS Score &gt; 0</name>
+    <params>
+        <name>scopeid</name>
+        <value>701E0000000jESH</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CampaignContact</reportType>
+    <scope>one</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Contact.NPS_Status__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+</Report>

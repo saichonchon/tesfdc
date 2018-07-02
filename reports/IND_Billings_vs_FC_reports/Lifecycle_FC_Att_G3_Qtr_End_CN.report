@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>IF(
+Forecast_Snapshot__c.Amount__c.CONVERT:SUM &gt;0,
+
+Forecast_Billing__c.Amount__c.CONVERT:SUM / Forecast_Snapshot__c.Amount__c.CONVERT:SUM, 0)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>% Billings achieved</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>GRAND_SUMMARY</acrossGroupingContext>
+        <calculatedFormula>(Forecast_Billing__c.Amount__c.CONVERT:SUM / Forecast_Billing__c.Load_Status__c.Current_Fiscal_Working_Day_in_Year__c:MAX)*260</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Run Rate</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>GRAND_SUMMARY</acrossGroupingContext>
+        <calculatedFormula>IF(
+Forecast_Snapshot__c.Amount__c.CONVERT:SUM &gt;0,
+
+(
+(Forecast_Billing__c.Amount__c.CONVERT:SUM / Forecast_Billing__c.Load_Status__c.Current_Fiscal_Working_Day_in_Year__c:MAX)*260
+)
+ / Forecast_Snapshot__c.Amount__c.CONVERT:SUM, 0)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Run Rate %</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Opportunities.Forecast_Snapshots__r$Fiscal_Quarter__c</acrossGroupingContext>
+        <calculatedFormula>IF(
+Forecast_Billing__c.Amount__c.CONVERT:SUM&gt;0,
+((Forecast_Billing__c.Amount__c.CONVERT:SUM / Forecast_Billing__c.Load_Status__c.Current_Fiscal_Working_Day_in_Quarter__c:MAX)*65),0)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA4</developerName>
+        <downGroupingContext>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Run Rate Quarter</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Opportunities.Forecast_Snapshots__r$Fiscal_Quarter__c</acrossGroupingContext>
+        <calculatedFormula>IF(
+Forecast_Billing__c.Amount__c.CONVERT:SUM&gt;0,
+
+(
+(Forecast_Billing__c.Amount__c.CONVERT:SUM / Forecast_Billing__c.Load_Status__c.Current_Fiscal_Working_Day_in_Quarter__c:MAX)*65
+)
+ / Forecast_Snapshot__c.Amount__c.CONVERT:SUM, 0)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA5</developerName>
+        <downGroupingContext>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Run Rate Quarter %</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <colorRanges>
+        <columnName>FORMULA1</columnName>
+        <highBreakpoint>60.0</highBreakpoint>
+        <highColor>#54C254</highColor>
+        <lowBreakpoint>30.0</lowBreakpoint>
+        <lowColor>#C25454</lowColor>
+        <midColor>#C2C254</midColor>
+    </colorRanges>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities.Forecast_Snapshots__r$Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities.Forecast_Snapshots__r.Forecast_Billings1__r$Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Forecast_Snapshots__r.Forecast_Billings1__r$Date__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$PLM_Id__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Forecast_Snapshots__r$Part__c.Part__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Region_Design__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$PLM_Project_Leverage__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$PLM_Project_Complexity__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>((1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7 AND ((8 AND 9) OR (10 AND 11))) AND (12 OR (13 AND 14))) AND 15</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities$Opportunity_Group__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Engineering,Platform</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r.Forecast_Billings1__r$Opportunity_Part__c.Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C,IB,Rail,Solar</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r.Forecast_Billings1__r$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Forecast_Billing__c.Engineering</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$PLM_Id__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_N_FISCAL_YEARS:2,LAST_N_FISCAL_QUARTERS:3</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Snapshot_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Won_Date_Formula_del__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>9/27/2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Won_Date_Formula_del__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>9/29/2017</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Won_Date_G3_Reporting__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>9/27/2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Won_Date_G3_Reporting__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>9/29/2017</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Part__c.RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Opportunity_Part__c.Sales_Parts</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Part__c.RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Opportunity_Part__c.Sales_Parts</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Forecast_Snapshots__r$Part_PLMID_matches_Opp_PLMID__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Greater China</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Forecast_Snapshots__r$Fiscal_Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Forecast_Snapshots__r$Fiscal_Quarter__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Forecast_Snapshots__r$BU_Profit_Center__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Lifecycle FC Att. G3 Qtr End CN</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Opps_with_accounts_Snapshots_and_FC_Billings__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Forecast_Snapshots__r$Won_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

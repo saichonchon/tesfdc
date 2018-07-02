@@ -1,0 +1,168 @@
+<aura:component >
+	
+    <aura:attribute name="levelType" type="String" />
+    <aura:attribute name="uniqueId" type="String" />
+    <aura:attribute name="isExp" type="Boolean" />
+    <aura:attribute name="isBom" type="Boolean" />
+	<aura:attribute name="isAPL" type="Boolean" />
+	<aura:attribute name="colspan" type="Integer" default="5"/>
+	
+	<tr class="{!if(v.isExp, (v.isBom ? v.uniqueId : 'custom-display-none '+v.uniqueId), 'custom-display-none '+v.uniqueId)}">
+		<th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr ">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Quantity</span>
+            </span>
+        </th>
+    </tr>
+    <!-- START Yearly -->
+    <aura:If isTrue="{!v.levelType == 'Yearly'}">
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+		<th colspan="{!v.colspan}" class=" "></th>
+        <th class=" custom-text_ar custom-border-lr custom-border-b custom-color_year">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Year Qty</span>
+            </span>
+        </th>
+    </tr>
+    </aura:If>
+    <!-- END Yearly -->
+    
+    <!-- START Quarterly -->
+    <aura:If isTrue="{!v.levelType == 'Quarterly'}">
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+		<th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_fq1">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">FQ1 Qty.</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+		<th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_fq2">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">FQ2 Qty.</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+		<th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_fq3">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FQ3 Qty.</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class="custom-border-b"></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_fq4">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FQ4 Qty.</span>
+            </span>
+        </th>
+    </tr>
+    </aura:If>
+    <!-- END Quarterly -->
+    
+    <!-- START Monthly -->
+    <aura:If isTrue="{!v.levelType == 'Monthly'}">
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_oct">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">FM01 Oct</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_nov">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">FM02 Nov</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_dec">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM03 Dec</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_jan">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM04 Jan</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar  custom-border-lr custom-color_feb">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM05 Feb</span>
+            </span>
+        </th>
+    </tr>
+	<tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_mar">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM06 Mar</span>
+            </span>
+        </th>
+    </tr>
+	<tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_apr">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM07 Apr</span>
+            </span>
+        </th>
+    </tr>       
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_may">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM08 May</span>
+            </span>
+        </th>
+    </tr>
+	<tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_jun">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM09 Jun</span>
+            </span>
+        </th>
+    </tr>
+	<tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar  custom-border-lr custom-color_jul">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM10 Jul</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class=" "></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_aug">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM11 Aug</span>
+            </span>
+        </th>
+    </tr>
+    <tr class="{!(v.isExp ? v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <th colspan="{!v.colspan}" class="custom-border-b"></th>
+        <th class="custom-border-b custom-text_ar custom-border-lr custom-color_sep">
+            <span class=" slds-grid--align-spread">
+                <span class="slds-truncate">FM12 Sep</span>
+            </span>
+        </th>
+    </tr>    
+    </aura:If>
+    <!-- END Monthly -->
+</aura:component>

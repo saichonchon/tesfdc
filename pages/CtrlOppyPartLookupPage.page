@@ -1,0 +1,222 @@
+<apex:page docType="html-5.0" controller="CtrlOppyPartLookupPage" sidebar="false" showheader="false" id="page">
+     <head>
+    <system.webServer>
+       <httpProtocol>
+            <customHeaders>
+             <clear />
+             <add name="X-UA-Compatible" value="IE=edge, chrome=1" />
+            </customHeaders>
+       </httpProtocol>
+      </system.webServer>
+      <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+    </head>
+    <script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script>
+     <!-- Prabhanjan: 01-June-2015 : Adding one more field to identify available for TAM? -->
+        function fillIn(id,inputId, field, status) {
+           		 
+            // console.log("id="+id+"-inputId="+inputId+"-field="+field+"-status="+status);
+            
+            var isclose = true;
+            var reason = "";
+            var reasonText = "";
+            var TAMselected = false;
+            if(status=='Won'){
+                reason = document.getElementById("page:form:pageBlock:wonreason").value;
+                
+                }
+            else {
+                 	reason = document.getElementById(id).value; 
+                     
+                    TAMselected =  document.getElementById("page:form:pageBlock:tam").checked; 
+                    if(document.getElementById(id+'Text') != null){
+                        reasonText = document.getElementById(id+'Text').value;
+                    }
+                }
+             
+            if(reason == ''){
+                isclose = false;
+                alert("error: You must select one won/ lost reason here");
+                return;
+            }
+            //added by weihang 2013-05-28
+            var competitor = document.getElementById(inputId);
+            if(competitor != null){
+                if(competitor.value == ''){
+                    isclose = false;
+                    alert("error: You must select one Competitor here");
+                    return;
+                }
+            }
+            //added by weihang 2013-05-28 end
+            if(reason == 'Other' && reasonText == ''){
+                isclose = false;
+                alert("error: You must specify the other reason");
+            }
+            //Prabhanjan Checking the shipset value
+             if("{!isADM}"=='true'){
+                 var ssperc= document.getElementById("page:form:pageBlock:SSPerc");
+                 if(ssperc!=null){
+                     if(isNaN(ssperc.value)==true || ssperc.value<=0 || ssperc.value>100  ){ 
+                         isclose = false;
+                         alert("error: Please Populate TE Shipset Percentage, It should be between 0 and 100!");
+                     }
+                 }
+            }
+            // Prabhanjan 2015-06-09 adding won status for dnd
+            if(status == 'Lost' || status == 'Won' ){  
+                 
+                var inputCompetitor;
+                var competitorId = '';
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                if(document.getElementById(id + 'Competitor_lkid').value == parent.document.getElementById(field+'ReasonCompetitor').value){                        
+                    inputCompetitor = document.getElementById(id + 'Competitor').value;
+                    competitorId = sforce.apex.execute("CtrlOppyPartLookupPage","competitorValid",
+                    {
+                        competitor: inputCompetitor
+                    });
+                    if(competitorId == ''){
+                        isclose = false;
+                        alert("error: The competitor does not exist");
+                    }
+                    else {
+                        if(competitorId != 'Duplicate'){
+                            document.getElementById(id + 'Competitor_lkid').value = competitorId;
+                        }                       
+                    }                   
+                }
+            }
+                        
+            if(isclose){
+                
+                //Prabhanjan - adding the won reason back to its hidden parent field
+                if(status == 'Won'){      
+                	parent.document.getElementById(field+'WonReason').value = reason;
+                }
+                else{
+                    parent.document.getElementById(field+'Reason').value = reason; 
+                }
+                parent.document.getElementById(field+'ReasonText').value = reasonText;
+                parent.document.getElementById(field+'TAMchk').checked = TAMselected;
+              
+                 
+                if(status == 'Lost'||status == 'Won'){                   
+                    parent.document.getElementById(field+'ReasonCompetitor').value = document.getElementById(id + 'Competitor_lkid').value;
+                     
+                }
+                else{
+                    parent.document.getElementById(field+'ReasonCompetitor').value = '';    
+                }
+                
+				if(status=='Won'&& "{!isADM}"=='true'){ 
+                    parent.document.getElementById(field+"SSPerc").value = document.getElementById("page:form:pageBlock:SSPerc").value;   //Prabhanjan: Adding the value back to page
+                }
+                
+                parent.onConfidenceSelect();
+                parent.document.getElementById(field+'OldStatus').value = status;
+                parent.closePopUp();
+            }           
+        }
+
+        function cancelUpdate(field) {
+            //parent.document.getElementById(field).value = parent.document.getElementById(field+'OldStatus').value;
+            parent.resumeSel(field);
+            parent.closePopUp();
+        }   
+        
+        function showReasonText(reason, id) {
+            if (reason == 'Other') {
+                document.getElementById('otherTr').style.display='';
+            }
+            else{
+                document.getElementById('otherTr').style.display='none';
+                document.getElementById(id +'Text').value ='';
+            }
+        }   
+        
+        function hideLoading(){
+            parent.document.getElementById('loading').style.display = "none";
+        }
+        hideLoading();      
+    </script>
+    <apex:messages />
+    <apex:form id="form">       
+        <apex:actionStatus startText=" Loading... " stopText="" id="statusSave">
+            <apex:facet name="start">
+                <img class="deployingImg" src="/changemgmt/img/spinner24.gif" />            
+            </apex:facet>
+        </apex:actionStatus>    
+        <apex:pageBlock mode="maindetail" id="pageBlock">
+            <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+                <tr >
+                    <td colspan="4" align="left" style="font-weight:bold; font-size:16px;"><apex:outputLabel value="{!$Label.Reason_Title}:"/></td>
+                </tr>
+                <tr>
+                    <apex:outputPanel rendered="{!IF((status!='Won'), True,False)}">
+                    
+                        <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason__c.Label}"/></td>
+                        <td class="dataCol">
+                            <apex:inputField value="{!part.Status__c}" id="status" style="display:none"/>
+                            
+                            <apex:inputField value="{!part.Lost_Reason__c}" id="reason" onchange="showReasonText(this.value, this.id);" required="true"/>      <br/> 
+                               
+                        </td> 
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF((status='Won'), True,False)}">
+                    	
+                        <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Won_Reason__c.Label}"/></td>
+                        <td class="dataCol">  
+                            <apex:inputField value="{!part.Won_Reason__c}" id="wonreason" onchange="showReasonText(this.value, this.id);" required="true"/>      <br/> 
+                               
+                        </td> 
+                    </apex:outputPanel>
+                    
+                    <!-- Prabhanjan 2015-06-09  adding Won status -->
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Competitor__c.Label}" style="font-weight:bold;vertical-align:top;" rendered="{!IF((status='Lost'|| status='Won'), True,False)}"/></td>
+                    <td class="dataCol"><apex:inputField value="{!part.Competitor__c}" rendered="{!IF((status='Lost'|| status='Won'), True,False)}" id="reasonCompetitor" required="{!IF((status='Lost'|| status='Won'), True,False)}"/>
+                        <p Style="display:{!IF((status='Lost'|| status='Won'), '','none')};color:red;">
+                            {!$Label.OppyPartLookUpInformation}
+                        </p>
+                    </td> 
+                </tr>
+                 <!-- Prabhanjan: 01-June-2015 : Adding one more field to identify available for TAM? -->
+                <apex:outputPanel rendered="{!IF((status!='Won'), True,False)}">
+                <tr>
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Available_for_TAM__c.Label}"/></td>
+                    <td class="dataCol"> 
+                         <apex:inputCheckbox value="{!part.Available_for_TAM__c}" id="tam"/>  
+                    </td>   
+                </tr>
+                </apex:outputPanel> 
+                 <!-- Prabhanjan: 2016-11-04 : Adding one field for ADM -->
+                <apex:outputPanel rendered="{!IF((status=='Won' && isADM=='true'), True,False)}">
+                <tr>
+                    <td class="labelCol"><apex:outputLabel value="TE Shipset Percentage"/></td>
+                    <td class="dataCol"> 
+                        <div class="requiredInput"><div class="requiredBlock"></div>
+                            <apex:inputText value="{!part.ADM_TE_Shipset_Percentage__c}" id="SSPerc" required="true" />  
+                        </div>
+                    </td>   
+                </tr>
+                </apex:outputPanel> 
+                <tr Style="display:{!IF(part.Lost_Reason__c =='Other', '','none')};" id="otherTr">
+                    <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Lost_Reason_Text__c.Label}" id="reasonTextLabel"/></td>
+                    <td class="dataCol" colspan="3" >
+                        <apex:outputPanel styleClass="requiredInput" layout="block" >
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:inputTextArea value="{!part.Lost_Reason_Text__c}" id="reasonText" style="width:95%"/> 
+                        </apex:outputPanel>
+                    </td>
+                </tr>               
+            </table>
+            <br/>
+            <div style="width:100%;text-align:center;">
+<!--                <input type="button" value="OK" class="btn" onclick="fillIn('{!$Component.reason}','{!field}', '{!status}');return false;"/>-->
+                <input type="button" value="OK" class="btn" onclick="fillIn('{!$Component.reason}','{!$Component.reasonCompetitor}','{!field}', '{!status}');return false;"/>
+                <input type="button" value="Cancel" class="btn" onclick="cancelUpdate('{!field}');"/>   
+            </div>          
+        </apex:pageBlock>       
+    </apex:form>
+</apex:page>

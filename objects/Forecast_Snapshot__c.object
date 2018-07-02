@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This custom object is used to snapshot opportunity and part forecasting values.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BU_Profit_Center_Snapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>BU Profit Center Snapshot</label>
+        <length>16</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BU_Profit_Center__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.BU_profit_center__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>BU Profit Center</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloseDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Close Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Conversion_Age__c</fullName>
+        <externalId>false</externalId>
+        <formula>DATEVALUE ( CreatedDate ) - (Won_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Conversion Age</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Converted_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+Process_Status__c ,
+&apos;Production&apos;, Amount__c ,
+&apos;Ramp-down&apos;, Amount__c ,
+&apos;EOL&apos;, Amount__c ,
+0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Converted Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Count_Conversion__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Count Conversion</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Count_Pipeline__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Count Pipeline</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Days_since_last_user_update__c</fullName>
+        <externalId>false</externalId>
+        <label>Days since last user update</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Direct_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Direct Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>FY13_BR_value__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(CurrencyIsoCode)=&apos;EUR&apos;, (Amount__c  * 1.25), 
+IF(TEXT(CurrencyIsoCode)=&apos;JPY&apos;, (Amount__c  * 0.01266),
+IF(TEXT(CurrencyIsoCode)=&apos;CNY&apos;, (Amount__c  * 0.15723),
+IF(TEXT(CurrencyIsoCode)=&apos;EGP&apos;, (Amount__c  * 0.165), 
+IF(TEXT(CurrencyIsoCode)=&apos;CHF&apos;, (Amount__c  * 1.0345),
+IF(TEXT(CurrencyIsoCode)=&apos;PLN&apos;, (Amount__c  * 0.2893),
+IF(TEXT(CurrencyIsoCode)=&apos;NZD&apos;, (Amount__c  * 0.7863),
+IF(TEXT(CurrencyIsoCode)=&apos;AUD&apos;, (Amount__c  * 1.0026),
+IF(TEXT(CurrencyIsoCode)=&apos;CAD&apos;, (Amount__c  * 0.9674), 
+IF(TEXT(CurrencyIsoCode)=&apos;CZK&apos;, (Amount__c  * 0.04816),
+IF(TEXT(CurrencyIsoCode)=&apos;DKK&apos;, (Amount__c  * 0.1672),
+IF(TEXT(CurrencyIsoCode)=&apos;GBP&apos;, (Amount__c  * 1.5507), 
+IF(TEXT(CurrencyIsoCode)=&apos;HUF&apos;, (Amount__c  * 0.00429),
+IF(TEXT(CurrencyIsoCode)=&apos;INR&apos;, (Amount__c  * 0.01751),
+IF(TEXT(CurrencyIsoCode)=&apos;KRW&apos;, (Amount__c  * 0.00086), 
+IF(TEXT(CurrencyIsoCode)=&apos;MYR&apos;, (Amount__c  * 0.3129),
+IF(TEXT(CurrencyIsoCode)=&apos;TWD&apos;, (Amount__c  * 0.0334),
+Amount__c
+)))))))))))))))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>FY13 BR value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <label>Fiscal Quarter</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fiscal_Year__c &amp; &quot;-&quot; &amp; Fiscal_Quarter__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Year Quarter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Fiscal Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Forecast_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Forecast Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Forecast_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup to User object to store the Forecast Owner.</description>
+        <externalId>false</externalId>
+        <label>Forecast Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Forecast_Snapshots</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Fulfillment_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>LEFT(IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Americas&quot;), &quot;Americas&quot; + &quot;,&quot;, NULL)  +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;China&quot;), &quot;China&quot;+ &quot;,&quot;, NULL)  +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;EMEA&quot;), &quot;EMEA&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Japan&quot;), &quot;Japan&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Korea&quot;), &quot;Korea&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;South Asia (Pacific)&quot;), &quot;South Asia (Pacific)&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Taiwan&quot;), &quot;Taiwan,&quot;,  NULL),LEN(IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Americas&quot;), &quot;Americas&quot; + &quot;,&quot;, NULL)  +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;China&quot;), &quot;China&quot;+ &quot;,&quot;, NULL)  +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;EMEA&quot;), &quot;EMEA&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Japan&quot;), &quot;Japan&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Korea&quot;), &quot;Korea&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;South Asia (Pacific)&quot;), &quot;South Asia (Pacific)&quot; + &quot;,&quot;, NULL) +
+IF(INCLUDES( Opportunity__r.Fulfillment_Region__c , &quot;Taiwan&quot;), &quot;Taiwan,&quot;,  NULL))-1)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fulfillment Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Massproduction_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Mass production date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>New_Business_Amount__c</fullName>
+        <description>APL used to calculate new business amount</description>
+        <externalId>false</externalId>
+        <formula>Amount__c * Opportunity__r.New_Business_Percentage_Numberical__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Business Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Open_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+Process_Status__c ,
+&apos;Concept&apos;, Amount__c ,
+&apos;Demo&apos;, Amount__c ,
+&apos;Designed&apos;, Amount__c ,
+&apos;Prototyped/Sampled&apos;, Amount__c ,
+&apos;Quoted&apos;, Amount__c ,
+&apos;Pre-prod&apos;, Amount__c ,
+0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Open Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Oportunity_age_days__c</fullName>
+        <externalId>false</externalId>
+        <formula>DATEVALUE ( CreatedDate ) - DATEVALUE(  Opportunity__r.CreatedDate  )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oportunity age (days)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity ID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Owner_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity Owner Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Stage__c</fullName>
+        <description>This field contains the Opportunity stage of snapshot.</description>
+        <externalId>false</externalId>
+        <label>Opportunity Stage</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>In Approval</fullName>
+                    <default>false</default>
+                    <label>In Approval</label>
+                </value>
+                <value>
+                    <fullName>Mass-prod</fullName>
+                    <default>false</default>
+                    <label>Mass-prod</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <description>Master-Detail Relationship to Opportunity.</description>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Forecast Snapshots</relationshipLabel>
+        <relationshipName>Forecast_Snapshots</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Orignal_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( Opportunity__r.Original_Region__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Orignal Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PLMID__c</fullName>
+        <externalId>false</externalId>
+        <label>PLM ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>POS_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Part_Confidence__c</fullName>
+        <description>This field contains the confidence of related part.</description>
+        <externalId>false</externalId>
+        <label>Part Confidence</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_PLMID_matches_Opp_PLMID__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Opportunity__r.PLM_Id__c = Part__r.PLM_ID__c , true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part PLMID matches Opp PLMID</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Part_Won_Fiscal_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <label>Part Won Fiscal Quarter</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Won_Fiscal_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Part Won Fiscal Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup Relationship to Opportunity Part.</description>
+        <externalId>false</externalId>
+        <label>Part</label>
+        <referenceTo>Opportunity_Part__c</referenceTo>
+        <relationshipLabel>Forecast Snapshots</relationshipLabel>
+        <relationshipName>Forecast_Snapshots</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Pipeline_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AND(Date__c &gt; DATEVALUE(CreatedDate), Date__c &lt;  DATEVALUE(CreatedDate) + 350), &quot;1&quot;, &quot;0&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Pipeline Indicator</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Pipeline_Value__c</fullName>
+        <description>calculated pipeline value (4qtr. sroling for the record)</description>
+        <externalId>false</externalId>
+        <label>Pipeline Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Probability__c</fullName>
+        <externalId>false</externalId>
+        <label>Probability</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Process_Status__c</fullName>
+        <description>This field contains the process status of the related oppy part.</description>
+        <externalId>false</externalId>
+        <label>Process Status</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProvideQuotation_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Provide Quotation date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <externalId>false</externalId>
+        <label>Quantity</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuotationDue_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Quotation Due Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>QuotationRequest_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Quotation Request Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>S_OP__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>S&amp;OP</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Sales_Price__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Snapshot_Type__c</fullName>
+        <description>This field shows out of which snapshot the record was created.</description>
+        <externalId>false</externalId>
+        <label>Snapshot Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Monthly</fullName>
+                    <default>false</default>
+                    <label>Monthly</label>
+                </value>
+                <value>
+                    <fullName>Approval</fullName>
+                    <default>false</default>
+                    <label>Approval</label>
+                </value>
+                <value>
+                    <fullName>Production</fullName>
+                    <default>false</default>
+                    <label>Production</label>
+                </value>
+                <value>
+                    <fullName>FY13 final</fullName>
+                    <default>false</default>
+                    <label>FY13 final</label>
+                </value>
+                <value>
+                    <fullName>FY14 Final</fullName>
+                    <default>false</default>
+                    <label>FY14 Final</label>
+                </value>
+                <value>
+                    <fullName>Won</fullName>
+                    <default>false</default>
+                    <label>Won</label>
+                </value>
+                <value>
+                    <fullName>FY15 Final</fullName>
+                    <default>false</default>
+                    <label>FY15 Final</label>
+                </value>
+                <value>
+                    <fullName>FY 16 Final</fullName>
+                    <default>false</default>
+                    <label>FY 16 Final</label>
+                </value>
+                <value>
+                    <fullName>FY17 Final</fullName>
+                    <default>false</default>
+                    <label>FY17 Final</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Timestamp__c</fullName>
+        <description>This field contains the Created Date of Forecasting record.</description>
+        <externalId>false</externalId>
+        <label>Timestamp</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>TwoYears_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Two Years Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Won_Date_Formula_del__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Won_Date__c</formula>
+        <label>Won Date Formula</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Won_Date__c</fullName>
+        <description>This field contains the Won Date of the related Oppy Part.</description>
+        <externalId>false</externalId>
+        <label>Won Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Forecast Snapshot</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Date__c</columns>
+        <columns>Snapshot_Type__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Opportunity__c</field>
+            <operation>equals</operation>
+            <value>al migdaf</value>
+        </filters>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>FS-{000000}</displayFormat>
+        <label>Forecast Snapshot</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Forecast Snapshots</pluralLabel>
+    <recordTypes>
+        <fullName>Opportunity</fullName>
+        <active>true</active>
+        <label>Opportunity</label>
+        <picklistValues>
+            <picklist>Opportunity_Stage__c</picklist>
+            <values>
+                <fullName>In Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mass-prod</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Snapshot_Type__c</picklist>
+            <values>
+                <fullName>Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FY13 final</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Production</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Won</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Part</fullName>
+        <active>true</active>
+        <label>Part</label>
+        <picklistValues>
+            <picklist>Opportunity_Stage__c</picklist>
+            <values>
+                <fullName>In Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mass-prod</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Snapshot_Type__c</picklist>
+            <values>
+                <fullName>Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FY 16 Final</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FY13 final</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FY15 Final</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Production</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Won</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

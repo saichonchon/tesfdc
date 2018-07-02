@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Answer__c.Promotor_Count__c:SUM /RowCount -Answer__c.Detractor_Count__c:SUM/RowCount</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>NPS Calculation</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>RowCount</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>record count</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Contacts.Answers__r$Survey_date__c</acrossGroupingContext>
+        <calculatedFormula>(Answer__c.Promotor_Count__c:SUM+
+PREVGROUPVAL (Answer__c.Promotor_Count__c:SUM, Answer__c.Survey_date__c,1)+
+PREVGROUPVAL(Answer__c.Promotor_Count__c:SUM, Answer__c.Survey_date__c,2))
+/
+(RowCount+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,1)+
+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,2))
+-(Answer__c.Detractor_Count__c:SUM+PREVGROUPVAL(Answer__c.Detractor_Count__c:SUM, Answer__c.Survey_date__c,1)+PREVGROUPVAL(Answer__c.Detractor_Count__c:SUM, Answer__c.Survey_date__c,2))
+/
+(RowCount+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,1)+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,2))</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>3 month rolling</description>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>Account.Contacts.Answers__r$Question_Short_Name__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3 month rolling</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_58913515</developerName>
+        <masterLabel>IND GAM NAME</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account$GAMDESC__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Bosch (Auto)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Celestica</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Delphi</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>ECI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Electrolux</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Emerson</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Fiat</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>GE Industrial</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Haier</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Hitachi</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Ingersoll-Rand Co</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Komatsu</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>LG Electronics Appl</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Liebherr</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Matsushita/Panasonic</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>UTC Commercial</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>VW</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Whirlpool</sourceValue>
+            </sourceValues>
+            <value>NON IND GAM</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Contacts.Answers__r$Detractor_Count__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Contacts.Answers__r$Promotor_Count__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>IND NPS EMEA by A-accounts</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Campaign_Name__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>IND</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Answer__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Campaign_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>completed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_58913515</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>,non ind gam</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMEA</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>Account.Contacts.Answers__r$Survey_date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_58913515</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Contacts.Answers__r$Question_Short_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND NPS EMEA by A-accounts Myriam</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_NPS_accounts_contacts_Answers_chatter__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Contacts.Answers__r$Survey_date__c</dateColumn>
+        <endDate>2015-09-25</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2012-09-28</startDate>
+    </timeFrameFilter>
+</Report>

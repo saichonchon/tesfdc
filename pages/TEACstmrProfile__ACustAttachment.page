@@ -1,0 +1,74 @@
+<apex:page controller="TEACstmrProfile.ACustomerAttachmentController">
+    <apex:sectionHeader title="Attach File to A Customer Profile {!ParentName}"/>
+    <apex:pageBlock mode="edit">
+        <apex:form >
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>1. Select the File</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;Type the path of the file or click the Browse button to find the file.</apex:outputText>
+            <div class="errorMsg" >
+                 &nbsp;&nbsp;&nbsp;The maximum file size to upload is 3mb.
+            </div>
+            <apex:pageblockSectionitem >
+                <apex:outputText >File</apex:outputText>
+                <apex:inputFile fileName="{!AttachmentName}" value="{!Att.Body}"  style="width:500px" ></apex:inputFile>
+            </apex:pageblockSectionitem>
+            <apex:outputPanel rendered="{!Error}">
+                <div class="errorMsg" >
+                    <strong>Error:</strong>
+                    Please specify a file to upload. Type in the path to the file, or use the "Browse" button to locate it in your local filesystem. The maximum file size to upload is 3mb.
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!ErrorTwo}">
+                <div class="errorMsg" >
+                <strong>Error:</strong>
+                Cannot upload file named Logo.jpg or VoiceOverview.wav. Please change the file name and try again.
+                </div>
+            </apex:outputPanel>
+            <apex:inputField required="true" value="{!ACustomerAttachment.TEACstmrProfile__Title__c}" style="width:220px"/>
+            <apex:inputField required="true" value="{!ACustomerAttachment.TEACstmrProfile__Author__c}" style="width:220px"/>
+            <apex:inputField required="true" value="{!ACustomerAttachment.TEACstmrProfile__Description__c}" style="width:500px"/>
+            <apex:inputField value="{!ACustomerAttachment.TEACstmrProfile__Send_Attachment_to_Executive_Dashboard__c}"/>           
+        </apex:pageblockSection>
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>2.  Click the "Attach File" button.</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;Repeat steps 1 and 2 to attach multiple files.</apex:outputText>
+            <apex:outputtext >&nbsp;&nbsp;&nbsp;&nbsp;( When the upload is complete the file information will appear below. )</apex:outputtext>
+            <apex:commandbutton value="Attach File" action="{!Save}"/>           
+        </apex:pageblockSection>
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>3. Click the Done button to return to the previous page.</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;( This will cancel an in-progress upload. )</apex:outputText>
+            <apex:commandbutton value="Done" action="/apex/AcustDetailPage?id={!ACustomerId}" immediate="true"/>
+        </apex:pageblockSection>
+    </apex:form>
+    <apex:pageBlockSection columns="1" rendered="{!FinishedInsert}">
+        <div class="pbBody">
+            <div id="errorDiv_ep" class="pbError" style="display: none">
+                Error: Invalid Data.
+                <br/>
+                Review all error messages below to correct your data.
+            </div>
+            <div id="head_1_ep" class="pbSubheader first tertiaryPalette">
+                <h3>
+                You have just uploaded the following file
+                <span class="titleSeparatingColon">:</span>
+                </h3>
+            </div>
+            <div class="pbSubsection">
+                <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td class="labelCol">File Name</td>
+                        <td class="data2Col" colspan="3">{!AttachmentName}</td>
+                    </tr>
+                   <!-- <tr>
+                        <td class="labelCol last">Size</td>
+                        <td class="data2Col last" colspan="3">{!Att.BodyLength}</td>
+                    </tr>    -->             
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </apex:pageBlockSection>        
+    </apex:pageBlock> 
+</apex:page>

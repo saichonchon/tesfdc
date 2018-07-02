@@ -1,0 +1,123 @@
+<apex:page standardController="Coaching__c" extensions="IND_Coaching_PDF_Controller" id="thePageGenerate" showHeader="false" sidebar="false" tabStyle="Opportunity" standardStylesheets="false" language="English"  renderAs="PDF" cache="true" contentType="text/html" readOnly="True" >
+   
+  
+<apex:stylesheet value="{!$Resource.Opportunity_PDF_V1_CSS_file}" />  
+ <!-- *************************************************** Start of Body of the PDF  **********************************************************************************************************--> 
+   <html>
+     <apex:form id="theformEdited" >
+       <apex:outputPanel >  
+       <h3 Class="OpportunityNameHeader" style="font-color:blue;">
+         <span style="font-color:#FFFFF;"><Medium>{!Coaching__c.Participant__r.name} Coached by {!Coaching__c.Coach__r.name}</Medium></span></h3>  
+         
+         <!--<apex:variable value="{!Mainopp}" var="Opp"/>-->
+         
+         
+ <apex:repeat var="topic1" value="{!Topic}">        
+<table border="0" cellpadding="1" cellspacing="1" class="CompetitorInformationTable" style="width: 100%;">
+    <tbody>
+    
+    <tr>
+            <td colspan="4" class="textAlignCenter BlueBackground fontWeighter" style="width: 100%;">
+                <strong>{!topic1.Topic_Text_Long__c}</strong></td>
+    </tr> 
+    
+    
+      <tr>
+          <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Date and Time</strong></td>
+            <td class="textAlignCenter " style="width:35%;">
+                <strong>{!Coaching__c.Coaching_Date_and_Time__c}</strong></td>
+          <td class="textAlignCenter  " style="width:15%;background-color:#E6E6E6;">
+                <strong>Content Type </strong></td>
+            <td  class="textAlignCenter  " style="width:35%;">
+                <strong>{!topic1.Content_Type__c}  </strong></td>
+         
+      </tr>
+      <tr>
+          <td class="textAlignCenter  " style="width:15%;background-color:#E6E6E6;">
+                <strong>Topic Detail</strong></td>
+            <td colspan="3" class="textAlignCenter " style="width:35%;">
+                <medium>{!topic1.Topic_Detail__c}</medium></td>
+      
+      </tr>
+      <tr>
+         <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Coaching Result</strong></td>
+            <td colspan="3" class="textAlignCenter " style="width:35%;">
+                 <medium>{!topic1.Coaching_Result__c}</medium></td>
+       </tr>  
+    
+         <tr>
+          <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Follow-up Activity </strong></td>
+            <td colspan="3" class="textAlignCenter " style="width:100% ">
+                 <medium>{!topic1.Follow_up_Activity__c}</medium></td>
+   
+      </tr>
+    
+         <tr>
+          <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Follow-up Activity Result</strong></td>
+            <td colspan="3" class="textAlignCenter " style="width:100% ">
+                 <medium>{!topic1.Follow_up_Activity_Result__c}</medium></td>
+      </tr>
+      
+    
+    
+         <tr>
+          
+            <td colspan="4" class="textAlignCenter " style="width:100%;background-color:#E6E6E6; ">
+               &nbsp;</td>
+      </tr>         
+        <tr>
+             <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Account</strong></td>
+            <td class="textAlignCenter " style="width:35%;">
+                <strong>{!topic1.Account__r.name}</strong></td>
+            <td class="textAlignCenter  " style="width:15%;background-color:#E6E6E6;">
+                <strong>Account Plan</strong></td>
+            <td class="textAlignCenter  " style="width:35%;">
+                <strong>{!topic1.Account_Plan__r.name}</strong></td>
+                        
+        </tr>
+        <tr>
+            
+            <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Contact</strong></td>
+            <td class="textAlignCenter " style="width:35%;">
+                <strong>{!topic1.Contact__r.name}</strong></td>
+            <td class="textAlignCenter  " style="width:15%;background-color:#E6E6E6;">
+                <strong>Call Plan Number</strong></td>
+            <td class="textAlignCenter " style="width:35%;">
+                <strong>{!topic1.Call_Plan__r.name}</strong></td>
+        </tr>
+        
+        <tr>
+            <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Opportunity</strong></td>
+            <td  class="textAlignCenter  " style="width:35%;">
+                <strong>{!topic1.Opportunity__r.name}</strong></td>
+           <td class="textAlignCenter " style="width:15%;background-color:#E6E6E6;">
+                <strong>Highlight/Lowlight</strong></td>
+            <td  class="textAlignCenter  " style="width:35%;">
+                <strong>{!topic1.Highlight_Lowlight__r.name}</strong></td>
+        </tr>
+       
+        
+       <tr>
+            <td colspan="4" class="textAlignCenter " style="width:100% " height="70px">
+                &nbsp;</td>
+      </tr>
+    </tbody>
+</table>
+ </apex:repeat>
+
+
+
+
+
+
+       </apex:outputPanel> 
+     </apex:form>
+  </html>
+</apex:page>

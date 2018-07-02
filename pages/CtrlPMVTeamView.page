@@ -1,0 +1,150 @@
+<apex:page title="PMV TeamView" id="thePage" sidebar="false" docType="html-5.0" applyBodyTag="true" controller="CtrlPMVTeamView">
+	<head>
+		<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/css3animate/animate.min.css')}" />
+		<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+		<link type="text/css" rel="stylesheet" href="{!$Resource.CtrlPMVTeamViewCss}" />
+		<script src="{!URLFOR($Resource.jQueryTool, '/jquery-1.8.3.min.js')}" type="text/javascript"></script>
+		<!-- <script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'js/highcharts.js')}"></script> -->
+		<script src="{!URLFOR($Resource.highchartsSrc)}"></script>
+		
+		<style type="text/css"> 
+		.healthimg{
+			background: url({!URLFOR($Resource.jQueryTool, '/img/arrowhead_02.png')}) no-repeat;
+			height: 19px !important; width: 20px !important; display: inline-block;
+		}
+		.allimg{
+			background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/teamviewIcon.png')}) no-repeat;
+		}
+		.errorimg{
+			width:15px; height:15px;
+			background: url({!URLFOR($Resource.jQueryTool,'/img/help_orange14x14.png')}) no-repeat;
+		}
+		.all1img{
+			background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+		}
+		.inputDate span{
+			
+		}
+		.title-Arrow{
+		    
+		}
+		
+		.popup-successIcon{
+		    width:24px; height:25px;
+		    display:inline-block; line-height:29px;
+		    float:left; margin:10px 0px 0px 11px;
+		    background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+		    background-position: -266px 0px;
+		}
+		</style>
+		<script type="text/javascript">
+	  		document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+	    </script>
+		<script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+		<script type="text/javascript">
+			;function setFocusOnLoad(){}
+		</script>
+		
+		
+	</head>
+	
+	<body>
+		<div id="pageLoading" class=""></div>
+		<div id="popupLoading" style="display: none;"></div>
+		
+		
+		<div id="allcontentid" style="min-width: 1180px; margin: 0 auto; visibility: hidden;">
+			<div style="position:relative;margin-top: 15px;">
+				<apex:form id="theForm">
+					
+					<div id="dmsgid"><apex:pageMessages id="themsg"/></div>
+					
+					<apex:actionFunction name="getTeamMembs" action="{!getTeamMembs}" oncomplete="getTeamMembsComplete()" reRender="teamOpId, themsg" />
+					<apex:actionFunction name="searchOppysForMemb" action="{!searchOppysForMemb}" oncomplete="searchOppysForMembComplete()" reRender="getoppyactionid, themsg" />
+					<apex:actionFunction name="searchUserByFNameAndLName" action="{!searchUserByFNameAndLName}" oncomplete="searchUserByFNameAndLNameComplete()" reRender="searchuserOpid, themsg" />
+					<apex:actionFunction name="showTeamMembers" action="{!showTeamMembers}" oncomplete="showTeamMembersComplete()" reRender="editUserOpId, themsg" />
+	
+					<div>
+						<c:CompPMVTeamMenu pageCtrl="{!this}" id="compmenuid"></c:CompPMVTeamMenu>
+					</div>
+					
+					<apex:outputPanel id="teamOpId" layout="block">
+						<apex:inputHidden value="{!set_teamMembIds}" id="setteammemberids"/>
+						<apex:inputHidden value="{!pageConf.bigOppyDataJson}" id="mixoppjsonid"/>
+						<apex:inputHidden value="{!pageConf.selectedTeamId}" id="teamhideid"/>
+						<apex:inputHidden value="{!pageConf.teamMembQueryJson}" id="queryjsonid"/>
+						<apex:inputHidden value="{!pageConf.dateInfoJsonForSearch}" id="queryjsonsearchid"/>
+						<c:CompPMVTeamViewBody pageCtrl="{!this}" id="compteamviewid"></c:CompPMVTeamViewBody>
+					</apex:outputPanel>
+					
+					<div id="oppyOpId">
+						<c:CompPMVTeamOppyBody pageCtrl="{!this}" id="compteamoppyid"></c:CompPMVTeamOppyBody>
+					</div>
+					
+					
+					
+					<c:CompPMVTeamAddPopUP pageCtrl="{!this}" id="compaddteamid"></c:CompPMVTeamAddPopUP>
+					<c:CompPMVTeamEditPopUP pageCtrl="{!this}" id="compeditteamid"></c:CompPMVTeamEditPopUP>
+					<c:CompPMVTeamSearchPopUP pageCtrl="{!this}" id="compsearchuserid"></c:CompPMVTeamSearchPopUP>
+					
+				</apex:form>
+			</div>
+		</div>
+		
+		<div id="connStatus_id" class="connstatuscls" style="display: none;">
+    		<div class="connbox" id="conboxid">
+    			<div class="connboxhead" style="position: relative;padding: 10px;">
+    				<div class="connhelp">
+    					<span class="con" >■ <b>Connections</b></span>
+    					<span class="suc" >■ <b>Success</b></span>
+    					<span class="err" >■ <b>Errors</b></span>
+    				</div>
+				</div>
+				<div style="padding: 10px;" class="tl" id="constatusqueryid">
+					<fieldset class="conborder">
+						<legend>Opportunities</legend>
+						<div class="connyear"></div>
+					</fieldset>
+					<fieldset style="padding-top: 10px;" class="conborder">
+						<legend>Opportunitie Forecast</legend>
+						<div class="connyear"></div>
+					</fieldset>
+				</div>
+    		</div>
+		</div>
+		
+		
+		
+		
+		<script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+		<script src="{!$Resource.CtrlPMVTeamViewJs}"></script>
+		<script type="text/javascript">
+        $(function () {
+            
+            
+        });
+		</script>
+		<script type="text/javascript">
+		addListener(window, 'load', initDocument, {'locale':'{!lc.locale}', 'dpicklist':'{!JSENCODE(DEFAULTDATE)}', 'opdefault': '{!OPDEFAULTDATE}'});
+			function saveTeamAndMembers(){ return '{!$RemoteAction.CtrlPMVTeamView.saveTeamAndMembers}';}
+			function delTeamView(){ return '{!$RemoteAction.CtrlPMVTeamView.delTeamView}';}
+			function searchUsers(){ return '{!$RemoteAction.CtrlPMVTeamView.searchUsers}';}
+			function getAllOpportunityForTeamJs(){ return '{!$RemoteAction.CtrlPMVTeamView.getAllOpportunityForTeam}';}
+			function getForecastRecordsJs(){ return '{!$RemoteAction.CtrlPMVTeamView.getForecastRecords}';}
+			function getForecastMixRecordsJs(){ return '{!$RemoteAction.CtrlPMVTeamView.getForecastMixRecords}';}
+
+			
+		</script>
+		
+	</body>
+</apex:page>

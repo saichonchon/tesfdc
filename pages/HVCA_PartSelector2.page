@@ -1,0 +1,1703 @@
+<apex:page standardController="HVCA_Part_Selector__c" extensions="HVCAPartSelectorExtension" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" cache="false">    
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
+        <head>
+            <meta name="viewport" content="width=device-width; initial-scale=1;  maximum-scale=1.0; user-scalable=0;"/> 
+            <title>HVCA Part Selector</title>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            
+            <apex:includeScript value="{!$Resource.JQueryV321}" />        
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="{!URLFOR($Resource.bootstrap336, '/bootstrap-3.3.6-dist/css/bootstrap.min.css')}" />
+            
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="{!URLFOR($Resource.bootstrap336, '/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css')}"  />
+            
+            <!-- Latest compiled and minified JavaScript -->
+            <apex:includeScript value="{!URLFOR($Resource.bootstrap336, '/bootstrap-3.3.6-dist/js/bootstrap.min.js')}"/>
+            <style>
+                .panel-heading a:after {
+                font-family:'Glyphicons Halflings';
+                content:"\e114";
+                float: right;
+                color: grey;
+                }
+                .panel-heading a.collapsed:after {
+                content:"\e080";
+                }
+                .panel-padding{
+                padding-left : 5%;
+                padding-right : 5%;
+                }
+                .panel-heading-size{
+                font-size : 15px;
+                }
+                .img {
+                position: relative;
+                float: left;
+                max-width:  150px;
+                max-height: 200px;
+                background-position: 50% 50%;
+                background-repeat:   no-repeat;
+                background-size:     cover;
+                }
+                .slds .slds-spinner_container {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                }
+                .disabled{
+                    background-color: #e0e5ee;
+                    border-color: #a8b7c7;
+                    cursor: not-allowed;
+                    -webkit-user-select: none;
+                }
+            </style>
+            <script>
+            function dependentPicklist(controlling_field_div_id,dependent_field_div_id,controlling_field_id,dependent_field_id){
+                console.log('called');
+                var MutationObserver = window.WebKitMutationObserver || window.MutationObserver || window.MozMutationObserver;
+                var observer = new MutationObserver(function(mutations) {
+                    // If the form-control was removed from the list – re-assign it
+                    if(!$('#'+controlling_field_div_id+ ' select').first().hasClass('form-control') || !$('#'+controlling_field_div_id+ '  select').first().hasClass('slds-input ')){
+                        $('#'+controlling_field_div_id+ ' select').first().addClass('slds-input ');
+                    }
+                    if(!$('#'+dependent_field_div_id + ' select').first().hasClass('form-control')  || !$('#'+dependent_field_div_id + ' select').first().hasClass('slds-input ')){
+                        $('#'+dependent_field_div_id + '  select').first().addClass('slds-input ');
+                    }
+                });
+                
+                var dependentlst1 = document.querySelector('#'+controlling_field_div_id);
+                var dependentlst2 = document.querySelector('#'+dependent_field_div_id);
+                observer.observe(dependentlst1, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+                observer.observe(dependentlst2, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });               
+            }
+            </script>
+        </head>           
+        <body>   
+            
+            <!-- REQUIRED SLDS WRAPPER -->
+            <div class="slds .slds-icon slds-icon_container slds-icon_container slds-icon-action-description container"> 
+                <apex:form >
+                    
+                    <apex:outputPanel id="refresh_form">
+                        
+                        <apex:outputPanel id="input-section" rendered="{!isShowInputSecion}">
+                            <div class="slds-page-header" role="banner">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-has-flexi-truncate slds-size--1-of-3">
+                                        <div class="slds-media">
+                                            <div class="slds-media__figure">
+                                                <c:SVG_Component styleClass="slds-icon slds-icon--large slds-icon-action-filter" path="assets/icons/action-sprite/svg/symbols.svg#filter" />
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-heading--label">Cable Details</p>
+                                                <div class="slds-grid">
+                                                    <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Search</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-no-flex slds-align-bottom slds-size--2-of-3"> 
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="slds-button-group" role="group">
+                                                    <div class="slds-m-vertical--x-small"></div>                                            
+                                                    <label class="slds-checkbox">
+                                                        <apex:inputCheckbox value="{!hvca.isTerminationChecked__c}" styleClass="termination-section" onchange="setSetionVisibility();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Termination</span>
+                                                    </label>
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <apex:inputCheckbox value="{!hvca.isSpliceChecked__c}" styleClass="splice-section" onchange="setSetionVisibility();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Splice</span>
+                                                    </label>                                           
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <apex:inputCheckbox value="{!hvca.isGISChecked__c}" styleClass="gis-section" onchange="setSetionVisibility();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">GIS</span>
+                                                    </label> 
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <apex:inputCheckbox value="{!hvca.isAccessoriessChecked__c}" styleClass="accessoriess-section" onchange="toggleAccessoriessSection();"/>
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Accessories</span>
+                                                    </label>                                                                
+                                                    <div class="slds-m-horizontal--x-small"></div>  
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="slds-button-group" role="group">
+                                                    <div class="slds-m-vertical--x-small"></div> 
+                                                    <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!save}" onclick="searchOnClick();" value="Search" reRender="refresh_form,attachment-block" status="status" style="border-left :5px;border-radius:5px; margin-right:5px;" oncomplete="setStyle('search')"></apex:commandButton>
+                                                    <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!cancel}"  value="Cancel" status="status" style="border-left :5px;border-radius:5px; margin-right:5px;"></apex:commandButton>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <div class=" slds-form--compound">
+                                <div class="panel panel-default">
+                                    
+                                    <!--  ************************Cable pic starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#cablePic" href="#cablePic">
+                                            <span class="panel-heading-size"><b>Cable</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="cablePic" class="  form-element__group panel-collapse collapse in" >
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <ul class="pull-right">
+                                                    <li>1 -Cable Manufacturer </li>
+                                                    <li>2 - Insulation Material</li>
+                                                    <li>3 - Additional Layer</li>
+                                                    <li>4 - Shielding </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <img src="{!$Resource.cable}"/>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul>
+                                                    <li>5 - Additional Layer</li>
+                                                    <li>6 - Armour</li>
+                                                    <li>7 - Outer Jacket</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <center></center>
+                                    </div>
+                                    <apex:outputPanel rendered="{!isError}">
+                                        <div class="alert alert-danger">
+                                            <apex:pageMessages >
+                                            </apex:pageMessages>
+                                            <script>
+                                            onDocumentReady();
+                                            </script>
+                                        </div>   
+                                    </apex:outputPanel>
+                                    
+                                    <!--  ************************Cable section starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#partDetails" href="#partDetails">
+                                            <span class="panel-heading-size"><b>Conductor Section</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="partDetails" class=" panel-padding form-element__group panel-collapse collapse in" >
+                                        <apex:outputPanel id="conductor-section">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label" for="product_line_group"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Conductor_material__c.Label}</label>
+                                                    <div id="product_line_group_div" class="slds-form-element__control">
+                                                        <apex:inputField id="product_line_group" value="{!HVCA_Part_Selector__c.Conductor_material__c}" styleClass="slds-input form-control"/>
+                                                    </div>                                        
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label" for="lead_time_days">{!$ObjectType.HVCA_Part_Selector__c.fields.Cable_Manufacturer__c.Label}</label>
+                                                    <div id="dependentlst2" class="slds-form-element__control">
+                                                        <apex:inputField id="lead_time_days" value="{!HVCA_Part_Selector__c.Cable_Manufacturer__c}" styleClass=" slds-input" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label is-required" for="Conductor_Section__c">
+                                                        {!$ObjectType.HVCA_Part_Selector__c.fields.Conductor_Section__c.Label}</label>
+                                                    <div id="Conductor_Section__c_div" class="slds-form-element__control">
+                                                        <apex:inputField id="Conductor_Section__c" value="{!HVCA_Part_Selector__c.Conductor_Section__c}" styleClass="slds-input form-control" onchange="refreshForm();" />
+                                                    </div>                                        
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label is-required" for="Conductor_Type__c">
+                                                        Conductor Type</label>
+                                                    <div id="Conductor_Type__c_div" class="slds-form-element__control">
+                                                        <apex:inputField id="Conductor_Type__c" value="{!HVCA_Part_Selector__c.Conductor_Type__c}" styleClass="slds-input form-control" onchange="refreshForm()" />
+                                                        
+                                                    </div>                                        
+                                                </div>
+                                                <script> dependentPicklist('Conductor_Section__c_div','Conductor_Type__c_div','Conductor_Section__c','Conductor_Type__c');
+                                                </script>
+                                            </div>
+                                            <div class="row">                                                
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label" for="Conductor_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Conductor_OD__c.Label}</label>
+                                                    <div id="Conductor_OD__c_div" class="slds-form-element__control">
+                                                        <apex:inputField id="Conductor_OD__c" value="{!HVCA_Part_Selector__c.Conductor_OD__c}" styleClass=" slds-input"/>
+                                                    </div>
+                                                </div>                                         
+                                                <div class="col-md-6">
+                                                    <label class="slds-form-element__label" for="Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Comment__c.Label}</label>
+                                                    <div id="Comment__c_div" class="slds-form-element__control">
+                                                        <apex:inputField id="Comment__c" value="{!HVCA_Part_Selector__c.Comment__c}" styleClass="slds-input form-control"/>
+                                                    </div>                                        
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <br/>
+                                    </div>
+                                    <!--  ************************insulation type section starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#insulationType" href="#insulationType">
+                                            <span class="panel-heading-size"><b>Insulation Type</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="insulationType" class=" panel-padding form-element__group panel-collapse collapse in" >
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Insulation_Material__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Insulation_Material__c.Label}</label>
+                                                <div id="Insulation_Material__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Insulation_Material__c" value="{!HVCA_Part_Selector__c.Insulation_Material__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Insulation_Thickness__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Insulation_Thickness__c.Label}</label>
+                                                <div id="Insulation_Thickness__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Insulation_Thickness__c" value="{!HVCA_Part_Selector__c.Insulation_Thickness__c}" styleClass=" slds-input" onblur="populateInsulationOdValue();" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Insulation_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Insulation_OD__c.Label}</label>
+                                                <div id="Insulation_OD__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Insulation_OD__c" value="{!HVCA_Part_Selector__c.Insulation_OD__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Insulation_Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Insulation_Comment__c.Label}</label>
+                                                <div id="Insulation_Comment__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Insulation_Comment__c" value="{!HVCA_Part_Selector__c.Insulation_Comment__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--  ************************Additional Layer starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#additionalLayer" href="#additionalLayer">
+                                            <span class="panel-heading-size"><b>Additional Layer</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="additionalLayer" class="panel-padding form-element__group panel-collapse collapse in" >                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Additional_Layer__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Additional_Layer__c.Label}</label>
+                                                <div id="Additional_Layer__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Additional_Layer__c" value="{!HVCA_Part_Selector__c.Additional_Layer__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Additional_Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Additional_Comment__c.Label}</label>
+                                                <div id="Additional_Comment__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Additional_Comment__c" value="{!HVCA_Part_Selector__c.Additional_Comment__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <!--  ************************Shielding Details starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#shieldingDetails" href="#shieldingDetails">
+                                            <span class="panel-heading-size"><b>Shielding Details</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="shieldingDetails" class=" panel-padding form-element__group panel-collapse collapse in" >
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Shielding_Type__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Shielding_Type__c.Label}</label>
+                                                <div id="Shielding_Type__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Shielding_Type__c" value="{!HVCA_Part_Selector__c.Shielding_Type__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Shielding_Thickness__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Shielding_Thickness__c.Label}</label>
+                                                <div id="Shielding_Thickness__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Shielding_Thickness__c" value="{!HVCA_Part_Selector__c.Shielding_Thickness__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Wire_Spec__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Wire_Spec__c.Label}</label>
+                                                <div id="Wire_Spec__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Wire_Spec__c" value="{!HVCA_Part_Selector__c.Wire_Spec__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Shielding_Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Shielding_Comment__c.Label}</label>
+                                                <div id="Shielding_Comment__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Shielding_Comment__c" value="{!HVCA_Part_Selector__c.Shielding_Comment__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--  ************************Additional Layer starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#additionalLayerShielding" href="#additionalLayerShielding">
+                                            <span class="panel-heading-size"><b>Additional Layer</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="additionalLayerShielding" class="panel-padding form-element__group panel-collapse collapse in" >                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Additional_Shield_Layer__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Additional_Shield_Layer__c.Label}</label>
+                                                <div id="Additional_Shield_Layer__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Additional_Shield_Layer__c" value="{!HVCA_Part_Selector__c.Additional_Shield_Layer__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Additional_Shield_Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Additional_Shield_Comment__c.Label}</label>
+                                                <div id="Additional_Shield_Comment__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Additional_Shield_Comment__c" value="{!HVCA_Part_Selector__c.Additional_Shield_Comment__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <!--  ************************Armour Layer starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#armour" href="#armour">
+                                            <span><b>Armour</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="armour" class="panel-padding form-element__group panel-collapse collapse in" >  
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Armour__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Armour__c.Label}</label>
+                                                <div id="Armour__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Armour__c" value="{!HVCA_Part_Selector__c.Armour__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                    
+                                    <!--  ************************Outer Jacket Section starts here **********************   -->
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#outerJacketSection" href="#outerJacketSection">
+                                            <span class="panel-heading-size"><b>Outer Jacket Section</b></span>
+                                        </a>
+                                    </div>                                    
+                                    <div id="outerJacketSection" class="panel-padding form-element__group panel-collapse collapse in" >
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Outer_Jacket_Material__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Outer_Jacket_Material__c.Label}</label>
+                                                <div id="Outer_Jacket_Material__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Outer_Jacket_Material__c" value="{!HVCA_Part_Selector__c.Outer_Jacket_Material__c}" styleClass="slds-input form-control"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Outer_Jacket_Thickness__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Outer_Jacket_Thickness__c.Label}</label>
+                                                <div id="Outer_Jacket_Thickness__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Outer_Jacket_Thickness__c" value="{!HVCA_Part_Selector__c.Outer_Jacket_Thickness__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Outer_Jacket_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Outer_Jacket_OD__c.Label}</label>
+                                                <div id="Outer_Jacket_OD__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Outer_Jacket_OD__c" value="{!HVCA_Part_Selector__c.Outer_Jacket_OD__c}" styleClass="slds-input form-control outer-jacket-od"/>
+                                                </div>                                        
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="slds-form-element__label" for="Outer_Jacket_Comment__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Outer_Jacket_Comment__c.Label}</label>
+                                                <div id="Outer_Jacket_Comment__c_div" class="slds-form-element__control">
+                                                    <apex:inputField id="Outer_Jacket_Comment__c" value="{!HVCA_Part_Selector__c.Outer_Jacket_Comment__c}" styleClass=" slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--  ************************Termination Section starts here **********************   -->
+                                    <apex:outputPanel id="termination-detail-section" rendered="{!hvca.isTerminationChecked__c}">
+                                        <div id="isShowTransitionSection" class="isShowTransitionSection">
+                                            <div class="panel-heading">
+                                                <a data-toggle="collapse" data-target="#termination" href="#termination">
+                                                    <span class="panel-heading-size"><b>Termination</b></span>
+                                                </a>
+                                            </div>
+                                            <apex:outputPanel id="termination-block">                                          
+                                                <div id="termination" class="panel-padding form-element__group panel-collapse collapse in" >
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Termination__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Installation_Type__c.Label}</label>
+                                                            <div id="Termination__c_div" class="slds-form-element__control">
+                                                                
+                                                                <apex:inputField id="Termination__c" value="{!HVCA_Part_Selector__c.Installation_Type__c}" styleClass="slds-input form-control">
+                                                                    <apex:actionSupport event="onchange" reRender="termination-block" status="status"/>
+                                                                </apex:inputField>
+                                                            </div>                                        
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Termination_Operating_Voltage__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Termination_Operating_Voltage__c.Label}</label>
+                                                            <div id="Termination_Operating_Voltage__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Termination_Operating_Voltage__c" value="{!HVCA_Part_Selector__c.Termination_Operating_Voltage__c}" styleClass=" slds-input form-control" />
+                                                            </div>
+                                                            <script>
+                                                            dependentPicklist('Termination__c_div','Termination_Operating_Voltage__c_div','Termination__c','Termination_Operating_Voltage__c');
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Termination_Basic_Impulse_Level__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Termination_Basic_Impulse_Level__c.Label}</label>
+                                                            <div id="Termination_Basic_Impulse_Level__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Termination_Basic_Impulse_Level__c" value="{!HVCA_Part_Selector__c.Termination_Basic_Impulse_Level__c}" styleClass="slds-input form-control"/>
+                                                            </div>                                        
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Termination_Short_Circuit_Current_Shield__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Termination_Short_Circuit_Current_Shield__c.Label}</label>
+                                                            <div id="Termination_Short_Circuit_Current_Shield__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Termination_Short_Circuit_Current_Shield__c" value="{!HVCA_Part_Selector__c.Termination_Short_Circuit_Current_Shield__c}" styleClass=" slds-input" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="TerminatiShort_Circuit_Current_Conductor__c">{!$ObjectType.HVCA_Part_Selector__c.fields.TerminatiShort_Circuit_Current_Conductor__c.Label}</label>
+                                                            <div id="TerminatiShort_Circuit_Current_Conductor__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="TerminatiShort_Circuit_Current_Conductor__c" value="{!HVCA_Part_Selector__c.TerminatiShort_Circuit_Current_Conductor__c}" styleClass="slds-input form-control"/>
+                                                            </div>                                        
+                                                        </div> 
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Application__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Application__c.Label}</label>
+                                                            <div id="Application__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Application__c" value="{!HVCA_Part_Selector__c.Application__c}" styleClass="slds-input form-control"/>
+                                                            </div>
+                                                            <script>
+                                                            dependentPicklist('Termination__c_div','Application__c_div','Termination__c','Application__c');
+                                                            </script>
+                                                        </div> 
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!HVCA_Part_Selector__c.Installation_Type__c <> 'Heat Shrink'}">
+                                                        <div class="panel-sub-heading">
+                                                            <a href="javascriipt:;"><b> Application Data</b></a><br/>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Application_Data__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Insulator_Type__c.Label}</label>
+                                                                <div id="Application_Data__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Application_Data__c" value="{!HVCA_Part_Selector__c.Insulator_Type__c}" styleClass=" slds-input" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Cable_Lug__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Cable_Lug__c.Label}</label>
+                                                                <div id="Cable_Lug__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Cable_Lug__c" value="{!HVCA_Part_Selector__c.Cable_Lug__c}" styleClass="slds-input form-control"/>
+                                                                </div>                                        
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                
+                                                                
+                                                                <label class="slds-form-element__label slds-has-error slds-is-required" for="Creepage_distance__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Creepage_distance__c.Label}</label>
+                                                                <div id="Creepage_distance__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Creepage_distance__c" value="{!HVCA_Part_Selector__c.Creepage_distance__c}" styleClass=" slds-input" />
+                                                                    <span id="errorSample1" class="slds-form-element__help">Note - Other special creepage requirements are available on request</span>
+                                                                </div>
+                                                                <script>
+                                                                dependentPicklist('Termination_Operating_Voltage__c_div','Creepage_distance__c_div','Termination_Operating_Voltage__c','Creepage_distance__c');
+                                                                </script>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Installation_Angle__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Installation_Angle__c.Label}</label>
+                                                                <div id="Installation_Angle__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Installation_Angle__c" value="{!HVCA_Part_Selector__c.Installation_Angle__c}" styleClass="slds-input form-control"/>
+                                                                </div>                                        
+                                                            </div>                                       
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    <br/>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <!--  ************************Splice Section starts here **********************   -->
+                                    <apex:outputPanel id="splice-detail-section" rendered="{!hvca.isSpliceChecked__c}">
+                                        <div id="isShowSpliceSection" class="isShowSpliceSection">
+                                            <div class="panel-heading">
+                                                <a data-toggle="collapse" data-target="#splice" href="#splice">
+                                                    <span class="panel-heading-size"><b> Splice</b></span>
+                                                </a>
+                                            </div>    
+                                            <apex:outputPanel id="splice-block">    
+                                                <div id="splice" class="panel-padding form-element__group panel-collapse collapse in" >
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Installation_Type__c.Label}</label>
+                                                            <div id="Splice__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice__c" value="{!HVCA_Part_Selector__c.Splice_Installation_Type__c}" styleClass="slds-input form-control">
+                                                                    <apex:actionSupport status="status" reRender="splice-block" event="onchange" />
+                                                                </apex:inputField>
+                                                            </div>                                        
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice_Operating_Voltage__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Operating_Voltage__c.Label}</label>
+                                                            <div id="Splice_Operating_Voltage__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice_Operating_Voltage__c" value="{!HVCA_Part_Selector__c.Splice_Operating_Voltage__c}" styleClass=" slds-input" />
+                                                            </div>
+                                                            <script>
+                                                            dependentPicklist('Splice__c_div','Splice_Operating_Voltage__c_div','Splice__c','Splice_Operating_Voltage__c');
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice_Basic_Impulse_Level__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Basic_Impulse_Level__c.Label}</label>
+                                                            <div id="Splice_Basic_Impulse_Level__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice_Basic_Impulse_Level__c" value="{!HVCA_Part_Selector__c.Splice_Basic_Impulse_Level__c}" styleClass="slds-input form-control"/>
+                                                            </div>                                        
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice_Operating_Voltage__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Short_Circuit_Current_Conductor__c.Label}</label>
+                                                            <div id="Splice_Short_Circuit_Current_Conductor__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice_Short_Circuit_Current_Conductor__c" value="{!HVCA_Part_Selector__c.Splice_Short_Circuit_Current_Conductor__c}" styleClass=" slds-input" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice_Short_Circuit_Current_Shield__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Short_Circuit_Current_Shield__c.Label}</label>
+                                                            <div id="Splice_Short_Circuit_Current_Shield__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice_Short_Circuit_Current_Shield__c" value="{!HVCA_Part_Selector__c.Splice_Short_Circuit_Current_Shield__c}" styleClass="slds-input form-control"/>
+                                                            </div>                                        
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="slds-form-element__label" for="Splice_Type__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Type__c.Label}</label>
+                                                            <div id="Splice_Type__c_div" class="slds-form-element__control">
+                                                                <apex:inputField id="Splice_Type__c" value="{!HVCA_Part_Selector__c.Splice_Type__c}" styleClass="slds-input form-control"/>
+                                                            </div>                                        
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel layout="none" rendered="{!HVCA_Part_Selector__c.Splice_Installation_Type__c == 'Heat Shrink'}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Splice_Size_Transition__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Size_Transition__c.Label}</label>
+                                                                <div id="Splice_Size_Transition__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Splice_Size_Transition__c_id" value="{!HVCA_Part_Selector__c.Splice_Size_Transition__c}" styleClass=" slds-input" onchange="showAdditional()"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!HVCA_Part_Selector__c.Splice_Installation_Type__c == 'Cold Applied'}">
+                                                        <div class="panel-sub-heading">
+                                                            <a href="javascriipt:;"><b> Application Data</b></a><br/>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Splice_Operating_Voltage__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Design__c.Label}</label>
+                                                                <div id="Splice_Application_Data__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Splice_Application_Data__c" value="{!HVCA_Part_Selector__c.Splice_Design__c}" styleClass=" slds-input" />
+                                                                </div>
+                                                                <script>
+                                                                dependentPicklist('Splice__c_div','Splice_Application_Data__c_div','Splice__c','Splice_Application_Data__c');
+                                                                </script>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Splice_Shield_Continuity__c"><!--<abbr class="slds-required" title="required">*</abbr>-->{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Shield_Continuity__c.Label}</label>
+                                                                <div id="Splice_Shield_Continuity__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Splice_Shield_Continuity__c" value="{!HVCA_Part_Selector__c.Splice_Shield_Continuity__c}" styleClass="slds-input form-control"/>
+                                                                </div>                                        
+                                                            </div>                                              
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Splice_Size_Transition__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Size_Transition__c.Label}</label>
+                                                                <div id="Splice_Size_Transition__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Splice_Size_Transition__c" value="{!HVCA_Part_Selector__c.Splice_Size_Transition__c}" styleClass=" slds-input" onchange="showAdditional()"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="slds-form-element__label" for="Splice_Outer_Protection__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Outer_Protection__c.Label}</label>
+                                                                <div id="Splice_Outer_Protection__c_div" class="slds-form-element__control">
+                                                                    <apex:inputField id="Splice_Outer_Protection__c" value="{!HVCA_Part_Selector__c.Splice_Outer_Protection__c}" styleClass="slds-input form-control"/>
+                                                                </div>                                        
+                                                            </div>                                        
+                                                        </div>     
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel id="splice-additional-section" >
+                                                        <apex:outputPanel rendered="{!isShowSpliceAdditionSection}">                                                    
+                                                            <div class="panel-sub-heading">
+                                                                <a href="javascriipt:;"><b> Additional Detail</b></a><br/>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Shielding_Type__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Shielding_Type__c.Label}</label>
+                                                                    <div id="Splice_Shielding_Type__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Shielding_Type__c" value="{!HVCA_Part_Selector__c.Splice_Shielding_Type__c}" styleClass=" slds-input" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Insulation_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Insulation_OD__c.Label}</label>
+                                                                    <div id="Splice_Insulation_OD__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Insulation_OD__c" value="{!HVCA_Part_Selector__c.Splice_Insulation_OD__c}" styleClass="slds-input form-control"/>
+                                                                    </div>                                        
+                                                                </div> 
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Conductor_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Conductor_Section__c.Label}</label>
+                                                                    <div id="Splice_Conductor_Section__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Conductor_Section__c" value="{!HVCA_Part_Selector__c.Splice_Conductor_Section__c}" styleClass="slds-input form-control"/>
+                                                                    </div>                                        
+                                                                </div> 
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Conductor_Type__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Conductor_Type__c.Label}</label>
+                                                                    <div id="Splice_Conductor_Type__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Conductor_Type__c" value="{!HVCA_Part_Selector__c.Splice_Conductor_Type__c}" styleClass="slds-input form-control"/>
+                                                                    </div>                                        
+                                                                </div> 
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Conductor_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Conductor_OD__c.Label}</label>
+                                                                    <div id="Splice_Conductor_OD__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Conductor_OD__c" value="{!HVCA_Part_Selector__c.Splice_Conductor_OD__c}" styleClass="slds-input form-control"/>
+                                                                    </div>                                        
+                                                                </div> 
+                                                                <div class="col-md-6">
+                                                                    <label class="slds-form-element__label" for="Splice_Outer_Jacket_OD__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Splice_Outer_Jacket_OD__c.Label}</label>
+                                                                    <div id="Splice_Outer_Jacket_OD__c_div" class="slds-form-element__control">
+                                                                        <apex:inputField id="Splice_Outer_Jacket_OD__c" value="{!HVCA_Part_Selector__c.Splice_Outer_Jacket_OD__c}" styleClass="slds-input form-control"/>
+                                                                    </div>                                        
+                                                                </div>                                                                 
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                    <br/>
+                                                </div> 
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <!--  ************************GIS Section starts here **********************   -->
+                                    <apex:outputPanel id="gis-detail-section" rendered="{!hvca.isGISChecked__c}">
+                                        <div id="isShowGISSection" class="isShowGISSection">
+                                            <div class="panel-heading"> 
+                                                <a data-toggle="collapse" data-target="#gis" href="#gis">                                                
+                                                    <span class="panel-heading-size"><b>GIS </b></span>                                                
+                                                </a>
+                                            </div>                                        
+                                            <div id="gis" class="panel-padding form-element__group panel-collapse collapse in" >
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="GIS_Operating_Voltage__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.GIS_Operating_Voltage__c.Label}</label>
+                                                        <div id="GIS_Operating_Voltage__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="GIS_Operating_Voltage__c" value="{!HVCA_Part_Selector__c.GIS_Operating_Voltage__c}" styleClass="slds-input form-control"/>
+                                                        </div>                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="GIS_Basic_Impulse_Level__c">{!$ObjectType.HVCA_Part_Selector__c.fields.GIS_Basic_Impulse_Level__c.Label}</label>
+                                                        <div id="GIS_Basic_Impulse_Level__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="GIS_Basic_Impulse_Level__c" value="{!HVCA_Part_Selector__c.GIS_Basic_Impulse_Level__c}" styleClass=" slds-input" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="GIS_Short_Circuit_Current_Conductor__c">{!$ObjectType.HVCA_Part_Selector__c.fields.GIS_Short_Circuit_Current_Conductor__c.Label}</label>
+                                                        <div id="GIS_Short_Circuit_Current_Conductor__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="GIS_Short_Circuit_Current_Conductor__c" value="{!HVCA_Part_Selector__c.GIS_Short_Circuit_Current_Conductor__c}" styleClass="slds-input form-control"/>
+                                                        </div>                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="GIS_Short_Circuit_Current_Shield__c">{!$ObjectType.HVCA_Part_Selector__c.fields.GIS_Short_Circuit_Current_Shield__c.Label}</label>
+                                                        <div id="GIS_Short_Circuit_Current_Shield__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="GIS_Short_Circuit_Current_Shield__c" value="{!HVCA_Part_Selector__c.GIS_Short_Circuit_Current_Shield__c}" styleClass=" slds-input" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-sub-heading">
+                                                    <a href="javascriipt:;"><b> Application Data</b></a><br/>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="GIS_Application_Data__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.GIS_Design__c.Label}</label>
+                                                        <div id="GIS_Application_Data__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="GIS_Application_Data__c" value="{!HVCA_Part_Selector__c.GIS_Design__c}" styleClass="slds-input form-control"/>
+                                                        </div>                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="Dry_Oil_Field__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Dry_Oil_Field__c.Label}</label>
+                                                        <div id="Dry_Oil_Field__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="Dry_Oil_Field__c" value="{!HVCA_Part_Selector__c.Dry_Oil_Field__c}" styleClass=" slds-input" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="Inlet__c">{!$ObjectType.HVCA_Part_Selector__c.fields.Inlet__c.Label}</label>
+                                                        <div id="Inlet__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="Inlet__c" value="{!HVCA_Part_Selector__c.Inlet__c}" styleClass="slds-input form-control"/>
+                                                        </div>                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="slds-form-element__label" for="Housing_Length__c"><abbr class="slds-required" title="required">*</abbr>{!$ObjectType.HVCA_Part_Selector__c.fields.Housing_Length__c.Label}</label>
+                                                        <div id="Housing_Length__c_div" class="slds-form-element__control">
+                                                            <apex:inputField id="Housing_Length__c" value="{!HVCA_Part_Selector__c.Housing_Length__c}" styleClass=" slds-input"  />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                            </div>                                    
+                                        </div> 
+                                    </apex:outputPanel>
+                                    <!--  ************************Accessories Section starts here **********************   -->
+                                    
+                                    <apex:outputPanel id="accessories-detail-section" rendered="{!hvca.isAccessoriessChecked__c}">
+                                        <div id="isAccessoriesSection" class="isAccessoriesSection">
+                                            <div class="panel-heading">
+                                                <a data-toggle="collapse" data-target="#accessories" href="#accessories">                                                
+                                                    <span class="panel-heading-size"><b>Accessories </b></span>                                                
+                                                </a>
+                                            </div> 
+                                            
+                                            <div id="accessories" class="panel-padding form-element__group panel-collapse collapse in" >
+                                                <br/>
+                                                <apex:outputPanel id="cable-clamp">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped table-bordered">  
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        Mounting Version
+                                                                    </th>
+                                                                    <th>
+                                                                        Catalog Number
+                                                                    </th>
+                                                                    <th>
+                                                                        Trade
+                                                                    </th>
+                                                                    <th>
+                                                                        Authorized Distributor
+                                                                    </th>
+                                                                    <th>
+                                                                        Elite Distributor
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <apex:repeat value="{!listOfPlasticCamps}" var="camp"> 
+                                                                    <tr>
+                                                                        <td>{!camp.plasticCamp.Mounting_Version__c}</td>
+                                                                        <td>{!camp.plasticCamp.CATALOG_NUMBER__c}</td>
+                                                                        <td>${!camp.plasticCamp.TRADE__c}</td>
+                                                                        <td>${!camp.plasticCamp.AUTHORIZED_DISTRIBUTOR__c}</td>
+                                                                        <td>${!camp.plasticCamp.ELITE_DISTRIBUTOR__c}</td>
+                                                                    </tr>
+                                                                </apex:repeat>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <c:HVCA_Accessories_Component eppaName="{!eppaName}" isShowEppa="{!isShowEppa}"  ></c:HVCA_Accessories_Component>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <!--  ************************Button Section starts here **********************   -->
+                                    <div class=" slds-page-header">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="slds-button-group" role="group" style="padding-left:15%">
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <div class="slds-m-vertical--x-small"></div>                                            
+                                                    <label class="slds-checkbox">
+                                                        <input type="checkbox" name="termination_checkbox" id="termination_checkbox" onclick="toggleTemination();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Termination</span>
+                                                    </label>
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <input type="checkbox" name="splice_checkbox" id="splice_checkbox"  onclick="toggleSplice();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Splice</span>
+                                                    </label>                                           
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <input type="checkbox" name="gis_checkbox" id="gis_checkbox" onclick="toggleGIS();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">GIS</span>
+                                                    </label> 
+                                                    <div class="slds-m-vertical--x-small"></div>
+                                                    <label class="slds-checkbox">
+                                                        <input type="checkbox" name="accessoriess_checkbox" id="accessoriess_checkbox"  onclick="toggleAccessoriess();" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label">Accessories</span>
+                                                    </label>                                         
+                                                    <div class="slds-m-horizontal--x-small"></div>     
+                                                    <div class="slds-m-horizontal--x-large"></div>   
+                                                </div> 
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="slds-button-group " role="group" style="padding-left:15%">
+                                                    <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!save}" value="Search" onclick="searchOnClick();"  reRender="refresh_form,attachment-block" status="status" oncomplete="setStyle('search');" style="border-left :5px;border-radius:5px; margin-right:5px;"></apex:commandButton>
+                                                    <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!cancel}"  value="Cancel" status="status" style="border-left :5px;border-radius:5px; margin-right:5px;"></apex:commandButton>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> 
+                        </apex:outputPanel>
+                        <!-- end of input section -->
+                        <apex:outputPanel id="output-section" rendered="{!!isShowInputSecion}">
+                            <div class="slds-page-header " role="banner">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-has-flexi-truncate">
+                                        <div class="slds-media">
+                                            <div class="slds-media__figure">
+                                                <c:SVG_Component styleClass="slds-icon slds-icon--large slds-icon-action-filter" path="assets/icons/action-sprite/svg/symbols.svg#filter" />
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-heading--label">Cable Details</p>
+                                                <div class="slds-grid">
+                                                    <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Search Results</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-no-flex slds-align-bottom">
+                                        <apex:outputPanel id="top-button-section">
+                                            
+                                            <apex:outputPanel rendered="{!(AND (OR(HVCA_Part_Selector__c.isShowOffer__c,HVCA_Part_Selector__c.Approval_Status__c == 'Approvad') ,OR(HVCA_Part_Selector__c.isGIS_preQuote__c , HVCA_Part_Selector__c.isSplice_preQuote__c, HVCA_Part_Selector__c.isTermination_preQuote__c )))}">
+                                                <apex:commandLink target="_blank" action="{!generateQuote}" styleClass="slds-button slds-button--neutral" value="Get Offer" ></apex:commandLink>                                            
+                                            </apex:outputPanel>
+                                            <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!back}" value="Back"  status="status"  style="border-left :5px;border-radius:5px; margin-right:5px; margin-left:5px;" ></apex:commandButton>
+                                            <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!backToOpp}" value=" Save & Close" reRender="refresh_form" status="status" oncomplete="setStyle();" style="border-left :5px;border-radius:5px; margin-right:5px;" ></apex:commandButton>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>   
+                            <div class=" slds-form--compound">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Part Details
+                                    </div>  
+                                    <apex:outputPanel id="status-section">
+                                        <apex:outputPanel rendered="{!HVCA_Part_Selector__c.Approval_Status__c == 'Pending Approval'}">
+                                            <div class="alert alert-info" role="alert"><center>Record is being submitted for Approval !</center> </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!HVCA_Part_Selector__c.Approval_Status__c == 'Approvad'}">
+                                            <div class="alert alert-info" role="alert"><center>Record is Approved !</center> </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!HVCA_Part_Selector__c.Approval_Status__c == 'Rejected'}">
+                                            <div class="alert alert-warning" role="alert"> <center>Please give different propose price and Submit again for approval !</center></div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel id="termination-output" rendered="{!HVCA_Part_Selector__c.Termination_Operating_Voltage__c <> null}"> 
+                                        <div id="terminationOutput" class="panel-padding form-element__group panel-collapse collapse in" > 
+                                            <div class="panel-sub-heading"> 
+                                                <div class="row">
+                                                    <div class="col-md-4"> 
+                                                        <a href="javascriipt:;"><b> Termination : </b></a><br/>
+                                                    </div>
+                                                    <div class="col-md-8"> 
+                                                        <label class="slds-checkbox">
+                                                            <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isTermination_preQuote__c}" onclick="includeTerminationPreQuote();" >
+                                                         	</apex:inputCheckbox>
+                                                            <span class="slds-checkbox--faux"></span>
+                                                            <span class="slds-form-element__label">Include Termination in Quote</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-6">  Part Description </div>
+                                                        <div class="col-md-6">
+                                                            <div id="term_output_div" class="slds-form-element__control">
+                                                                <span  class="slds-output ">{!terminationOutput}</span>
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!AND(terminationOutput<>null && !ISBLANK(terminationOutput))}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Data Sheet </div>
+                                                            <div class="col-md-6"><span  class="slds-output "><a href="{!docTable.Data_Sheet__c}" target="_blank">{!docTable.Data_Sheet_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Offer Drawing </div>
+                                                            <div class="col-md-6"><span class="slds-output "><a href="{!docTable.Offer_Drawing__c}" target="_blank">{!docTable.Offer_Drawing_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Lead Times Days</div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!docTable.Lead_Times_Days__c}</span></div>
+                                                        </div>                                                         
+                                                        <div class="row">
+                                                            <div class="col-md-6">Quantity</div>
+                                                            <div class="col-md-6"><apex:inputField value="{!HVCA_Part_Selector__c.Termination_Quantity__c}" styleClass="slds-input" style="width: 30%;"/></div>
+                                                        </div>                                                          
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!terminationOutputPriceTable == null}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">List Price </div>
+                                                            <div class="col-md-6"><span class="slds-output termination-price"> {!docTable.Pricing__c}</span></div>
+                                                        </div>  
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!(HVCA_Part_Selector__c.isTermination_preQuote__c && HVCA_Part_Selector__c.Termination_Offered_Price__c <> null && HVCA_Part_Selector__c.Termination_Offered_Price__c <> 0)}">
+                                                         <div class="row">
+                                                            <div class="col-md-6">Proposed Price </div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!HVCA_Part_Selector__c.Termination_Offered_Price__c}</span></div>
+                                                        </div>                                                          
+                                                    </apex:outputPanel>                                                  
+                                                    <apex:outputPanel rendered="{!terminationOutputPriceTable <> null}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Trade </div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!terminationOutputPriceTable.isTrade}"/><span class="slds-output "> ${!terminationOutputPriceTable.priceOutput.Trade__c}</span></div>
+                                                        </div>  
+                                                        <div class="row">
+                                                            <div class="col-md-6">Authorized Distributor </div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!terminationOutputPriceTable.isAuthorizedDistributor}"/><span class="slds-output "> ${!terminationOutputPriceTable.priceOutput.AUTHORIZED_DISTRIBUTOR__c}</span></div>
+                                                        </div> 
+                                                        <div class="row">
+                                                            <div class="col-md-6">  Elite Distributor  </div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!terminationOutputPriceTable.isEliteDistributor}"/><span class="slds-output "> ${!terminationOutputPriceTable.priceOutput.ELITE_DISTRIBUTOR__c}</span></div>
+                                                        </div>  
+                                                        
+                                                    </apex:outputPanel>
+                                                   
+                                                    <apex:outputPanel layout="none" rendered="{!isShowEppa}">
+                                                        <div class="row">
+                                                            <div class="col-md-6"><b>Connectors-EPPA-054{!eppaName}</b></div>
+                                                            <div class="col-md-6">
+                                                                <b>Please contact Product Management team for the pricing details</b>
+                                                            </div>
+                                                        </div>
+                                                        <apex:outputPanel rendered="{!eppa54RPN!=null}">
+                                                            <div class="row">
+                                                                <div class="col-md-6"><b>EPPA RPN</b></div>
+                                                                <div class="col-md-6">{!eppa54RPN} </div>
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                     <apex:outputPanel rendered="{!HVCA_Part_Selector__c.isTermination_preQuote__c}">  
+                                                            <button type="button" class="btn btn-default " data-toggle="modal" data-target="#terminationModal" onclick="setTerminationListPrice();">Propose Price</button>
+                                                    </apex:outputPanel><br/>
+                                                      <apex:outputPanel layout="none" rendered="{!HVCA_Part_Selector__c.Insulator_Type__c == 'Dry Type'}">
+                                                         Note* : : For full description, Please contact PM.
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel layout="none" rendered="{!isShowEppa}">
+                                                        Note* : : Termination in Grey color available for some of the sizes. Please contact PM team for details and pricing.
+                                                    </apex:outputPanel>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <apex:outputPanel rendered="{!terminationOutputPriceTable == null}">
+                                                            <apex:image value="{!docTable.Image__c}" />
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!terminationOutputPriceTable <> null}">
+                                                            <apex:image value="{!docTable.Image__c}" style="height: 200px;"/>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                    </apex:outputPanel>
+                                    <br/>
+                                    <apex:outputPanel id="splice-output" rendered="{!HVCA_Part_Selector__c.Splice_Operating_Voltage__c <> null}">
+                                        <div id="spliceOutput" class="panel-padding form-element__group panel-collapse collapse in" >
+                                            <div class="panel-sub-heading">
+                                                <div class="row">
+                                                    <div class="col-md-4"> 
+                                                        <a href="javascriipt:;"><b> Splice Output : </b></a><br/>
+                                                    </div>
+                                                    <div class="col-md-8"> 
+                                                        <label class="slds-checkbox">
+                                                            <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isSplice_preQuote__c}" onclick="includeSplicePreQuote();">
+                                                            </apex:inputCheckbox>
+                                                            <span class="slds-checkbox--faux"></span>
+                                                            <span class="slds-form-element__label">Include Splice in Quote</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-6">  Part Description  </div>
+                                                        <div class="col-md-6">
+                                                            <div id="term_output_div" class="slds-form-element__control">
+                                                                <span  class="slds-output ">{!spliceOutput}</span>
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!AND(spliceOutput<>null && !ISBLANK(spliceOutput))}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Data Sheet </div>
+                                                            <div class="col-md-6"><span  class="slds-output "><a href="{!spliceDocTable.Data_Sheet__c}" target="_blank">{!spliceDocTable.Data_Sheet_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Offer Drawing </div>
+                                                            <div class="col-md-6"><span class="slds-output "><a href="{!spliceDocTable.Offer_Drawing__c}" target="_blank">{!spliceDocTable.Offer_Drawing_Name__c}</a></span></div>
+                                                        </div>                                                  
+                                                        <div class="row">
+                                                            <div class="col-md-6">Lead Times Days</div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!spliceDocTable.Lead_Times_Days__c}</span></div>
+                                                        </div> 
+                                                        <div class="row">
+                                                            <div class="col-md-6">Quantity</div>
+                                                            <div class="col-md-6"><apex:inputField value="{!HVCA_Part_Selector__c.Splice_Quantity__c}" styleClass="slds-input" style="width: 30%;"/></div>
+                                                        </div> 
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!spliceoutputPriceTable == null}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">List Price </div>
+                                                            <div class="col-md-6"><span class="slds-output splice-price"> {!spliceDocTable.Pricing__c}</span></div>
+                                                        </div>  
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!(HVCA_Part_Selector__c.isSplice_preQuote__c && HVCA_Part_Selector__c.Splice_Offered_Price__c <> null && HVCA_Part_Selector__c.Splice_Offered_Price__c <>0) }">
+                                                         <div class="row">
+                                                            <div class="col-md-6">Proposed Price </div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!HVCA_Part_Selector__c.Splice_Offered_Price__c}</span></div>
+                                                        </div>                                                          
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!spliceoutputPriceTable <> null}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Trade </div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!spliceoutputPriceTable.isTrade}"/><span class="slds-output "> ${!spliceoutputPriceTable.priceOutput.Trade__c}</span></div>
+                                                        </div>  
+                                                        <div class="row">
+                                                            <div class="col-md-6"> Authorized Distributor</div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!spliceoutputPriceTable.isAuthorizedDistributor}"/><span class="slds-output "> ${!spliceoutputPriceTable.priceOutput.AUTHORIZED_DISTRIBUTOR__c}</span></div>
+                                                        </div>  
+                                                        <div class="row">
+                                                            <div class="col-md-6">  Elite Distributor </div>
+                                                            <div class="col-md-6"><apex:inputCheckbox value="{!spliceoutputPriceTable.isEliteDistributor}"/><span class="slds-output "> ${!spliceoutputPriceTable.priceOutput.ELITE_DISTRIBUTOR__c}</span></div>
+                                                        </div>  
+                                                        
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel layout="none" rendered="{!isShowSpliceEppa}">
+                                                        <div class="row">
+                                                            <div class="col-md-6"><b>Connectors-EPPA-047{!spliceEppaName}</b></div>
+                                                            <div class="col-md-6">
+                                                                <b>Please contact Product Management team for part number details</b>
+                                                            </div>
+                                                        </div>
+                                                        <apex:outputPanel rendered="{!eppaOutput!=null}">
+                                                            <div class="row">
+                                                                <div class="col-md-6"><b>EPPA RPN</b></div>
+                                                                <div class="col-md-6">{!eppaOutput} </div>
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                  
+                                                    <apex:outputPanel rendered="{!HVCA_Part_Selector__c.isSplice_preQuote__c}">  
+                                                            <button type="button" class="btn btn-default " data-toggle="modal" data-target="#spliceModal" onclick="setSpliceListPrice();">Propose Price</button>
+                                                    </apex:outputPanel><br/>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <apex:image value="{!spliceDocTable.Image__c}"/>
+                                                    </div>                                                    
+                                                </div>
+                                            </div>
+                                            <!--
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <apex:outputPanel layout="none" rendered="{!isShowSpliceAdditionSection}">
+                                                        <div class="row">
+                                                            <div class="col-md-6"><b>Splice Additional Output</b></div>
+                                                            <div class="col-md-6">
+                                                                <b>{!spliceAdditionalOutput}</b>
+                                                            </div>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!AND(spliceAdditionalOutput<>null && !ISBLANK(spliceAdditionalOutput))}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Data Sheet </div>
+                                                            <div class="col-md-6"><span  class="slds-output "><a href="{!spliceAdditionalDocTable.Data_Sheet__c}" target="_blank">{!spliceAdditionalDocTable.Data_Sheet_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Offer Drawing </div>
+                                                            <div class="col-md-6"><span class="slds-output "><a href="{!spliceAdditionalDocTable.Offer_Drawing__c}" target="_blank">{!spliceAdditionalDocTable.Offer_Drawing_Name__c}</a></span></div>
+                                                        </div>                                                  
+                                                        <div class="row">
+                                                            <div class="col-md-6">Lead Times Days</div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!spliceAdditionalDocTable.Lead_Times_Days__c}</span></div>
+                                                        </div> 
+                                                        <div class="row">
+                                                            <div class="col-md-6">Quantity</div>
+                                                            <div class="col-md-6"><apex:inputField value="{!HVCA_Part_Selector__c.Splice_Additional_Quantity__c}" styleClass="slds-input" style="width: 30%;"/></div>
+                                                        </div> 
+                                                        <div class="row">
+                                                            <div class="col-md-6">List Price </div>
+                                                            <div class="col-md-6"><span class="slds-output splice-price"> {!spliceAdditionalDocTable.Pricing__c}</span></div>
+                                                        </div>  
+                                                        <apex:outputPanel rendered="{!HVCA_Part_Selector__c.isSplice_preQuote__c}">  
+                                                            <button type="button" class="btn btn-default " data-toggle="modal" data-target="#spliceModal" onclick="setSpliceListPrice();">Propose Price</button>
+                                                        </apex:outputPanel><br/>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                 <div class="col-md-4">
+                                                    <div class="row">
+                                                        <apex:image value="{!spliceAdditionalDocTable.Image__c}"/>
+                                                    </div>                                                    
+                                                </div>
+                                            </div>    -->                                        
+                                        </div>
+                                    </apex:outputPanel>
+                                    <br/>
+                                    <apex:outputPanel id="GIS-Output" rendered="{!HVCA_Part_Selector__c.GIS_Operating_Voltage__c <> null}">
+                                        <div id="gisOutput" class="panel-padding form-element__group panel-collapse collapse in" >
+                                            <div class="panel-sub-heading">
+                                                <div class="row">
+                                                    <div class="col-md-4"> 
+                                                        <a href="javascriipt:;"><b> GIS Output :  </b></a><br/>
+                                                    </div>
+                                                    <div class="col-md-8"> 
+                                                        <label class="slds-checkbox">
+                                                            <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isGIS_preQuote__c}" onclick="includeGISPreQuote();">
+                                                            </apex:inputCheckbox>
+                                                            <span class="slds-checkbox--faux"></span>
+                                                            <span class="slds-form-element__label">Include GIS in Quote</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-6">  Part Description  </div>
+                                                        <div class="col-md-6">
+                                                            <div id="term_output_div" class="slds-form-element__control">
+                                                                <span  class="slds-output ">{!gisOutput}</span>
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!AND(gisOutput<>null && !ISBLANK(gisOutput))}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Data Sheet </div>
+                                                            <div class="col-md-6"><span  class="slds-output "><a href="{!gisDocTable.Data_Sheet__c}" target="_blank">{!spliceDocTable.Data_Sheet_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Offer Drawing </div>
+                                                            <div class="col-md-6"><span class="slds-output "><a href="{!gisDocTable.Offer_Drawing__c}" target="_blank">{!spliceDocTable.Offer_Drawing_Name__c}</a></span></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">Lead Times Days</div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!docTable.Lead_Times_Days__c}</span></div>
+                                                        </div> 
+                                                        <div class="row">
+                                                            <div class="col-md-6">Quantity</div>
+                                                            <div class="col-md-6"><apex:inputField value="{!HVCA_Part_Selector__c.GIS_Quantity__c}" styleClass="slds-input" style="width: 30%;"/></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">List Price </div>
+                                                            <div class="col-md-6"><span class="slds-output gis-price"> {!gisDocTable.Pricing__c}</span></div>
+                                                        </div>  
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!(HVCA_Part_Selector__c.isGIS_preQuote__c && HVCA_Part_Selector__c.GIS_Offered_Price__c <> null || HVCA_Part_Selector__c.GIS_Offered_Price__c <> 0)}">
+                                                        <div class="row">
+                                                            <div class="col-md-6">Proposed Price </div>
+                                                            <div class="col-md-6"><span class="slds-output "> {!HVCA_Part_Selector__c.GIS_Offered_Price__c}</span></div>
+                                                        </div>                                                          
+                                                    </apex:outputPanel>
+                                                     <apex:outputPanel rendered="{!HVCA_Part_Selector__c.isGIS_preQuote__c}">  
+                                                            <button type="button" class="btn btn-default " data-toggle="modal" data-target="#gisModal">Offer Price</button>
+                                                    </apex:outputPanel><br/>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <apex:image value="{!gisDocTable.Image__c}"/>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                    </apex:outputPanel>                                    
+                                    <br/>
+                                    <div id="accessoriesOutput" class="panel-padding form-element__group panel-collapse collapse in" >
+                                        <div class="panel-sub-heading">
+                                            <a href="javascriipt:;"><b> Accessories: </b></a><br/>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">  
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Include in Quote
+                                                        </th>
+                                                        <th>
+                                                            Mounting Version
+                                                        </th>
+                                                        <th>
+                                                            Catalog Number
+                                                        </th>
+                                                        <th>
+                                                            <apex:inputField value="{!HVCA_Part_Selector__c.isTradeColoumn__c}"/>
+                                                            Trade
+                                                        </th>
+                                                        <th>
+                                                            <apex:inputField value="{!HVCA_Part_Selector__c.isAuthorizedDistributor__c}"/>
+                                                            Authorized Distributor
+                                                        </th>
+                                                        <th>
+                                                            <apex:inputField value="{!HVCA_Part_Selector__c.isEliteDistributor__c}"/>
+                                                            Elite Distributor
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!listOfPlasticCamps}" var="camp"> 
+                                                        <tr>
+                                                            <td>                                                            
+                                                            
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'FLAT MOUNT'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.isFlatMount__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel> 
+                                                                
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'STRUT NUT'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.isStrutNut__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'SLIDER PLATE'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.isSliderPlate__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'FLAT MOUNT with Compression Springs'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.isFMCompressionString__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel>        
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'TREFOIL CABLE CLAMPS -SLIDER PLATE'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.IS_TREFOIL_CABLE_CLAMPS_SLIDER_PLATE__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel>    
+                                                                <apex:outputPanel rendered="{!camp.plasticCamp.Mounting_Version__c == 'TREFOIL CABLE CLAMPS -STRUT NUT'}">
+                                                                    <apex:inputField value="{!HVCA_Part_Selector__c.IS_TREFOIL_CABLE_CLAMPS_STRUT_NUT__c}" styleclass="slds-checkbox--faux"/>
+                                                                </apex:outputPanel>    
+                                                                
+                                                               <!-- <label class="slds-checkbox">
+                                                                    <apex:inputCheckbox value="{!camp.isInclude}" />
+                                                                    <span class="slds-checkbox--faux"></span> 
+                                                                </label>  -->  
+                                                            </td>
+                                                            <td>{!camp.plasticCamp.Mounting_Version__c}</td>
+                                                            <td>{!camp.plasticCamp.CATALOG_NUMBER__c}</td>
+                                                            <td>${!camp.plasticCamp.TRADE__c}</td>
+                                                            <td>${!camp.plasticCamp.AUTHORIZED_DISTRIBUTOR__c}</td>
+                                                            <td>${!camp.plasticCamp.ELITE_DISTRIBUTOR__c}</td>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">          
+                                                <tbody>
+                                                    
+                                                    <tr>
+                                                        <td>   
+                                                            <label class="slds-checkbox">
+                                                                <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isNemaPadSelected__c}" />
+                                                                <span class="slds-checkbox--faux"></span> 
+                                                            </label>    
+                                                        </td>
+                                                        
+                                                        <td>NEMA PAD</td>
+                                                        <td><a href="{!$Label.PartSelector_NEMAPadConnectorOHVT_145C_US}" target="_blank"> NEMA Pad Connector for OHVT-145C_US</a></td>
+                                                        <td><a href="{!$Label.PartSelector_HVConnectors145kVOutdoorTerminationsDatasheet}" target="_blank">HV Connectors for 145kV Outdoor Terminations Datasheet</a></td>
+                                                        <td><div class="img">
+                                                            
+                                                            <apex:image value="{!$Label.PartSelector_NEMAPad}"  /></div></td>
+                                                        <td>$250.00 </td>
+                                                    </tr>               
+                                                    <tr>
+                                                        <td>   
+                                                            <label class="slds-checkbox">
+                                                                <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isBasePlateAdapterSelecter__c}" />
+                                                                <span class="slds-checkbox--faux"></span> 
+                                                            </label>    
+                                                        </td>                    
+                                                        <td>Base Plate Adapters</td>
+                                                        <td><a href="{!$Label.PartSelector_Customer_Drawing_OHVT_BP_ADAPTER}" target="_blank">Customer Drawing_OHVT-BP-ADAPTER</a></td>
+                                                        <td></td>
+                                                        <td><div class="img">
+                                                            
+                                                            <apex:image value="{!$Label.Base_Plate_Adapter}"  /></div></td>
+                                                        <td>$760.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>   
+                                                            <label class="slds-checkbox">
+                                                                <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isCableStrippingToolSelected__c}" />
+                                                                <span class="slds-checkbox--faux"></span> 
+                                                            </label>    
+                                                        </td>
+                                                        <td>Cable Stripping Tool</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>$2836.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>   
+                                                            <label class="slds-checkbox">
+                                                                <apex:inputCheckbox value="{!HVCA_Part_Selector__c.isHeatingBlanketSelected__c}" />
+                                                                <span class="slds-checkbox--faux"></span> 
+                                                            </label>    
+                                                        </td>
+                                                        <td>Heating Blanket</td>
+                                                        <td></td>
+                                                        <td><a href="{!$Label.PartSelector_Data_Sheet_HVIA_EXT_CTRL_HEATING_BLANKET }" target="_blank">Data Sheet - HVIA-EXT-CTRL-HEATING-BLANKET</a></td>
+                                                        <td><div class="img"><apex:image value="{!$Label.PartSelector_Heating_Blanket}"  /></div></td>
+                                                        <td>$5512.00</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    
+                                    <div id="partDetails" class=" form-element__group " >  
+                                        <center>
+                                            <apex:outputPanel id="bottom-button-section">
+                                                <apex:commandButton value="Submit & Close" styleclass="slds-button slds-button--neutral" action="{!submitForApproval}" reRender="bottom-button-section,top-button-section" status="status"
+                                                                    rendered="{!((HVCA_Part_Selector__c.Termination_Offered_Price__c <> null && HVCA_Part_Selector__c.Termination_Offered_Price__c <> 0) || 
+                                                                              (HVCA_Part_Selector__c.Splice_Offered_Price__c <> null && HVCA_Part_Selector__c.Splice_Offered_Price__c <>0) ||
+                                                                              (HVCA_Part_Selector__c.GIS_Offered_Price__c <> null && HVCA_Part_Selector__c.GIS_Offered_Price__c <> 0) && 
+                                                                              (HVCA_Part_Selector__c.isGIS_preQuote__c || HVCA_Part_Selector__c.isSplice_preQuote__c || HVCA_Part_Selector__c.isTermination_preQuote__c) &&
+                                                                              HVCA_Part_Selector__c.Approval_Status__c <> 'Pending Approval')}" style="margin-right:5px" />
+                                                
+                                                
+                                                <apex:commandLink target="_blank" action="{!generateQuote}" styleClass="slds-button slds-button--neutral" value="Get Offer"  rendered="{!(AND (OR(HVCA_Part_Selector__c.isShowOffer__c,HVCA_Part_Selector__c.Approval_Status__c == 'Approvad') ,OR(HVCA_Part_Selector__c.isGIS_preQuote__c , HVCA_Part_Selector__c.isSplice_preQuote__c, HVCA_Part_Selector__c.isTermination_preQuote__c )))}"></apex:commandLink>
+                                                <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!back}"  value="Back" status="status"  ></apex:commandButton>
+                                                <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!backToOpp}" value="Save & Close" reRender="refresh_form" status="status" oncomplete="setStyle();" ></apex:commandButton>
+                                            </apex:outputPanel>
+                                        </center>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:actionStatus id="status">
+                            <apex:facet name="start">
+                                <div class="slds-spinner_container">
+                                    <div class="slds-spinner--brand slds-spinner slds-spinner--medium" aria-hidden="false" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </apex:facet>
+                        </apex:actionStatus>
+                        
+                    </apex:outputPanel>
+                    <apex:actionFunction name="reRenderSpliceOutput" action="{!saveRecord}" reRender="splice-output,top-button-section, bottom-button-section,status-section" status="status" />
+                    <apex:actionFunction name="reRenderTerminationOutput" action="{!saveRecord}" reRender="termination-output,top-button-section, bottom-button-section,status-section" status="status" />
+                    <apex:actionFunction name="reRenderGISOutput" action="{!saveRecord}" reRender="GIS-Output,top-button-section, bottom-button-section,status-section" status="status" />
+                    <apex:actionFunction name="fetchConductorOd" action="{!fetchConductorOd}" reRender="conductor-section" oncomplete="populateInsulationOdValue();" status="status"/>
+                    <apex:actionFunction name="showAdditional" action="{!spliceAdditionSection}" reRender="splice-additional-section"  status="status"/>
+                    <apex:actionFunction action="{!getPlasticCamps}" name="cableclamp" reRender="cable-clamp" status="status" >
+                        <apex:param name="outerJacketOD" assignTo="{!outerJacketOD}" value="{!HVCA_Part_Selector__c.Outer_Jacket_OD__c}" />
+                        
+                    </apex:actionFunction>
+                    <apex:actionFunction name="setSetionVisibility" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="toggleTemination" action="{!toggleTransitionSection}" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="toggleSplice" action="{!toggleSpliceSection}" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="toggleGIS" action="{!toggleGISSection}" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="toggleAccessoriess" action="{!toggleAccessoriessSection}" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="toggleAccessoriessSection" action="{!getPlasticCamps}" reRender="refresh_form" oncomplete="setStyle();" status="status" />
+                    <apex:actionFunction name="renderTerminationOutput" reRender="trmination-output" status="status" />
+                    <!--------------------------------------------------- Modals Section starts here ---------------------------------------------------->
+                    <!-- Trigger the modal with a button -->
+                    <!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
+                    
+                    <!---------------------------- Terminaton  Modal ---------------------->
+                    <div id="terminationModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Terminatin Price Negotiation</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Termination_List_Price__c">List Price</label>
+                                            <div id="Termination_List_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputText id="Termination_List_Price__c"   value="{!HVCA_Part_Selector__c.Termination_List_Price__c}" styleClass="slds-output form-control disabled termination-list-price" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Termination_Offered_Price__c">Proposed Price</label>
+                                            <div id="Termination_Offered_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="Termination_Offered_Price__c" value="{!HVCA_Part_Selector__c.Termination_Offered_Price__c}" styleClass="slds-input form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Termination_Final_Approved_Price__c">Approved Price</label>
+                                            <div id="Termination_Final_Approved_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputText id="Termination_Final_Approved_Price__c" value="{!HVCA_Part_Selector__c.Termination_Approved_Price__c}" styleClass="slds-output form-control disabled"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="slds-form-element__label" for="Termination_List_Price__c">Comment</label>
+                                            <div id="Termination_Proposed_Price_Comment__c_div" class="slds-form-element__control">
+                                                <apex:inputField id="Termination_Proposed_Price_Comment__c"   value="{!HVCA_Part_Selector__c.Termination_Proposed_Price_Comment__c}" styleClass="slds-input form-control " />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-default" action="{!saveRecord}" html-data-dismiss="modal" reRender="termination-output,top-button-section, bottom-button-section,status-section" value="Save" status="status"/>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <!-- ---------------------------Splice  Modal ------------------------------------>
+                    <div id="spliceModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Splice Price Negotiation</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Splice_List_Price__c">List Price</label>
+                                            <div id="Splice_List_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="Splice_List_Price__c" value="{!HVCA_Part_Selector__c.Splice_List_Price__c}" styleClass="slds-output form-control disabled splice-list-price"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Splice_Offered_Price__c">Proposed Price</label>
+                                            <div id="Splice_Offered_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="Splice_Offered_Price__c" value="{!HVCA_Part_Selector__c.Splice_Offered_Price__c}" styleClass="slds-input form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="Splice_Final_Approved_Price__c">Approved Price</label>
+                                            <div id="Splice_Final_Approved_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="Splice_Final_Approved_Price__c" value="{!HVCA_Part_Selector__c.Splice_Approved_Price__c}" styleClass="slds-output form-control disabled" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <div class="row">
+                                         <div class="col-md-12">
+                                             <label class="slds-form-element__label" for="Splice_List_Price__c">Comment</label>
+                                             <div id="Splice_Proposed_Price_Comment__c_div" class="slds-form-element__control">
+                                                 <apex:inputField id="Splice_Proposed_Price_Comment__c"   value="{!HVCA_Part_Selector__c.Splice_Proposed_Price_Comment__c}" styleClass="slds-input form-control " />
+                                             </div>
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-default" action="{!saveRecord}" html-data-dismiss="modal" reRender="splice-output,top-button-section, bottom-button-section,status-section" value="Save" status="status"/>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <!-- ------------------------GIS  Modal ----------------------------------------->
+                    <div id="gisModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">GIS Price Negotiation</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="GIS_List_Price__c">List Price</label>
+                                            <div id="GIS_List_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="GIS_List_Price__c" value="{!HVCA_Part_Selector__c.GIS_List_Price__c}" styleClass="slds-output form-control disabled"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="GIS_Offered_Price__c">Proposed Price</label>
+                                            <div id="GIS_Offered_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="GIS_Offered_Price__c" value="{!HVCA_Part_Selector__c.GIS_Offered_Price__c}" styleClass="slds-input form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="slds-form-element__label" for="GIS_Final_Approved_Price__c">Approved Price</label>
+                                            <div id="GIS_Final_Approved_Price__c_div" class="slds-form-element__control">
+                                                <apex:inputtext id="GIS_Final_Approved_Price__c" value="{!HVCA_Part_Selector__c.GIS_Approved_Price__c}" styleClass="slds-output form-control disabled"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="slds-form-element__label" for="GIS_List_Price__c">Comment</label>
+                                            <div id="GIS_Proposed_Price_Comment__c_div" class="slds-form-element__control">
+                                                <apex:inputField id="GIS_Proposed_Price_Comment__c"   value="{!HVCA_Part_Selector__c.GIS_Proposed_Price_Comment__c}" styleClass="slds-input form-control " />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-default"  action="{!saveRecord}" html-data-dismiss="modal" reRender="GIS-Output,top-button-section, bottom-button-section,status-section" value="Save" status="status"/>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <!--------------------------------------------------- Modals Section ends here ---------------------------------------------------->
+                </apex:form>   
+                
+                <apex:form id="attachment-block" >
+                    <apex:outputPanel rendered="{!isError}">
+                        <div class="alert alert-danger">
+                            <apex:pageMessages >
+                            </apex:pageMessages>
+                            
+                        </div>   
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!!isShowInputSecion}">
+                        <div class=" slds-form--compound">  
+                            <div class="panel panel-default">
+                                <div id="isAttachmentSection" class="isAttachmentSection">
+                                    <div class="panel-heading">
+                                        <a data-toggle="collapse" data-target="#accessories" href="#accessories">                                                
+                                            <span class="panel-heading-size"><b>Attachments </b></span>                                                
+                                        </a>
+                                    </div>  
+                                    <div id="docOutput" class="panel-padding form-element__group panel-collapse collapse in" >                                         
+                                        <apex:actionRegion >
+                                            <apex:variable value="{!1}" var="count"/>
+                                            <apex:repeat value="{!attachments}" var="attachment" >
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6"><a href="/{!attachment.Id}" target="_blank"> {!count}) {!attachment.name}</a></div>
+                                                    <div class="col-md-6">{!attachment.description}</div>                                                          
+                                                </div>
+                                                <apex:variable value="{!count+ 1}" var="count"/>
+                                            </apex:repeat>
+                                            <br/>
+                                            <a href="javascript:;" onclick="toggleFileSection();" >Add a New File : </a><br/>
+                                            <div class="row fileSection ">
+                                                <div class="col-md-3"><apex:inputText value="{!attachment.name}" html-placeholder="Name Of File" id="fileName" styleClass=" slds-input"/> </div>
+                                                <div class="col-md-3"><apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file" styleClass=" slds-input"/> </div>
+                                                <div class="col-md-3"><apex:inputTextArea value="{!attachment.description}" html-placeholder="Description of File" id="description" styleClass=" slds-input"/></div>
+                                                <div class="col-md-3"><apex:commandButton action="{!upload}" value="Attach File"  status="status" styleClass=" slds-button slds-button--neutral"   /></div>                                                    
+                                            </div>                                      
+                                        </apex:actionRegion>
+                                    </div>
+                                </div>
+                                <script>
+                                $('.isAttachmentSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");                            
+                                </script>
+                            </div>
+                        </div>
+                        <br/>
+                    </apex:outputPanel>
+                </apex:form>
+                
+                
+            </div>
+            
+        </body>
+        <script>
+        
+        $( document ).ready(function() {
+            console.log( "ready!" );
+            onDocumentReady();
+        });
+        
+        function onDocumentReady(){          
+            fixSectionHeader();
+            fixCheckbox();
+        }   
+        
+        function fixSectionHeader(){
+            $('.isShowTransitionSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");
+            $('.isShowSpliceSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");
+            $('.isShowGISSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");
+            $('.isAccessoriesSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");
+            $('.isAttachmentSection').find('.panel-heading').css("color", "#333").css("background-color","#f5f5f5").css("border-color","#ddd").css("background-image", "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)");
+        }
+        
+        function fixCheckbox(){
+            if($('.termination-section').prop('checked')){
+                $('#termination_checkbox').prop( "checked", true );
+            }
+            if($('.splice-section').prop('checked')){
+                $('#splice_checkbox').prop( "checked", true );
+            }
+            if($('.gis-section').prop('checked')){
+                $('#gis_checkbox').prop( "checked", true );
+            }
+            if($('.accessoriess-section').prop('checked')){
+                $('#accessoriess_checkbox').prop( "checked", true );
+            }
+        }
+        var body = $("html, body");
+        
+        function setStyle(search){ 
+            fixCheckbox();      
+            fixSectionHeader();
+            if('{!isError}' == 'true'){
+                body.stop().animate({scrollTop:0}, '500', 'swing' );   
+            }  
+            if(search == 'search'){
+             body.stop().animate({scrollTop:0}, '500', 'swing' ); 
+            }    
+        }
+        
+        
+        function populateInsulationOdValue(){     
+            if($( 'input[id$=Insulation_Thickness__c]').val()!=undefined && $( 'input[id$=Insulation_Thickness__c]').val() != '' ){
+                var insulationOd = parseFloat($( 'input[id$=Conductor_OD__c]').val()) + parseFloat(2*($('input[id$=Insulation_Thickness__c]').val()* 0.0254)); 
+                insulationOd = insulationOd.toFixed(2);
+                $('input[id$=Insulation_OD__c]').val(insulationOd);
+            }
+        }        
+        
+        function refreshForm(){
+            fetchConductorOd(); 
+        }
+        
+        function searchOnClick(){
+            cableclamp($('.outer-jacket-od').val()); 
+        }        
+        
+        function  setTerminationListPrice(){ 
+           
+            
+            if('{!terminationOutputPriceTable}' != undefined && '{!terminationOutputPriceTable}' != ''){
+                $('.termination-list-price').val('{!terminationOutputPriceTable.priceOutput.ELITE_DISTRIBUTOR__c}');
+            }else{
+            	 $('.termination-list-price').val(parseInt($('.termination-price').text()));   
+            }   
+         }
+        
+        function  setSpliceListPrice(){
+            if('{!spliceoutputPriceTable}' != undefined && '{!spliceoutputPriceTable}'!=''){
+                $('.splice-list-price').val('{!spliceoutputPriceTable.priceOutput.ELITE_DISTRIBUTOR__c}');
+            }else{
+            	 $('.splice-list-price').val(parseInt($('.splice-price').text()));   
+            } 
+         }
+        function includeSplicePreQuote(){
+            reRenderSpliceOutput();
+        }   
+        function includeGISPreQuote(){
+            reRenderGISOutput();
+        }
+        function includeTerminationPreQuote(){
+			reRenderTerminationOutput();            
+        }
+        
+        </script>
+    </html>
+</apex:page>

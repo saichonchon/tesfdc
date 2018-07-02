@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <decisions>
+        <name>Check_Intercontec_parts</name>
+        <label>Check Intercontec parts</label>
+        <locationX>451</locationX>
+        <locationY>200</locationY>
+        <defaultConnectorLabel>[Default Outcome]</defaultConnectorLabel>
+        <rules>
+            <name>Variable_is_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varscIntercontecparts</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>update_Opportunity_checkbox_false</targetReference>
+            </connector>
+            <label>Variable is null</label>
+        </rules>
+        <rules>
+            <name>Variable_is_not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varscIntercontecparts</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>update_Opportunity_checkbox_true</targetReference>
+            </connector>
+            <label>Variable is not null</label>
+        </rules>
+    </decisions>
+    <interviewLabel>IND Intercontec Flag Opps {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>IND Intercontec Flag Opps</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Lookup_opp_parts</name>
+        <label>Lookup opp parts</label>
+        <locationX>450</locationX>
+        <locationY>66</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Intercontec_parts</targetReference>
+        </connector>
+        <filters>
+            <field>CBC5_Code__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>40542</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Opportunity__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varOppId</elementReference>
+            </value>
+        </filters>
+        <object>Opportunity_Part__c</object>
+        <outputReference>varscIntercontecparts</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordUpdates>
+        <name>update_Opportunity_checkbox_false</name>
+        <label>update Opportunity checkbox false</label>
+        <locationX>307</locationX>
+        <locationY>346</locationY>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varOppId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Intercontec_Opportunity__c</field>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>update_Opportunity_checkbox_true</name>
+        <label>update Opportunity checkbox true</label>
+        <locationX>609</locationX>
+        <locationY>335</locationY>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varOppId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Intercontec_Opportunity__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <startElementReference>Lookup_opp_parts</startElementReference>
+    <variables>
+        <name>varOppId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>varscIntercontecparts</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Opportunity_Part__c</objectType>
+    </variables>
+</Flow>

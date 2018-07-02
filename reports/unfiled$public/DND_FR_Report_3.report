@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Distributor__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$RecordType</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Opportunity Distributors Channel</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast__r$Amount__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>USD 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast__r$Fiscal_Year_Quarter__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>2017-04</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$BU_profit_center__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>startsWith</operator>
+            <value>Data</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Distributor__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>None-Direct Business,Distributor not defined</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$RecordType</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Opportunity.DND_Opportunity</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>DND - FR Report 3</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity_with_accounts_parts_and_forecast__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$LastModifiedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

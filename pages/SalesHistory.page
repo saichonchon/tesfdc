@@ -1,0 +1,78 @@
+<!--
+Author:           Tangyong Li <tangyong.li@capgemini.com>
+Description:      Visualforce page to manage the Opportunity_Part__c records.
+			      The user story number is W-00145.
+Controller class: SalesHistory
+Test Class:       SalesHistoryTest
+History
+2017-08-14 	      Tangyong Li <tangyong.li@capgemini.com> created 
+-->
+<apex:page controller="SalesHistory" showHeader="False" title="Sales History">
+<style>
+body .pbBody .pbSubheader {
+	background:#0066A1;
+}
+</style>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Part {!partNum} sold to {!oppy.Account.Name}" columns="1">
+                <apex:pageBlockTable value="{!list_energyQuoteLineItems}" var="SHistory" columnsWidth="15%,10%,8%,12%,15%,10%,15%,15%">
+                    <apex:column headerValue="Part Number" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.Part__r.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="RSQ Number" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <a href="{!'/'+SHistory.Id}" target="blank">{!SHistory.Energy_Quote_Name__r.Quote_Number__c}</a>
+                    </apex:column>
+                    <apex:column headerValue="Status" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.Opportunity_Part__r.Status__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Company Number" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.Energy_Quote_Name__r.Account_Name__r.Company_Number__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Account Name" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.Energy_Quote_Name__r.Account_Name__r.Name}"/>
+                    </apex:column>
+                    
+                    <apex:column headerValue="Quantity" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.Quantity__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Selling Price" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.UnitPrice__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Sold Date" style="{!IF(SHistory.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory.ServiceDate__c}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Part {!partNum} sold to other accounts" columns="1">
+                <apex:pageBlockTable value="{!list_energyQuoteLineItems1}" var="SHistory1" columnsWidth="15%,10%,8%,12%,15%,10%,15%,15%">
+                    <apex:column headerValue="Part Number" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.Part__r.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="RSQ Number" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <a href="{!'/'+SHistory1.Id}" target="blank">{!SHistory1.Energy_Quote_Name__r.Quote_Number__c}</a>
+                    </apex:column>
+                    <apex:column headerValue="Status" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.Opportunity_Part__r.Status__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Company Number" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.Energy_Quote_Name__r.Account_Name__r.Company_Number__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Account Name" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.Energy_Quote_Name__r.Account_Name__r.Name}"/>
+                    </apex:column>
+                    
+                    <apex:column headerValue="Quantity" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.Quantity__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Selling Price" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.UnitPrice__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Sold Date" style="{!IF(SHistory1.Opportunity_Part__r.Status__c == 'Won','background:#E98300',IF(SHistory1.Opportunity_Part__r.Status__c == 'Lost','background:#0066A1',''))}">
+                        <apex:outputfield value="{!SHistory1.ServiceDate__c}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

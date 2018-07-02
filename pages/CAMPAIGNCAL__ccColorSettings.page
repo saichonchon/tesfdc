@@ -1,0 +1,296 @@
+<apex:page standardStylesheets="true" showHeader="false" sidebar="false" controller="CAMPAIGNCAL.ccColorSettingsController">
+    <apex:styleSheet value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'bootstrap/css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/jquery-1.11.1.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/jquery-ui-1.8.11.custom.min.js')}" />   
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/plugins/jquery.loadmask-0.4.min.js')}" />   
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/plugins/raphael.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/plugins/colorwheel.js')}"  />
+    
+    <script type="text/javascript">
+        var activeField = null;
+        parent.$j('.ui-dialog-content').unmask();
+        function CloseWindow(){
+            // parent.dialog.dialog('close');
+            parent.$j('.modal').modal('hide');
+            refreshViews();
+        }
+        function refreshViews(){
+            parent.refreshLegend(); // refresh color legend
+            if(parent.planningViewPage == true){
+                parent.loadAndRenderWithDelay('The settings have been updated, reloading...');
+            }
+            else{
+                parent.resetEvents=true;
+                parent.loadText = 'The settings have been updated, reloading...';
+                parent.$j('#blccCalendar').fullCalendar('refetchEvents');
+            }
+        }
+        $(document).ready(function(){
+            setupDatePicker();
+            $('.requiredLegend').hide();
+            //hideInactivePicklists();
+            
+        });
+        
+        /*function hideInactivePicklists(){
+            $('.equality-label').each(function(i,element){
+                if($(element).val() == ''){
+                    $(element).parents().find('tr').hide();
+                }
+            });
+        }*/
+        
+        function setupDatePicker(){
+            var cw = Raphael.colorwheel($('#blccColorpicker')[0], 195, 60);
+            cw.color('#ffffff');
+            cw.onchange(function(color){
+                if (activeField) {
+                    var hsl = rgbToHsl(color.r, color.g, color.b);
+                    activeField.css({backgroundColor: color.hex, color: (hsl[2] > 0.55 ? '#000' : '#fff')}).val(color.hex).change();
+                }
+            });
+
+            $('#blccColorpicker').mask();
+
+            $('.blccColorpicker').focus(function() {
+                activeField = $(this);
+                activeField.select();
+                cw.color(activeField.val());
+                $('#blccColorpicker').unmask();
+            }); 
+
+            //If the user cannot edit the company settings present a message
+            var canUpdateCompanyColor = {!$ObjectType.CAMPAIGNCAL__Campaign_Color__c.updateable};
+            var selectedRadio = $('input[id*="legend-select"]:checked');
+            if(canUpdateCompanyColor==false && $(selectedRadio).val()=='org'){
+                //Add a warning
+                $('.color-options-table td:first').html('<div class="no-co-setting-alert alert" style="text-align:left;background-color: #f8f8f8;border-color: transparent;font-size: 13px;color: black !important;font-weight: normal;">Company Color Settings are managed by system administrators and users with the Color Management permissions.</div>');
+            } else{
+                $('.no-co-setting-alert').remove();
+            }
+        }
+
+        /**
+         * Converts an RGB color value to HSL. Conversion formula
+         * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+         * Assumes r, g, and b are contained in the set [0, 255] and
+         * returns h, s, and l in the set [0, 1].
+         *
+         * @param   Number  r       The red color value
+         * @param   Number  g       The green color value
+         * @param   Number  b       The blue color value
+         * @return  Array           The HSL representation
+         */
+        function rgbToHsl(r, g, b){
+            r /= 255, g /= 255, b /= 255;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+
+            if(max == min){
+                h = s = 0; // achromatic
+            }else{
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch(max){
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return [h, s, l];
+        }
+
+    </script>
+
+    <style type="text/css">
+        .bracketLabsCampaignCalendarTab .pageTitleIcon {
+            background-image: url({!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'images/calendar32.png')});
+        }
+        .blccColorpicker {
+            border-top: 1px solid #aaa;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+        }
+        
+        th{
+            text-align: right;
+        }
+
+        .cc-bs .requiredLegend{
+            display:none !impotrant;
+        }
+    </style>
+
+    <style type="text/css">
+        .cc-bs .bPageTitle{
+            padding: 0;
+            margin-bottom: 4px;
+        }
+        .bPageBlock{
+            background-color: white !important;
+            border: none !important;
+        }
+        body{
+            margin:0 10px !important;
+        }
+
+        .cc-bs .bPageBlock .detailList tr td, .cc-bs .bPageBlock .detailList tr th,
+        .cc-bs .hoverDetail .bPageBlock .detailList tr td,
+        .cc-bs .hoverDetail .bPageBlock .detailList tr th{
+            border-bottom: 1px solid transparent;
+        }
+
+        .cc-bs .pbBody > div{
+            border-bottom: 1px solid #ECECEC;
+        }
+        .cc-bs .pbBody > div.modal-footer{
+            border-bottom: 0;
+        }
+
+        .modal-footer {
+          padding: 14px 15px 15px;
+          margin-bottom: 0;
+          text-align: right;
+          background-color: transparent;
+          border-top: 1px solid transparent !important;
+        }
+        .modal-footer:before,
+        .modal-footer:after {
+          display: table;
+          content: "";
+        }
+        .modal-footer:after {
+          clear: both;
+        }
+        /*body .bPageTitle .ptBody .pageType{
+            margin-left: 20px;
+            display:inline-block;
+            width: 100%;
+        }*/
+        body .bPageTitle .ptBody .pageDescription {
+            display:inline-block;
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-left: 10px;
+        }
+        body .bPageTitle .ptBody .pageType{
+            display:none;
+        }
+
+        body .editPage .pbHeader{
+            display:none;
+        }
+
+        body .editPage{
+            border-top: 1px solid #ececec;
+        }
+
+        .pageTitleIcon{
+            display: none !important;
+        }
+        .dataCol input[type="checkbox"]{
+            margin-top:6px;
+        }
+        .dataCol span span{
+            /*margin-top:6px;*/
+            display: inline-block;
+        }
+        body .bEditBlock .pbBody .pbSubheader, body .bWizardBlock .pbBody .pbSubheader{
+            background-image: none !important;
+            background-color: white !important;
+            border: none !important;
+        }
+
+        .cc-bs .color-options-table tr td{
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        .cc-bs .color-options-table tr td:first-child{
+            padding-right: 4px;
+        }
+
+        .cc-bs .legend-select input[type=radio], .cc-bs .field-select{
+            margin-top: -2px !important;
+        }
+
+        .cc-bs .legend-select label{
+            margin-left: 4px;
+        }
+        .cc-bs .pbSubheader.first{
+            margin-top: 15px;
+        }
+        .cc-bs .pbSubheader h3{
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #333333; 
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+    </style>
+    
+    <div class="campaignTab cc-bs" style="padding: 5px 15px 15px 15px">
+
+    <apex:sectionHeader title="" subtitle="Color Settings" />
+
+    <apex:form >
+    <apex:actionFunction name="updateColorSelectOptions" action="{!setupColorSettingsList}" rerender="color-options,footer" onComplete="setupDatePicker();"/>
+    <apex:actionFunction name="updateLegendSource" action="{!updateLegendSource}" rerender="color-options,footer" onComplete="setupDatePicker();refreshViews();"/>
+
+    <apex:pageBlock title="" mode="edit">
+        <apex:pageBlockSection title="1. Choose color settings source">
+            <apex:pageBlockSectionItem >
+                <apex:selectRadio value="{!legendSource}" id="legend-select" layout="pageDirection" onChange="updateLegendSource();" styleClass="legend-select">
+                    <apex:selectOptions value="{!LegendSourceOptions}" />
+                </apex:selectRadio>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="2. Select field source">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="field-select" value="Field" />
+                <apex:selectList value="{!colorField}" id="field-select" size="" onChange="updateColorSelectOptions();" styleClass="field-select">
+                    <apex:selectOptions value="{!FieldSelectOptions}" />
+                </apex:selectList>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="3. Choose colors" columns="1" id="color-options">
+            <apex:pageBlockSectionItem rendered="{!IF(legendSource='org',true,false)}">
+                <apex:dataTable value="{!currentSettingsList_org}" var="fieldColor" cellPadding="5" border="0" width="365" styleClass="color-options-table">
+                    <apex:column width="265" rendered="{!(fieldType == 'BOOLEAN' || fieldType == 'PICKLIST')}">
+                        <!-- <apex:facet name="header">Picklist Option</apex:facet> -->
+                        <apex:outputText value="{!fieldColor.CAMPAIGNCAL__Option__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <!-- <apex:facet name="header">Assigned Color</apex:facet> -->
+                        <apex:inputText disabled="{!IF($ObjectType.CAMPAIGNCAL__Campaign_Color__c.updateable,false,true)}" value="{!fieldColor.CAMPAIGNCAL__Color__c}" styleClass="blccColorpicker" id="picklistColor" style="background-color: {!HTMLENCODE(fieldColor.CAMPAIGNCAL__Color__c)}; color: {!HTMLENCODE(fieldColor.CAMPAIGNCAL__Text_Color__c)};" />
+                    </apex:column>
+                </apex:dataTable>
+                <div id="blccColorpicker"></div>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(legendSource='user',true,false)}">
+                <apex:dataTable value="{!currentSettingsList_user}" var="fieldColor" cellPadding="5" border="0" width="365" styleClass="color-options-table">
+                    <apex:column width="265" rendered="{!(fieldType == 'BOOLEAN' || fieldType == 'PICKLIST')}">
+                        <!-- <apex:facet name="header">Picklist Option</apex:facet> -->
+                        <apex:outputText value="{!fieldColor.CAMPAIGNCAL__Option__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <!-- <apex:facet name="header">Assigned Color</apex:facet> -->
+                        <apex:inputText disabled="{!IF($ObjectType.CAMPAIGNCAL__Campaign_User_Color__c.updateable,false,true)}" value="{!fieldColor.CAMPAIGNCAL__Color__c}" styleClass="blccColorpicker" id="picklistColor" style="background-color: {!HTMLENCODE(fieldColor.CAMPAIGNCAL__Color__c)}; color: {!HTMLENCODE(fieldColor.CAMPAIGNCAL__Text_Color__c)};" />
+                    </apex:column>
+                </apex:dataTable>
+                <div id="blccColorpicker"></div>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <apex:outputPanel id="footer" layout="none">
+        <div class="modal-footer">
+            <apex:commandLink styleClass="btn btn-primary" action="{!save}" id="saveBtn" onComplete="CloseWindow()" rendered="{!IF(OR($ObjectType.CAMPAIGNCAL__Campaign_Color__c.updateable,legendSource='user'),true,false)}">Save</apex:commandLink>
+            <apex:commandLink styleClass="btn btn-default" onclick="parent.$j('.modal').modal('hide');return false;">Cancel</apex:commandLink>
+        </div>
+        </apex:outputPanel>
+    </apex:pageBlock>
+    </apex:form>
+
+    </div>
+</apex:page>

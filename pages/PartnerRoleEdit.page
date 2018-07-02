@@ -1,0 +1,76 @@
+<apex:page standardController="Partner_Role__c" extensions="PartnerRoleAccountSearch">
+<apex:sectionHeader title="Partner Role Edit" subtitle="{!Partner_Role__c.name}"/>
+<apex:form >
+<apex:pageBlock title="Partner Role Edit" mode="edit">
+
+<apex:pageBlockButtons >
+<apex:commandButton value="Save" action="{!savePartner}"/> 
+<apex:commandButton value="Save & New" action="{!SaveAndNew}" /> 
+<apex:commandButton value="Cancel" action="{!cancel}"/> 
+</apex:pageBlockButtons>
+
+<apex:pageBlockSection title="Information" columns="1"> 
+
+<!-- Hidden fields to query and refer to account info -->
+<apex:inputHidden value="{!Partner_Role__c.Account__c}" id="targetId" />
+<apex:inputHidden value="{!Partner_Role__c.Account__r.Name}" />
+<apex:pageBlockSectionItem >   
+<apex:outputLabel value="Account" />
+<!--  emulate required field style -->
+<apex:outputPanel styleClass="requiredInput" layout="block">
+<apex:outputPanel styleClass="requiredBlock" layout="block"/>             
+<apex:inputText size="25" value="{!acctName}" required="true" id="targetName" onFocus="this.blur()" />
+<apex:image url="{!$Resource.lookup_image}" 
+    id="lookup" 
+    width="20"
+    height="20"
+    onclick="openLookupPopup('{!$Component.targetName}', '{!$Component.targetId}'); return false" 
+    onmouseover="ImageOver(this)" 
+    onmouseout="ImageNormal(this)" /> 
+<!--<a href="#" onclick="openLookupPopup('{!$Component.targetName}', '{!$Component.targetId}'); return false">Lookup</a>-->
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:inputField value="{!Partner_Role__c.Opportunity__c}" required="true"/> 
+<apex:inputField value="{!Partner_Role__c.Role__c}" required="false"/> 
+<apex:inputField value="{!Partner_Role__c.Allocation_Percent__c}" required="false"/> 
+</apex:pageBlockSection>
+
+</apex:pageBlock>
+
+<script>  
+var newWin=null;  
+function openLookupPopup(name, id)  
+{   
+    var url="/apex/AccountSearchPopup?namefield=" + name + "&idfield=" + id;   
+    newWin=window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');   
+    
+    if (window.focus)    
+    {    
+        newWin.focus();   
+    }           
+    
+    return false;     
+}          
+
+function closeLookupPopup()  
+{     
+    if (null!=newWin)     
+    {        
+        newWin.close();     
+    }    
+} 
+
+function ImageOver(MyImage)
+{
+    MyImage.src='{!$Resource.lookup_image_mousedover}'; 
+} 
+function ImageNormal(MyImage)
+{
+    MyImage.src='{!$Resource.lookup_image}'; 
+}
+
+</script> 
+
+</apex:form>
+</apex:page>

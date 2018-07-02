@@ -1,0 +1,29 @@
+<messaging:emailTemplate subject="REMINDER – Next survey due for Detractor customer" recipientType="User" relatedToType="Task">
+<messaging:plainTextEmailBody >
+.               
+</messaging:plainTextEmailBody>
+<messaging:htmlEmailBody >
+<apex:image Url="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3)}/servlet/servlet.ImageServer?id=015E0000006Oo9d&oid={!$Organization.Id}"/>
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900; height:5; width:600px;"/></tr></table>
+<br/>
+Dear {!relatedto.Owner.name},
+<br/>
+<br/>The Survey taken by {!relatedto.Who.name} which resulted in a detractor task being created.
+<br/>Next survey is Due in short period for him.
+<br/>
+<br/><br/>
+<a href="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3) + '/' +relatedto.Who.Id}">{!relatedto.Who.name}</a>
+<br/>
+
+<br/>
+Please endeavour to make contact with the customer before he receives next survey mail. 
+<br/>
+<br/><br/>
+Thank you,
+<br/>
+Industrial Surveys Team
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900; bEditID:r2st1; bLabel:accent1; height:5; width:600px;"/></tr></table>
+<apex:image Url="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3)}/servlet/servlet.ImageServer?id=015E0000001hKDe&oid={!$Organization.Id}"/>
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900;  height:5; width:600px;"/></tr></table>
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

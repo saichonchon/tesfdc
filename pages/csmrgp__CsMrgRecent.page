@@ -1,0 +1,28 @@
+<!-- 
+    07/07/2016  MD@IC   Created (00133528)
+    02/27/2018  BE@IC   LDS-ify (00156539)
+    05/29/2018  BE@IC   "applyHtmlTag" attribute set to false. This allows the page to be displayed as an inline visualforce page on case while
+                        clickjack protection is enabled. (00160625)
+ -->
+<!-- <apex:page id="pg" standardcontroller="Case" showHeader="false" standardStylesheets="true" title="Merge With Recent Case"> -->
+<apex:page id="pg" standardcontroller="Case" showHeader="false" standardStylesheets="true" applyHtmlTag="false">
+    <apex:slds />
+    <apex:stylesheet value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/style/csmrgp-style.css')}"/>
+    <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}">
+        <style type="text/css">
+            body{
+                padding: 0px !important;
+            }
+
+            select {
+                width:75%;
+            }
+        </style>
+    </apex:outputPanel>
+
+    <apex:form >
+        <div class="slds-scope">
+            <c:RecentlyViewedCases cid="{!record.Id}" callerName="CsMrgRecent"/>
+        </div>
+    </apex:form>
+</apex:page> <!-- 20px height -->

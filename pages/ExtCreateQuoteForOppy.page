@@ -1,0 +1,246 @@
+<apex:page standardController="Opportunity" extensions="ExtCreateQuoteForOppy" sidebar="false"  showHeader="false" title="Create Quote" docType="html-5.0">
+	<apex:includeScript value="{!$Resource.JQ}" />
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+
+	<style type="text/css">
+	.table_main_class{width:500px;}
+	.table_main_class tr{height:40px;}
+	.td_column_header_class{width:150px;}
+	.div_body_class{width:520px;margin-left:auto;margin-right:auto;}
+	
+	.div_main_class{margin-left:20px;margin-right:20px;margin-top:10px;}
+	.div_back_class{margin-left:20px;margin-right:20px;}
+	.div_required_class{background-color: #c00;position: absolute;left: -4px;width: 3px;top: 1px;bottom: 1px;}
+    .errorMessagePanel table tbody tr td{min-width:36px !important;}
+    input::-webkit-input-placeholder { /* WebKit browsers */ 
+		font-style: italic
+	} 
+	input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ 
+		font-style: italic
+	} 
+	input::-moz-placeholder { /* Mozilla Firefox 19+ */ 
+		font-style: italic
+	} 
+	input:-ms-input-placeholder { /* Internet Explorer 10+ */ 
+		font-style: italic
+	} 
+	</style>
+	
+	<script>
+		var oppyId = '{!oppy.Id}';
+	
+		function createQuote(){
+			$('#div_validate_error').hide();
+			
+			var required1 = $("input[id*='input_customer_contact']").val();
+			var required2 = $("input[id*='input_end_customer']").val();
+			var required3 = $("select[id*='select_quote_type']").val();
+			if(required1 == '000000000000000')  required1 = '';
+			if(required2 == '000000000000000')  required2 = '';
+			console.log(':::::111 ', required1);
+			console.log(':::::222 ', required2);
+			if(required1 != null && required2 != null && required3 !=null && required1 !='' && required2 != '' && required3 !=''){
+				showLoading();
+				createQuoteAction();
+			}else{
+				alert('Please fill all the required fields.');
+				return false;
+			}
+		}
+		
+		function clearContact() {
+			$("input[id*='input_customer_contact']").val(''); 
+		}
+		
+		function validator(){
+			
+		}
+		
+		function checkResult(){
+			console.log('checkResult::');
+			var isValidateSuccess = $("#input_hidden_isValidateSuccess").val();
+			console.log('isValidateSuccess::',isValidateSuccess);
+			
+			if(isValidateSuccess != null && isValidateSuccess == 'false'){
+				$('#div_validate_error').show();
+				hideLoading();
+			}
+			
+			if(isValidateSuccess != null && isValidateSuccess == 'true'){
+				var isHasError = $("#input_hidden_ishasError").val();
+				var createResult = $("#input_hidden_createResult").val();
+				console.log('isHasError::',isHasError);
+				console.log('createResult::',createResult);
+
+				if(isHasError != null && isHasError == 'true'){
+					hideLoading();
+				}
+				
+				if(isHasError != null && isHasError == 'false'){
+					window.location.href = '/'+createResult; 
+				}
+			}
+		}
+		
+		function cancelButton(){
+			window.location.href = '/'+oppyId; 
+		}
+		
+		function showLoading(){
+	        $("#Loading_Panel").show();
+	    }
+	    
+	    function hideLoading(){
+	        $("#Loading_Panel").hide();
+	    }
+    	
+	</script>
+	
+	<div class="div_body_class">
+
+		<apex:form id="theForm">
+		<apex:outputPanel styleClass="errorMessagePanel" id="message">
+			<input type="hidden" id="input_hidden_ishasError" value="{!isHasError}"/>
+			<input type="hidden" id="input_hidden_createResult" value="{!str_createResult}"/>
+			<input type="hidden" id="input_hidden_isValidateSuccess" value="{!isValidateSuccess}"/>
+	        <apex:pageMessages id="pagemessages"  /> 
+	    </apex:outputPanel>
+	    
+	    <div id="div_validate_error" style="display:none;">
+		    <span>
+				<div class="message errorM3" role="alert">
+					<table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">
+						<tbody>
+							<tr valign="top">
+								<td style="min-width: 24px;">
+									<img alt="ERROR" class="msgIcon" src="/s.gif" title="ERROR"/>
+								</td>
+								<td class="messageCell">
+									<div class="messageText">
+										<span style="color:#cc0000">
+											<h4>Error:</h4>
+										</span>
+										When the Quote Type is Meet Competitor Price then every line item must have a competitor name, part number and price.  An example of a part that doesn't have this is &nbsp;&nbsp;
+										<apex:repeat value="{!set_validateFailPartNames}" var="item" >{!item}
+										</apex:repeat>
+                                        <!-- You cannot create an MCP quote unless all of the parts have competitor info (name, part number and price).  Please go to the Manage Parts page to enter that information. -->
+                                        <!--
+										An MCP Opportunity must provide competitor info for all parts.  Please change this Quote Type to Standard or Mixed or add competitor info to the following parts:<br/>
+										<apex:repeat value="{!set_validateFailPartNames}" var="item" >
+											<p>{!item}</p>
+										</apex:repeat>
+										Please update this info on<a class="" href="#" onclick="window.open('/apex/EditAllforopportunity?id={!oppy.Id}');" style="text-decoration: underline;">this page</a>.
+										-->
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</span>
+		</div>
+	    
+	    <div class="div_back_class" style="{!IF(isAllowCreateQuote,'display:none;','')}">
+	    	<a class="" href="#" onclick="history.back();">Cancel</a>
+	    	<!-- <a class="" href="#" onclick="window.close();">Close</a> -->
+	    </div>
+		
+		<div class="div_main_class" style="{!IF(isAllowCreateQuote,'','display:none;')}">
+			<apex:pageBlock >
+				<table class="table_main_class">
+				<tbody>
+					<tr>
+						<td class="td_column_header_class">
+							Customer Contact
+						</td>
+						<td>
+							<div class="div_required_class"></div>
+							<apex:inputField id="input_customer_contact" html-placeholder="Click lookup icon..." html-disabled="true" required="true" value="{!oppy.Customer_Contact_Name__c}"/>
+							<!-- <img style="float:left" class="closeIcon" onClick="clearContact()" alt="Clear" src="/s.gif" ></img> -->
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							End Customer
+						</td>
+						<td>
+							<apex:inputField id="input_end_customer" html-placeholder="Click lookup icon..." html-disabled="true" required="true" value="{!oppy.End_Customer__c}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Quote Type
+						</td>
+						<td>
+							<apex:inputField id="select_quote_type" required="true" value="{!oppy.Quote_Type__c}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Language of Quote
+						</td>
+						<td>
+							<apex:inputField value="{!oppy.Language_of_Quote__c}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Valid From
+						</td>
+						<td>
+							<apex:inputField value="{!oppy.Valid_From__c}" showDatePicker="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Valid For
+						</td>
+						<td>
+							<apex:inputField styleClass="" value="{!oppy.Days_prices_valid__c}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Contract Start Date
+						</td>
+						<td>
+							<apex:inputField styleClass="" value="{!oppy.Contract_start_date__c}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="td_column_header_class">
+							Contract Finish Date
+						</td>
+						<td>
+							<apex:inputField styleClass="" value="{!oppy.Contract_Finish_Date__c}"/>
+						</td>
+					</tr>
+				</tbody>
+				</table>
+				<div>
+					<div style="width:110px;margin-left:auto;margin-right:auto;">
+						<button onclick="createQuote();return false;" >Create</button>
+						<button onclick="cancelButton();return false;" >Cancel</button>
+					</div>
+				</div>
+			</apex:pageBlock>
+		</div>
+		
+		<apex:actionFunction action="{!validator}" name="createQuoteAction" rerender="theForm" oncomplete="saveQuoteAsPdf()"/>
+		<apex:actionFunction name="saveQuoteAsPdf" action="{!saveQuotePdf}" oncomplete="checkResult()"/>
+        </apex:form>
+	
+	</div>
+	
+	<!-- Loading panel start -->
+    <div id="Loading_Panel" style="display:none;z-index:9999 !important;">
+        <div style="position:fixed;" class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Loading panel end -->  
+</apex:page>

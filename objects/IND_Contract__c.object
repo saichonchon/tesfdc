@@ -1,0 +1,1180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object will be used for Industrial contract upload instead of the standard SF object</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AM_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The manager of the AM, as defined on the user record</description>
+        <externalId>false</externalId>
+        <label>AM Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>IND_Contracts1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>IND Contracts</relationshipLabel>
+        <relationshipName>IND_Contracts</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Action_Status__c</fullName>
+        <description>This field describes the action status of the contract. It will be used in the &apos;My to-do&apos; screen.</description>
+        <externalId>false</externalId>
+        <label>Action Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Regular Review</fullName>
+                    <default>false</default>
+                    <label>Regular Review</label>
+                </value>
+                <value>
+                    <fullName>Auto-Renewal Check</fullName>
+                    <default>false</default>
+                    <label>Auto-Renewal Check</label>
+                </value>
+                <value>
+                    <fullName>End of Life</fullName>
+                    <default>false</default>
+                    <label>End of Life</label>
+                </value>
+                <value>
+                    <fullName>All Green</fullName>
+                    <default>false</default>
+                    <label>All Green</label>
+                </value>
+                <value>
+                    <fullName>Cancellation Check</fullName>
+                    <default>false</default>
+                    <label>Cancellation Check</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Cancel_Contract_XX_days_before_renewal__c</fullName>
+        <externalId>false</externalId>
+        <label>Cancel Contract XX days before renewal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contract_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Contract End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Contract Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Contract Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                    <label>Active</label>
+                </value>
+                <value>
+                    <fullName>Active - Pending AM Review</fullName>
+                    <default>false</default>
+                    <label>Active - Pending AM Review</label>
+                </value>
+                <value>
+                    <fullName>Active - Pending Termination Approval</fullName>
+                    <default>false</default>
+                    <label>Active - Pending Termination Approval</label>
+                </value>
+                <value>
+                    <fullName>Admin Edit</fullName>
+                    <default>false</default>
+                    <label>Admin Edit</label>
+                </value>
+                <value>
+                    <fullName>Expired</fullName>
+                    <default>false</default>
+                    <label>Expired</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Contract_Types__c</fullName>
+        <description>This picklist is used as a reference for the record types in the contract_create flow</description>
+        <externalId>false</externalId>
+        <label>Contract Types</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Tooling</fullName>
+                    <default>false</default>
+                    <label>Tooling</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Contract_will_be_sent_for_approval_on__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+NOT(ISBLANK( Contract_End_Date__c )),
+
+End_Date_Renewal_Period__c  - Cancel_Contract_XX_days_before_renewal__c-90,
+null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contract End Actions on:</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Current_Approver_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Approver ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Approver_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Approver Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_for_next_review__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter a date when you want to review the contract next time.</inlineHelpText>
+        <label>Date for next review</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Date_Cancellation_Period__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TODAY() + Cancel_Contract_XX_days_before_renewal__c &lt;
+
+
+IF(
+MONTH( TODAY() ) = 12,
+DATE( YEAR( TODAY() ), 12, 31 ),
+DATE( YEAR( TODAY() ), MONTH ( TODAY() ) + 1, 1 ) - 1
+),
+
+IF(
+MONTH( TODAY() ) = 12,
+DATE( YEAR( TODAY() ), 12, 31 ),
+DATE( YEAR( TODAY() ), MONTH ( TODAY() ) + 1, 1 ) - 1
+),
+
+IF(
+MONTH( TODAY()+ Cancel_Contract_XX_days_before_renewal__c ) = 12,
+DATE( YEAR( TODAY() ), 12, 31 ),
+DATE( YEAR( TODAY()+ Cancel_Contract_XX_days_before_renewal__c ),
+MONTH ( TODAY()+ Cancel_Contract_XX_days_before_renewal__c ) + 1, 1 ) - 1
+)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>End Date Cancellation Period</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>End_Date_Intermediate__c</fullName>
+        <description>will hold the end date for the new contract period for the time from contract end actions to expiration date of old contract period.</description>
+        <externalId>false</externalId>
+        <label>End Date Intermediate</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>End_Date_Renewal_Period__c</fullName>
+        <description>this field stores the respective end date when a contract reaches a renewal period</description>
+        <externalId>false</externalId>
+        <label>End Date Renewal Period</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expiration_notice_will_be_sent_on__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+OR(
+AND(
+ Yearly_review_always_required__c = true,
+ Temp_End_date__c &lt;&gt;  End_Date_Renewal_Period__c 
+),
+AND(
+ Yearly_review_always_required__c = true,
+ ISBLANK(End_Date_Renewal_Period__c)
+)
+),
+
+ Temp_End_date__c  -  Cancel_Contract_XX_days_before_renewal__c-90,null
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Next Yearly Action on:</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Factor_for_Temp_end_date_calculation__c</fullName>
+        <description>this factor will be used in field update in the field update to update the temp end date. It sets the temp end date in the future in case we have a contract that started in the past and has a yearly review set up.</description>
+        <externalId>false</externalId>
+        <formula>YEAR(TODAY()+365) - YEAR (  Contract_Start_Date__c +365 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Factor for Temp end date calculation</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Review_Process_Passed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>this field will be checked once the contract has passed a first review</description>
+        <externalId>false</externalId>
+        <label>First Review Process Passed</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GAM_Approval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>used for approval process. If GAM approved, no approval from RSM necessary</description>
+        <externalId>false</externalId>
+        <label>GAM Approval</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GAM__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>displays the GAM user for the global account. Filled by contract flow</description>
+        <externalId>false</externalId>
+        <label>GAM</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>IND_Contracts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PB_Counter_Check__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>temp field only</description>
+        <externalId>false</externalId>
+        <label>PB Counter Check</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Record_Type_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>RecordType.DeveloperName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record Type Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Renewal_Cancelled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This field will be checked when a contract has been sent for cancellation approval and the cancellation is granted</description>
+        <externalId>false</externalId>
+        <label>Renewal Cancelled</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Renewal_Term_Months__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Renewal Term (Months)</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sent_for_AM_Approval__c</fullName>
+        <externalId>false</externalId>
+        <label>Sent for AM Approval</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Sent_for_termination_approval__c</fullName>
+        <externalId>false</externalId>
+        <label>Sent for termination approval</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date_Intermediate__c</fullName>
+        <description>will hold the start date for the new contract period for the time from contract end actions to expiration date of old contract period.</description>
+        <externalId>false</externalId>
+        <label>Start Date Intermediate</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>TESOG_Contract_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Contract ID Legal Entity</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Temp_End_date__c</fullName>
+        <description>temp end date, used for calculations.</description>
+        <externalId>false</externalId>
+        <label>New Period End date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Temp_Start_Date__c</fullName>
+        <description>This field will contain a temporary start date, used only for calculations</description>
+        <externalId>false</externalId>
+        <label>New Period Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Time_in_AM_approval__c</fullName>
+        <externalId>false</externalId>
+        <formula>TODAY()- Sent_for_AM_Approval__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time in AM approval</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Time_in_Termination_Approval__c</fullName>
+        <externalId>false</externalId>
+        <formula>TODAY() -  Sent_for_termination_approval__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time in Termination Approval</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Yearly_review_always_required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Please check this field if the contract must always be reviewed on a yearly basis.</inlineHelpText>
+        <label>Yearly review always required</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>IND Contract</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>TESOG_Contract_Number__c</columns>
+        <columns>Account__c</columns>
+        <columns>Action_Status__c</columns>
+        <columns>Contract_Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>{00000}</displayFormat>
+        <label>Contract Number</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>IND Contracts</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>true</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Logistics</fullName>
+        <active>true</active>
+        <label>Logistics</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Master_Contract</fullName>
+        <active>true</active>
+        <label>Master Contract</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Pricing_Agreement</fullName>
+        <active>true</active>
+        <label>Pricing Agreement</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Quality</fullName>
+        <active>true</active>
+        <label>Quality</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Quality_Read_Only</fullName>
+        <active>true</active>
+        <description>This Record Type will be set automatically when the contract is activated</description>
+        <label>Quality Read Only</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Standard_Edit_Record_Type</fullName>
+        <active>true</active>
+        <label>Standard Edit Record Type</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Tooling</fullName>
+        <active>true</active>
+        <label>Tooling</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Tooling_Read_Only</fullName>
+        <active>true</active>
+        <description>This Record Type will be set automatically when the contract is activated</description>
+        <label>Tooling - Read Only</label>
+        <picklistValues>
+            <picklist>Action_Status__c</picklist>
+            <values>
+                <fullName>All Green</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto-Renewal Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancellation Check</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End of Life</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regular Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Active - Pending AM Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Active - Pending Termination Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admin Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Types__c</picklist>
+            <values>
+                <fullName>Tooling</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Account__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Action_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contract_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date_for_next_review__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <fullName>IND_Contract_Account_Change</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+
+NOT(ISPICKVAL( Contract_Status__c , &quot;Admin Edit&quot;)),
+NOT(ISCHANGED (Contract_Status__c)),
+
+ISCHANGED(   Account__c  )
+
+)</errorConditionFormula>
+        <errorMessage>You are not allowed to change the account after initial setup. Please contact your Administrator for assistance.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>IND_Contract_Admin_Edit</fullName>
+        <active>true</active>
+        <description>This validation rule will prevent an Admin from changing the dates without having chosen status = Admin Edit</description>
+        <errorConditionFormula>AND(
+OR(
+$Profile.Name = &quot;BU Admin&quot;,
+$Profile.Name = &quot;System Administrator&quot;,
+$Profile.Name = &quot;Systemadministrator&quot;
+),
+NOT(ISPICKVAL( Contract_Status__c , &quot;Admin Edit&quot;)),
+NOT(ISCHANGED (Contract_Status__c)),
+OR(
+ISCHANGED(Contract_Start_Date__c) ,
+ISCHANGED( Contract_End_Date__c) ,
+ISCHANGED( Cancel_Contract_XX_days_before_renewal__c) ,
+ISCHANGED( Renewal_Term_Months__c),
+ISCHANGED(  Date_for_next_review__c  ),
+ISCHANGED(  TESOG_Contract_Number__c  )
+
+) 
+)</errorConditionFormula>
+        <errorMessage>Please use the &apos;Edit Contract&apos; button to make changes.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>IND_Contract_Record_Type</fullName>
+        <active>false</active>
+        <description>This validation rule will prevent an Admin from changing the record type</description>
+        <errorConditionFormula>AND(
+OR(
+$Profile.Name = &quot;BU Admin&quot;,
+$Profile.Name = &quot;System Administrator&quot;,
+$Profile.Name = &quot;Systemadministrator&quot;
+),
+NOT(ISPICKVAL( Contract_Status__c , &quot;Admin Edit&quot;)),
+NOT(ISCHANGED (Contract_Status__c)),
+
+ISCHANGED(  RecordTypeId )
+
+)</errorConditionFormula>
+        <errorMessage>You are not allowed to change the record type</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Review_Date_in_Contract_End_Period</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(
+AND(
+NOT(ISBLANK(Contract_will_be_sent_for_approval_on__c)),
+Date_for_next_review__c  &gt;=  Contract_will_be_sent_for_approval_on__c 
+), true, false)</errorConditionFormula>
+        <errorMessage>Your review date falls into the period before the end of the runtime, please choose an earlier date.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Contract_Edit</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Edit Contract</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/flow/IND_Contract_Flow?varContractID={!IND_Contract__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>New_Contract</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>New Contract</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/flow/IND_Contract_Enter_Data?varAccountID={!Account.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_Actions</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Update Actions</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/flow/Contract_Review_2?varContractID={!IND_Contract__c.Id}</url>
+    </webLinks>
+</CustomObject>

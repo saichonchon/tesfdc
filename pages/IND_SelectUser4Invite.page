@@ -1,0 +1,183 @@
+<apex:page controller="INDMainUserSearchController" title="Mass Email Contacts" id="MassTransferContactsPage" sidebar="false" >
+
+
+<!-- ********* JAVASCRIPT USED TO TOGGLE SELECTION OF SEARCH RESULTS ************ -->
+<script  type="text/javascript">
+
+// GLOBAL JAVASCRIPT VARIABLES
+// - These are the IDs of various blocks and buttons throughout the VisualForce page
+var baseBlockID = 'MassTransferContactsPage:txfrContactsForm:xferContactsPageBlock:';
+var FromUserBlock_ActiveOnly = baseBlockID + 'userLookup_ActiveUsers';
+var FromUserBlock_InActive = baseBlockID + 'userLookup_InActiveUsers';
+
+ //MassTransferContactsPage:txfrContactsForm:xferContactsPageBlock:UserSelection1:ToUser1:newOwner1
+ //MassTransferContactsPage:txfrContactsForm:xferContactsPageBlock:
+ //MassTransferContactsPage:txfrContactsForm:xferContactsPageBlock:UserSelection1:ToUser1:newOwner1
+var ToUserID_Active = baseBlockID + 'UserSelection2:ToUser2:newOwner2';
+var ToUserID_InActive = baseBlockID + 'UserSelection2:ToUser2:newOwner2';
+
+var ToUserName_Active = baseBlockID + 'userLookup_InActiveUsers';
+var ToUserName_InActive = baseBlockID + 'userLookup_InActiveUsers';
+
+// ************************************************************************************
+// Function: toggleUserSelectionBlocks()
+// - Called "Show Inactive Users" checkbox on the page to show or hide the
+//   the picklist area for selecting inactive users
+// ************************************************************************************
+function toggleUserSelectionBlocks(show) {
+    if (show) {
+        document.getElementById(FromUserBlock_InActive).style.display = '';
+        document.getElementById(FromUserBlock_ActiveOnly).style.display = 'none';
+        document.getElementById(ToUserID_InActive).value =
+            document.getElementById(ToUserID_Active).value;
+    }
+    else
+    {
+        document.getElementById(FromUserBlock_ActiveOnly).style.display = '';
+        document.getElementById(FromUserBlock_InActive).style.display = 'none';
+        document.getElementById(ToUserID_Active).value =
+            document.getElementById(ToUserID_InActive).value;
+    }
+}
+
+// ************************************************************************************
+// Function: customSelectAllOrNoneByCheckbox()
+// - Check/Uncheck ALL values in the search results
+// ************************************************************************************
+function customSelectAllOrNoneByCheckbox(form, element_name, control)
+{  customSelectChecked(form, element_name, control.checked); }
+
+// ************************************************************************************
+// Function: customSelectChecked()
+// - Check/Uncheck the individual values in the search results
+// - Called by the customSelectAllOrNoneByCheckbox() function (which is called by the
+//   checking or unchecking the 'select all' checkbox in the search results
+// ************************************************************************************
+function customSelectChecked(form, element_name, value)
+{
+    var i = 0;
+    for (i = 0; i < form.elements.length; i++) {
+        if (form.elements[i].name.search('selected') > 0 && form.elements[i].disabled == false) {
+            form.elements[i].checked = value;
+        }
+    }
+}
+
+
+
+
+</script>
+
+    <apex:form id="txfrContactsForm" >
+        <!--
+        -- Comment/Uncomment one of the following two lines to enable debugging in page controller.
+        --    DEGUGTRUE = Show SOQL statement and results of query
+        -->
+        <!-- <apex:inputHidden id="DebugSetting" value="{!SetDebugModeTRUE}"/>    -->
+        <apex:inputHidden id="DebugSetting" value="{!SetDebugModeFALSE}"/>
+        <apex:pageBlock title="Mass Invite Users for Training" id="xferContactsPageBlock">
+        
+        <apex:messages style="color:Blue; font-family:verdana; font-size:120%;"/>
+ <!-- *********************************************************************************************************************************************************************************-->
+        <!-- ********* THE [SEARCH] BUTTON ************ -->
+        <apex:pageBlockButtons >
+            <apex:commandButton title="Search User" value="Search User" action="{!doSearch}"/>
+           
+        </apex:pageBlockButtons>
+
+ <!-- *********************************************************************************************************************************************************************************-->
+        <apex:panelGrid style="background-color:#58ACFA;width:100%;text-align:center;" id="panel0">
+      <apex:outputLabel value="Select the users for invite by using the filter creteria( Check the email invite template before confirming the invite for the users)" style="font-family:aerial;color:#FFFFFF;font-size:20px;text-align:center;" ></apex:outputLabel>
+    </apex:panelGrid>
+    
+       <apex:panelGrid bgcolor="#FFFFFF" cellpadding="1" cellspacing="2" width="100%" columns="6" id="panel1">
+                
+        <apex:dataTable value="{!searchCriteria}" columns="5" var="criteria" id="CriteriaRows">
+            <apex:column >
+                <apex:selectList value="{!criteria.searchField}" size="1" id="SearchField" >
+                    <apex:selectOptions value="{!searchFields}"></apex:selectOptions>
+                </apex:selectList>
+            </apex:column>
+
+            <apex:column >
+            <apex:selectList size="1" value="{!criteria.searchOperator}" id="SearchOperator">
+                <apex:selectOptions value="{!criteria.OperatorSelectList}"></apex:selectOptions>
+            </apex:selectList>
+            </apex:column>
+            <apex:column >
+            <apex:inputText size="20" id="SearchValue" value="{!criteria.searchValue}"/>
+            </apex:column>
+            <apex:column ><apex:outputText value="{!criteria.Logical}"/></apex:column>
+            <apex:column ><apex:outputText value="{!criteria.errMsg}" style="color:red;"/></apex:column>
+        </apex:dataTable>
+         
+               
+         <apex:panelGrid title="Select the Training" bgcolor="FFBF00" border="2" id="ifYes" style="text-align:center;" >
+         <apex:outputLabel value="Active Trainings" style="font-family:arial;color:#58ACFA;font-size:20px;" />
+        <apex:selectRadio label="Active Trainings" value="{!selectedtraining}" layout="pageDirection" required="true" style="font-family:arial;font-size:15px;text-align:Left;" >
+            <apex:selectOptions value="{!items}"/>
+            </apex:selectRadio>
+         </apex:panelGrid>  
+        
+        </apex:panelGrid>
+
+     <apex:pageBlockSection columns="1" >
+            Note: Dates Must be Entered in {!InputDateFormat} format or use special date literals (ex: THIS WEEK)
+        </apex:pageBlockSection>
+        
+        
+      
+     </apex:pageBlock>
+        
+<!--//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    -->
+  
+        
+    <apex:outputPanel id="Results" layout="block" style="{!ShowBlockIfResults}">
+        <apex:pageBlock id="resultsBlock">
+        <apex:pageBlockButtons >
+            <apex:commandButton title="Selected for Invite" value="Confirm Selected Users for Invite" action="{!doTransfer}"/>
+        </apex:pageBlockButtons>
+            <apex:dataTable value="{!searchResults}" var="Results" id="resultsDataTable"
+            styleClass="tableClass list"
+            rowClasses="odd,even"
+            onrowmouseout="if (window.hiOff){hiOff(this);}"
+            onrowmouseover="if (window.hiOn){hiOn(this);}">
+                <apex:facet name="caption"></apex:facet>
+                <apex:facet name="header"></apex:facet>
+                <apex:column >
+                    <apex:facet name="header"><apex:inputCheckbox id="selectall" selected="true"
+                        onclick="javascript:customSelectAllOrNoneByCheckbox(document.forms['MassTransferContactsPage:txfrContactsForm'],'MassTransferContactsPage:txfrContactsForm:resultsBlock:resultsDataTable:', this);"/></apex:facet>
+                    <apex:inputCheckbox value="{!Results.selected}" id="selected" />
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!Results.user.name}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">IsActive</apex:facet>
+                    <apex:outputText value="{!Results.user.IsActive}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Profile</apex:facet>
+                    <apex:outputText value="{!Results.user.Profile.Name}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">GIBU</apex:facet>
+                    <apex:outputText value="{!Results.user.GIBU__c}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Sub-Vertical BU</apex:facet>
+                    <apex:outputText value="{!Results.user.Sub_Vertical__c}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Email</apex:facet>
+                    <apex:outputText value="{!Results.user.Email}"/>
+                </apex:column>
+            </apex:dataTable>
+     </apex:pageBlock>
+     </apex:outputPanel>
+     
+     
+     </apex:form>
+
+</apex:page>

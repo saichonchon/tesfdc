@@ -1,0 +1,172 @@
+<apex:page controller="CtrlManagerReview" sidebar="false"> 
+	<apex:stylesheet value="{!$Resource.BudgetPlanningCss}"/>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+	<apex:includeScript value="{!URLFOR($Resource.BudgetPlanningControl)}" />
+	<apex:includeScript value="{!URLFOR($Resource.CommonJS)}" />
+	
+	<apex:form id="managerReviewForm">
+		<br/>
+        <apex:actionStatus startText=" Loading... " stopText="" id="statusLoad" onstart="hiddenBlock('{!$Component.managerReviewPB}');" onstop="showBlock('{!$Component.managerReviewPB}');">
+ 			<apex:facet name="start">
+				<img class="deployingImg" src="/changemgmt/img/spinner24.gif" />			
+ 			</apex:facet>
+		</apex:actionStatus>
+		
+		<apex:pageBlock tabstyle="Budget__c" id="managerReviewPB" mode="maindetail"> 						    	 					
+			<apex:pageMessages id="messages" />
+			<input type="hidden" value="{!format}" id="localFormat"/>
+			<div style="text-align:center;"> 
+				<input type="button" class="btn" value="{!$Label.SaveButton}" onclick="conUnformatNum('managerReviewTable');save();" style="display:{!IF(AND(BugetReviewRecords.size > 0, findLast), '', 'none')}"/>
+				<apex:actionFunction name="save" action="{!save}" status="statusLoad" rerender="managerReviewForm" oncomplete="conFormatNum('managerReviewTable');"/>
+				<input type="button" class="btn" value="{!$Label.Approve}" onclick="if(!findCheck()) return;conUnformatNum('managerReviewTable');saveAndApproval();" style="display:{!IF(findLast, '', 'none')}"/>
+				<apex:actionFunction name="saveAndApproval" action="{!saveAndApproval}" status="statusLoad" rerender="managerReviewForm" oncomplete="conFormatNum('managerReviewTable');"/>
+				<input type="button" class="btn" value="{!$Label.Reject}" onclick="if(!findCheck()) return;showReject();" style=" display:{!IF(findLast, '', 'none')}"/>
+				<!-- <apex:actionFunction name="saveAndReject" action="{!saveAndReject}" status="statusLoad" rerender="managerReviewForm" oncomplete="conFormatNum('managerReviewTable');"/> -->				
+				<apex:commandButton action="{!backToView}" value="{!$Label.Back}" immediate="true"></apex:commandButton>
+				&nbsp;&nbsp;
+				<input type='hidden' value="{!view}" id="hiddenView"/>
+				<apex:selectList size="1" value="{!view}" onchange="conUnformatNum('managerReviewTable');changeView();"> 
+					<apex:selectOptions value="{!views}"/>	
+					<apex:actionFunction name="changeView" rerender="managerReviewForm" status="statusLoad" action="{!buildManagerReviewRcords}" oncomplete="checkIsAll();conFormatNum('managerReviewTable');"/>				
+				</apex:selectList>&nbsp;
+				<apex:selectList size="1" value="{!currentYear}" onchange="conUnformatNum('managerReviewTable');changeYear();"> 
+					<apex:selectOptions value="{!list_years}"/>	
+					<apex:actionFunction name="changeYear" rerender="managerReviewForm" status="statusLoad" action="{!rebuildRecordsByYear}" oncomplete="checkIsAll();conFormatNum('managerReviewTable');"/>				
+				</apex:selectList>
+			</div>
+			
+			<apex:PageBlockSection id="managerReviewPBSection" columns="1" >
+				<apex:outputPanel layout="block" styleClass="container" style="text-align:center;"> 
+					<table class="list" cellspacing="0" cellpadding="0" border="0" id="managerReviewTable">
+						<thead>
+							<tr class="headerRow">
+								<th class="headerCenter" style="width:10px; display:{!IF(findLast, '', 'none')}"><input type="checkbox" id="allCheck" onclick="checkAll(this.checked)"/></th>
+								<th class="headerCenter" >{!$ObjectType.Account.fields.Account_Manager__c.label}</th>
+								<th class="headerCenter" style="width:5%;">{!$ObjectType.Budget__c.fields.Status__c.label}</th>
+								<th class="headerCenter" style="width:5%;">{!$ObjectType.Budget__c.fields.Stage__c.label}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Billings_LY}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Billings_YTD_CY}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Billings_RR_CY}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Estimate_Final_CY}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Final_Budget}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.Original_Budget}</th>
+								<th class="headerCenter" style="width:8%;">{!$ObjectType.Budget__c.fields.Final_Total_Budget_TBR_NY__c.label}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.My_Budget}</th>
+								<th class="headerCenter" style="width:8%;">{!$Label.GrowthPer}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<apex:repeat value="{!BugetReviewRecords}" var="brr" >
+								<tr class="dataRow" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+									<td class="dataCell" style="display:{!IF(findLast, '', 'none')}"><apex:inputCheckbox value="{!brr.isChecked}" onclick="checkIsAll()" rendered="{!brr.budget.Status__c ='Submitted'}"/></td>
+									<td class="dataCell" align="left"><apex:outputLink value="/apex/ExtBudgetPlanning?id={!brr.budget.Id}" target="_blank" ><apex:outputText value="{!brr.budget.Name}"/></apex:outputLink></td> 
+									<td class="dataCell" ><apex:outputText value="{!brr.budget.Status__c}" id="Status"/></td>
+									<td class="dataCell" ><apex:outputText value="{!brr.budget.Stage__c}" id="Stage"/></td>
+									<td class="dataCell tdTwo" ><apex:outputText value="{!brr.budgetDetail.Billings_LY__c}" id="BLY"/></td>
+									<td class="dataCell tdTwo" ><apex:outputText value="{!brr.budgetDetail.Billings_CYTD__c}" id="BCYTD"/></td>
+									<td class="dataCell tdTwo" ><apex:outputText value="{!brr.budgetDetail.Billings_CYRR__c}" id="BCYRR"/></td>
+									<td class="dataCell tdTwo" >
+										<apex:outputText value="{!brr.budgetDetail.Forecast_CY__c}" id="FCY" rendered="{!!brr.isLast}"/>
+										<apex:outputText value="{!brr.budgetDetail.Forecast_CY__c}" id="LastFCY" rendered="{!brr.isLast}"/>
+									</td>
+									<td class="dataCell tdTwo" >
+										<apex:outputText value="{!brr.budget.Final_Direct_Budget__c}" rendered="{!view='Direct'}" id="FDB"/>
+										<apex:outputText value="{!brr.budget.Final_POS_Budget__c}" rendered="{!view='POS'}" id="FPB"/>
+										<apex:outputText value="{!brr.budget.Final_CMA_Budget__c}" rendered="{!view='CMA'}" id="FCB"/>
+										<apex:outputText value="{!brr.budget.Final_Total_Budget__c}" rendered="{!view='Total'}" id="FTB"/>
+									</td>
+									<td class="dataCell tdTwo" >
+										<apex:outputText value="{!brr.budget.Original_Direct_Budget__c}" rendered="{!view='Direct'}" id="ODB"/>
+										<apex:outputText value="{!brr.budget.Original_POS_Budget__c}" rendered="{!view='POS'}" id="OPB"/>
+										<apex:outputText value="{!brr.budget.Original_CMA_Budget__c}" rendered="{!view='CMA'}" id="OCB"/>
+										<apex:outputText value="{!brr.budget.Original_Total_Budget__c}" rendered="{!view='Total'}" id="OTB"/>
+									</td>
+									<td class="dataCell tdTwo" >
+										<!-- <apex:outputText value="{!brr.budget.Total_Budget_TBR_NY__c}" id="FTBTN"/> -->
+										<!-- Start by Bin Yuan due to change field to roll up field
+										<apex:outputText value="{!brr.budget.Total_Direct_Budget_TBR_NY__c}" rendered="{!view='Direct'}" id="FTBTND"/>
+										<apex:outputText value="{!brr.budget.Total_POS_Budget_TBR_NY__c}" rendered="{!view='POS'}" id="FTBTNP"/>
+										<apex:outputText value="{!brr.budget.Total_CMA_Budget_TBR_NY__c}" rendered="{!view='CMA'}" id="FTBTNC"/>
+										<apex:outputText value="{!brr.budget.Total_Budget_TBR_NY__c}" rendered="{!view='Total'}" id="FTBTNT"/>
+										 -->
+										<apex:outputText value="{!brr.budget.Total_Direct_Budget_TBR_NY_Rollup__c}" rendered="{!view='Direct'}" id="FTBTND"/>
+										<apex:outputText value="{!brr.budget.Total_POS_Budget_TBR_NY_Rollup__c}" rendered="{!view='POS'}" id="FTBTNP"/>
+										<apex:outputText value="{!brr.budget.Total_CMA_Budget_TBR_NY_Rollup__c}" rendered="{!view='CMA'}" id="FTBTNC"/>
+										<apex:outputText value="{!brr.budget.Total_Budget_TBR_NY_Rollup__c}" rendered="{!view='Total'}" id="FTBTNT"/>
+									</td>
+									<td class="dataCell tdTwo" >
+										<apex:inputText style="display:{!IF(AND(view='Direct', !brr.isLast, brr.budget.Status__c='Submitted'), '', 'none')}" value="{!brr.budget.Manager_Direct_Budget__c}"  styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" />
+										<apex:inputText style="display:{!IF(AND(view='POS', !brr.isLast, brr.budget.Status__c = 'Submitted'), '', 'none')}" value="{!brr.budget.Manager_POS_Budget__c}"  styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" />
+										<apex:inputText style="display:{!IF(AND(view='CMA', !brr.isLast, brr.budget.Status__c = 'Submitted'), '', 'none')}" value="{!brr.budget.Manager_CMA_Budget__c}"  styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" />
+										
+										<apex:outputText value="{!brr.budget.Manager_Direct_Budget__c}" id="outputBudgetDirect" rendered="{!AND(view='Direct', !brr.isLast, brr.budget.Status__c != 'Submitted' )}" />		
+										<apex:outputText value="{!brr.budget.Manager_POS_Budget__c}" id="outputBudgetPOS" rendered="{!AND(view='POS', !brr.isLast, brr.budget.Status__c != 'Submitted' )}" />
+										<apex:outputText value="{!brr.budget.Manager_CMA_Budget__c}" id="outputBudgetCMA" rendered="{!AND(view='CMA', !brr.isLast, brr.budget.Status__c != 'Submitted' )}" />
+
+										<apex:outputText value="{!brr.myBudget4Total}" id="outputBudgetTotal" rendered="{!view='Total'}"/>
+																		
+										<apex:outputText value="{!brr.myBudget4LastDirect}" rendered="{!AND(view='Direct', brr.isLast)}" id="LastBudgetDirect"/>		
+										<apex:outputText value="{!brr.myBudget4LastPOS}" rendered="{!AND(view='POS', brr.isLast)}" id="LastBudgetPOS"/>
+										<apex:outputText value="{!brr.myBudget4LastCMA}" rendered="{!AND(view='CMA', brr.isLast)}" id="LastBudgetCMA"/>
+										 
+										<apex:inputHidden value="{!brr.myBudget4LastDirect}" id="LastBudgetDirectHidden" />
+										<apex:inputHidden value="{!brr.myBudget4LastPOS}" id="LastBudgetPOSHidden" />
+										<apex:inputHidden value="{!brr.myBudget4LastCMA}" id="LastBudgetCMAHidden" />																				
+										 
+									</td>
+									<td class="dataCell tdTwo" >
+										<apex:outputText value="{!brr.Growth}" id="GTH" rendered="{!!brr.isLast}"/>
+										<apex:outputText value="{!brr.Growth}" id="LastGTH" rendered="{!brr.isLast}"/>								
+									</td>				
+								</tr>
+							</apex:repeat>
+							<tr class="dataRow totalRecord" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+								<td class="dataCell" style="display:{!IF(findLast, '', 'none')}"/>			
+								<td class="dataCell" align="left"><b>{!$Label.Total}</b></td>
+								<td class="dataCell" />
+								<td class="dataCell" />
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalBudgetReviewRecord.budgetDetail.Billings_LY__c}" id="BLY"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalBudgetReviewRecord.budgetDetail.Billings_CYTD__c}" id="BCYTD"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalBudgetReviewRecord.budgetDetail.Billings_CYRR__c}" id="BCYRR"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalBudgetReviewRecord.budgetDetail.Forecast_CY__c}" id="FCY"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalFinalBudget}" styleClass="totalLine"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalOriginalBudget}" styleClass="totalLine"/></b></td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalFinalBudgetTBRNY}" styleClass="totalLine"/></b></td>
+								<td class="dataCell tdTwo" >
+								
+									<b><apex:inputText style="display:{!IF(AND(view='CMA', findLast), '', 'none')}" value="{!totalBudgetReviewRecord.budget.Manager_CMA_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetCMA" /></b>
+									<b><apex:inputText style="display:{!IF(AND(view='POS', findLast), '', 'none')}" value="{!totalBudgetReviewRecord.budget.Manager_POS_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetPOS" /></b>
+									<b><apex:inputText style="display:{!IF(AND(view='Direct', findLast), '', 'none')}" value="{!totalBudgetReviewRecord.budget.Manager_Direct_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetDirect" /></b>
+									<!--
+									<b><apex:inputField value="{!totalBudgetReviewRecord.budget.Manager_CMA_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetCMA" rendered="{!AND(findLast, view='CMA')}"/></b>
+									<b><apex:inputField value="{!totalBudgetReviewRecord.budget.Manager_POS_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetPOS" rendered="{!AND(findLast, view='POS')}"/></b>
+									<b><apex:inputField value="{!totalBudgetReviewRecord.budget.Manager_Direct_Budget__c}" styleClass="inputItem" onchange="calGrowth(this, '{!$Component.FCY}', '{!$Component.GTH}')" id="TotalMyBudgetDirect" rendered="{!AND(findLast, view='Direct')}"/></b>
+									-->
+									<b><apex:outputText value="{!totalBudgetReviewRecord.budget.Manager_CMA_Budget__c}" rendered="{!AND(!findLast, view='CMA')}" styleClass="totalLine"/></b>
+									<b><apex:outputText value="{!totalBudgetReviewRecord.budget.Manager_POS_Budget__c}" rendered="{!AND(!findLast, view='POS')}" styleClass="totalLine"/></b>
+									<b><apex:outputText value="{!totalBudgetReviewRecord.budget.Manager_Direct_Budget__c}" rendered="{!AND(!findLast, view='Direct')}" styleClass="totalLine"/></b>
+									<b><apex:outputText value="{!totalBudgetReviewRecord.budget.Manager_Final_Budget__c}" rendered="{!view='Total'}" styleClass="totalLine"/></b>
+								</td>
+								<td class="dataCell tdTwo" ><b><apex:outputText value="{!totalGrowth}" id="GTH" styleClass="totalLine"/></b></td>
+							</tr>
+						</tbody>
+					</table>
+				</apex:outputPanel>
+			</apex:PageBlockSection>
+		</apex:pageBlock>
+		<div id="rejectReasonDiv" style="display:none">
+			<apex:pageBlock >
+				<div style="text-align:center;"> 
+					<input type="button" class="btn" value="{!$Label.SaveButton}" onclick="if(!rejectReasonCheck('{!$Component.rejectReasonPB.rejectReason}')) return;conUnformatNum('managerReviewTable');saveAndReject();"/>
+					<apex:actionFunction name="saveAndReject" action="{!saveAndReject}" status="statusLoad" rerender="managerReviewForm" oncomplete="conFormatNum('managerReviewTable');"/>
+					<input type="button" class="btn" value="{!$Label.Cancel}" onclick="cancelReject('{!$Component.rejectReasonPB.rejectReason}')"/>					
+				</div>
+				<apex:PageBlockSection columns="1" id="rejectReasonPB">
+					<apex:inputField value="{!budget4Reason.Reject_Reason__c}" style="width:95%;height:100px;" id="rejectReason"/>
+				</apex:PageBlockSection>
+			</apex:pageBlock>
+		</div>
+		<div id="mask" style="display:none"></div>
+		
+	</apex:form>
+</apex:page>

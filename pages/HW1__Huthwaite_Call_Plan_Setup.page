@@ -1,0 +1,136 @@
+<!--
+//Copyright (c) 2011, Huthwaite
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without modification, are not permitted. 
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+//INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+//SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+//CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+//EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// History
+//
+// Version  Date            Author          Comments
+// 1.0      2011.06.01      Jeff Lup        Initial version
+//
+// Overview
+//
+// Set up instructions
+//
+-->
+
+<apex:page tabStyle="Huthwaite_Call_Plan_Setup__tab">
+
+<apex:sectionHeader title="Huthwaite's Call Plan" subtitle=""></apex:sectionHeader>
+
+<apex:pageBlock title="Prerequisites">
+
+<apex:pageBlockSection title="Adobe Flash" columns="1">
+<p>
+<a href="http://get.adobe.com/flashplayer">Adobe Flash</a> is required to use Huthwaite's Call Planner application.
+</p>
+
+</apex:pageBlockSection>
+
+</apex:pageBlock>
+
+<apex:pageBlock title="Setup Instructions">
+
+<apex:pageBlockSection title="Manual Security Configuration" columns="1">
+
+<p>
+If you didn't select the user profiles at the time of installing the application, then you will need to make the following security changes to deploy the application to additional profiles:
+</p>
+<ol>
+<li>Select the desired profile (Setup -> Manage Users -> Profiles)</li>
+<li>Click the profile name to open in display mode, not edit mode</li>
+<li>Click Edit in the Enabled Visualforce Page Access related list</li>
+<li>Add "HW1.Call_Plan" and "HW1.Call_Plan_PDF"</li>
+<li>Click Save</li>
+<li>Now click Edit on the profile</li>
+<li>Go to the Custom Tab Settings and set Call Plans to "Default On"</li>
+<li>Go to the Custom Object Permissions and grant Read, Create, Edit, and Delete permissions for the "Call Plan" object</li>
+<li>Adjust field level security, granting users access to all fields on the "Call Plan" and "Call Plan Template" objects</li>
+</ol>
+
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="Additional Setup" columns="1">
+<p>
+In this section you will make additional configuration that is not part of the package install:
+</p>
+<ol>
+<li>Add the "Call Plans" related list to Account and Contact page layouts.</li>
+    <ul>
+    <li>Select the desired Account page layouts (Setup -> App Setup -> Customize -> Accounts -> Page Layouts)</li>
+    <li>Click Edit</li> 
+    <li>Select Related List</li>    
+    <li>Drag "Call Plans" to the desired section</li>    
+    <li>Click the Configure (wrench) button on the related list</li>
+    <li>Click Plus (+) to expand the Buttons section</li>
+    <li>Uncheck the checkbox to remove the New button</li>
+    <li>Click Ok</li>
+    <li>Click Save</li>
+    <li>Repeat the above steps for the desired Contact page layouts</li>
+    </ul>
+<p></p>
+<li>Add the "Call Plan" button to the desired Event page layout</li>
+    <ul>
+    <li>Select the desired Event page layouts (Setup -> App Setup -> Customize -> Activities -> Event Page Layouts)</li>
+    <li>Click Edit</li>
+    <li>Select Buttons</li>
+    <li>Drag "Call Plan" to the Custom Buttons location</li>
+    <li>Click Save</li>
+    </ul>
+<p></p>
+<li>Setup Report Folder security</li>
+    <ul>
+    <li>Click the Reports Tab</li>
+    <li>Select "Call Plan Reports" in the report folder picklist</li>
+    <li>Click Edit</li>
+    <li>Adjust to the desired folder sharing</li>
+    <li>Click Save</li>
+    </ul>
+<p></p>
+<li>Show the Call Plans tab</li>
+    <ul>
+    <li>Select the desired App (Setup -> App Setup -> Create -> Apps)</li>
+    <li>Click Edit on the desired App</li>
+    <li>Add Call Plans</li>
+    <li>Click Save</li>
+    </ul>
+<p></p>
+<li>Configure security</li>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>For Unlimited/Enterprise/Developer Edition</u>    
+    <ul>
+    <li>Browse to the User fields (Setup -> App Setup -> Customize -> Users -> Fields)</li>
+    <li>Click the field "Can Save Public Call Plan Templates" (not the Edit link)</li>
+    <li>Click "Set Field-Level Security"</li>
+    <li>Adjust the security accordingly</li>
+    <li>Click Save</li>
+    </ul>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>For Professional/Group Edition</u>
+    <ul>
+    <li>Select desired object (Setup -> App Setup -> Create -> Objects), click "Call Plan" (not the Edit link)</li>
+    <li>Navigate to the Page Layouts related list and click Edit in front of the Call Plan Layout</li>
+    <li>Drag every field onto the page layout (placement is not important as this page layout is not displayed to the user)</li>
+    <li>Click Save</li>  
+    <li>Repeat these steps for the "Call Plan Template"</li>   
+    </ul>
+<p></p>
+<li>Add "Can Save Public Call Plan Templates" to User page layout</li>
+    <ul>
+    <li>Select desired page layout (Setup -> App Setup -> Customize -> Users -> Page Layouts)</li>
+    <li>Click Edit</li>
+    <li>Drag "Can Save Public Call Plan Templates" onto the page</li>
+    <li>Click Save (now you can set which users can save public templates by updating this field on their record)</li>
+    </ul>
+</ol>
+</apex:pageBlockSection>
+
+</apex:pageBlock>
+
+</apex:page>

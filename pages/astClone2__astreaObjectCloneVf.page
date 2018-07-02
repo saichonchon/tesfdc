@@ -1,0 +1,334 @@
+<apex:page controller="astClone2.AstreaObjectCloneCtr" id="astrea_ClonePage" sidebar="false">
+<head>
+<!--<c:overlay style="processing" />-->
+</head>
+<style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.10;
+            filter: alpha(opacity = 10);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+
+    </style>
+ 
+            <script type="text/javascript">   
+               
+               function unCheckAll(){
+                    //Uncheck all checkboxes
+                    for (i = 0; i < document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList').rows.length; i++)
+                    {
+                        //Set CheckArray to empty
+                        if (!document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList:' + i).disabled)
+                            document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList:' + i).checked = false;
+                    }
+               }   
+               
+               function CheckAll(){
+                    //check all checkboxes
+                    for (i = 0; i < document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList').rows.length; i++)
+                    {
+                        //Set CheckArray to empty
+                        if (!document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList:' + i).disabled)
+                            document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList:' + i).checked = true;
+                    }
+               }       
+               function getSelectedItemCount(){
+                    //Reinitialize the counter
+                    checkedCount = 0;
+                    
+                    for (i = 0; i < document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList').rows.length; i++)
+                    {
+                        //Is checkbox checked?
+                        if (document.getElementById('astrea_ClonePage:AstreaCloneForm:SelectChildren:SelectedChildList:' + i).checked)
+                        {
+                            //Increment counter                         
+                            checkedCount = checkedCount + 1;
+                        }          
+                    }
+                    return checkedCount; 
+               }
+               
+               function allowClone(){
+               
+                   if( OkToClone()){
+                       if(confirm('Are you sure you want to clone this record?')){
+                           document.getElementById("astrea_ClonePage:AstreaCloneForm:Flag").value=true;
+                       }
+                   } else return false;
+               }
+               
+               
+               function allowRule(){
+                   if(confirm('Are you sure you want to save rule?')){
+                       document.getElementById("astrea_ClonePage:AstreaCloneForm:SpecifyFields:rFlag").value=true;
+                       
+                   } else return false;
+               }
+               
+               function IsOverMax(){
+                    var MAX_OBJECTS = 9;
+                    var CheckedCount = getSelectedItemCount();
+                    
+                    //Under the Max?
+                    if (CheckedCount > MAX_OBJECTS){                                                       
+                        return true;
+                    } 
+                    else{
+                        return false;
+                    }         
+               }
+                
+               function OkToSelect(aObject, aShowError){
+                    if (IsOverMax() == false){
+                        return true;
+                    }
+                    else{
+                        if (aShowError == true)
+                            alert('Maximum child objects selected (9).');
+                        aObject.checked = false;
+                        return false;
+                    }
+                }
+                
+                function SetRecordValue(){
+                   document.getElementById("astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection1:SetRecord").value=false;
+                   if( OkToClone()){
+                       document.getElementById("astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection1:SetRecord").value=true;
+                   } else return false;
+                }
+               
+                
+                function OkToClone(){
+                    var MAX_CLONES = 100;
+                    
+                    //var pattrn=new RegExp('[a-zA-Z]+');
+                    var p = new RegExp('^(0)$|^([1-9][0-9]*)$');
+                   
+                    if((document.getElementById('astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection:AstreaCloneNumber').value)=="0"){             
+                        alert('Please enter a positive numeric value greater than zero in the Number of Clones section');
+                        return false;
+                    }
+                    
+                    if((document.getElementById('astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection:AstreaCloneNumber').value)=="")
+                    {   alert('Number of Clones section cannot be left blank');
+                        return false;
+                    }
+                    
+                    if(!(p.test(document.getElementById('astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection:AstreaCloneNumber').value)))
+                    {
+                       alert('Please enter a positive numeric value in the Number of Clones section');
+                        return false;
+                    }
+                    
+                    //Under the Max?
+                    if (document.getElementById('astrea_ClonePage:AstreaCloneForm:TitleBlock:CloneTitle:CloneSection:AstreaCloneNumber').value > MAX_CLONES)
+                    {   alert('The number of clones cannot exceed 100.');                                                
+                        return false;
+                    } 
+                    
+                    else 
+                        return true;
+                }
+                
+                
+            </script>
+     
+    <apex:form id="AstreaCloneForm">
+    <apex:actionStatus id="overlayStatus" onStart="showOverlay();" onstop="hideOverlay();"></apex:actionstatus>
+    
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock id="TitleBlock" tabStyle="account">     
+            <apex:pageblockSection id="CloneTitle" collapsible="false">               
+                
+                <apex:facet name="header">
+                    <apex:outputpanel >
+                        <apex:outputText style="font-weight:bold;font-size:12px;float:left;" value="How many times do you want to clone this object?"/>&nbsp;&nbsp;&nbsp;
+                        <apex:image value="/img/alohaSkin/help_orange.png" title="Specify the number of records that need to be created." style="width:15px;height:15px;" />
+                    </apex:outputpanel>
+                </apex:facet>
+                
+                <apex:pageBlockSectionItem id="CloneSection">                            
+                    <b>Number of records to be created</b>&nbsp;&nbsp;&nbsp;<apex:inputText style="align=left" id="AstreaCloneNumber" value="{!numberofInput}" title="Specify the number of records that need to be created"/> 
+                </apex:pageBlockSectionItem>
+               
+                <apex:pageBlockSectionItem id="CloneSection1" >                            
+                    <apex:commandlink value="Set Records Name" action="{!SetTheAccountNames}" rerender="tstpopup" onclick="SetRecordValue()">
+                        <apex:inputHidden id="SetRecord" value="{!SetRecord}"/>
+                    </apex:commandlink>
+                    <apex:image value="/img/alohaSkin/help_orange.png" title="By default in the new records the names are given values name 1, name 2 - that is an integer is suffixed to the name. You may define new names in the cloned records using Set Records Name link."/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <b>Keep the names of records and their child records same as original</b>
+                <!--<apex:image value="/img/alohaSkin/help_orange.png" title="Make the checkbox true to keep the original name of the records and their related records"/>-->
+                &nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!ChangeName }" id="checkedone"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:outputPanel id="tstpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                    <apex:pageBlock >
+                        <b>Enter the name of cloned {!objectname} record: </b><br/><br/>
+                        <apex:repeat value="{!insertNamesList}" var="it">
+                            <table width="50%"><tr>
+                                <td width="10%"><apex:outputText value="{!it.NoOfClonedRecords}.  "/></td>
+                                <td><apex:inputText value="{!it.AccNewName}"/><br/></td></tr>
+                            </table>
+                        </apex:repeat>
+                    </apex:pageBlock><br/><br/><br/>
+                <center>
+                    <apex:commandButton value="Set Records Name" action="{!closePopup}" rerender="tstpopup"/>&nbsp;&nbsp;&nbsp;
+                    <apex:commandButton value="Cancel" action="{!closePopupCancel}" rerender="tstpopup"/>
+                </center>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:pageBlock id="SpecifyFields" tabStyle="account">
+            <font size ="2" color ="red">
+            </font><p/>
+            <br/>
+            <apex:outputPanel id="panel">
+            <apex:pageBlockSection id="FieldTitle" collapsible="false"  columns="1">
+            
+            <apex:facet name="header">
+                <apex:outputpanel >
+                    <apex:outputText style="font-weight:bold;font-size:12px;float:left;" value="Override existing field values "/>&nbsp;&nbsp;&nbsp;
+                    <apex:image value="/img/alohaSkin/help_orange.png" title="Specify fields where you want to give new values and not use the values in the original record. If you want that the field value should not be copied for a certain field, then leave the value blank." style="width:15px;height:15px;" />
+                </apex:outputpanel>
+            </apex:facet>
+           
+            <apex:outputPanel id="panel1">
+                <table width="100%"  border="2" class="list">
+                    <tr class="headerRow">
+                        <th width="2%"></th>
+                        <th>Select Fields</th>
+                        <th>Value</th>
+                        <th width="2%"></th>
+                    </tr>
+                    
+                    <tr class="headerRow">
+                        <td class="dataRow"> </td> 
+                        <td class="dataRow">
+                        <apex:actionRegion >
+                            <apex:selectList value="{!fieldFilter}" multiselect="false" id="sBox" size="1"  style="width:150px">
+                                <apex:selectOptions value="{!ShowRemainingFields}" />
+                                <apex:actionSupport event="onchange" action="{!rensection}" status="overlayStatus" rerender="panel"/>
+                            </apex:selectList>
+                            
+                            <apex:outputPanel rendered="{!showDate}">
+                                Set Todays Date ?
+                                <apex:inputCheckbox value="{!todayDate}"/> 
+                            </apex:outputPanel>
+                            
+                            <!-- ////////////// Added by Sumit on 22-nov- 2013  ///////////////////////////   -->                          
+                            <apex:outputPanel rendered="{!IsChangeOwner}">
+                                Set this Owner to all Childs Objects ?
+                                <apex:inputCheckbox value="{!ChangeOwnervalue}"/>                                                        
+                            </apex:outputPanel>
+                             <!-- ////////////////////////////////////////////////////////////////////////   -->
+                            
+                        </apex:actionRegion>
+                        </td>
+                         
+                        <td class ="dataRow">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!obj[currentfield]}"  rendered="{!renField}"></apex:inputField>
+                        </apex:actionRegion></td>
+                    
+                        <td class="dataRow">
+                            &nbsp;<apex:commandlink action="{!specifyFields}" rerender="panel" status="overlayStatus">
+                                 Add&nbsp;<!--<apex:image url="{!$Resource.Addline}" title="Add Rule"/>-->
+                            </apex:commandlink>&nbsp;
+                        </td>
+                    </tr>
+            
+                    <apex:repeat value="{!fwrapList}" var="fw">
+                        <tr>
+                            <td class="dataRow">
+                                &nbsp;<apex:commandLink action="{!deleteQuery}" rerender="parad,panel" status="overlayStatus">
+                                    <apex:param name="index" value="{!fw.index}" id="parad"  />
+                                    Del<!--<apex:image value="{!URLFOR($Resource.RemoveItem)}" title="Remove Rule" width="20" />-->
+                                </apex:commandLink>&nbsp;
+                            </td>
+               
+                            <td class="dataRow">
+                                <apex:selectList value="{!fw.fieldName}" multiselect="false"  size="1"  style="width:150px" disabled="true">
+                                    <apex:selectOptions value="{!allfields}"/>                                
+                                </apex:selectList> 
+                                                               
+                            <!--  ///////////////////////////////////////Added By Sumit on Dated 26-11-2013 ////////////////////////////   -->
+                                   <apex:outputPanel rendered="{!IF(fw.fieldName=='ownerid' ,true,false)}" >                                 
+                                       <apex:outputtext value="Set this Owner to all Childs Objects ?"/>                               
+                                       <apex:inputCheckbox value="{!ChangeOwnervalue}" disabled="true" />  
+                                   </apex:outputPanel> 
+                           <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////   -->                                                                    
+                           </td>
+                        
+                            <td class="dataRow">
+                                <apex:outputField value="{!fw.objWrap[fw.fieldName]}">
+                                    <apex:inlineEditSupport />
+                                </apex:outputField>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:outputPanel> 
+        <center>
+            <apex:commandButton value="Save Rule" onclick="allowRule()" action="{!saveRule}" rendered="{!hideBtn}">
+            <apex:inputHidden id="rFlag" value="{!rFlag}"/>
+            </apex:commandButton>
+        </center><br/>
+           
+        </apex:pageBlock>
+        
+        <center>
+          <apex:commandButton value="    Clone   " onclick="allowClone()" action="{!cloneobject}">
+            <apex:inputHidden id="Flag" value="{!Flag}"/>
+          </apex:commandButton>
+        </center><br/>
+        
+        
+        <apex:pageBlock id="SelectChildren" tabStyle="account" rendered="{!if(items.size >0,true,false)}">
+            <apex:pageBlockSection id="ChildTitle" collapsible="false" columns="1" showheader="true">
+            
+            <apex:facet name="header">
+                <apex:outputpanel >
+                    <apex:outputText style="font-weight:bold;font-size:12px;float:left;" value="Select child objects to clone"/>&nbsp;&nbsp;&nbsp;
+                    <apex:image value="/img/alohaSkin/help_orange.png" title="Specify which related lists should be cloned in the new record. The value in parentheses indicates number of child records present in the original record." style="width:15px;height:15px;" />
+                </apex:outputpanel>
+            </apex:facet>
+            
+            </apex:pageBlockSection>
+                <apex:commandButton id="SelectAll" value="Select All" rerender="panelId" onclick="CheckAll()" /> 
+                <apex:commandButton id="DeselectAll" value="Deselect All" rerender="panelId" onclick="unCheckAll()" />
+                <br/>
+                <apex:selectCheckboxes id="SelectedChildList" value="{!relatedObjects}" layout="pageDirection" disabled="false" onclick="OkToSelect(this, true)">
+                    <apex:selectOptions value="{!items}"/> 
+                </apex:selectCheckboxes>
+            
+        </apex:pageBlock>
+    <div id="overlay"></div>
+    </apex:form>
+</apex:page>

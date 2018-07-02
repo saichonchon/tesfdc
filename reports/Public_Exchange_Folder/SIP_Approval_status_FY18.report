@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ProcessInstance$ProcessDefinition.CreatedBy</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance$ProcessDefinition.Description</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance$ProcessDefinition.Name</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance$CurrentNodeName</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance$TargetName</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance.Nodes$NodeStatus</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance.Nodes$LastActor</field>
+    </columns>
+    <columns>
+        <field>ProcessInstance$Status</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>ProcessInstance$ProcessDefinition.Name</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>New SIP Approval Process for targets</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ProcessInstance.Nodes$NodeStatus</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>A</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ProcessInstance.Nodes$LastActor</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Anja Schneider</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>SIP Approval status FY18</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Approval_History_Reports__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>ProcessInstance$TargetName</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>ProcessInstance$CompletedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

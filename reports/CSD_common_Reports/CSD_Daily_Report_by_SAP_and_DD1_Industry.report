@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>IF(BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM=0, 0,BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Book_Amount_USD__c:SUM / BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>B/B Ratio</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>IF(BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM=0,0, (BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM - BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Cost_Amount__c:SUM )  / BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Margin %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_75569433</developerName>
+        <masterLabel>DD1 Industry</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account$Industry_Code_Name_Level_1__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>0171/Business/Retail Eq</sourceValue>
+            </sourceValues>
+            <value>0171/Business/Retail Eq</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>0130/Computers &amp; Periph Eq</sourceValue>
+            </sourceValues>
+            <value>0130/Computers &amp; Periph Eq</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>0324/Home Ent/Cons Eltrn</sourceValue>
+            </sourceValues>
+            <value>0324/Home Ent/Cons Eltrn</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>1000/Mobile Phones</sourceValue>
+            </sourceValues>
+            <value>1000/Mobile Phones</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>0551/Whsl &amp; Retail Trade</sourceValue>
+            </sourceValues>
+            <value>0551/Whsl &amp; Retail Trade</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Backlog_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Bill_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>CSD</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$Fiscal_Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$Fiscal_Month__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$SAP_Profit_Center_Short_Description__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_75569433</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>3 - CSD Daily Report by SAP and DD1 Ind</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CSD_Accounts_with_DBBB_By_Parts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

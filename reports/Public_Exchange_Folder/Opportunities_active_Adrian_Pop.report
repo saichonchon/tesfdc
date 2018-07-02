@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account$AccountNumber</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$StageName</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Owner</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Five_Year_Value__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Total_Opportunity_Value__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Lost/Dead - closed,Rejected - Closed,Won - Closed,On Hold,Production,Dead,Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Adrian Pop</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Opportunities active Adrian Pop</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

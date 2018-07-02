@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Account.Account_Manager__c.Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Account</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Account_Number__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>((1 OR 4) AND (2 or 5) AND 3)</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity$Account.Account_Manager__c.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Account.Account_Manager__c.UserRole</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>SE</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Lost/Dead - closed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$CreatedBy.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Account.Account_Manager__c.Name</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Marco Kurz</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>MED -  SE Active Opps</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <roleHierarchyFilter>X101816_Worldwide_Medical</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity$Account.Account_Manager__c.Name</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$MED_Quote_Approval_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

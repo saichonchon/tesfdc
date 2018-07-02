@@ -1,0 +1,606 @@
+<apex:page standardcontroller="Opportunity_Part__c" extensions="ExtOpportunityPartEntryAPL" title="{!$Label.Manage} {!$ObjectType.Opportunity_Part__c.label}">
+<!--    <script type="text/javascript" src="{!URLFOR($Resource.HtmlEncodeDecodeJS)}"></script>-->
+    <apex:stylesheet value="{!$Resource.OpportunityPartManageCss}"/>
+<!--    <script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>-->
+<!--    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />-->
+    <apex:includeScript value="{!URLFOR($Resource.JquerySource)}" />
+    <apex:includeScript value="{!URLFOR($Resource.JqueryPowerFloat)}" />
+    <apex:includeScript value="{!URLFOR($Resource.JqueryPowerFloatMini)}" />
+    
+    <apex:includeScript value="{!URLFOR($Resource.JQueryIE9)}" />
+    <apex:includeScript value="{!URLFOR($Resource.OpportunityPartManageJS)}" />
+    
+    
+    <style>
+        .lookupIcon,.lookupIconOn,.handleClass{
+            cursor: pointer;
+        }
+        body .pbBody table.list tr.headerRow td, body .pbBody table.list tr.headerRow th {
+            background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom white;
+            height: 14px;
+        }
+        body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
+            border-width: 0 0 1px 0;
+            vertical-align: middle;
+            padding-right: 15px;
+        }
+    </style>
+
+    <apex:sectionHeader title="{!$ObjectType.Opportunity_Part__c.label}" subtitle="{!$Label.Manage}"/>
+    <apex:form id="pageForm" >
+    <c:CompPartStatusPopUp ></c:CompPartStatusPopUp> 
+    
+    <div id="status_window_SalesPart" style="align:center;margin-left:auto;margin-right:auto"> </div>
+    <div id="mask_SalesPart"></div> 
+    
+<!-- ***********************************************************************  Message *************************************************************************-->
+<!-- ***********************************************************************  Message *************************************************************************-->    
+        <apex:outputPanel id="message">
+            <apex:pageMessages id="pagemessages"  /> 
+        </apex:outputPanel>
+<!-- ***********************************************************************  Message ***************************************************oncomplete="addPart();"**********************-->
+<!-- ***********************************************************************  Message *************************************************************************--> 
+
+        <apex:outputPanel id="avoidRefreshError">
+        </apex:outputPanel>
+        <apex:actionFunction action="{!SaveOpportunityParts}" name="SaveOpportunityParts" rerender="pageForm" status="statuspartListTable">
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!SelectSimilarParts}" name="SelectSimilarParts" rerender="proposalpartlistblocksetion" status="statuspartListTable" >
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!SelectPartsForPartNumber}" name="SelectPartsForPartNumber" rerender="pageForm" status="statuspartListTable" >
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!SelectGPL}" name="SelectGPL" rerender="proposalpartlistblocksetion" status="statuspartListTable" >
+            <apex:param name="selectedIndex" value="" assignTo="{!selectedIndex}"/> 
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!PopupAddSalesPart}" name="PopupAddSalesPart" rerender="pageForm" status="statuspartListTable" >
+            <apex:param name="idString" assignTo="{!idString}" value="" />
+        </apex:actionFunction>
+
+<!-- ******************************************************************  PageBlock for parts list ************************************************************************-->
+<!-- ******************************************************************  PageBlock for parts list ************************************************************************-->
+        <apex:PageBlock title="{!$Label.Part_List}" id="firstBlock" rendered="{!NOT(isIncompleteNDROppty)}"> 
+            <input type="hidden" id="selectedSalesPartIdString" value="{!idString}"></input>
+            <apex:PageBlockButtons location="top"> 
+                <apex:selectList value="{!addAmount}" size="1" rendered="{!AND(!isOnlySales, validOpportunity)}" styleClass="handleClass">
+                    <apex:selectOptions value="{!Amounts}"/>
+                </apex:selectList>
+                <input type="button" value="{!$Label.Sales_Button}" class="btn"  onclick="OpenSalesPartSearchPopup()" style="display:{!IF(validOpportunity && contactRoleValidPass, '', 'none')}"/>  
+                <apex:commandButton rendered="{!AND(!isOnlySales, validOpportunity, contactRoleValidPass)}" action="{!NewAddProposalParts}" value="{!$Label.Add_Proposal_Part}"  rerender="pageForm" status="statuspartListTable" />
+                <apex:commandButton action="{!DoSaveAndReturn}" value="{!$Label.Save}" rerender="pageForm" status="statuspartListTable" rendered="{!validOpportunity && contactRoleValidPass}"/>
+                <apex:commandButton action="{!SaveOpportunityParts}" value="{!$Label.Save_and_More}"  rerender="pageForm"  status="statuspartListTable" rendered="{!validOpportunity && contactRoleValidPass}"/>
+                <apex:commandButton action="{!GotoOpportunity}" value="{!$Label.Cancel}" immediate="true"/>
+<!--                 <apex:actionStatus startText=" Loading... " stopText="" id="statuspartListTable" > -->
+<!--                     <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet> -->
+<!--                 </apex:actionStatus>            
+                 -->
+                <apex:actionStatus startText="" stopText="" id="statuspartListTable" onstart="$('#loading-curtain-div').show();" onstop="$('#loading-curtain-div').hide();"/>                 
+            </apex:PageBlockButtons> 
+
+<!-- ***********************************************  PageBlockSection 01 - 001 : Sales Part list ************************************************************-->
+<!-- ***********************************************  PageBlockSection 01 - 001 : Sales Part list ************************************************************-->           
+            <input type="hidden" id="selectedOppyId" value=""></input>
+            
+            <apex:pageBlockSection columns="1"  title="Sales Parts List" id="salespartlistblocksetion">     
+                <apex:outputPanel id="opppartlist"> 
+                        <table  class="list" cellspacing="0" cellpadding="0" border="5" id="opppartlistTable"> 
+                            <thead>
+                                <tr class="headerRow">
+                                    <th style="width:20px;"></th>
+                                    <th style="width:20px;">{!$Label.Delete}</th>  
+                                    <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartSalesFieldSet}" var="f"> 
+                                        <th>
+                                            <apex:outputText value="{!f.Label}" />
+                                        </th>   
+                                    </apex:repeat>
+                                </tr>           
+                            </thead>            
+                            <tbody>     
+                                <apex:repeat value="{!list_singlePageOpportunityParts}" var="op">   
+                                    <tr class="dataRow {!op.index}opportunitypartsales displayDataRow" >
+                                        <apex:outputPanel layout="none" > 
+                                            <td style="width:20px;border-left:none !important;" class="dataCell partLabel trleftBorder">
+                                                <img class="showTableListButton" title="Show" style="cursor:pointer; "  src="{!$Resource.iconExpand}"  id="{!op.index}SalesImgExpand" onclick="showDisplaysSales('{!op.index}sales', this, this.title)"/>
+                                                <img class="hideTableListButton" title="Hide" style="cursor:pointer;display:none; "  src="{!$Resource.iconCollapse}"  id="{!op.index}SalesImgCollapse" onclick="showDisplaysSales('{!op.index}sales', this, this.title)"/>
+                                            </td>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" >
+                                            <td style="width:20px;">
+                                                <apex:commandLink style="border:0px" action="{!DeleteOpportunityParts}" rerender="pageForm" status="statuspartListTable">
+                                                     <apex:param name="deleteOpportunityPartIndex" value="{!op.index}" assignTo="{!deleteOpportunityPartIndex}" />
+                                                     <apex:image url="{!$Resource.iconDelete}" />                       
+                                                </apex:commandLink>
+                                            </td>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartSalesFieldSet}" var="f">
+                                            <!--  
+                                            <apex:outputPanel layout="none" rendered="{!IF(OR( AND(f=='New_Part_Description__c',mode=='new'), AND(f=='Resulting_GPL__c',mode=='edit') ), false, true)}"> 
+                                            -->
+                                            <apex:outputPanel layout="none" > 
+                                            <td class="dataCell">
+                                                <apex:outputPanel >
+                                                    <apex:outputText rendered="{!IF(OR(f='Part__c', f=='GPL__c', f=='Status__c', f=='Comments__c', f=='Part_Name__c', f=='Process_Status__c',f=='Status_Reason__c', f=='Initial_Order_Date__c' ), false, true)}" value="{!op.opportunityPart[f]}" />
+                                                    <apex:outputText rendered="{!IF(AND(f=='Part_Name__c',op.opportunityPart.Id !=null), true, false)}" value="{!op.opportunityPart[f]}"></apex:outputText>
+                                                    <apex:outputText rendered="{!IF(AND(f=='Part_Name__c',op.opportunityPart.Id ==null), true, false)}" value="{!op.opportunityPart.Temporary_Part_Name__c}"></apex:outputText>
+                                                    <apex:inputField onkeypress="return noenter()" rendered="{!IF(f=='Part__c', true, false)}" value="{!op.opportunityPart[f]}" style="width:100px;"></apex:inputField>
+                                                    <apex:outputText rendered="{!IF(f=='GPL__c', true, false)}" value="{!op.GPLName}"></apex:outputText>
+<!--                                                    <apex:inputField onkeypress="return noenter()" rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}" ></apex:inputField>-->
+                                                    <!-- 
+                                                    <apex:selectList size="1" disabled="true" rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}">
+                                                        <apex:selectOptions value="{!Items}" />
+                                                    </apex:selectList> -->
+                                                    <apex:outputField rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}" />
+                                                    <apex:inputField rendered="{!IF(f=='Status_Reason__c', true, false)}" id="statusReasons" value="{!op.opportunityPart[f]}"></apex:inputField>
+                                                    <c:CompNoDateLink >
+                                                        <apex:inputField onkeypress="return noenter()"  rendered="{!IF(f=='Initial_Order_Date__c', true, false)}" value="{!op.opportunityPart[f]}"/>
+                                                    </c:CompNoDateLink>
+                                                    <apex:outputField rendered="{!IF(f=='Status__c', true, false)}" value="{!op.opportunityPart[f]}" ></apex:outputField>
+                                                </apex:outputPanel>
+                                            </td>
+                                            </apex:outputPanel>     
+                                        </apex:repeat>
+                                    </tr>
+                                    <tr class="dataRow {!op.index}salesdetail"  style="display:none;">  
+                                        <td class="dataCell partLabel" colspan="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartSalesFieldSet.size+2}">
+                                            <apex:outputPanel >
+                                                <apex:PageBlock mode="maindetail">
+                                                    <apex:pageBlockSection collapsible="false" id="OppSalesPartRTSpageBlock">
+                                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartSalesDetailFieldSetAPL}" var="detailf">
+                                                            <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[detailf].InlinehelpText}">
+                                                                <apex:outputLabel >{!detailf.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:outputField value="{!op.opportunityPart[detailf]}" rendered="{!AND(detailf=='Won_Date__c', !isAdmin)}"/>
+                                                                    <!-- <apex:outputText rendered="{!IF(detailf=='Send_to_RTS__c',true,false)}"><font color="#c00" size="4"  >|</font></apex:outputText>  -->
+                                                                    <apex:actionRegion >
+                                                                    <apex:inputField onkeypress="return noenter()" value="{!op.opportunityPart[detailf]}" rendered="{!OR(AND(detailf=='Won_Date__c', isAdmin), AND(detailf != 'Won_Date__c', detailf != 'Comments__c',detailf!='Send_to_RTS__c'))}"/>
+                                                                    <apex:inputField onkeypress="return noenter()" value="{!op.opportunityPart[detailf]}" required="{!IF(detailf=='Send_to_RTS__c',true,false)}" rendered="{!AND(detailf=='Send_to_RTS__c',lostOpportunityAppliance != 'Lost Opportunity-Appliances')}">
+                                                                        <apex:actionSupport event="onchange" rendered="{!IF(detailf=='Send_to_RTS__c',true,false)}" reRender="OppSalesPartRTSpageBlock,OppSalesPartRTSpageBlockInnerId" status="RTSstatus"/>
+                                                                    </apex:inputField>
+                                                                    <Apex:outputField value="{!op.opportunityPart[detailf]}" rendered="{!AND(detailf=='Send_to_RTS__c',lostOpportunityAppliance == 'Lost Opportunity-Appliances')}"/>
+                                                                    <apex:actionStatus startText=" Loading... " stopText="" id="RTSstatus" >
+                                                                        <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading... Please Wait.</span></apex:facet>
+                                                                    </apex:actionStatus>
+                                                                    </apex:actionRegion> 
+                                                                    <apex:inputTextarea rows="3" cols="62" onkeypress="return noenter()" rendered="{!IF(detailf=='Comments__c', true, false)}" value="{!op.opportunityPart[detailf]}" styleClass="CommentsClass" ></apex:inputTextarea>
+                                                                </apex:outputPanel>
+                                                            </apex:pageBlockSectionItem>
+                                                        </apex:repeat>
+                                                        <!-- Modified by Toshi on 28th Oct 2014, to make  3 fields mandatory only for DataComm and Channel-->
+                                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', true, false)}">
+                                                            <!-- --------------------by nelson zheng 2014-12-29 det=='DataCom_Request_Type__c',det=='Is_this_Part_Replacing_an_Existing_Part__c',det=='Product_Sub_Type__c',det=='Build_Quantity__c',det=='DTC_Request_Quantity__c'---------------------- -->
+                                                            <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', IF(OR(det=='Customer_End_Product__c',det=='DataCom_Request_Type__c',det=='Is_this_Part_Replacing_an_Existing_Part__c',det=='Product_Sub_Type__c',det=='Build_Quantity__c',det=='DTC_Request_Quantity__c',det=='Initial_Order_Date__c',det =='Sample_Type__c',det =='Prototype_Customer_Sample_Quantity__c',det =='Prototype_Customer_Sample_Due_Date__c'),false,true), false)}">
+                                                                <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:actionRegion >
+                                                                        <apex:inputField rendered="{!det =='Prototype_Customer_Samples_Requested__c'}" value="{!op.opportunityPart[det]}"  >
+                                                                            <apex:actionSupport event="onchange" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}" reRender="OppSalesPartRTSpageBlockInnerId" status="salesRTSstatus2"/>
+                                                                        </apex:inputField>
+                                                                        <apex:actionStatus startText=" Loading... " stopText="" id="salesRTSstatus2" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}">
+                                                                            <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading... Please Wait.</span></apex:facet>
+                                                                        </apex:actionStatus>
+                                                                    </apex:actionRegion>
+                                                                    <apex:inputField value="{!op.opportunityPart[det]}" rendered="{!AND(det !='Prototype_Customer_Samples_Requested__c',det !='Sample_Type__c',det !='Prototype_Customer_Sample_Quantity__c',det !='Prototype_Customer_Sample_Due_Date__c')}" required="{!IF(OR(det=='Code_for_unit_of_measurement__c', det=='Initial_Order_Date__c', det=='Product_Type__c',det=='DataCom_Request_Type__c',det=='DTC_Request_Quantity__c',det=='Build_Quantity__c'),true, false)}" ></apex:inputField>
+                                                                </apex:outputPanel>
+                                                            </apex:pageBlockSectionItem>
+                                                        </apex:repeat>
+                                                    </apex:pageBlockSection>
+                                                    <!-- --------------------by nelson zheng 2015-01-06 ------------ -->
+                                                    <apex:pageBlockSection collapsible="false" id="OppSalesPartRTSpageBlockInnerId">
+                                                            <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!AND(op.OpportunityPart.Prototype_Customer_Samples_Requested__c,op.OpportunityPart.Send_to_RTS__c =='Yes')}" id="relRTSInnerId">
+                                                                <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!AND(op.OpportunityPart.Prototype_Customer_Samples_Requested__c,op.OpportunityPart.Send_to_RTS__c =='Yes',OR(det =='Sample_Type__c',det =='Prototype_Customer_Sample_Quantity__c',det =='Prototype_Customer_Sample_Due_Date__c'))}">
+                                                                <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:inputField rendered="{!OR(det =='Sample_Type__c',det =='Prototype_Customer_Sample_Quantity__c',det =='Prototype_Customer_Sample_Due_Date__c')}" value="{!op.opportunityPart[det]}" required="true" />
+                                                                    
+                                                                </apex:outputPanel>
+                                                                </apex:pageBlockSectionItem>
+                                                            </apex:repeat>
+                                                   </apex:pageBlockSection>
+                                                </apex:PageBlock>
+                                            </apex:outputPanel>
+                                        </td>                           
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>                                                                                                                            
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <table width="100%">
+                   <tr>
+                    <!-- 
+                    <td width="25%" align="left">
+                        {!$Label.Showing_records} &nbsp; <apex:outputText id="oppPartListStartRowNbr" value="{!oppPartListFirstRecordNumber}" /> {!$Label.To}&nbsp; <apex:outputText id="oppPartListEndRowNbr" value="{!oppPartListLastRecordNumber}" />
+                        &nbsp;{!$Label.Of}&nbsp; <apex:outputText id="oppPartListTotalRecords" value="{!oppPartListTotalRecordCount}" />&nbsp;{!$Label.Records}
+                    </td>
+                     -->
+                    <td width="25%" align="left">
+                        <apex:outputText id="oppPartListStartRowNbr" value="{!oppPartListFirstRecordNumber}" /> -&nbsp; <apex:outputText id="oppPartListEndRowNbr" value="{!oppPartListLastRecordNumber}" />
+                        &nbsp;{!$Label.Of}&nbsp;&nbsp; <apex:outputText id="oppPartListTotalRecords" value="{!oppPartListTotalRecordCount}" />
+                    </td>
+                    <td width="25%" align="right">
+                        <apex:commandLink action="{!OppPartListPreviousPage}" rendered="{!oppPartListShowPrevPageLink}" value="{!$Label.Previous_Page}" dir="RTL" rerender="pageForm" status="statuspartListTable">  
+                            <apex:image url="{!$Resource.PreviousArrow}" style="vertical-align:bottom"/>
+                        </apex:commandLink>
+                        &nbsp;
+                    </td>
+                    <td width="25%" align="left">                               
+                        <apex:commandLink action="{!OppPartListNextPage}" rendered="{!oppPartListShowNextPageLink}" value="{!$Label.Next_Page}" rerender="pageForm" status="statuspartListTable">
+                            <apex:image url="{!$Resource.NextArrow}" style="vertical-align:bottom"/> 
+                        </apex:commandLink>
+                    </td>
+                    <!--  
+                    <td width="25%" align="right">
+                        <apex:commandButton action="{!JumpToOppPartListPage}" value="{!$Label.Jump_To_Page}" rerender="pageForm" status="statuspartListTable"/>
+                        <apex:inputText onkeypress="return noenter()" id="oppPartJumpToPage"  value="{!oppPartListJumpToPage}" style="width:20px"/>
+                    </td>
+                    -->
+                    <td width="25%" align="right">
+                        {!$Label.Page}&nbsp;<apex:outputText id="salesrecentlypage" value="{!oppPartListPageNumber}" />
+                    </td>                               
+                   </tr>                
+            </table>            
+<!-- ***********************************************  PageBlockSection 01 - 001 : Sales Part list ************************************************************-->
+<!-- ***********************************************  PageBlockSection 01 - 001 : Sales Part list ************************************************************-->
+                                
+
+<!-- ***********************************************  PageBlockSection 01 - 002 : Proposal Part list ************************************************************-->
+<!-- ***********************************************  PageBlockSection 01 - 002 : Proposal Part list ************************************************************-->
+            <input type="hidden" id="selectedProposalPartId" value=""></input>
+            <apex:pageBlockSection columns="1" title="Proposal Parts List" rendered="{!!isOnlySales}" id="proposalpartlistblocksetion"> 
+            
+                <apex:outputPanel id="proposalpartlist"> 
+                        <table  class="list" cellspacing="0" cellpadding="0" border="5" id="proposalPartlistTable"> 
+                            <thead>
+                                <tr class="headerRow">
+                                    <th style="width:20px;"></th>
+                                    <th style="width:20px;">{!$Label.Delete}</th>  
+                                    <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalFieldSet}" var="f"> 
+                                        <th>
+                                            <apex:outputText value="{!f.Label}" />
+                                        </th>   
+                                    </apex:repeat>
+                                </tr>           
+                            </thead>      
+                            <tbody>     
+                                <apex:repeat value="{!list_singlePageOpportunityPartsProposal}" var="op">   
+                                    <tr class="dataRow {!op.index}opportunitypartproposal displayDataRow" >
+                                        <apex:outputPanel layout="none" > 
+                                            <td style="width:20px;border-left:none !important;" class="dataCell partLabel trleftBorder">
+                                                <img class="showTableListButton" title="Show" style="cursor:pointer; "  src="{!$Resource.iconExpand}"  id="{!op.index}ProposalImgExpand" onclick="showDisplaysProposal('{!op.index}proposal', this, this.title)"/>
+                                                <img class="hideTableListButton" title="Hide" style="cursor:pointer;display:none; "  src="{!$Resource.iconCollapse}"  id="{!op.index}ProposalImgCollapse" onclick="showDisplaysProposal('{!op.index}proposal', this, this.title)"/>
+                                            </td>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" >
+                                            <td style="width:20px;">
+                                                <apex:commandLink style="border:0px" action="{!DeleteOpportunityPartsProposal}" rerender="pageForm" status="statuspartListTable">
+                                                     <apex:param name="deleteOpportunityPartIndexProposal" value="{!op.index}" assignTo="{!deleteOpportunityPartIndexProposal}" />
+                                                     <apex:image url="{!$Resource.iconDelete}" />                       
+                                                </apex:commandLink>
+                                            </td>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalFieldSet}" var="f">
+                                            <apex:outputPanel layout="none" > 
+                                            <td class="dataCell">
+                                                <apex:outputPanel >
+                                                    <apex:outputText rendered="{!IF(OR(f='New_Part_Description__c', f=='Similar_TE_Part_Number__c', f='Part__c', f=='GPL__c', f=='Status__c', f=='Comments__c', f =='Part_Name__c' ,f=='Process_Status__c', f=='Status_Reason__c', f=='Initial_Order_Date__c' ,f=='Regional_PM_AP__c'), false, true)}" value="{!op.opportunityPart[f]}" />
+                                                    <apex:outputText rendered="{!IF(AND(f=='Part_Name__c',op.opportunityPart.Id !=null), true, false)}" value="{!op.opportunityPart.Temporary_Part_Name__c}"></apex:outputText>
+                                                    <apex:outputText rendered="{!IF(AND(f=='Part_Name__c',op.opportunityPart.Id ==null), true, false)}" value="{!op.opportunityPart.Temporary_Part_Name__c}"></apex:outputText>
+                                                    <apex:inputTextarea rows="5" cols="35" rendered="{!IF(f=='New_Part_Description__c', true, false)}" value="{!op.opportunityPart[f]}"></apex:inputTextarea>
+                                                    <apex:inputField onkeypress="return noenter()" rendered="{!IF(f=='Part__c', true, false)}" value="{!op.opportunityPart[f]}"></apex:inputField>
+                                                    <apex:outputField rendered="{!IF(f=='Status__c', true, false)}" value="{!op.opportunityPart[f]}"></apex:outputField>
+                                                    
+                                                    <apex:inputText onkeypress="return noenter()"  disabled="true" id="lookup_Name" rendered="{!f=='Similar_TE_Part_Number__c'}" value="{!op.OppyPartSimilarName}" style="width:150px;"/>
+                                                    <apex:inputText onkeypress="return noenter()" id="lookup_Id" rendered="{!f=='Similar_TE_Part_Number__c'}" value="{!op.opportunityPart[f]}" style="display:none;" /> 
+                                                    <apex:image url="/s.gif" 
+                                                        rendered="{!IF(f=='Similar_TE_Part_Number__c', true, false)}"
+                                                        id="lookup"
+                                                        styleClass="lookupIcon"  
+                                                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+                                                        onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+                                                        title="Search" 
+                                                        onclick="OpenLookupPopup('{!op.opportunityPart.Id}', this.id)"
+                                                    />
+                                                     
+                                                    <apex:inputText onkeypress="return noenter()"  disabled="true" id="GPL_Name" rendered="{!f=='GPL__c'}" value="{!op.GPLName}" style="width:50px;"/>
+                                                    <apex:inputText onkeypress="return noenter()" id="GPL_Id" rendered="{!f=='GPL__c'}" value="{!op.opportunityPart[f]}" style="display:none;" /> 
+                                                    <apex:image url="/s.gif" 
+                                                        rendered="{!IF(f=='GPL__c', true, false)}"
+                                                        id="GPL"
+                                                        styleClass="lookupIcon"  
+                                                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+                                                        onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+                                                        title="Search" 
+                                                        onclick="OpenSearchGPL('{!op.opportunityPart.Id}', this.id, '{!op.index}')"
+                                                    /> 
+                                                    <apex:outputText rendered="{!IF(AND(f=='Product_Manager__c',!isChina), true, false)}" value="{!op.ProductManager}" />
+                                                    <apex:outputText rendered="{!IF(AND(f=='Regional_PM_AP__c',isChina), true, false)}" value="{!op.regionalPM}" />
+<!--                                                    <apex:inputField onkeypress="return noenter()"  rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}"/>-->
+                                                    <!-- 
+                                                    <apex:selectList size="1" disabled="true" rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}">
+                                                        <apex:selectOptions value="{!Items}" />
+                                                    </apex:selectList> -->
+                                                    <apex:outputField rendered="{!IF(f=='Process_Status__c', true, false)}" value="{!op.opportunityPart[f]}" />
+                                                    <apex:inputField id="statusReason" rendered="{!IF(f=='Status_Reason__c', true, false)}" value="{!op.opportunityPart[f]}"></apex:inputField>
+                                                    <c:CompNoDateLink >
+                                                        <apex:inputField onkeypress="return noenter()"  rendered="{!IF(f=='Initial_Order_Date__c', true, false)}" value="{!op.opportunityPart[f]}"/>
+                                                    </c:CompNoDateLink>
+                                                    
+                                                </apex:outputPanel>
+                                            </td>
+                                            </apex:outputPanel>     
+                                        </apex:repeat>
+                                    </tr>
+<!--                                    style="display:none;"-->
+                                    <tr class="dataRow {!op.index}proposaldetail"   style="display:{!IF(OR(op.opportunityPart.New_Part_Description__c = null,op.opportunityPart.New_Part_Description__c = ''), '', 'none')}">
+                                        <td style="width:20px;" class="dataCell partLabel"></td>    
+                                        <td class="dataCell partLabel" colspan="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalFieldSet.size+2}">
+                                            <apex:outputPanel >
+                                                <apex:PageBlock mode="maindetail" tabStyle="Opportunity_Part__c">
+                                                    <apex:pageBlockSection columns="2" collapsible="false">
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel for="aaa">{!$ObjectType.Opportunity_Part__c.fields.New_Part_Description__c.label}</apex:outputLabel>
+                                                            <apex:outputPanel layout="block" styleClass="requiredInput" >
+                                                                <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                                                <apex:inputTextarea rows="5" cols="62" value="{!op.opportunityPart.New_Part_Description__c}"></apex:inputTextarea>
+                                                            </apex:outputPanel>
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel for="aaa">{!$ObjectType.Opportunity_Part__c.fields.Comments__c.label}</apex:outputLabel>
+                                                            <apex:inputTextarea rows="5" cols="62" onkeypress="return noenter()"  value="{!op.opportunityPart.Comments__c}"></apex:inputTextarea>
+                                                        </apex:pageBlockSectionItem>
+                                                    </apex:pageBlockSection>
+                                                </apex:PageBlock>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                    <tr class="dataRow {!op.index}proposaldetail"  style="display:none;">
+                                        <td style="width:20px;" class="dataCell partLabel"></td>    
+                                        <td class="dataCell partLabel" colspan="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalFieldSet.size+2}">
+                                            <apex:outputPanel >
+                                                <apex:PageBlock mode="maindetail" tabStyle="Opportunity_Part__c">
+                                                    <apex:pageBlockSection collapsible="false" id="OppProposalPartRTSpageBlock">
+                                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalDetailFieldSetAPL}" var="detailf">
+                                                            <apex:pageBlockSectionItem dataStyle="align:right;" rendered="{!If(detailf='Part__c',false,true)}" helpText="{!$ObjectType.Opportunity_Part__c.Fields[detailf].InlinehelpText}">
+                                                                <apex:outputLabel rendered="{!If(detailf='Part__c',false,true)}">{!detailf.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:outputField value="{!op.opportunityPart[detailf]}" rendered="{!AND(detailf=='Won_Date__c', !isAdmin)}"/>
+                                                                    <apex:actionRegion >
+                                                                    <apex:inputField onkeypress="return noenter()" value="{!op.opportunityPart[detailf]}" required="{!IF(detailf=='Send_to_RTS__c',true,false)}" rendered="{!OR(AND(detailf=='Won_Date__c', isAdmin), AND(detailf != 'Won_Date__c', detailf != 'Comments__c'))}">
+                                                                        <apex:actionSupport event="onchange" rendered="{!IF(detailf=='Send_to_RTS__c',true,false)}" reRender="OppProposalPartRTSRelBlockId,OppProposalPartRTSRelBlockInnerId" status="RTSstatus1"/>
+<!--                                                                         <apex:actionSupport event="onchange" rendered="{!IF(detailf=='Send_to_RTS__c',true,false)}" reRender="relRTSPanelId" status="RTSstatus1"/> -->
+                                                                    </apex:inputField>
+                                                                    <apex:actionStatus startText=" Loading... " stopText="" id="RTSstatus1" >
+                                                                        <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading... Please Wait.</span></apex:facet>
+                                                                    </apex:actionStatus>      
+                                                                    </apex:actionRegion>                                                                                                                             
+                                                                </apex:outputPanel>
+                                                            </apex:pageBlockSectionItem>
+                                                        
+                                                            <apex:pageBlockSectionItem dataStyle="align:right;" rendered="{!IF(detailf=='Part__c', true, false)}">
+                                                                <apex:outputLabel >{!$Label.Newly_created_SAP_Part_Number}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:inputText onkeypress="return noenter()"  disabled="true" id="detail_lookup_Name"  value="{!op.OppyPartNumberName}" />
+                                                                    <apex:inputText rendered="{!IF(detailf=='Part__c', true, false)}" onkeypress="return noenter()" id="detail_lookup_Id"  value="{!op.opportunityPart[detailf]}" style="display:none;"/>                                                               
+                                                                    <apex:image url="/s.gif" 
+                                                                        rendered="{!IF(detailf=='Part__c', true, false)}"
+                                                                        id="detail_lookup"
+                                                                        styleClass="lookupIcon"  
+                                                                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+                                                                        onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+                                                                        title="Search" 
+                                                                        onclick="OpenSearchPartNumberInDetail('{!op.opportunityPart.Id}', this.id)"
+                                                                    />
+                                                                </apex:outputPanel>
+                                                            </apex:pageBlockSectionItem>
+                                                        </apex:repeat>  
+                                                        <!-- Start :: Added bY bin yuan -->
+                                                        <!-- 
+                                                        <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', true, false)}">
+                                                           <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', true, false)}">
+                                                                <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:inputField value="{!op.opportunityPart[det]}" required="{!IF(OR(det=='Code_for_unit_of_measurement__c', det=='Initial_Order_Date__c', det=='Product_Type__c'),true, false)}"></apex:inputField>
+                                                                </apex:outputPanel>
+                                                             
+                                                            </apex:pageBlockSectionItem>
+                                                        </apex:repeat>
+                                                         
+                                                            <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', true, false)}" id="relRTSId">
+                                                                  <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', IF(AND(det!='Customer_End_Product__c', det!='Prototype_Customer_Sample_Quantity__c', det!='Sample_Type__c', det!='Prototype_Customer_Sample_Due_Date__c'),true,IF(OR(And(or(det=='Prototype_Customer_Sample_Quantity__c', det=='Sample_Type__c', det=='Prototype_Customer_Sample_Due_Date__c'), op.OpportunityPart.Prototype_Customer_Samples_Requested__c == true), det=='Customer_End_Product__c'),true, false)), false)}">
+                                                                        <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                        <apex:outputPanel >
+                                                                            <apex:actionRegion >
+                                                                                <apex:inputField value="{!op.opportunityPart[det]}" required="{!IF(OR(det=='Code_for_unit_of_measurement__c', det=='Initial_Order_Date__c', det=='Product_Type__c',det=='Customer_End_Product__c'),true, IF(and(OR(det=='Prototype_Customer_Sample_Quantity__c', det=='Sample_Type__c', det=='Prototype_Customer_Sample_Due_Date__c'),op.OpportunityPart.Prototype_Customer_Samples_Requested__c == true), true, false))}" >
+                                                                                    <apex:actionSupport event="onchange" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}" reRender="OppProposalPartRTSpageBlock" status="RTSstatus2"/>
+                                                                                </apex:inputField>
+                                                                                <apex:actionStatus startText=" Loading... " stopText="" id="RTSstatus2" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}">
+                                                                                    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading... Please Wait.</span></apex:facet>
+                                                                                </apex:actionStatus> 
+    
+                                                                            </apex:actionRegion>
+                                                                        </apex:outputPanel>
+                                                                  </apex:pageBlockSectionItem>
+                                                            </apex:repeat>
+                                                           --> 
+                                                        <!-- Start :: Added bY bin yuan -->
+                                                   </apex:pageBlockSection>
+                                                </apex:PageBlock>
+                                            </apex:outputPanel>
+                                        </td>                           
+                                    </tr>
+                                    <!-- Start by bin yuan set refresh aera -->
+                                    <!-- Start by bin yuan set refresh aera -->
+                                    <!--added lili zhao 2014-07-17 due to add the required field to view-->
+                                    <tr class="dataRow {!op.index}proposaldetail"  style="display:{!IF(And(op.opportunityPart.Send_to_RTS__c = 'Yes',OR(op.opportunityPart.Code_for_unit_of_measurement__c = null,op.opportunityPart.Initial_Order_Date__c = null, op.opportunityPart.Product_Type__c = null,op.opportunityPart.Customer_End_Product__c = null)), '', 'none')}">
+                                        <td style="width:20px;" class="dataCell partLabel"></td>    
+                                        <td class="dataCell partLabel" colspan="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartProposalFieldSet.size+2}">
+                                            <apex:outputPanel >
+                                                <apex:PageBlock mode="maindetail" tabStyle="Opportunity_Part__c">
+                                                    <apex:pageBlockSection collapsible="false" id="OppProposalPartRTSRelBlockId">
+                                                            <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', true, false)}" id="relRTSId">
+                                                                  <!-- ---------------------by nelson zheng 2014-12-29 det!='DataCom_Request_Type__c',det!='Is_this_Part_Replacing_an_Existing_Part__c',det!='Product_Sub_Type__c',det!='Build_Quantity__c',det!='DTC_Request_Quantity__c'----------------------- -->
+                                                                  <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!IF(op.OpportunityPart.Send_to_RTS__c =='Yes', IF(AND(det!='Customer_End_Product__c',det!='DataCom_Request_Type__c',det!='Is_this_Part_Replacing_an_Existing_Part__c',det!='Product_Sub_Type__c',det!='Build_Quantity__c',det!='DTC_Request_Quantity__c',det !='Sample_Type__c',det !='Prototype_Customer_Sample_Quantity__c',det !='Prototype_Customer_Sample_Due_Date__c',det != 'Initial_Order_Date__c'),true,IF(det=='Customer_End_Product__c',true, false)), false)}">
+                                                                        <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                        
+                                                                        <apex:outputPanel >
+                                                                            <apex:actionRegion >
+                                                                                <apex:inputField rendered="{!det =='Prototype_Customer_Samples_Requested__c'}" value="{!op.opportunityPart[det]}" styleClass="{!IF(OR(det=='Code_for_unit_of_measurement__c', det=='Initial_Order_Date__c', det=='Product_Type__c',det=='DataCom_Request_Type__c',det=='DTC_Request_Quantity__c',det=='Build_Quantity__c',det == 'Customer_End_Product__c'),'requiredInput','' )}" >
+                                                                                    <apex:actionSupport event="onchange" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}" reRender="OppProposalPartRTSRelBlockInnerId" status="RTSstatus2"/>
+                                                                                </apex:inputField>
+                                                                                <apex:actionStatus startText=" Loading... " stopText="" id="RTSstatus2" rendered="{!det =='Prototype_Customer_Samples_Requested__c'}">
+                                                                                        <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading... Please Wait.</span></apex:facet>
+                                                                                </apex:actionStatus>
+                                                                            </apex:actionRegion>
+                                                                            
+                                                                            <apex:outputPanel layout="div" rendered="{!AND(det !='Prototype_Customer_Samples_Requested__c',det !='Sample_Type__c',det !='Prototype_Customer_Sample_Quantity__c',det !='Prototype_Customer_Sample_Due_Date__c')}" styleClass="{!IF(OR(det=='Code_for_unit_of_measurement__c', det=='Initial_Order_Date__c', det=='Product_Type__c',det=='DataCom_Request_Type__c',det=='DTC_Request_Quantity__c',det=='Build_Quantity__c',det == 'Customer_End_Product__c'),'requiredInput','')}" >
+                                                                                    <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                                                                    <apex:inputField value="{!op.opportunityPart[det]}"></apex:inputField>
+                                                                            </apex:outputPanel>
+                                                                        </apex:outputPanel>
+                                                                  </apex:pageBlockSectionItem>
+                                                            </apex:repeat>
+                                                   </apex:pageBlockSection>
+                                                   <apex:pageBlockSection collapsible="false" id="OppProposalPartRTSRelBlockInnerId">
+                                                            <apex:repeat value="{!$ObjectType.Opportunity_Part__c.FieldSets.OppPartRTSRelatedFieldSet}" var="det" rendered="{!AND(op.OpportunityPart.Prototype_Customer_Samples_Requested__c,op.OpportunityPart.Send_to_RTS__c =='Yes')}" id="relRTSInnerId">
+                                                                <apex:pageBlockSectionItem helpText="{!$ObjectType.Opportunity_Part__c.Fields[det].InlinehelpText}" rendered="{!AND(op.OpportunityPart.Prototype_Customer_Samples_Requested__c,op.OpportunityPart.Send_to_RTS__c =='Yes',OR(det =='Sample_Type__c',det =='Prototype_Customer_Sample_Quantity__c',det =='Prototype_Customer_Sample_Due_Date__c'))}">
+                                                                <apex:outputLabel >{!det.label}</apex:outputLabel>
+                                                                <apex:outputPanel >
+                                                                    <apex:inputField rendered="{!OR(det =='Sample_Type__c',det =='Prototype_Customer_Sample_Quantity__c',det =='Prototype_Customer_Sample_Due_Date__c')}" value="{!op.opportunityPart[det]}" required="true" />
+                                                                    
+                                                                </apex:outputPanel>
+                                                                </apex:pageBlockSectionItem>
+                                                            </apex:repeat>
+                                                   </apex:pageBlockSection>
+                                                </apex:PageBlock>
+                                            </apex:outputPanel>
+                                        </td>                           
+                                    </tr>
+                                    
+                                    <!-- Start by bin yuan set refresh aera -->
+                                    <!-- Start by bin yuan set refresh aera -->
+                                </apex:repeat>
+                            </tbody>
+                        </table>                                                                                                                            
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <apex:outputPanel rendered="{!!isOnlySales}">
+            <table width="100%">
+                   <tr>
+                   <!--  
+                    <td width="25%" align="left">
+                        {!$Label.Showing_records} &nbsp; <apex:outputText id="oppPartListStartRowNbrProposal" value="{!oppPartListFirstRecordNumberProposal}" /> {!$Label.To}&nbsp; <apex:outputText id="oppPartListEndRowNbrProposal" value="{!oppPartListLastRecordNumberProposal}" />
+                        &nbsp;{!$Label.Of}&nbsp; <apex:outputText id="oppPartListTotalRecordsProposal" value="{!oppPartListTotalRecordCountProposal}" />&nbsp;{!$Label.Records}
+                    </td>
+                    -->
+                    <td width="25%" align="left">
+                        <apex:outputText id="oppPartListStartRowNbrProposal" value="{!oppPartListFirstRecordNumberProposal}" /> -&nbsp; <apex:outputText id="oppPartListEndRowNbrProposal" value="{!oppPartListLastRecordNumberProposal}" />
+                        &nbsp;{!$Label.Of}&nbsp;&nbsp; <apex:outputText id="oppPartListTotalRecordsProposal" value="{!oppPartListTotalRecordCountProposal}" />
+                    </td>
+                    <td width="25%" align="right">
+                        <apex:commandLink action="{!OppPartListPreviousPageProposal}" rendered="{!oppPartListShowPrevPageLinkProposal}" value="{!$Label.Previous_Page}" dir="RTL" rerender="pageForm" status="statuspartListTable">  
+                            <apex:image url="{!$Resource.PreviousArrow}" style="vertical-align:bottom"/>
+                        </apex:commandLink>
+                        &nbsp;
+                    </td>
+                    <td width="25%" align="left">                               
+                        <apex:commandLink action="{!OppPartListNextPageProposal}" rendered="{!oppPartListShowNextPageLinkProposal}" value="{!$Label.Next_Page}" rerender="pageForm" status="statuspartListTable">
+                            <apex:image url="{!$Resource.NextArrow}" style="vertical-align:bottom"/> 
+                        </apex:commandLink>
+                    </td>
+                    <!--  
+                    <td width="25%" align="right">
+                        <apex:commandButton action="{!JumpToOppPartListPageProposal}" value="{!$Label.Jump_To_Page}" rerender="pageForm" status="statuspartListTable"/>
+                        <apex:inputText onkeypress="return noenter()" id="oppPartJumpToPageProposal"  value="{!oppPartListJumpToPageProposal}" style="width:20px"/>
+                    </td>
+                    -->
+                    <td width="25%" align="right">
+                        {!$Label.Page}&nbsp;<apex:outputText id="recentlypage" value="{!oppPartListPageNumberProposal}" />
+                    </td>                               
+                   </tr>      
+            </table>
+            </apex:outputPanel>     
+<!-- ***********************************************  PageBlockSection 01 - 002 : Proposal Part list ************************************************************-->
+<!-- ***********************************************  PageBlockSection 01 - 002 : Proposal Part list ************************************************************-->
+        
+        <input type="hidden" id="selectedPartId" value=""></input>
+        <input type="hidden" id="selectedPartName" value=""></input>
+        <input type="hidden" id="selectedPartDescription" value=""></input>                             
+        </apex:PageBlock>
+<!-- ******************************************************************  PageBlock for parts list ************************************************************************-->
+<!-- ******************************************************************  PageBlock for parts list ************************************************************************-->
+
+    <script>
+        function setFocusOnLoad(){};
+        itb_j$=jQuery.noConflict();
+        function closePopUp(){
+            popRemove();
+        }
+        
+        function closePopUpSales(){
+            itb_j$("#status_content_window").remove();
+            itb_j$("#mask_SalesPart").css({
+                visibility : 'hidden'
+            });
+            itb_j$("#mask_SalesPart").hide();
+        }
+        
+        function SalesOpen(){
+            document.getElementById("searchSalesMode").innerHTML = 'Sales Mode';
+            document.getElementById("{!$Component.searchLookupPanel}").style.display = 'none';
+            document.getElementById("{!$Component.resultRadioPanel}").style.display = 'none';
+            document.getElementById("{!$Component.searchSalesPanel}").style.display = 'block';
+        }
+
+        
+        function ShowResultRadio(){
+            document.getElementById("{!$Component.resultCheckboxPanel}").style.display = 'none';
+            document.getElementById("{!$Component.resultRadioPanel}").style.display = 'block';
+        }
+        
+        function ShowResultCheckbox(){
+            document.getElementById("{!$Component.resultRadioPanel}").style.display = 'none';
+            document.getElementById("{!$Component.resultCheckboxPanel}").style.display = 'block';
+        }   
+        
+        
+        function IEMode(){
+            engine = null;
+            if (window.navigator.appName == "Microsoft Internet Explorer")
+            {
+                // This is an IE browser. What mode is the engine in?
+                if (document.documentMode) {// IE8 or later
+                    //alert("document.documentMode:"+document.documentMode);
+                    engine = document.documentMode;
+                    //alert("engine:"+engine);
+                    if(engine == '9') {
+                        document.documentMode = '8';
+                        //alert('ok');
+                    }
+                    //alert("document.documentMode:"+document.documentMode);
+               }
+               else // IE 5-7
+               {
+                  engine = 5; // Assume quirks mode unless proven otherwise
+                  if (document.compatMode)
+                  {
+                     if (document.compatMode == "CSS1Compat")
+                        engine = 7; // standards mode
+                  }
+                  // There is no test for IE6 standards mode because that mode  
+                  // was replaced by IE7 standards mode; there is no emulation.
+               }
+               // the engine variable now contains the document compatibility mode.
+            }
+        }   
+        IEMode();
+    </script>
+    
+                 
+    </apex:form>
+    <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;display:none;background-color:#FFF;opacity:0.85;position:fixed;z-index:5000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');" title="Please Wait..."></div>
+</apex:page>

@@ -1,0 +1,184 @@
+<!--**********************************************************************************************************************************************
+
+Name: Emails_RelatedList
+Copyright © 2013 TE Connectivity | Salesforce Instance : C2S Org
+===============================================================================================================================================
+
+Purpose: This visualforce page displays emails on case with status and actions to perform.
+===============================================================================================================================================
+REQUIREMENT INFORMATION & DEVELOPMENT INFORMATION:                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+VERSION   AUTHOR              DATE          DETAIL                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ 1.0      Abhijeet           29/01/2014            VF 
+ 2.0      Abhijeet           28/25/2014        Added Fwd link on VF for functionality which allows CCP to forward email.
+*********************************************************************************************************************************************** -->
+<apex:page standardController="Case" extensions="Emails_RelatedList_Controller">
+    <apex:form >
+    
+        <apex:includeScript value="/soap/ajax/26.0/connection.js"/>
+        <apex:includeScript value="/support/console/26.0/integration.js"/>
+        <apex:pageBlock id="results">
+            <div>
+                <b> Emails </b>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onClick="openNewTab('{!Case_Id}','Send an email');return false">Send an Email</button>                
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               
+              Page No  
+            <apex:selectList value="{!selectedPage}" size="1" multiselect="false">
+               <apex:SelectOptions value="{!pagesOptions}"></apex:SelectOptions>
+            <apex:actionSupport event="onchange" action="{!nextPage}" reRender="results" />
+            </apex:selectList>  </div>
+            <br/>            
+            <script>
+                //globale JS variables
+                var case_recordid;
+                var recordname;
+                var url;
+
+                function openNewTab(recid, recname) {
+                    case_recordid = recid.substring(0,15);
+                    recordname = recname;
+                    if(!sforce.console.isInConsole())
+                        window.parent.location.replace('/'+recid);
+                    else
+                        sforce.console.getFocusedPrimaryTabId(callBackopenTabnew);
+                }
+                function callBackopenTabnew(result) {
+                    sforce.console.openSubtab(result.id, '/_ui/core/email/author/EmailAuthor?p3_lkid='+case_recordid+'&retURL='+'{!case_id}'+'&isdtp=vw' , true,recordname,null);
+                };
+            </script>
+           <!-- <apex:pageBlockTable value="{!vEMWrapperLst}" var="a" id="pbtable1" > -->
+           
+        
+           <apex:outputText rendered="{!!vdisplayEmails}">No Emails available.</apex:outputText>
+          
+           <apex:pageBlockTable value="{!mapCases[selectedPage]}" var="a" id="pbtable1" rendered="{!vdisplayEmails}" >
+                
+                <apex:column style="width:120px; font-size:11px" >
+                    <apex:facet name="header">
+                        Action &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </apex:facet>
+                    <A HREF="#" onClick="openReplyTab('{!a.wEM.Id}','Send an email');return false">Reply</A>
+                    &nbsp;| &nbsp;
+                    <A HREF="#" onClick="openReplyToAllTab('{!a.wEM.Id}','Send an email');return false">To All</A>  
+                    &nbsp;|&nbsp;
+                    <!-- 28/5/2014 @Abhijeet : Added to allow forward emails -->
+                    <A HREF="#" onClick="openForwardTab('{!a.wEM.Id}','Send an email');return false">Fwd</A>  
+                    
+                    <script>                    
+                        //globale JS variables
+                        var recordid;
+                        var recordname;
+                        var url;
+                        function openNewTab(recid, recname) {
+                            recordid = recid.substring(0,15);
+                            recordname = recname;
+                            if(!sforce.console.isInConsole())
+                                window.parent.location.replace('/'+recid);
+                            else
+                                sforce.console.getFocusedPrimaryTabId(callBackopenTabnew);
+                        }
+                        function callBackopenTabnew(result) {
+                            sforce.console.openSubtab(result.id, '/_ui/core/email/author/EmailAuthor?p3_lkid='+recordid+'&retURL='+'{!case_id}'+'&isdtp=vw' , true,recordname,null);
+                        }; 
+                        function openReplyTab(recid, recname) {
+                            recordid = recid.substring(0,15);
+                            recordname = recname;
+                            if(!sforce.console.isInConsole())
+                                window.parent.location.replace('/'+recid);
+                            else
+                                sforce.console.getFocusedPrimaryTabId(callBackopenreplyTab);
+                        }
+                        function callBackopenreplyTab(result) {
+                            sforce.console.openSubtab(result.id, '/_ui/core/email/author/EmailAuthor?email_id='+recordid+'&replyToAll=0&retURL=%2F'+'{!case_id}'+'&isdtp=vw' , true,recordname,null);
+                        }; 
+                        function openReplyToAllTab(recid, recname) {
+                            recordid = recid.substring(0,15);
+                            recordname = recname;
+                            if(!sforce.console.isInConsole())
+                                window.parent.location.replace('/'+recid);
+                            else
+                                sforce.console.getFocusedPrimaryTabId(callBackopenReplytoallTab);
+                        }
+                        function callBackopenReplytoallTab(result) {
+                            sforce.console.openSubtab(result.id, '/_ui/core/email/author/EmailAuthor?email_id='+recordid+'&replyToAll=1&retURL=%2F'+'{!case_id}'+'&isdtp=vw' , true,recordname,null);
+                        };
+                        function openEmailTab(recid, recname) {
+                            recordid = recid;
+                            if(recname == 'Sent' || recname == 'Sent via Outlook' || recname == 'Replied' || recname == 'Forwarded'){
+                                recordname = 'Outbound Email Message';
+                                sforce.console.getFocusedPrimaryTabId(callBackopenOutlookEmailTab);
+                            }
+                            else{
+                                recordname = 'Inbound Email Message';
+                                sforce.console.getFocusedPrimaryTabId(callBackopenEmailTab);
+                            }
+                        }
+                        function callBackopenOutlookEmailTab(result) {
+                            sforce.console.openSubtab(result.id, '/apex/OutboundOutlookEmail?id='+recordid, true,recordname,null);
+                        };
+                        function callBackopenEmailTab(result) {
+                            sforce.console.openSubtab(result.id, '/apex/InboundOutlookEmail?id='+recordid , true,recordname,null);
+                        };
+                        function openForwardTab(recid, recname) {
+                            recordid = recid.substring(0,15);
+                            recordname = recname;
+                            if(!sforce.console.isInConsole())
+                                window.parent.location.replace('/'+recid);
+                            else
+                                sforce.console.getFocusedPrimaryTabId(callBackopenforwardTab);
+                        }
+                        function callBackopenforwardTab(result) {
+                            sforce.console.openSubtab(result.id, '/_ui/core/email/author/EmailAuthor?email_id='+recordid+'&forward=1&retURL=%2F'+'{!case_id}'+'&isdtp=vw' , true,recordname,null);
+                        };
+                    </script>
+                </apex:column>
+                <apex:column headerValue="Status" value="{!a.wstatus}" style="width:50px; font-size:11px"/>
+                <apex:column >
+                    <apex:image value="/img/emailInbound.gif" rendered="{!(a.wStatus == 'New' || a.wStatus == 'Read'|| a.wStatus == 'Replied' || a.wStatus == 'Forwarded') }"/>
+                    <apex:image value="/img/emailOutbound.gif" rendered="{!!(a.wStatus == 'New' || a.wStatus == 'Read'|| a.wStatus == 'Replied' || a.wStatus == 'Forwarded') }"/>
+                    <apex:image value="/img/emailHasAttach.gif" rendered="{!a.wEM.HasAttachment}"/>
+                </apex:column>
+                <apex:column headervalue="Subject" style="width:280px; font-size:11px">
+                    <apex:outputText rendered="{!(a.wEM.subject == null || a.wEM.subject == '')}">
+                        <b>
+                            <A HREF="#" onClick="openEmailTab('{!a.wEM.Id}','{!a.wStatus}');return false">No Subject</A>  
+                        </b>                        
+                    </apex:outputText>                    
+                    <apex:outputText rendered="{!a.wStatus == 'New'}">
+                        <b>
+                            <A HREF="#" onClick="openEmailTab('{!a.wEM.Id}','{!a.wStatus}');return false">{!a.wEM.subject}</A>  
+                        </b>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!!(a.wStatus == 'New')}">
+                        <A HREF="#" onClick="openEmailTab('{!a.wEM.Id}','{!a.wStatus}');return false">{!a.wEM.subject}</A> 
+                    </apex:outputText><br></br>
+                    <font style="font-style:italic;font-decoration:none;font-size:11px;">
+                        <apex:outputText value="{!a.txtBody}" /> 
+                    </font>
+                </apex:column>
+                <apex:column headerValue="Email Address" style="font-size:11px">
+                    <apex:outputText rendered="{!(a.wStatus == 'New' || a.wStatus == 'Read')}">{!a.wEM.FromAddress}</apex:outputText>
+                    <apex:outputText rendered="{!!(a.wStatus == 'New' || a.wStatus == 'Read')}">{!a.wEM.ToAddress}</apex:outputText>
+                </apex:column>
+                <apex:column style="width:10%; font-size:11px" >
+                    <apex:facet name="header">
+                        <apex:commandLink action="{!toggleSort}" rerender="pbtable1">
+                            Message Date {!IF(sortField=='MessageDate',IF(sortDir ='asc','▼','▲'),'')}
+                            <apex:param name="sortField" value="MessageDate" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    {!a.wMessageDate}
+                </apex:column>
+            </apex:pageBlockTable>
+             
+        </apex:pageBlock> 
+    </apex:form>
+</apex:page>

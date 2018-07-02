@@ -1,0 +1,779 @@
+<apex:page controller="ddcAssess.AssessmentResultsCtlr"
+	title="Data.com Assessment Results" showHeader="false" sidebar="false">
+	<link rel="stylesheet"
+		href="{!URLFOR($Resource.jquery_ui_base_theme,'jquery-ui.min.css')}" />
+	<link rel="stylesheet" type="text/javascript"
+		href="{!URLFOR($Resource.jquery_jqplot,'jquery.jqplot.min.css')}" />
+
+	<link rel="stylesheet" type="text/css"
+		href="{!URLFOR($Resource.assessment_css)}" />
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.jquery_migrate)}"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+	<!--[if lt IE 9]><script type="text/javascript" src="{!URLFOR($Resource.jquery_jqplot,'excanvas.min.js')}"></script><![endif]-->
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.jquery_jqplot,'jquery.jqplot.min.js')}"></script>
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.jquery_jqplot,'jqplot.pieRenderer.min.js')}"></script>
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.jquery_jqplot,'jqplot.donutRenderer.min.js')}"></script>
+	<script type="text/javascript">
+		$(function() {
+			if(new RegExp("print=([^&]*)", "i").exec(window.location.search) == null) {
+				$("#subtabs").tabs();
+				$("#subtabs").on( "tabsactivate", function( event, ui ) {
+					window.parent.resizeIframe();
+					drawCharts();
+				});
+			} else {
+				$("#subtabs_header").hide();
+				$("#print_link").hide();
+				drawCharts();
+			}
+		});
+		
+		function confirmCancel(assessmentToCancel) {
+			if(confirm("Are you sure you wish to proceed? Any assessment data collected will be lost.")) {
+				onCancel(assessmentToCancel);
+			}
+		}
+		function confirmDelete(assessmentToDelete) {
+			if(confirm("Are you sure you wish to delete this assessment?")) {
+				onDelete(assessmentToDelete);
+			}
+		}
+		
+		function refreshTable() {
+			$('table.assessment_table').fadeTo("fast", 0.33);
+			onRefresh();
+		}
+	</script>
+	<apex:form >
+		<apex:actionFunction name="onCancel" action="{!onCancel}" rerender="everything">
+			<apex:param name="assessmentToCancel" assignTo="{!assessmentToCancel}" value=""/>
+		</apex:actionFunction>
+		<apex:actionFunction name="onDelete" action="{!onDelete}" rerender="everything">
+			<apex:param name="assessmentToDelete" assignTo="{!assessmentToDelete}" value=""/>
+		</apex:actionFunction>
+		<apex:actionFunction name="onRefresh" action="{!onRefresh}" rerender="everything" />
+	
+	<apex:pageMessages />
+	<apex:outputPanel id="everything">
+	<apex:outputPanel rendered="{!ISBLANK(summaryId)}" id="summary_view">
+
+		<div class="inner_content">
+			<h2>Assessments</h2>
+			<p>Your last five requested assessments are listed here.</p>
+			<br />
+			<apex:outputPanel rendered="{!NOT(hasSummaries)}">
+		No Summaries are available. Please start an Assessment from the Setup and Start tab.
+		</apex:outputPanel>
+			<apex:outputPanel rendered="{!hasSummaries}">
+
+				<table class="assessment_table">
+					<thead>
+						<tr>
+							<th>Date Requested</th>
+							<th>Requested By</th>
+							<th>Status</th>
+							<th class="empty_header"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<apex:repeat value="{!summaries}" var="summary">
+							<tr>
+								<td><apex:outputField value="{!summary.createddate}" /></td>
+								<td><apex:outputField value="{!summary.createdby.name}" /></td>
+								<td><apex:outputPanel layout="none"
+										rendered="{!summary.ddcAssess__Complete__c}">
+										<a href="{!URLFOR($Page.Results)}?id={!summary.id}"
+											class="blue">View Assessment</a>
+									<apex:outputPanel layout="none" rendered="{!NOT(summary.ddcAssess__Error_Count__c == 0)}">
+									&nbsp;<img src="/img/msg_icons/warning16.png" alt="warning" class="message_icon"
+									title="Errors occurred while completing the assessment: {!summary.error_count__c} records failed ({!summary.Failed_pcnt__c}%)"
+									/>
+									</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="none"
+										rendered="{!NOT(summary.ddcAssess__Complete__c)}">
+								In Progress [<a href="#" onclick="confirmCancel('{!summary.id}')">cancel</a>]
+								</apex:outputPanel></td>
+								<td class="empty_header">
+									<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Complete__c}">
+										<a href="#" onclick="confirmDelete('{!summary.id}')" class="blue">delete</a>
+									</apex:outputPanel>
+								</td>
+							</tr>
+						</apex:repeat>
+					</tbody>
+				</table> 
+				<input type="button" value="Refresh" onclick="refreshTable()" class="btn" />
+			</apex:outputPanel>
+		</div>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!NOT(ISBLANK(summaryId))}">
+		<div id="print_link">
+			<a href="#" onclick="window.open('{!$Page.Results}?id={!summary.id}&print=x')">Printable Version</a>
+		</div>
+		<div id="breadcrumbs" class="inner_content">
+			<a href="{!URLFOR($Page.Results)}">All Assessments</a>&nbsp;&nbsp;&gt;&nbsp;&nbsp;
+			<apex:outputField value="{!summary.createddate}" rendered="{!valid}" />
+		</div>
+		<apex:outputPanel rendered="{!valid}">
+			<div id="subtabs">
+				<ul id="subtabs_header">
+					<li><a href="#summary">Summary</a></li>
+					<li><a href="#accounts">Accounts</a></li>
+					<li><a href="#contacts">Contacts</a></li>
+					<li><a href="#leads">Leads</a></li>
+					<li><a href="#unmatched">Unmatched</a></li>
+				</ul>
+				<div id="summary">
+					<div class="inner_content">
+						<div id="summary_text">
+							<h2>Assessment Summary</h2>
+							<p>
+								We've analyzed&nbsp;
+								<apex:outputField value="{!entities['Account'].total__c}" />
+								account,&nbsp;
+								<apex:outputField value="{!entities['Contact'].total__c}" />
+								contact, and&nbsp;
+								<apex:outputField value="{!entities['Lead'].total__c}" />
+								lead records.
+							</p>
+							<div id="record_table">
+								<table>
+									<thead>
+										<tr>
+											<th colspan="2">Records we can <b>enrich</b>
+											</th>
+											<th colspan="2">Records that are likely <b>inactive</b>
+											</th>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<th colspan="2">Records that are likely <b>duplicates</b>
+											</th>
+											</apex:outputPanel>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="count"><apex:outputField value="{!entities['Account'].Different__c}" /></td>
+											<td class="field">accounts</td>
+											<td class="count"><apex:outputField value="{!entities['Account'].Inactive__c}" /></td>
+											<td class="field">accounts</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td class="count"><apex:outputField value="{!entities['Account'].Duplicate__c}" /></td>
+											<td class="field">accounts</td>
+											</apex:outputPanel>
+										</tr>
+										<tr>
+											<td class="count"><apex:outputField value="{!entities['Contact'].Different__c}" /></td>
+											<td class="field">contacts</td>
+											<td class="count"><apex:outputField value="{!entities['Contact'].Inactive__c}" /></td>
+											<td class="field">contacts</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td class="count"><apex:outputField value="{!entities['Contact'].Duplicate__c}" /></td>
+											<td class="field">contacts</td>
+											</apex:outputPanel>
+										</tr>
+										<tr>
+											<td class="count"><apex:outputField value="{!entities['Lead'].Different__c}" /></td>
+											<td class="field">leads</td>
+											<td class="count"><apex:outputField value="{!entities['Lead'].Inactive__c}" /></td>
+											<td class="field">leads</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td class="count"><apex:outputField value="{!entities['Lead'].Duplicate__c}" /></td>
+											<td class="field">leads</td>
+											</apex:outputPanel>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<br /> <br />
+						<h2>Match Summary</h2>
+						<br />
+						<br />
+						<div id="object_summary">
+							<div>
+								<table>
+									<tr>
+										<th style="text-align: center"><h2>Accounts</h2></th>
+										<th style="text-align: center"><h2>Contacts</h2></th>
+										<th style="text-align: center"><h2>Leads</h2></th>
+									</tr>
+									<tr>
+										<apex:repeat value="{!entityList}" var="entity">
+											<td>
+												<div id="{!entity}_summary_chart" class="jqplot-target"></div>
+											</td>
+										</apex:repeat>
+										<td>
+											<div class="legend_element">
+												<div class="legend_matched">&nbsp;</div>
+												Matched
+											</div>
+											<div class="legend_element">
+												<div class="legend_unmatched">&nbsp;</div>
+												Unmatched
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<br />
+							<table class="assessment_table">
+								<thead>
+									<tr>
+										<th>Salesforce Objects</th>
+										<th>Matched</th>
+										<th>Unmatched</th>
+										<th>Total</th>
+										<th>Match (%)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Accounts</td>
+										<td><apex:outputField value="{!entities['Account'].matched__c}"/></td>
+										<td><apex:outputField value="{!entities['Account'].unmatched__c}"/></td>
+										<td><apex:outputField value="{!entities['Account'].total__c}"/></td>
+										<td class="{!IF(entities['Account'].matched_pcnt__c > matchUpperThreshold, 'different_highlight', IF(entities['Account'].matched_pcnt__c <= matchLowerThreshold, 'blank_highlight',''))}">
+											<apex:outputText value="{!entities['Account'].matched_pcnt__c}%"
+												title="{!IF(entities['Account'].matched_pcnt__c > matchUpperThreshold, 'Your match rate is above average.', IF(entities['Account'].matched_pcnt__c <= matchLowerThreshold, 'Your match rate is below average.','Your match rate is average.'))}"
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>Contacts</td>
+										<td><apex:outputField value="{!entities['Contact'].matched__c}"/></td>
+										<td><apex:outputField value="{!entities['Contact'].unmatched__c}"/></td>
+										<td><apex:outputField value="{!entities['Contact'].total__c}"/></td>
+										<td class="{!IF(entities['Contact'].matched_pcnt__c > matchUpperThreshold, 'different_highlight', IF(entities['Contact'].matched_pcnt__c <= matchLowerThreshold, 'blank_highlight',''))}">
+											<apex:outputText value="{!entities['Contact'].matched_pcnt__c}%"
+												title="{!IF(entities['Contact'].matched_pcnt__c > matchUpperThreshold, 'Your match rate is above average.', IF(entities['Contact'].matched_pcnt__c <= matchLowerThreshold, 'Your match rate is below average.','Your match rate is average.'))}"
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>Leads</td>
+										<td><apex:outputField value="{!entities['Lead'].matched__c}"/></td>
+										<td><apex:outputField value="{!entities['Lead'].unmatched__c}"/></td>
+										<td><apex:outputField value="{!entities['Lead'].total__c}"/></td>
+										<td class="{!IF(entities['Lead'].matched_pcnt__c > matchUpperThreshold, 'different_highlight', IF(entities['Lead'].matched_pcnt__c <= matchLowerThreshold, 'blank_highlight',''))}">
+											<apex:outputText value="{!entities['Lead'].matched_pcnt__c}%"
+												title="{!IF(entities['Lead'].matched_pcnt__c > matchUpperThreshold, 'Your match rate is above average.', IF(entities['Lead'].matched_pcnt__c <= matchLowerThreshold, 'Your match rate is below average.','Your match rate is average.'))}"
+											/>
+										</td>
+									</tr>
+								</tbody>
+
+							</table>
+						</div>
+						<br />
+						<div id="explain">
+							<h2>Matching Explained</h2>
+							<br /> <br />
+							<div>
+								<div id="explain_left">
+									<h3>What is a "matched" record?</h3>
+									<p>
+										A Salesforce and a Data.com record are considered to <i>match</i>
+										when they contain enough identical or similar information to
+										indicate that they represent the same entity (that is &mdash; the
+										same account, contact, or lead). If two records match,
+										Data.com can update or help complete the information in your
+										Salesforce record, or let you know if it's out of date.
+									</p>
+									<p>
+										For more information, see 
+										"<a class="help_link" href="https://help.salesforce.com/HTViewHelpDoc?id=data_dot_com_clean_understanding_matching.htm&language=en_US" target="_blank">Understanding How Salesforce and Data.com Records are Matched</a>"
+										 in the Salesforce help.
+									</p>
+								</div>
+								<div id="explain_right">
+									<h3>What is an "unmatched" record?</h3>
+									<p>
+										A Salesforce record is considered to be <i>unmatched</i> if we
+										can't find a record in Data.com with enough identical or
+										similar information to indicate that the two records represent
+										the same entity. This happens most often because the
+										Salesforce record does not have enough information to match
+										any data.com record. If we can't find a match for your record,
+										we can't update it or help complete it. See the <i>Unmatched
+											Record Analysis</i> section towards the end of the report for
+										more details.
+									</p>
+								</div>
+								<div style="clear: both"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="accounts">
+					<div class="inner_content">
+						<div id="summary_text">
+							<h2>Matched Record Analysis - Accounts</h2>
+							<p>This section breaks down the records we've matched,
+								showing the number and percentage of records by status and
+								identifying the match percentage.</p>
+							<div>
+								<table>
+									<tr>
+										<td>
+											<div id="Account_chart" class="jqplot-target"></div>
+										</td>
+										<td>
+											<div class="legend_element">
+												<div class="legend_in_sync">&nbsp;</div>
+												<span> <b>In Sync</b> identifies a matched Salesforce
+													record whose information is identical to the Data.com
+													record.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_different">&nbsp;</div>
+												<span> <b>Different</b> identifies a matched
+													Salesforce record for which Data.com has different,
+													potentially more accurate, information.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_inactive">&nbsp;</div>
+												<span> <b>Inactive</b> identifies a Salesforce record that is either: matched to a Data.com record that is 
+												no longer valid (because, for example, the company is no longer at the location in the record); 
+												or considered non-marketable. As defined by D&amp;B, a non-marketable company meets one or more of these 
+												criteria: they are out of business; they have requested exclusion from the D&amp;B database; their D&amp;B 
+												record has not been updated in the past 24 months or lacks a complete business name, a valid physical or 
+												mailing address, a valid phone number, or an SIC code. 
+												</span>
+											</div>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<div class="legend_element">
+
+												<span> <b>Duplicate</b> identifies multiple
+													Salesforce records that all match a single record in
+													Data.com. Most often, the Salesforce records are
+													duplicates.
+												</span>
+											</div>
+											</apex:outputPanel>
+										</td>
+									</tr>
+								</table>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Different</th>
+											<th>In Sync</th>
+											<th>Inactive</th>
+											<th>Match (%)</th>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<th>Duplicate</th>
+											</apex:outputPanel>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><apex:outputField value="{!entities['Account'].different__c}"/></td>
+											<td><apex:outputField value="{!entities['Account'].in_sync__c}"/></td>
+											<td><apex:outputField value="{!entities['Account'].inactive__c}"/></td>
+											<td>{!entities['Account'].matched_pcnt__c}%</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td><apex:outputField value="{!entities['Account'].duplicate__c}"/></td>
+											</apex:outputPanel>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<br />
+							<div>
+								<h2>Account Fields</h2>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Field</th>
+											<th>Blank</th>
+											<th>Blank (%)</th>
+											<th>Different</th>
+											<th>Different (%)</th>
+										</tr>
+									</thead>
+									<tbody>
+										<apex:repeat value="{!fieldLists['Account']}" var="field">
+											<tr>
+												<td>{!fieldLabels[field]}</td>
+												<td
+													class="{!IF(fields['Account'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													<apex:outputField value="{!fields['Account'][field].Blank__c}"/></td>
+												<td
+													class="{!IF(fields['Account'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													{!fields['Account'][field].Blank_pcnt__c}%</td>
+												<td><apex:outputField value="{!fields['Account'][field].Different__c}"/></td>
+												<td
+													class="{!IF(fields['Account'][field].different_pcnt__c >= differentThreshold,'different_highlight','')}">
+													{!fields['Account'][field].Different_pcnt__c}%</td>
+											</tr>
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="contacts">
+					<div class="inner_content">
+						<div id="summary_text">
+							<h2>Matched Record Analysis - Contacts</h2>
+							<p>This section breaks down the records we've matched,
+								showing the number and percentage of records by status and
+								identifying the match percentage.</p>
+							<div>
+								<table>
+									<tr>
+										<td>
+											<div id="Contact_chart" class="jqplot-target"></div>
+										</td>
+										<td>
+											<div class="legend_element">
+												<div class="legend_in_sync">&nbsp;</div>
+												<span> <b>In Sync</b> identifies a matched Salesforce
+													record whose information is identical to the Data.com
+													record.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_different">&nbsp;</div>
+												<span> <b>Different</b> identifies a matched
+													Salesforce record for which Data.com has different,
+													potentially more accurate, information.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_inactive">&nbsp;</div>
+												<span> <b>Inactive</b> identifies a Salesforce record
+													matched to a Data.com record that's no longer valid. A
+													person may no longer be at the location in the
+													record.
+												</span>
+											</div>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<div class="legend_element">
+
+												<span> <b>Duplicate</b> identifies multiple
+													Salesforce records that all match a single record in
+													Data.com. Most often, the Salesforce records are
+													duplicates.
+												</span>
+											</div>
+											</apex:outputPanel>
+										</td>
+									</tr>
+								</table>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Different</th>
+											<th>In Sync</th>
+											<th>Inactive</th>
+											<th>Match (%)</th>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<th>Duplicate</th>
+											</apex:outputPanel>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><apex:outputField value="{!entities['Contact'].different__c}"/></td>
+											<td><apex:outputField value="{!entities['Contact'].in_sync__c}"/></td>
+											<td><apex:outputField value="{!entities['Contact'].inactive__c}"/></td>
+											<td>{!entities['Contact'].matched_pcnt__c}%</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td><apex:outputField value="{!entities['Contact'].duplicate__c}"/></td>
+											</apex:outputPanel>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<br />
+							<div>
+								<h2>Contact Fields</h2>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Field</th>
+											<th>Blank</th>
+											<th>Blank (%)</th>
+											<th>Different</th>
+											<th>Different (%)</th>
+										</tr>
+									</thead>
+									<tbody>
+										<apex:repeat value="{!fieldLists['Contact']}" var="field">
+																						<tr>
+												<td>{!fieldLabels[field]}</td>
+												<td
+													class="{!IF(fields['Contact'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													<apex:outputField value="{!fields['Contact'][field].Blank__c}"/></td>
+												<td
+													class="{!IF(fields['Contact'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													{!fields['Contact'][field].Blank_pcnt__c}%</td>
+												<td><apex:outputField value="{!fields['Contact'][field].Different__c}"/></td>
+												<td
+													class="{!IF(fields['Contact'][field].different_pcnt__c >= differentThreshold,'different_highlight','')}">
+													{!fields['Contact'][field].Different_pcnt__c}%</td>
+											</tr>
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="leads">
+					<div class="inner_content">
+						<div id="summary_text">
+							<h2>Matched Record Analysis - Leads</h2>
+							<p>This section breaks down the records we've matched,
+								showing the number and percentage of records by status and
+								identifying the match percentage.</p>
+							<div>
+								<table>
+									<tr>
+										<td>
+											<div id="Lead_chart" class="jqplot-target"></div>
+										</td>
+										<td>
+											<div class="legend_element">
+												<div class="legend_in_sync">&nbsp;</div>
+												<span> <b>In Sync</b> identifies a matched Salesforce
+													record whose information is identical to the Data.com
+													record.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_different">&nbsp;</div>
+												<span> <b>Different</b> identifies a matched
+													Salesforce record for which Data.com has different,
+													potentially more accurate, information.
+												</span>
+											</div>
+											<div class="legend_element">
+												<div class="legend_inactive">&nbsp;</div>
+												<span> <b>Inactive</b> identifies a Salesforce record
+													matched to a Data.com record that's no longer valid. A
+													person may no longer be at the location in the
+													record.
+												</span>
+											</div>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<div class="legend_element">
+
+												<span> <b>Duplicate</b> identifies multiple
+													Salesforce records that all match a single record in
+													Data.com. Most often, the Salesforce records are
+													duplicates.
+												</span>
+											</div>
+											</apex:outputPanel>
+										</td>
+									</tr>
+								</table>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Different</th>
+											<th>In Sync</th>
+											<th>Inactive</th>
+											<th>Match (%)</th>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<th>Duplicate</th>
+											</apex:outputPanel>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><apex:outputField value="{!entities['Lead'].different__c}"/></td>
+											<td><apex:outputField value="{!entities['Lead'].in_sync__c}"/></td>
+											<td><apex:outputField value="{!entities['Lead'].inactive__c}"/></td>
+											<td>{!entities['Lead'].matched_pcnt__c}%</td>
+											<apex:outputPanel layout="none" rendered="{!summary.ddcAssess__Dupe_Check__c}">
+											<td><apex:outputField value="{!entities['Lead'].duplicate__c}"/></td>
+											</apex:outputPanel>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<br />
+							<div>
+								<h2>Lead Fields</h2>
+								<table class="assessment_table">
+									<thead>
+										<tr>
+											<th>Field</th>
+											<th>Blank</th>
+											<th>Blank (%)</th>
+											<th>Different</th>
+											<th>Different (%)</th>
+										</tr>
+									</thead>
+									<tbody>
+										<apex:repeat value="{!fieldLists['Lead']}" var="field">
+																						<tr>
+												<td>{!fieldLabels[field]}</td>
+												<td
+													class="{!IF(fields['Lead'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													<apex:outputField value="{!fields['Lead'][field].Blank__c}"/></td>
+												<td
+													class="{!IF(fields['Lead'][field].Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													{!fields['Lead'][field].Blank_pcnt__c}%</td>
+												<td><apex:outputField value="{!fields['Lead'][field].Different__c}"/></td>
+												<td
+													class="{!IF(fields['Lead'][field].different_pcnt__c >= differentThreshold,'different_highlight','')}">
+													{!fields['Lead'][field].Different_pcnt__c}%</td>
+											</tr>
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="unmatched">
+					<div class="inner_content">
+						<div id="summary_text">
+							<h2>Unmatched Record Analysis</h2>
+							<p>
+								Data.com's matching algorithm uses various field combinations to identify matching records. 
+								In this section, we list the key fields we use, and show you the percentage of blank field values within 
+								your unmatched records.
+							</p>
+							<div>
+								<div>
+									<h2>Account Fields</h2>
+									<table class="assessment_table">
+										<thead>
+											<tr>
+												<th>Field</th>
+												<th>Blank</th>
+												<th>Blank (%)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<apex:repeat value="{!unmatchedFieldLists['Account']}"
+												var="field">
+												<tr>
+													<td>{!fieldLabels[field]}</td>
+													<td><apex:outputField value="{!fields['Account'][field].Unmatched_Blank__c}"/></td>
+													<td class="{!IF(fields['Account'][field].Unmatched_Blank_pcnt__c >= blankThreshold,'blank_highlight','')}">
+													{!fields['Account'][field].Unmatched_Blank_pcnt__c}%
+													</td>
+												</tr>
+											</apex:repeat>
+										</tbody>
+									</table>
+									<br />
+									<h2>Contact &amp; Lead Fields</h2>
+									<table class="assessment_table">
+										<thead>
+											<tr>
+												<th>Field</th>
+												<th>Blank</th>
+												<th>Blank (%)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<apex:repeat value="{!unmatchedFieldLists['Lead']}"
+												var="field">
+												<tr>
+													<td>{!fieldLabels[field]}</td>
+													<td>
+														<apex:outputText value="{0, number, ###,###}">
+															<apex:param value="{!contactAndLeadBlankData[field].blank}"/>
+														</apex:outputText>
+														</td>
+													<td class="{!IF(contactAndLeadBlankData[field].blank_pcnt >= blankThreshold,'blank_highlight','')}">
+													{!contactAndLeadBlankData[field].blank_pcnt}%</td>
+												</tr>
+											</apex:repeat>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">		
+			function drawCharts() {
+    		var options = {
+    			grid: {
+    				shadow:false,
+    				borderColor:'#FFFFFF',
+    				background:'#FFFFFF'
+    			},
+    			highlighter: {fadeTooltip: false},
+    			seriesDefaults: {
+      			seriesColors: ["#FDD86C","#53A46E","#BC4C50"],
+      			renderer:$.jqplot.DonutRenderer,
+      			rendererOptions:{
+        			startAngle: -90,
+        			innerDiameter: 70,
+        			showDataLabels: true,
+        			highlightMouseOver: false,
+        			highlightMouseDown: false,
+        			highlightColor: null,
+      			}
+    			}
+    		};
+   			
+   			<apex:repeat value="{!entityList}" var="entity">
+				$.jqplot('{!entity}_chart', [[
+					['{!entities[entity].different_pcnt__c}%',{!entities[entity].different_pcnt__c}],
+					['{!entities[entity].in_sync_pcnt__c}%',{!entities[entity].in_sync_pcnt__c}],
+					['{!entities[entity].inactive_pcnt__c}%',{!entities[entity].inactive_pcnt__c}]
+				]], options);
+				</apex:repeat>
+			};
+			
+			$(function(){
+				var sumOptions = {
+    			grid: {
+    				shadow:false,
+    				borderColor:'#FFFFFF',
+    				background:'#FFFFFF'
+    			},
+    			highlighter: {fadeTooltip: false},
+    			seriesDefaults: {
+      			seriesColors: ["#5794D2","#BC4C50"],
+      			renderer:$.jqplot.DonutRenderer,
+      			rendererOptions:{
+        			startAngle: -90,
+        			innerDiameter: 70,
+        			showDataLabels: true,
+        			highlightMouseOver: false,
+        			highlightMouseDown: false,
+        			highlightColor: null,
+      			}
+    			}
+    		};
+			
+				<apex:repeat value="{!entityList}" var="entity">
+  			$.jqplot('{!entity}_summary_chart', [[
+					['{!entities[entity].matched_pcnt__c}%',{!entities[entity].matched_pcnt__c}],
+					['{!entities[entity].unmatched_pcnt__c}%',{!entities[entity].unmatched_pcnt__c}]
+				]], sumOptions);
+				</apex:repeat>
+			});
+			</script>
+		</apex:outputPanel>
+	</apex:outputPanel>
+	</apex:outputPanel>
+	</apex:form>
+</apex:page>

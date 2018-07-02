@@ -1,0 +1,122 @@
+<apex:component layout="block" allowDML="true">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+	<div class="popup-Edit" id="teameditpopupid" style="display: none;">
+		<div class="inputCon" id="editteamconid" style="display: none;"></div>
+        <div class="popup-title">
+            <span>{!$Label.PMV_team_lab_edit_team}</span>
+            <span id="selectedusernameid"> </span>
+        </div>
+        <div class="popup-content">
+        
+        	<table border="0" cellspacing="0" cellpadding="0" style="width: 100%; ">
+        		<thead>
+        			<tr>
+        				<th style="padding-right: 20px; width: 46%;">
+        					<div class="popup-content-title">
+				                <span>{!$Label.PMV_team_lab_edit_team_information}</span>
+				                <input style="margin-left: 14%;" onclick="delTeamView_eve(this, 'teameditpopupid')" type="button" class="popup-buttonGray cp" value="Delete Team" />
+				            </div>
+        				</th>
+        				<th>
+	        				<div class="popup-content-title">
+	        					<span>{!$Label.PMV_team_lab_add_team_member}</span>
+        						<input style="margin-left: 32%;" onclick="searchUsersPopUP(this, 'teameditpopupid')" type="button" class="popup-buttonYellow popup-SearchClick cp" value="{!$Label.PMV_team_button_search_for_user}"/>
+	       					</div>
+        				</th>
+        			</tr>
+        		</thead>
+        			<tr>
+        				<td style="vertical-align: top;">
+        					<div style="position: relative;overflow: hidden;padding: 5px 0px;">
+	        					<div class="popup_labcls">{!$Label.PMV_team_lab_team_name}</div>
+	        					<div class="requiredInput">
+		            				<div class="requiredBlock"></div>
+		            				<input id="editusernameid" type="text"  class="addinput"/>
+		            			</div>
+        					</div>
+	            			<div>
+	            				<div class="popup_labcls">{!$Label.PMV_team_lab_description}</div>
+	            				<textarea rows="10" id="editdescriptionid" class="adddescription" style="width: 263px; min-width: 263px; max-width:263px; max-height:240px; resize: none;"></textarea>
+<!-- 	            				<input type="text" id="teamadddescriptionid" class="adddescription" name="adddescriptionName"/> -->
+	            			</div>
+        				</td>
+        				
+        				<td style="vertical-align: top;">
+        					<div class="popup-content-partDiv popupuserscls" id="edituserdivid" >
+					            <apex:outputPanel id="editUserOpId">
+					            	<apex:inputHidden value="{!pageCtrl.pageConf.teamViewId}" id="editteamviewid" />
+					            	<apex:repeat var="fm" value="{!pageCtrl.list_userForSearch}" >
+				            	<div class="tmpteamcls">
+				                	<input uid="{!fm.id}" onclick="editUserBtn_eve(this, 'editteamconid')" type="button" class="icls addusercls teamusercls popup-buttonGray fix cp" style="color:red" value="-"/>
+				                	<input type="text" value="{!fm.name}" class="icls usernamecls" /><br/>
+				                </div>
+					                </apex:repeat>
+					            </apex:outputPanel>
+				            	<div class="tmpteamcls">
+				                	<input uid="  " onclick="editUserBtn_eve(this, 'editteamconid')" type="button" class="icls addusercls teamusercls popup-buttonGray fix cp" value="{!$Label.PMV_team_button_addicon}"/>
+				                	<input type="text" class="icls usernamecls" onkeyup="searchUserInput_eve(event, this)"/>
+				               	</div>
+				            </div>
+        				</td>
+        			</tr>
+        		<tbody>
+        			
+        		</tbody>
+        		
+        		<tfoot>
+        			<tr>
+        				<th colspan="2" class="popup_footth">
+			                <input type="button" class="popup-buttonGray cp" value="{!$Label.PMV_team_button_cancel}" onclick="closeTeamPopUP(this, 'teameditpopupid')"/>
+                			<input type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_save}" onclick="addTeamMembers(this, 'teameditpopupid', 'editteamconid', false);" />
+        				</th>
+        			</tr>
+        		</tfoot>
+        	</table>	
+        <!-- 
+        
+            <div class="popup-content-title">
+                <span>{!$Label.PMV_team_lab_edit_team_information}</span>
+                <input onclick="delTeamView_eve(this, 'teameditpopupid')" type="button" class="popup-buttonGray cp" value="Delete Team" />
+            </div>
+            <table class="text-table">
+            	<tr>
+            		<th>{!$Label.PMV_team_lab_team_name}</th>
+            		<td>
+            			<div class="requiredInput">
+            				<div class="requiredBlock"></div>
+            				<input id="editusernameid" type="text"  class="addinput"/>
+            			</div>
+					</td>
+            	</tr>
+            	<tr>
+            		<th>{!$Label.PMV_team_lab_description}</th>
+            		<td><input id="editdescriptionid" type="text" class="adddescription"/></td>
+            	</tr>
+            </table>
+            <div class="popup-content-title"><span>{!$Label.PMV_team_lab_add_remove_team_member}</span></div>
+	            <div class="popup-content-partDiv popupuserscls" id="edituserdivid">
+		            <apex:outputPanel id="editUserOpId">
+		            	<apex:inputHidden value="{!pageCtrl.pageConf.teamViewId}" id="editteamviewid" />
+		            	<apex:repeat var="fm" value="{!pageCtrl.list_userForSearch}" >
+	            	<div class="tmpteamcls">
+	                	<input uid="{!fm.id}" onclick="editUserBtn_eve(this, 'editteamconid')" type="button" class="icls addusercls teamusercls popup-buttonGray cp" style="color:red" value="-"/>
+	                	<input type="text" value="{!fm.name}" class="icls usernamecls" /><br/>
+	                </div>
+		                </apex:repeat>
+		            </apex:outputPanel>
+	            	<div class="tmpteamcls">
+	                	<input uid="  " onclick="editUserBtn_eve(this, 'editteamconid')" type="button" class="icls addusercls teamusercls popup-buttonGray cp" value="{!$Label.PMV_team_button_addicon}"/>
+	                	<input type="text" class="icls usernamecls" onkeyup="searchUserInput_eve(event, this)"/>
+	               	</div>
+	            </div>
+			<br/>
+            <input onclick="searchUsersPopUP(this, 'teameditpopupid')" type="button" class="popup-buttonYellow popup-SearchClick cp" value="{!$Label.PMV_team_button_search_for_user}"/>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray cp" value="{!$Label.PMV_team_button_cancel}" onclick="closeTeamPopUP(this, 'teameditpopupid')"/>
+                <input type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_save}" onclick="addTeamMembers(this, 'teameditpopupid', 'editteamconid', false);" />
+            </div>
+      	 -->
+        </div>
+    </div>
+</apex:component>

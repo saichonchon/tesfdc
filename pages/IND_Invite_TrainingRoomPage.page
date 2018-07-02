@@ -1,0 +1,142 @@
+<apex:page standardController="Training__c" extensions="IND_TrainingroomController" showHeader="False" sidebar="False"  >
+<style>
+
+.headerLogo {
+    position:absolute;
+    top:0;
+    right:0;
+    border:none;
+    margin-right:70px;
+    margin-top:10px;
+    
+}
+.header {
+   
+   height:60px;   
+   background:#EEEEEE;
+   background-image: url('http://imageserverdev.tycoelectronics.com/imageserver/tyco/myte/img/header_myTE.jpg'); 
+   width:100%;
+  
+    
+    }
+a.websiteName, a.websiteName:visited {
+    margin-left:30px;
+    font:normal 30px/70px Georgia;
+    color:#006c8b;
+    text-decoration:none;
+}
+
+
+
+</style>
+  
+  <apex:form >
+ <center> <a class="websiteName">Thank You {!$User.FirstName} {!$User.LastName} for your interest <br/>Welcome to the&nbsp;<apex:outputField value="{!Training__c.name}"/> Training <br/>Please Click on the Below link to enter the Training Room </a></center>
+                <apex:outputpanel id="counter">
+                <a href="http://www.TE.com"><br/><br/>
+                   <img class="headerLogo" width="150" height="60" src="{!$Resource.TELogo}"/>
+               </a>
+               
+                 
+                  <center><apex:commandLink rendered="{!if(i==2,False,True)}" type="text/html" shape="circle" Style="text-align:center;font-style:italic;font-weight:bold;font-size:150%;color:blue" action="{!clicktoEnter}" value="Click Here: Training Room" /></center>
+                  
+               
+                </apex:outputpanel>
+               
+                <br/> <br/>
+                
+                <apex:outputPanel rendered="{!if(i==1,True,False)}" >
+                 <center> 
+                <p style="font:normal 20px/50px Georgia;color:red;text-decoration:none;"> Training not yet started, may be you logged in by mistake. Please check the training time slot which you have selected or You may not had register for this slot or please wait for the training to get started.....</p>
+                 </center> 
+                </apex:outputPanel>
+                <br/> <br/>
+                
+                <center> 
+                  
+                  
+                    
+                    <table width="30%" border="2" cellpadding="0" cellspacing="0">
+
+                      <colgroup span="2"></colgroup>
+
+                       <caption><b>Lync Intercall Details</b></caption>
+
+                      <tr>
+
+                        <td style="font-family:arial;color:#FFFFFF;font-size:17px;text-align:center;" bgcolor="#58ACFA">Region</td>
+
+                        <td style="font-family:arial;color:#FFFFFF;font-size:17px;text-align:center;" bgcolor="#58ACFA">Dial-in Number</td>
+
+                      </tr>
+
+                      <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">United States Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;">866 744 5606 (InterCall)</td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">United States</td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> +1 815 676 0376 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">Belgium Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 080048662 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">China</td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> +86 40 0620 0319 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">China</td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;">+86 80 0870 2061 (InterCall) </td>
+                     </tr>
+                     
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">Germany Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 08005893388 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">India Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 180030000535 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">Japan Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 0120914802 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">Singapore Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 8001203987 (InterCall) </td>
+                     </tr>
+                     
+                     <tr >
+                         <td style="font-family:arial;font-size:13px;text-align:center;">United Kingdom Toll Free </td>
+                         <td style="font-family:arial;font-size:13px;text-align:center;"> 08002797525 (InterCall) </td>
+                     </tr>
+                
+                     <tr  >
+                       <td colspan="2" style="font-family:arial;color:#FFFFFF;font-size:13px;text-align:center;" bgcolor="#BDBDBD">
+                            <apex:outputLink value="http://www.intercalleurope.com/ecclyncnumlookup/?confCode={!Training__c.Lync_Conference_ID__c}" id="theLink">Find a local Number</apex:outputLink> 
+                       </td>
+                    </tr>
+                    <tr  >
+                       <td colspan="2" style="font-family:arial;color:#FFFFFF;font-size:17px;text-align:center;" bgcolor="#58ACFA">
+                            <apex:outputText > Conference ID: {!Training__c.Lync_Conference_ID__c}   </apex:outputText> 
+                       </td>
+                    </tr>
+        
+
+      </table>
+
+</center>
+ 
+  
+      </apex:form>         
+</apex:page>

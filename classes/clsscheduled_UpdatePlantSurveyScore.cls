@@ -1,0 +1,33 @@
+/**
+*  This class used for scheduling batch class clsBatch_UpdatePlantSurveyScore.
+*
+@author Pankaj Raijade
+@created 4/2/2015
+@version 1.0   
+@since 33.0
+*
+@changelog
+* coverage  93%
+* 
+* 
+4/2/2015 Pankaj Raijade pankaj.raijade@zensar.in
+* - Created
+*/
+global class clsscheduled_UpdatePlantSurveyScore implements Schedulable 
+{
+    Batch_size_setting__c oBatchsize = Batch_size_setting__c.getInstance('clsBatch_UpdatePlantSurveyScore');
+    
+    global void execute(SchedulableContext sc) 
+    {
+        if(oBatchsize != null && oBatchsize.Batch_size__c != null && oBatchsize.Batch_size__c > 0)
+        {
+            clsBatch_UpdatePlantSurveyScore oclsBatch_UpdatePlantSurveyScore = new clsBatch_UpdatePlantSurveyScore();
+            database.executeBatch(oclsBatch_UpdatePlantSurveyScore, (Integer)oBatchsize.Batch_size__c);
+        }
+        else
+        {
+            clsBatch_UpdatePlantSurveyScore oclsBatch_UpdatePlantSurveyScore = new clsBatch_UpdatePlantSurveyScore();
+            database.executeBatch(oclsBatch_UpdatePlantSurveyScore);
+        }
+    }
+}

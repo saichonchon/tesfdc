@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Account</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Account.Account_Manager__c.Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Owner</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Shows &quot;Won&quot; opportunities by Portfolio / Est Annual Sales</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>AC - Active Project,CM - Complete</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Estimated_Annual_Sales__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>USD 100000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$CreatedDate</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>2/25/2014 12:00 AM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$MED_Product_Family__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Won Opps by Value</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <roleHierarchyFilter>X101816_Worldwide_Medical</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity$MED_Estimated_Annual_Sales__c.CONVERT</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$alert_validation_time__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

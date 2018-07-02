@@ -1,0 +1,1263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object contains the project forecast numbers.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>APL_NPS_Calculation_Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.APL_Forecast_Calculation_Start_Date__c</formula>
+        <label>APL NPS Calculation Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>APL_Weighted_FC__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Part_Confidence__c, &apos;Won&apos;, 1, &apos;Weak&apos;, 0.25,&apos;50/50&apos;,0.5, &apos;Likely&apos;, 0.75, &apos;Commit&apos;, 0.9, 0) *  Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Used by Appliances to caculate weighted forecast based on confidence</inlineHelpText>
+        <label>APL Weighted FC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>APL_Weighted_New_Business__c</fullName>
+        <externalId>false</externalId>
+        <formula>APL_Weighted_FC__c *  IF(ISPICKVAL(Opportunity__r.New_Business_Percentage__c,&apos;&apos;),0,VALUE( SUBSTITUTE(TEXT(Opportunity__r.New_Business_Percentage__c),&apos;%&apos;,&apos;&apos;)))/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>APL Weighted New Business</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Account_Id__c</fullName>
+        <description>This field contains the opportunity Account Id.</description>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.AccountId</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Actual_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BU_Profit_Center__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.BU_profit_center__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>BU Profit Center</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC5__c</fullName>
+        <description>Test field created for reporting purposes for Opportunity Forecast Pipeline</description>
+        <externalId>false</externalId>
+        <formula>Part__r.GPL__r.CBC5__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC5</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Confidence_Level__c</fullName>
+        <defaultValue>(&quot;0&quot;)</defaultValue>
+        <externalId>false</externalId>
+        <label>Confidence Level</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>0</fullName>
+                    <default>true</default>
+                    <label>0</label>
+                </value>
+                <value>
+                    <fullName>10</fullName>
+                    <default>false</default>
+                    <label>10</label>
+                </value>
+                <value>
+                    <fullName>30</fullName>
+                    <default>false</default>
+                    <label>30</label>
+                </value>
+                <value>
+                    <fullName>60</fullName>
+                    <default>false</default>
+                    <label>60</label>
+                </value>
+                <value>
+                    <fullName>80</fullName>
+                    <default>false</default>
+                    <label>80</label>
+                </value>
+                <value>
+                    <fullName>90</fullName>
+                    <default>false</default>
+                    <label>90</label>
+                </value>
+                <value>
+                    <fullName>100</fullName>
+                    <default>false</default>
+                    <label>100</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Confirmed_Forecast_Attainment_Value__c</fullName>
+        <description>Multiplies the Forecast Amount with the confirmed attainment % from the opportunity</description>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Confirmed_Forecast_Attainment__c  *  Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Confirmed Forecast Attainment Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Converted_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+Process_Status__c , 
+&apos;Production&apos;,  Amount__c ,
+&apos;Ramp-down&apos;,  Amount__c ,
+&apos;EOL&apos;,  Amount__c ,
+0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Converted Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Counts_for_IND_Conversion__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+AND(
+(Part__r.BU_profit_center__c = &quot;IND Devices&quot; || Part__r.BU_profit_center__c = &quot;IND Systems&quot; ),
+
+(Opportunity__r.RecordType.Name = &quot;Opportunity - Engineering Project&quot; || Opportunity__r.RecordType.Name = &quot;Opportunity - Sales Project&quot; || Opportunity__r.RecordType.Name = &quot;IND - Sales Project&quot; || Opportunity__r.RecordType.Name = &quot;IND - Engineering project&quot; || Opportunity__r.RecordType.Name = &quot;NDR Opportunity&quot; || Opportunity__r.RecordType.Name = &quot;CCR Opportunity&quot;|| Opportunity__r.RecordType.Name = &quot;Channel- Sales Opportunity&quot; || Opportunity__r.RecordType.Name = &quot;Channel- Engineering Opportunity&quot;),
+
+(Not((ISPICKVAL(Opportunity__r.Type , &quot;Transfer existing business&quot;))||(ISPICKVAL(Opportunity__r.Type ,&quot;Defend Existing Business&quot;)))),
+
+ISPICKVAL(Part__r.Status__c, &quot;Won&quot;),
+(ISPICKVAL(Part__r.Process_Status__c, &quot;Production&quot;) || ISPICKVAL(Part__r.Process_Status__c, &quot;Ramp-down&quot;) || ISPICKVAL(Part__r.Process_Status__c, &quot;EOL&quot;)),
+
+(Date__c &lt;= $Setup.IND_Fiscal_Date_Information__c.Last_date_of_fiscal_year__c &amp;&amp;
+Date__c &gt;= $Setup.IND_Fiscal_Date_Information__c.First_Date_of_fiscal_year__c),
+
+
+(Won_Date__c &lt;= $Setup.IND_Fiscal_Date_Information__c.Last_date_of_fiscal_year__c &amp;&amp;
+Won_Date__c &gt;= $Setup.IND_Fiscal_Date_Information__c.First_Date_of_fiscal_year__c)
+),
+TRUE,FALSE
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Counts for IND Conversion</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Counts_for_IND_Pipeline__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+AND(
+(Part__r.BU_profit_center__c = &quot;IND Devices&quot; || Part__r.BU_profit_center__c = &quot;IND Systems&quot; ),
+
+(Opportunity__r.RecordType.Name = &quot;Opportunity - Engineering Project&quot; || Opportunity__r.RecordType.Name = &quot;Opportunity - Sales Project&quot; || Opportunity__r.RecordType.Name = &quot;IND - Sales Project&quot; || Opportunity__r.RecordType.Name = &quot;IND - Engineering project&quot; || Opportunity__r.RecordType.Name = &quot;NDR Opportunity&quot; || Opportunity__r.RecordType.Name = &quot;CCR Opportunity&quot;|| Opportunity__r.RecordType.Name = &quot;Channel- Sales Opportunity&quot; || Opportunity__r.RecordType.Name = &quot;Channel- Engineering Opportunity&quot;),
+
+(Not((ISPICKVAL(Opportunity__r.Type , &quot;Transfer existing business&quot;))||(ISPICKVAL(Opportunity__r.Type ,&quot;Defend Existing Business&quot;)))),
+
+(Date__c &lt;= (CASE( Month(Today()) , 10 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c, 11, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c,12, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c, 1 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c, 2, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c,3, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c,4 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,5 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,6 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,7 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,8 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,9 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,Today()) + 364)
+
+&amp;&amp;
+
+Date__c &gt;=(CASE( Month(Today()), 10 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c, 11, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c,12, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_1__c,1 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c, 2, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c,3, $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_2__c,4 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,5 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,6 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_3__c,7 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,8 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,9 , $Setup.IND_Fiscal_Date_Information__c.Current_Fiscal_Quarter_4__c,Today()))),
+
+OR(
+OR(
+AND(
+OR(
+ISPICKVAL(Part__r.Status__c, &quot;Weak&quot;),
+ISPICKVAL(Part__r.Status__c, &quot;50/50&quot;),
+ISPICKVAL(Part__r.Status__c, &quot;Likely&quot;),
+ISPICKVAL(Part__r.Status__c, &quot;Commit&quot;)),
+((TODAY() - DATEVALUE( Opportunity__r.Last_Modified_Date__c))&lt;61)
+),
+AND(
+ISPICKVAL(Part__r.Status__c, &quot;Won&quot;),
+ISPICKVAL(Part__r.Process_Status__c, &quot;Pre-prod&quot;),
+((TODAY() - DATEVALUE( Opportunity__r.Last_Modified_Date__c ))&lt;61)
+)
+
+),
+AND(
+ISPICKVAL(Part__r.Status__c,&quot;Won&quot;),
+
+( (Part__r.Won_Date__c &lt;= $Setup.IND_Fiscal_Date_Information__c.Last_date_of_fiscal_year__c &amp;&amp;
+Part__r.Won_Date__c &gt;= $Setup.IND_Fiscal_Date_Information__c.First_Date_of_fiscal_year__c))
+)
+)
+)
+
+,TRUE,FALSE
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Counts for IND Pipeline</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Created_After_Push_to_PLM__c</fullName>
+        <description>Field calculates if record was created before (false) or after (true) the time the project was pushed to PLM initially.</description>
+        <externalId>false</externalId>
+        <formula>IF(CreatedDate &gt; Opportunity__r.Last_PLM_Integration_Date__c, &apos;true&apos;, &apos;false&apos;)</formula>
+        <inlineHelpText>Push to PLM date comes from referenced opportunity field Last_PLM_Integration_Date__c</inlineHelpText>
+        <label>Created After Push to PLM</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Direct Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FY_Start_Date__c</fullName>
+        <description>Start Date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Start Date</inlineHelpText>
+        <label>Fiscal QTR Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_APAC__c</fullName>
+        <description>APL use for split forecast into billing region</description>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.Top_Billing_Region_1__c,&quot;APAC&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.Top_Billing_Region_2__c,&quot;APAC&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in APAC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_America__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.Top_Billing_Region_1__c,&quot;America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)), 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.Top_Billing_Region_2__c,&quot;America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)), 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in America</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_China_HK_Taiwan__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;China / HK / Taiwan&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;China / HK / Taiwan&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in China/HK/Taiwan</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_EMEA__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.Top_Billing_Region_1__c,&quot;EMEA&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)), 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.Top_Billing_Region_2__c,&quot;EMEA&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)), 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4, 
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in EMEA</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_EMEA_excl_India__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;EMEA (excl. India)&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;EMEA (excl. India)&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in EMEA (excl. India)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_India__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;India&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;India&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in India</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_Japan__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;Japan&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;Japan&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in Japan</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_Korea__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;Korea&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;Korea&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in Korea</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_North_America__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;North America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;North America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in North America</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_South_America__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;South America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;South America&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in South America</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fcst_in_South_Asia__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Opportunity__r.APL_Billing_Region_1__c,&quot;South Asia&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_1__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_1__c),3)),0)) * Amount__c/100,0 ) 
++ 
+CASE(Opportunity__r.APL_Billing_Region_2__c,&quot;South Asia&quot;, 
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=3,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),2)),
+If(LEN(TEXT(Opportunity__r.APL_Billing_Share_2__c))=4,
+Value(LEFT(TEXT(Opportunity__r.APL_Billing_Share_2__c),3)),0)) * Amount__c/100,0 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fcst in South Asia</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Month__c</fullName>
+        <externalId>false</externalId>
+        <label>Fiscal Month</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Quarter__c</fullName>
+        <description>Populated by forecasting component in opportunity page to store fiscal quarter. Used in PLM integration to aggregate monthly data by quarter.</description>
+        <externalId>false</externalId>
+        <label>Fiscal Quarter</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year_Month_short__c</fullName>
+        <description>Combines the Fical Year and Month in the format YYYYMM for data transfer to JDA bridge. DON&apos;T CHANGE</description>
+        <externalId>false</externalId>
+        <formula>Fiscal_Year__c &amp; IF(LEN(Fiscal_Month__c) == 1, &apos;0&apos;&amp;Fiscal_Month__c, Fiscal_Month__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Year Month short</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year_Quarter__c</fullName>
+        <description>Used in PLM integration to aggregate monthly data by quarter.</description>
+        <externalId>false</externalId>
+        <formula>Fiscal_Year__c &amp; &quot;-&quot; &amp;  Fiscal_Quarter__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Year Quarter</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year_Quarter_short_del__c</fullName>
+        <description>Field to combine Fiscal year and Quarter in the Format YYYYQQ  for transimission of data into the JDA bridge   DON&apos;T CHANGE</description>
+        <externalId>false</externalId>
+        <formula>Fiscal_Year__c &amp; Fiscal_Year_Quarter__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Year Quarter short</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year__c</fullName>
+        <description>Populated by forecasting component in opportunity page to store fiscal year. Used in PLM integration to aggregate monthly data by quarter.</description>
+        <externalId>false</externalId>
+        <label>Fiscal Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Five_Year_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Five Year Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Forecast_Date__c</fullName>
+        <description>This date is used for fiscal reporting and represents the FISCAL Forecast date (ie. a date guaranteed to fall within the correct fiscal month</description>
+        <externalId>false</externalId>
+        <formula>DateValue(Fiscal_Year__c + &apos;-&apos; + Fiscal_Month__c + &apos;-01&apos;) + 77</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This date is used for fiscal reporting and represents the FISCAL Forecast date (ie. a date guaranteed to fall within the correct fiscal month</inlineHelpText>
+        <label>Forecast Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Forecast_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Forecast Value</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Forecasting_Start_Date__c</fullName>
+        <description>Define the start date of opportunity forecasts of the opportunity</description>
+        <externalId>false</externalId>
+        <label>Forecasting Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>IsLocked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsLocked</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_APL_Relay__c</fullName>
+        <externalId>false</externalId>
+        <formula>AND(
+     NOT(ISBLANK(Part__c)),    
+     CONTAINS(&apos;13213;13243;13372;40308;40309&apos;, Part__r.GPL__r.CBC3__c )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is APL Relay</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Last_PLM_Integration_Date__c</fullName>
+        <description>Contains the date on which the forecast was last updated to PLM.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in the Forecast Update integration to PLM.  It is set when a forecast update is goes to PLM for the first time, and updated subsequently every time the forecast record sends an update to PLM via the integration.</inlineHelpText>
+        <label>Last PLM Integration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>MSG1__c</fullName>
+        <externalId>false</externalId>
+        <label>MSG1</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MSG2__c</fullName>
+        <description>Add for Case 00689465: calcualte Market Sales Gain for Appliance oppty only.</description>
+        <externalId>false</externalId>
+        <label>MSG2</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MSG3__c</fullName>
+        <description>Add for Case 00689465: calcualte Market Sales Gain for Appliance oppty only.</description>
+        <externalId>false</externalId>
+        <label>MSG3</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NPS1__c</fullName>
+        <externalId>false</externalId>
+        <label>NPS1</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NPS2__c</fullName>
+        <description>Add for Case 00689465: calcualte New Product Service for Appliance oppty only.</description>
+        <externalId>false</externalId>
+        <label>NPS2</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NPS3__c</fullName>
+        <description>Add for Case 00689465: calcualte New Product Service for Appliance oppty only.</description>
+        <externalId>false</externalId>
+        <label>NPS3</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>New_Business_Fcst_in_APAC__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fcst_in_APAC__c*IF(ISPICKVAL(Opportunity__r.New_Business_Percentage__c,&apos;&apos;),0,VALUE( SUBSTITUTE(TEXT(Opportunity__r.New_Business_Percentage__c),&apos;%&apos;,&apos;&apos;)))/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Business Fcst in APAC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>New_Business_Fcst_in_America__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fcst_in_America__c*IF(ISPICKVAL(Opportunity__r.New_Business_Percentage__c,&apos;&apos;),0,VALUE( SUBSTITUTE(TEXT(Opportunity__r.New_Business_Percentage__c),&apos;%&apos;,&apos;&apos;)))/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Business Fcst in America</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>New_Business_Fcst_in_EMEA__c</fullName>
+        <externalId>false</externalId>
+        <formula>Fcst_in_EMEA__c*IF(ISPICKVAL(Opportunity__r.New_Business_Percentage__c,&apos;&apos;),0,VALUE( SUBSTITUTE(TEXT(Opportunity__r.New_Business_Percentage__c),&apos;%&apos;,&apos;&apos;)))/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Business Fcst in EMEA</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>New_Bussiness_Forecast__c</fullName>
+        <externalId>false</externalId>
+        <formula>Amount__c *   IF(ISPICKVAL(Opportunity__r.New_Business_Percentage__c,&apos;&apos;),0,VALUE( SUBSTITUTE(TEXT(Opportunity__r.New_Business_Percentage__c),&apos;%&apos;,&apos;&apos;)))/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Business Forecast</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Open_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+Process_Status__c , 
+&apos;Concept&apos;,  Amount__c ,
+&apos;Demo&apos;,  Amount__c ,
+&apos;Designed&apos;,  Amount__c ,
+&apos;Prototyped/Sampled&apos;,  Amount__c ,
+&apos;Quoted&apos;,  Amount__c ,
+&apos;Pre-prod&apos;,  Amount__c ,
+0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Open Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.X18_Digit_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Level__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Opportunity__r.Level__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Level</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Stage__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text( Opportunity__r.StageName )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Stage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>Forecast</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>POS_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Part_Confidence__c</fullName>
+        <description>added dead, lost, on hold values on 22/01/15</description>
+        <externalId>false</externalId>
+        <formula>CASE(Part__r.Status__c,
+&quot;Won&quot;, &quot;Won&quot;,
+&quot;Commit&quot;, &quot;Commit&quot;,
+&quot;Likely&quot;, &quot;Likely&quot;,
+&quot;50/50&quot;, &quot;50/50&quot;,
+&quot;Weak&quot;, &quot;Weak&quot;,
+&quot;Dead&quot;, &quot;Dead&quot;,
+&quot;Lost&quot;, &quot;Lost&quot;,
+&quot;On Hold&quot;, &quot;On Hold&quot;,
+&quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Confidence</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Description__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.New_Part_Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Part_Number__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_PLMID_matches_Opp_PLMID__c</fullName>
+        <description>checks if part PLM ID = Opp PLM ID. Used for IND forecast Billing reporting</description>
+        <externalId>false</externalId>
+        <formula>IF( Opportunity__r.PLM_Id__c =  Part__r.PLM_ID__c , true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part PLMID matches Opp PLMID</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Part__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Part</label>
+        <referenceTo>Opportunity_Part__c</referenceTo>
+        <relationshipName>Forecast</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Process_Status__c</fullName>
+        <description>This field contains the process status of related oppy part.</description>
+        <externalId>false</externalId>
+        <formula>TEXT(Part__r.Process_Status__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Process Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Hierarchy_Indicator__c</fullName>
+        <description>300	GPL
+301	Product
+302	Part
+303	Proposed</description>
+        <externalId>false</externalId>
+        <formula>IF(Part__r.RecordTypeId =&apos;012Z00000004PWU&apos;, &quot;302&quot;, &quot;303&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Product Hierarchy Indicator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Owning_GIBU__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Part__r.GPL__r.CBC2_Description__c, 
+&quot;A&amp;C products&quot;, &quot;A&amp;C&quot;, 
+&quot;A&amp;C Products&quot;, &quot;A&amp;C&quot;, 
+&quot;Industrial BU&quot;, &quot;Industrial&quot;, 
+&quot;IB products&quot;, &quot;IB&quot;, 
+&quot;IB Products&quot;, &quot;IB&quot;, 
+&quot;ITW Appliance&quot;, &quot;Appliances&quot;, 
+&quot;Rail products&quot;, &quot;Rail&quot;, 
+&quot;Rail Products&quot;, &quot;Rail&quot;, 
+&quot;Solar Products&quot;, &quot;Solar&quot;, 
+&quot;Solar products&quot;, &quot;Solar&quot;, 
+&quot;DataComm-Core Products&quot;, &quot;DataComm&quot;, 
+&quot;Other&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Product Owning GIBU</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Program_Central_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>This field contains the PLM Id.</description>
+        <externalId>true</externalId>
+        <label>Program Central Id</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <externalId>false</externalId>
+        <label>Quantity</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Price__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Uniquekey_For_The_Forecast__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <externalId>true</externalId>
+        <label>Uniquekey For The Forecast</label>
+        <length>60</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Won_Date__c</fullName>
+        <description>This field shows the Won Date of the related Oppy Part.</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Won_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Won Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Opportunity Forecast</label>
+    <nameField>
+        <displayFormat>FC-{000000000}</displayFormat>
+        <label>Forecast Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Opportunity Forecasts</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Opportunity</fullName>
+        <active>true</active>
+        <label>Opportunity</label>
+        <picklistValues>
+            <picklist>Confidence_Level__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>80</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Part</fullName>
+        <active>true</active>
+        <label>Part</label>
+        <picklistValues>
+            <picklist>Confidence_Level__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>80</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Past_forecast_not_allowed</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( 
+NOT($Setup.Admin_Profile_Exception__c.Skip_Opportuntiy_Validation__c), 
+CONTAINS(Opportunity__r.RecordType.DeveloperName,&apos;DND_Opportunity&apos;), 
+Value(Fiscal_Year__c) &lt; YEAR(TODAY()) ,
+Quantity__c &gt; 0)</errorConditionFormula>
+        <errorMessage>Past Forecast are not allowed. Please move Forecast in Future.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

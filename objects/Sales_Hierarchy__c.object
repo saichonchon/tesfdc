@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Reflects the Sales Hierarchy.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>BU__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISPICKVAL(Hierarchy_Type__c , &quot;Global Account Manager Hierarchy (GAM)&quot;),
+IF(( Level_4_Territory_Name__c != null), 
+CASE(Level_4_Territory_Code__c,
+&apos;G206&apos;, &quot;DTC&quot;,
+&apos;G207&apos;, &quot;IND&quot;,
+&apos;G208&apos;,&quot;CSD&quot;,
+&apos;G267&apos;,&quot;APL&quot;,
+null), 
+IF((Level_5_Territory_Name__c != null),
+CASE(Level_5_Territory_Code__c,
+&apos;G206&apos;, &quot;DTC&quot;,
+&apos;G207&apos;, &quot;IND&quot;,
+&apos;G208&apos;,&quot;CSD&quot;,
+&apos;G267&apos;,&quot;APL&quot;,
+null),
+IF((Level_6_Territory_Name__c != null), 
+CASE(Level_6_Territory_Code__c,
+&apos;G206&apos;, &quot;DTC&quot;,
+&apos;G207&apos;, &quot;IND&quot;,
+&apos;G208&apos;,&quot;CSD&quot;,
+&apos;G267&apos;,&quot;APL&quot;,
+&apos;G217&apos;,&quot;ADM&quot;,
+null),
+null))) 
+,null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>BU</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Character_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(LEN(Level_1_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_2_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_3_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_4_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_5_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_6_Assigned_User_Network_Ids__c) &gt; 8, 
+LEN(Level_7_Assigned_User_Network_Ids__c) &gt; 8), &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Character Count</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultOwnerActive__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (Level_7_Default_Owner__r.IsActive, &apos;Active&apos;, &apos;Inactive&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DefaultOwnerActive</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hierarchy_Type__c</fullName>
+        <description>Describes which internal TE hierarchy this record&apos;s information is sourced from.</description>
+        <externalId>false</externalId>
+        <label>Hierarchy Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sales Hierarchy (AM)</fullName>
+                    <default>true</default>
+                    <label>Sales Hierarchy (AM)</label>
+                </value>
+                <value>
+                    <fullName>Account Manager Hierarchy (FE)</fullName>
+                    <default>false</default>
+                    <label>Account Manager Hierarchy (FE)</label>
+                </value>
+                <value>
+                    <fullName>Global Account Manager Hierarchy (GAM)</fullName>
+                    <default>false</default>
+                    <label>Global Account Manager Hierarchy (GAM)</label>
+                </value>
+                <value>
+                    <fullName>Market Manager Hierarchy (MM)</fullName>
+                    <default>false</default>
+                    <label>Market Manager Hierarchy (MM)</label>
+                </value>
+                <value>
+                    <fullName>Field Service Engineer Hierarchy (FSE)</fullName>
+                    <default>false</default>
+                    <label>Field Service Engineer Hierarchy (FSE)</label>
+                </value>
+                <value>
+                    <fullName>Relay Specialist Hierarchy (IS)</fullName>
+                    <default>false</default>
+                    <label>Relay Specialist Hierarchy (IS)</label>
+                </value>
+                <value>
+                    <fullName>IND KAM Hierarchy</fullName>
+                    <default>false</default>
+                    <label>IND KAM Hierarchy</label>
+                </value>
+                <value>
+                    <fullName>Sales Hierarchy (AT &amp; Sensors)</fullName>
+                    <default>false</default>
+                    <label>Sales Hierarchy (AT &amp; Sensors)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Level_1_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: Thomas Jefferson;Richard Nixon;Harry Truman... etc.</inlineHelpText>
+        <label>Level 1 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_1_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 1 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_1_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 1 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_1_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 1 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_1_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 1 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_2_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 2 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_2_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 2 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_2_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 2 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_2_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 2 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_2_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 2 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_3_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 3 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_3_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 3 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_3_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 3 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_3_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 3 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_3_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 3 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_4_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 4 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_4_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 4 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_4_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 4 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_4_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 4 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_4_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 4 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_5_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 5 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_5_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 5 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_5_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 5 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_5_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 5 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_5_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 5 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_6_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 6 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_6_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 6 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_6_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 6 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_6_Territory_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 6 Territory Code</label>
+        <length>8</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_6_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 6 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_7_Assigned_User_Names__c</fullName>
+        <description>List of Names of users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <label>Level 7 Assigned User Names</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_7_Assigned_User_Network_Ids__c</fullName>
+        <description>List of TE Network Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: US012345;US056789;US010000... etc.</inlineHelpText>
+        <label>Level 7 Assigned User Network Ids</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_7_Assigned_Users__c</fullName>
+        <description>List of Salesforce User Ids for users assigned to this hierarchy level on this territory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e: 005E0000000VsJB;005E0000000VsJ1;005E0000000VsJQ... etc.</inlineHelpText>
+        <label>Level 7 Assigned Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Level_7_Default_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Default Account Owner</description>
+        <externalId>false</externalId>
+        <label>Level 7 Default Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sales_Hierarchies_Level7</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Level_7_Territory_Code__c</fullName>
+        <externalId>true</externalId>
+        <inlineHelpText>The Level 7 territory code</inlineHelpText>
+        <label>Level 7 Territory Code</label>
+        <length>8</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_7_Territory_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 7 Territory Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>My_Hierarchy_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(CONTAINS(Level_7_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_6_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_5_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_4_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_3_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_2_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c),
+CONTAINS(Level_1_Assigned_User_Network_Ids__c, $User.Te_Network_Id__c))
+, &quot;true&quot;, &quot;false&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>My Hierarchy Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Test_RTF__c</fullName>
+        <externalId>false</externalId>
+        <label>Test RTF</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>territory_name_code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Level_7_Territory_Name__c &amp; &quot;-&quot; &amp; Level_7_Territory_Code__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>territory name / code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Sales Hierarchy</label>
+    <listViews>
+        <fullName>ADM_GAMs</fullName>
+        <columns>NAME</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>BU__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Global Account Manager Hierarchy (GAM)</value>
+        </filters>
+        <filters>
+            <field>Level_7_Territory_Code__c</field>
+            <operation>equals</operation>
+            <value>G218,G219,G220,G221,G222,G223,G224,G225,G226,G227</value>
+        </filters>
+        <label>ADM GAMs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>ADM_GAMs_for_ADM_BU</fullName>
+        <columns>NAME</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>BU__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Global Account Manager Hierarchy (GAM)</value>
+        </filters>
+        <filters>
+            <field>BU__c</field>
+            <operation>equals</operation>
+            <value>ADM</value>
+        </filters>
+        <label>ADM GAMs for ADM BU</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>ADM_Sales_Hierarchy</fullName>
+        <columns>NAME</columns>
+        <columns>Hierarchy_Type__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Level_1_Territory_Name__c</field>
+            <operation>contains</operation>
+            <value>Aero</value>
+        </filters>
+        <label>ADM Sales Hierarchy</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Hierarchy_Type__c</columns>
+        <columns>NAME</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>territory_name_code__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DTC_GAM</fullName>
+        <columns>NAME</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Global Account Manager Hierarchy (GAM)</value>
+        </filters>
+        <filters>
+            <field>Level_5_Territory_Name__c</field>
+            <operation>contains</operation>
+            <value>data</value>
+        </filters>
+        <label>DTC GAM</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>GAM</fullName>
+        <columns>NAME</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Global Account Manager Hierarchy (GAM)</value>
+        </filters>
+        <label>GAM</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>ICT_GAMs</fullName>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <columns>Level_5_Territory_Code__c</columns>
+        <columns>Level_5_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Global Account Manager Hierarchy (GAM)</value>
+        </filters>
+        <filters>
+            <field>Level_5_Territory_Code__c</field>
+            <operation>equals</operation>
+            <value>G141</value>
+        </filters>
+        <label>ICT GAMs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>MM_hierachy_codes</fullName>
+        <columns>Hierarchy_Type__c</columns>
+        <columns>NAME</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Market Manager Hierarchy (MM)</value>
+        </filters>
+        <label>MM hierarchy codes</label>
+    </listViews>
+    <listViews>
+        <fullName>MM_hierachy_codes1</fullName>
+        <columns>Hierarchy_Type__c</columns>
+        <columns>NAME</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>Market Manager Hierarchy (MM)</value>
+        </filters>
+        <label>MM hierarchy codes</label>
+    </listViews>
+    <listViews>
+        <fullName>Medical_Sales_Hierarchy</fullName>
+        <columns>NAME</columns>
+        <columns>Hierarchy_Type__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_7_Assigned_Users__c</columns>
+        <columns>Level_7_Default_Owner__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Level_1_Territory_Name__c</field>
+            <operation>contains</operation>
+            <value>Medical</value>
+        </filters>
+        <label>Medical Sales Hierarchy</label>
+    </listViews>
+    <listViews>
+        <fullName>Sales_hierarchy_KAM</fullName>
+        <columns>NAME</columns>
+        <columns>Level_4_Assigned_User_Names__c</columns>
+        <columns>Level_4_Territory_Code__c</columns>
+        <columns>Level_4_Territory_Name__c</columns>
+        <columns>Level_5_Assigned_User_Names__c</columns>
+        <columns>Level_5_Territory_Code__c</columns>
+        <columns>Level_5_Territory_Name__c</columns>
+        <columns>Level_6_Assigned_User_Names__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <columns>Level_7_Territory_Code__c</columns>
+        <columns>Level_7_Territory_Name__c</columns>
+        <columns>Level_7_Assigned_User_Network_Ids__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>IND KAM Hierarchy</value>
+        </filters>
+        <label>Sales hierarchy KAM</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Sales_hierarchy_KAM_A_C_EMEA</fullName>
+        <columns>NAME</columns>
+        <columns>Level_4_Assigned_User_Names__c</columns>
+        <columns>Level_4_Territory_Code__c</columns>
+        <columns>Level_4_Territory_Name__c</columns>
+        <columns>Level_4_Assigned_Users__c</columns>
+        <columns>Level_4_Assigned_User_Network_Ids__c</columns>
+        <columns>Level_5_Assigned_User_Names__c</columns>
+        <columns>Level_5_Territory_Code__c</columns>
+        <columns>Level_5_Territory_Name__c</columns>
+        <columns>Level_5_Assigned_Users__c</columns>
+        <columns>Level_6_Assigned_User_Names__c</columns>
+        <columns>Level_6_Territory_Code__c</columns>
+        <columns>Level_6_Territory_Name__c</columns>
+        <columns>Level_6_Assigned_Users__c</columns>
+        <columns>Level_7_Assigned_User_Names__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Hierarchy_Type__c</field>
+            <operation>equals</operation>
+            <value>IND KAM Hierarchy</value>
+        </filters>
+        <filters>
+            <field>Level_4_Assigned_User_Names__c</field>
+            <operation>equals</operation>
+            <value>Thomas Schmidt</value>
+        </filters>
+        <label>Sales hierarchy KAM  A&amp;C EMEA</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>adm_shs_with_out_level7</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Level_1_Territory_Code__c</field>
+            <operation>equals</operation>
+            <value>101485</value>
+        </filters>
+        <filters>
+            <field>Level_7_Default_Owner__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>adm shs with out level7</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Sales Territory Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Sales Hierarchies</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Hierarchy_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Level_7_Territory_Code__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>Level_3_Territory_Name__c</searchFilterFields>
+        <searchFilterFields>Level_3_Territory_Code__c</searchFilterFields>
+        <searchFilterFields>Level_4_Territory_Name__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <sharingReasons>
+        <fullName>Blink__c</fullName>
+        <label>Blink</label>
+    </sharingReasons>
+    <visibility>Public</visibility>
+</CustomObject>

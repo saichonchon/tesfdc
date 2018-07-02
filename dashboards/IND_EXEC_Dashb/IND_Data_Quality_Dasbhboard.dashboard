@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Americas</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>China/SEA</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>EMEA (excl. India)</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>India</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>JP/KR/ANZ</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>EMEA (excl. India),India</values>
+        </dashboardFilterOptions>
+        <name>IND Billing Region</name>
+    </dashboardFilters>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>lessThan</operator>
+            <values>USD 100000</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>between</operator>
+            <values>USD 100000</values>
+            <values>USD 1000000</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>between</operator>
+            <values>USD 1000000</values>
+            <values>USD 10000000</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>greaterOrEqual</operator>
+            <values>USD 10000000</values>
+        </dashboardFilterOptions>
+        <name>Total Opportunity Value</name>
+    </dashboardFilters>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <isGridLayout>false</isGridLayout>
+    <leftSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>Opportunity$Account.Territory_level4_name__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <aggregateType>Sum</aggregateType>
+                <calculatePercent>false</calculatePercent>
+                <column>Opportunity$Total_Opportunity_Value__c.CONVERT</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <displayUnits>Integer</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <header>IND all open opportunities, record count and total value</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <report>IND_SM_reports/IND_all_pending_opp</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>Opportunity$Account.Territory_level4_name__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <aggregateType>Sum</aggregateType>
+                <calculatePercent>false</calculatePercent>
+                <column>Opportunity$Opportunity_Counter__c</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <aggregateType>Sum</aggregateType>
+                <calculatePercent>false</calculatePercent>
+                <column>Opportunity$Amount.CONVERT</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <displayUnits>Integer</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>Invalid master data means either close date, manufacturing start date or forecast in the past or opportunity is not updated since more than 60 days</footer>
+            <header>IND Opportunities with invalid master data, record count and total value</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <report>IND_SM_reports/IND_opps_with_invalid_status</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+        </components>
+    </middleSection>
+    <rightSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartSummary>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>Metric</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Integer</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>not updated 60 days</metricLabel>
+            <report>IND_SM_reports/IND_not_updated_60_days</report>
+            <showRange>false</showRange>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Integer</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>close date in the past</metricLabel>
+            <report>IND_SM_reports/IND_close_date_in_the_past</report>
+            <showRange>false</showRange>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartSummary>
+                <aggregate>Sum</aggregate>
+                <column>Opportunity$Opportunity_Counter__c</column>
+            </chartSummary>
+            <componentType>Metric</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Integer</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>forecast in the past</metricLabel>
+            <report>IND_SM_reports/IND_opp_forecast_in_the_past</report>
+            <showRange>false</showRange>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity$Account.IND_Billing_Region__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity$Total_Opportunity_Value__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Integer</displayUnits>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>manufacturing start date in the past</metricLabel>
+            <report>IND_SM_reports/IND_manuf_start_date_past</report>
+            <showRange>false</showRange>
+        </components>
+    </rightSection>
+    <runningUser>lars.brickenkamp@te.com.c2s</runningUser>
+    <textColor>#000000</textColor>
+    <title>IND Data Quality Dasbhboard</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

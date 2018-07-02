@@ -1,0 +1,119 @@
+<apex:page sidebar="false" showHeader="false"  controller="MobileVizArt.CtrlMobileObjectStyle">
+<!--	<script type="text/javascript" src="/jslibrary/1329331264000/sfdc/JiffyStubs.js"></script>-->
+<!--	<script  src="/jslibrary/1331837151000/sfdc/main.js" type="text/javascript"></script>-->
+<!--	<script  src="/jslibrary/labels/1335396211000/en_US.js" type="text/javascript"></script>-->
+<!--	<script  type="text/javascript">window.sfdcPage = new GenericSfdcPage();-->
+<!--	</script>-->
+<!--	<link  href="/sCSS/24.0/sprites/1331837151000/Theme3/default/gc/common.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+<!--	<link  href="/sCSS/24.0/sprites/1331837151000/Theme3/default/gc/zenTabsOnly.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+<!--	<link  href="/sCSS/24.0/sprites/1331837151000/Theme3/default/gc/MotifPicker.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+<!--	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/dStandard.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+<!--	<link  href="/sCSS/24.0/sprites/1337674980000/Theme3/00DU0000000KHjI/005U0000000RyGD/gc/dCustom0.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+<!--	<link  href="/sCSS/24.0/sprites/1331837151000/Theme3/default/gc/extended.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />-->
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom0.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom1.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom2.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom3.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom4.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom5.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom6.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+	<link  href="/sCSS/24.0/sprites/1335396211000/Theme3/gc/allCustom7.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+<!--	<link rel="shortcut icon" href="https://na12.salesforce.com/favicon.ico" />-->
+<!--	<script  src="/static/111811/js/ClientHash.js" type="text/javascript"></script>-->
+	 
+	 <script>
+	 	hideLoading();
+		function hideLoading(){
+			parent.document.getElementById('loading').style.display = "none";
+		}
+		function selectStyle(imageId,colorId){
+			//alert(document.getElementById("motifElement_icon_Custom20").currentStyle["backgroundImage"]);
+			var color = document.getElementById(colorId).style.backgroundColor;
+			var image =	document.getElementById(imageId).style.backgroundImage;
+			//alert('image:' + image);
+			var styleName = document.getElementById(colorId).innerHTML;
+			var length = parseInt(image.length);
+			var index = length - 2;
+			//alert('styleName:' + styleName);
+			//alert('index:' + index);
+			//alert(image.substring(5,index));
+			var rgbColors = color.split(",");
+			var r = parseInt(rgbColors[0].split("(")[1]);
+			//alert("r:" + r);
+			var g = parseInt(rgbColors[1]);
+			var b = parseInt(rgbColors[2].split(")")[0]); 
+			var start = image.search("/img");
+			var end = image.search(".png") + 4;
+			image = image.substring(start,end);
+			//alert('start:' + start);
+			//alert('end:' + end);
+			//alert('image1:' + image);
+			color = toHex(r)+toHex(g)+toHex(b)
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:colorCode").value = color;
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:iconPath").value = image.replace('16.png','24.png');
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:styleName").value = styleName; 
+			//alert("value:" + parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:styleName").value);
+			parent.closeColorIframe();
+		}
+		
+		
+		function toHex(N) {
+	 
+			if (N==null)
+				return "00";
+			N=parseInt(N);
+			if (N==0 || isNaN(N))
+				return "00";
+			N=Math.max(0,N);
+			N=Math.min(N,255);
+			N=Math.round(N);
+			return "0123456789ABCDEF".charAt((N-N%16)/16) + "0123456789ABCDEF".charAt(N%16);
+		}
+		
+		function setNullStyle(){
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:colorCode").value = '';
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:iconPath").value = '';
+			parent.document.getElementById("thePage:j_id2:j_id3:theForm:theBlocK:blockSection:styleName").value = ''; 
+			parent.closeColorIframe();
+		}
+	
+	 </script>
+	 
+	<!--Added by Guanyun.Chen(guanyun.chen@itbconsult.com) begin-->
+	<style>
+	a.motifElement{
+    float:left;
+    display:block;
+    margin : 5px;   
+	}
+	</style>
+	<!--Added by Guanyun.Chen(guanyun.chen@itbconsult.com) end-->
+	<!--Changed by Guanyun.Chen(guanyun.chen@itbconsult.com) begin-->
+	<apex:pageBlock >
+			<div >
+					<a  class="motifElement Custom20Mru Custom20Tab pickableMotifElement" id="Custom20" onclick='setNullStyle();' ><span class="iconChoice" ><img src="/s.gif" alt="null"  class="mruIcon"  title="Airplane" style="background-image:url('')"/></span><div class="colorChoice primaryPalette" style="background-color: #747E96;" ></div></a>
+			</div>
+			<apex:repeat value="{!standardMobileObjectStyles}" var="sty">
+				<div >
+	    <!-- ------------------------------------------updated by weihang 2013-01-18 begin----------------------------------------------------------- -->
+				<a  class="motifElement Custom20Mru Custom20Tab pickableMotifElement" id="Custom20" onclick='selectStyle("icon_{!HTMLENCODE(sty.Name)}","color_{!HTMLENCODE(sty.Name)}");' ><span class="iconChoice" ><img src="/s.gif" alt="null"  class="mruIcon" id="icon_{!HTMLENCODE(sty.Name)}" title="Airplane" style="background-image:url('{!JSENCODE(sty.Icon_Path__c)}')"/></span><div class="colorChoice primaryPalette" style="background-color: #{!HTMLENCODE(sty.Color_Code__c)};" id="color_{!HTMLENCODE(sty.Name)}">{!sty.StyleName__c}</div></a>
+		<!-- ------------------------------------------updated by weihang 2013-01-18 end----------------------------------------------------------- -->
+				</div>
+			</apex:repeat>
+			<apex:repeat value="{!mobileObjectStyles}" var="sty">
+				<div >
+				<!-- ------------------------------------------updated by weihang 2013-01-21 begin------------------------------------------------------------------------- -->
+				<a  class="motifElement Custom20Mru Custom20Tab pickableMotifElement" id="Custom20" onclick='selectStyle("icon_{!HTMLENCODE(sty.Name)}","color_{!HTMLENCODE(sty.Name)}");' ><span class="iconChoice" ><img src="/s.gif" alt="null"  class="mruIcon" id="icon_{!HTMLENCODE(sty.Name)}" title="Airplane" style="background-image:url('{!JSENCODE(sty.Icon_Path__c)}')"/></span><div class="colorChoice primaryPalette" style="background-color: #{!HTMLENCODE(sty.Color_Code__c)};" id="color_{!HTMLENCODE(sty.Name)}">{!sty.StyleName__c}</div></a>
+				<!-- Begin: commented by Peng Zhu at 2013-04-09 for removing the duplicate icon -->
+				<!-- 
+				<a  class="motifElement Custom20Mru Custom20Tab pickableMotifElement" id="Custom20" onclick='selectStyle("icon_{!HTMLENCODE(sty.Name)}","color_{!HTMLENCODE(sty.Name)}");' ><span class="iconChoice" ><img src="/s.gif" alt="null"  class="mruIcon" id="icon_{!HTMLENCODE(sty.Name)}" title="Airplane" style="background-image:url('{!HTMLENCODE(sty.Icon_Path__c)}')"/></span><div class="colorChoice primaryPalette" style="background-color: #{!HTMLENCODE(sty.Color_Code__c)};" id="color_{!HTMLENCODE(sty.Name)}">{!sty.StyleName__c}</div></a>
+				 -->
+				<!-- End: commented by Peng Zhu at 2013-04-09 for removing the duplicate icon -->
+				<!-- ------------------------------------------updated by weihang 2013-01-21 end------------------------------------------------------------------------- -->
+				</div>
+			</apex:repeat>
+		
+			
+	</apex:pageBlock>
+	<!--Changed by Guanyun.Chen(guanyun.chen@itbconsult.com) end-->
+</apex:page>

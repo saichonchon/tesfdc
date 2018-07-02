@@ -1,0 +1,534 @@
+<apex:page sidebar="false" standardController="Training__c" extensions="IND_TrainingParticipantcontroller" showHeader="false"  action="{!Trainingslide1}">
+
+
+<script type="text/javascript">
+function confirmsubmit() {
+      return confirm('Are you sure you want to Submit?');
+}
+</script>
+
+
+
+<style>
+.wrapper {
+    width:100%;
+    margin:0 auto;
+   
+    
+}
+.headerLogo {
+    position:absolute;
+    top:0;
+    right:0;
+    border:none;
+    margin-right:70px;
+    margin-top:10px;
+    
+}
+.header {
+   
+   height:60px;   
+   background:#EEEEEE;
+   background-image: url('http://imageserverdev.tycoelectronics.com/imageserver/tyco/myte/img/header_myTE.jpg'); 
+   width:100%;
+  
+    
+    }
+a.websiteName, a.websiteName:visited {
+    margin-left:30px;
+    font:normal 30px/70px Georgia;
+    color:#006c8b;
+    text-decoration:none;
+}
+
+a.websiteName:hover {
+    color:#006c8b;
+    text-decoration:underline;
+}
+.content {
+    float:left;
+    position:relative;
+    margin:52px 0 0 0;
+   
+    
+}
+.normalText{
+    font:1.4em/1.4em Arial;
+}
+#leftColumn {
+    float:left;
+   
+}
+.box {
+    
+    width:100%;
+    height:100%;*/
+    padding:30px 30px;
+   background:#EEEEEE;
+    overflow:hidden;
+    z-index:0;
+}
+.button01 {
+    background: url("/resource/1382099300000/buttonBackground") no-repeat scroll left top transparent;
+    border: 1px solid #B9C7CB;
+    color: #3D899C;
+    cursor: pointer;
+    font: bold 15px Arial;
+    height: 38px;
+    width:80px;
+}
+.button01:hover {
+    background-position:left bottom;
+}
+.lbl
+{
+color:#006C8B;
+
+font-weight:bold;
+}
+.hdr
+{
+color:#FFFFFF;
+
+}  
+
+font-weight:bold;
+}
+.clear {
+    float:none;
+    clear:both;
+    height:0px;
+}
+.footerOut {
+    height:80px;
+    
+    font-size:14px;
+    color:#ffffff;
+    line-height:20px;
+    background:url(/resource/1382107952000/footer) repeat-x;
+    width:100%
+}
+
+.p1
+{
+color: #006C8C;
+    font-size: 16px;
+   display: inline;
+    ;
+    
+    margin: 30px 0 0 30px;
+    width: 250px;
+}
+
+.locationError { color: blue; font-weight: strong;}
+.employeeError { color: green; font-weight: strong;}
+
+</style>
+
+ 
+<apex:form enctype="multipart/form-data" id="RID">  
+  
+<apex:variable var="l1" value="{!Training__c}"/> 
+
+  <apex:panelGrid styleClass="header">
+   <a class="websiteName">Register for Industrial Upcoming Training</a>
+                <a target="_blank" href="http://www.TE.com">
+                   <img class="headerLogo" width="150" height="60" src="{!$Resource.TELogo}"/>
+                    
+                </a>
+  </apex:panelGrid>
+  
+  <apex:panelGrid style="background-color:#58ACFA;width:100%;text-align:center;">
+      <apex:outputLabel value="Hello {!$User.FirstName} {!$User.LastName}, Salesforce Industrial Team Welcomes you to the Training Schedule" style="font-family:aerial;color:#FFFFFF;font-size:20px;text-align:center;" ></apex:outputLabel>
+  </apex:panelGrid>
+    
+
+ 
+ <apex:panelGrid style="background-color:#FA5858;width:100%; text-align:center;" rendered="{!IF(trid==null,true,false)}"> 
+ <apex:outputLink value="/home/home.jsp" Style="text-align:center;font-style:italic;font-weight:bold;font-size:150%;color:blue" >GO to Salesforce Homepage</apex:outputlink>
+                 
+ </apex:panelGrid>  
+    
+   <apex:messages style="color:Blue; font-family:verdana; font-size:220%;"/>
+ <!--///////////////////////////////////////////////////////////Training Without date slots////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->   
+  
+ 
+ <apex:PageBlock rendered="{!IF((trainingrecordtype.DeveloperName=='Training_with_Response_without_Date_Slots' || trainingrecordtype.DeveloperName=='Training_with_Response_Exam_without_Date_Slots') && Notinvited==false ,true,false)}" >
+     
+     <apex:panelGrid style="width:100%;height=100%" border="2" >
+     <apex:outputPanel >
+      <table border="2" width="100%" Height="100%">
+         
+                  <thead>
+                       <tr>
+                          <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> <apex:outputField value="{!l1.Name}" styleClass="lbl"></apex:outputfield></td>
+                       </tr>
+                 </thead>
+                 
+           
+                 <tbody>
+                 <apex:outputPanel rendered="{!IF(l1.Training_by_Slides__c == false,true,false)}">
+                 
+                   <table width="100%" border="1" style="padding: 0px; border-spacing: 4px;background-color:#FFFFFF" >   
+                        
+                       <tr>
+                         <th style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value=" Description About Training" ></apex:outputLabel>     
+                         </th>
+                         
+                      </tr>  
+                   <tr>
+                      
+                      <td width="100%">
+                      
+                      <apex:outputPanel style="width=65%">
+                           <apex:outputfield value="{!l1.Description_of_Training__c}" ></apex:outputField> 
+                      </apex:outputPanel>    
+                      
+                      </td>
+                  </tr>
+                  
+                 </table>
+                 </apex:outputPanel>
+                 
+                 
+ <!--////////////////////////////////////////////////////////////////Type of Training Slide or without slide/////////////////////////////////////////////////////////////////////////////////////////////////////////-->                
+              
+                 <apex:outputPanel rendered="{!IF(l1.Training_by_Slides__c == true,true,false)}">
+                 <tr>
+                                           
+                    <table width="100%" border="1" style="padding: 0px; border-spacing: 4px;background-color:#FFFFFF" >   
+                        
+                       <tr>
+                         <th style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value=" Description About Training" ></apex:outputLabel>     
+                         </th>
+                         <th style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value="Available Training Slides" ></apex:outputLabel>     
+                         </th>
+                      </tr>   
+                 
+                      <tr>
+                      
+                      <td width="60%">
+                      
+                      <apex:outputPanel style="width=65%">
+                           <apex:outputfield value="{!l1.Description_of_Training__c}" ></apex:outputField> 
+                      </apex:outputPanel>    
+                      
+                      </td>
+                    
+                      <td width="40%" style="text-align:center;">
+                              
+                              
+                              <apex:outputPanel style="text-align:center;" rendered="{!checktrainingclosed==true}">
+                             &nbsp; <apex:outputLabel style="font-family:aerial;color:Red;font-size:20px;text-align:center;" value=" The {!l1.Name} is Closed" ></apex:outputLabel> 
+                             </apex:outputPanel>              
+                              
+                              
+                               <apex:outputPanel rendered="{!if(l1.Training_by_Slides__c == true, true,false)}"> 
+                                                                
+                                
+                                      <table width="100%" border="1" style="padding: 0px; border-spacing: 4px;background-color:#FFFFFF" >   
+                                        
+                                        
+                                         <tr>
+                                             <th  colspan="2" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#58ACFA">  
+                                                <apex:outputLabel value=" Name of the Training Slide" ></apex:outputLabel>     
+                                             </th>
+                                             
+                                         </tr>
+                                        
+                                        <tr style="display: {!IF((ISBLANK(l1.Training_Slide_URl1__c) && ISBLANK(l1.ShortDescription_of_the_URL1__c)), 'none', 'table-row')};">
+                                           
+                                            <td width="20%" style="font-family:arial;color:#000000;font-size:15px;text-align:Center;" bgcolor="#FFBF00"><apex:outputLink value="{!l1.Training_Slide_URl1__c}" target="self" > Training Slide 1</apex:outputLink></td>               
+                                              <td  style="font-family:arial;font-size:15px;color:#0174DF" bgcolor="#E6E6E6"><apex:outputField value="{!l1.ShortDescription_of_the_URL1__c}"/></td>     
+                                         </tr>
+                                         <tr style="display: {!IF((ISBLANK(l1.Training_Slide_URl2__c) && ISBLANK(l1.ShortDescription_of_the_URL2__c)), 'none', 'table-row')};">
+                                            <td width="20%" style="font-family:arial;color:#000000;font-size:15px;text-align:Center;" bgcolor="#FFBF00"> <apex:outputLink value="{!l1.Training_Slide_URL2__c}"   > Training Slide 2</apex:outputLink></td>               
+                                              <td  style="font-family:arial;font-size:15px;color:#0174DF" bgcolor="#E6E6E6"><apex:outputField value="{!l1.ShortDescription_of_the_URL2__c}"/></td>     
+                                             
+                                         </tr>
+                                         <tr style="display: {!IF((ISBLANK(l1.Training_Slide_URl3__c) && ISBLANK(l1.ShortDescription_of_the_URL3__c)), 'none', 'table-row')};">
+                                           <td width="20%" style="font-family:arial;color:#000000;font-size:15px;text-align:Center;" bgcolor="#FFBF00"> <apex:outputLink value="{!l1.Training_Slide_URL3__c}" > Training Slide 3</apex:outputLink></td>               
+                                              <td  style="font-family:arial;font-size:15px;color:#0174DF" bgcolor="#E6E6E6"><apex:outputField value="{!l1.ShortDescription_of_the_URL3__c}"/></td>     
+                                              
+                                         </tr>
+                                         
+                                         
+                                     </table>
+                                         
+                             </apex:outputPanel>
+                          </td> 
+                      </tr>
+                  </table>         
+                 </tr>
+                 </apex:outputPanel>
+                 </tbody>
+      
+                </table>
+     </apex:outputPanel>
+     </apex:panelGrid>
+ </apex:PageBlock> 
+ 
+<!--/////////////////////////////////////////////////////////Training Without date slots////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->    
+    
+    
+    
+    
+    
+    
+ <!--/////////////////////////////////////////////////////////Training With date slots////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->    
+    
+     
+    
+     <apex:PageBlock rendered="{!IF((trainingrecordtype.DeveloperName=='Training_with_Response_Date_Slots' || trainingrecordtype.DeveloperName=='Training_with_Response_Exam_Date_Slots') && Notinvited==false,true,false)}" >
+     
+     <apex:panelGrid style="width:100%;height=100%" border="2" >
+      
+       <apex:repeat var="l" value="{!displaytraining}" > 
+     <table border="2" width="100%" Height="100%">
+         
+                  <thead>
+                       <tr>
+                          <td style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> <apex:outputField value="{!l.Name}" styleClass="lbl"></apex:outputfield> (Presented By:&nbsp;<apex:outputField value="{!l.Name_of_the_Trainer__c}" styleClass="lbl"></apex:outputfield>)</td>
+                       </tr>
+                 </thead>
+                 
+           
+                 <tbody>
+                 <tr>
+                    <table width="100%" border="1" style="padding: 0px; border-spacing: 4px;background-color:#FFFFFF" >   
+                        
+                       <tr>
+                         <th style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value=" Description About Training" ></apex:outputLabel>     
+                         </th>
+                         <th style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E">  
+                            <apex:outputLabel value="Available Slots" ></apex:outputLabel>     
+                         </th>
+                      </tr>   
+                 
+                      <tr>
+                      
+                      <td width="70%">
+                      
+                      <apex:outputPanel style="width=75%">
+                           <apex:outputfield value="{!l.Description_of_Training__c}" ></apex:outputField> 
+                      </apex:outputPanel>    
+                      
+                      </td>
+                    
+                      <td width="25%" style="text-align:center;">
+                       
+                        <apex:outputPanel style="text-align:center;" rendered="{!checktrainingclosed==true}">
+                             &nbsp; <apex:outputLabel style="font-family:aerial;color:Red;font-size:20px;text-align:center;" value=" The {!l.Name} is Closed" ></apex:outputLabel> 
+                        </apex:outputPanel>
+                       
+                       <apex:outputPanel >
+                        <apex:actionRegion >
+                                
+                                
+                                      <table width="100%" border="1" style="padding: 0px; border-spacing: 4px;background-color:#FFFFFF" >   
+                                        
+                                         <tr>
+                                              <th colspan="3" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#58ACFA">
+                                                 Duration of Training:&nbsp;<apex:outputField value="{!l.Duration_of_Training__c}" styleClass="lbl"></apex:outputfield> 
+                                              </th>
+                                         </tr>
+                                         <tr>
+                                             <th  style="text-align:center;">  
+                                                <apex:outputLabel value=" Training Slots" styleClass="lbl"></apex:outputLabel>     
+                                             </th>
+                                             <th style="text-align:center;">  
+                                                <apex:outputLabel value="Date/Time(Local Timezone)" styleClass="lbl"></apex:outputLabel>     
+                                             </th>
+                                             <th style="text-align:center;">
+                                                <apex:outputLabel value="Select" styleClass="lbl"></apex:outputLabel> 
+                                             </th>
+                                         </tr>
+       
+                                        <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time1__c)) && l.User_Selected_Date_Time_Option_1__c==false), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 1" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time1__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_1__c}" id="l1"/>
+                                          </td>
+                                       </tr>
+                                        <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time1__c)) && l.User_Selected_Date_Time_Option_1__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 1" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time1__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_1__c}" id="l11"/>
+                                          </td>
+                                       </tr>
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time2__c)) && l.User_Selected_Date_Time_Option_2__c==false), 'table-row', 'none' )};">
+                                               
+                                                  <td>  
+                                                   <apex:outputLabel value="Slot 2" styleClass="lbl"></apex:outputLabel>    
+                                                  </td>
+                                              
+                                                  <td>  
+                                                    <apex:outputField value="{!l.Training_Date_and_Time2__c}" styleClass="lbl"></apex:outputfield>     
+                                                  </td>
+                                              
+                                                 <td>
+                                                    <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_2__c}" id="l2"/>
+                                                 </td>
+                                       </tr>
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time2__c)) && l.User_Selected_Date_Time_Option_2__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 2" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time2__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_2__c}" id="l12"/>
+                                          </td>
+                                       </tr>
+   
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time3__c)) && l.User_Selected_Date_Time_Option_3__c==false), 'table-row', 'none' )};">
+                                               
+                                                  <td>  
+                                                   <apex:outputLabel value="Slot 3" styleClass="lbl"></apex:outputLabel>    
+                                                  </td>
+                                              
+                                                  <td>  
+                                                    <apex:outputField value="{!l.Training_Date_and_Time3__c}" styleClass="lbl"></apex:outputfield>     
+                                                  </td>
+                                              
+                                                 <td>
+                                                    <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_3__c}" id="l3"/>
+                                                 </td>
+                                       </tr>
+                                       
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time3__c)) && l.User_Selected_Date_Time_Option_3__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 3" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time3__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_3__c}" id="l13"/>
+                                          </td>
+                                       </tr>
+   
+                                         <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time4__c)) && l.User_Selected_Date_Time_Option_4__c==false), 'table-row', 'none' )};">
+                                               
+                                                  <td>  
+                                                   <apex:outputLabel value="Slot 4" styleClass="lbl"></apex:outputLabel>    
+                                                  </td>
+                                              
+                                                  <td>  
+                                                    <apex:outputField value="{!l.Training_Date_and_Time4__c}" styleClass="lbl"></apex:outputfield>     
+                                                  </td>
+                                              
+                                                 <td>
+                                                    <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_4__c}" id="l4"/>
+                                                 </td>
+                                       </tr>
+                                       
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time4__c)) && l.User_Selected_Date_Time_Option_4__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 4" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time4__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_4__c}" id="l14"/>
+                                          </td>
+                                       </tr>
+   
+                                          <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time5__c)) && l.User_Selected_Date_Time_Option_5__c==false), 'table-row', 'none' )};">
+                                               
+                                                  <td>  
+                                                   <apex:outputLabel value="Slot 5" styleClass="lbl"></apex:outputLabel>    
+                                                  </td>
+                                              
+                                                  <td>  
+                                                    <apex:outputField value="{!l.Training_Date_and_Time5__c}" styleClass="lbl"></apex:outputfield>     
+                                                  </td>
+                                              
+                                                 <td>
+                                                    <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_5__c}" id="l5"/>
+                                                 </td>
+                                       </tr>
+                                       
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time5__c)) && l.User_Selected_Date_Time_Option_5__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 5" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time5__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_5__c}" id="l15"/>
+                                          </td>
+                                       </tr>
+   
+                                        <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time6__c)) && l.User_Selected_Date_Time_Option_6__c==false), 'table-row', 'none' )};">
+                                               
+                                                  <td>  
+                                                   <apex:outputLabel value="Slot 6" styleClass="lbl"></apex:outputLabel>    
+                                                  </td>
+                                              
+                                                  <td>  
+                                                    <apex:outputField value="{!l.Training_Date_and_Time6__c}" styleClass="lbl"></apex:outputfield>     
+                                                  </td>
+                                              
+                                                 <td>
+                                                    <apex:inputCheckbox value="{!l.User_Selected_Date_Time_Option_6__c}" id="l6"/>
+                                                 </td>
+                                       </tr>
+                                       
+                                       <tr style="display: {!IF((NOT(ISBLANK(l.Training_Date_and_Time6__c)) && l.User_Selected_Date_Time_Option_6__c==true), 'table-row', 'none' )};">
+                                          <td>  
+                                              <apex:outputLabel value="Slot 6" styleClass="lbl"></apex:outputLabel>    
+                                          </td>
+                                          <td>  
+                                              <apex:outputField value="{!l.Training_Date_and_Time6__c}" styleClass="lbl"></apex:outputfield>     
+                                          </td>
+                                          <td>
+                                              <apex:outputfield value="{!l.User_Selected_Date_Time_Option_6__c}" id="l16"/>
+                                          </td>
+                                       </tr>
+                                           </table>
+                                    
+                                          <apex:panelGrid style="background-color:#D8D8D8;width:100%; text-align:center;" rendered="{!if(checksubmitbutton==false && checktrainingclosed== false,true,false)}">
+                                             <apex:commandButton action="{!Newsave}" value="Submit the Slot Registration" onClick="if (!confirmsubmit()) return false;"  rendered="{!IF(trid!=null,true,false)}" >
+                                                 <apex:actionSupport action="{!Init}" event="onclick" />
+              
+                                            </apex:commandButton>
+                                         </apex:panelGrid> 
+                                     
+                        
+                               </apex:actionRegion>     
+                            </apex:outputPanel>
+                    </td> 
+                </tr>
+              </table>         
+             </tr>
+         </tbody>
+      
+   </table></apex:repeat>
+   
+   </apex:panelGrid>
+ 
+  
+     </apex:PageBlock>
+ <!--/////////////////////////////////////////////////////////Training With date slots////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->    
+ 
+</apex:form>  
+ 
+</apex:page>

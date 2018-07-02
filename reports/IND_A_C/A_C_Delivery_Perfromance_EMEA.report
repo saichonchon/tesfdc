@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>1-(Delivery_Performance__c.Scheduled_Late_IND__c:SUM / RowCount)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>calculates the ship to schedule performance</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Ship to Schedule %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>1-(Delivery_Performance__c.Requested_Late_IND__c:SUM / RowCount)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>calculates the ship to Request performance</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Ship to Request %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA1</column>
+        </chartSummaries>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA2</column>
+        </chartSummaries>
+        <chartType>Line</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Delivery_Performances__r$Shipped_Date__c</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisManualRangeEnd>100.0</summaryAxisManualRangeEnd>
+        <summaryAxisManualRangeStart>75.0</summaryAxisManualRangeStart>
+        <summaryAxisRange>Manual</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>((1 OR 2) AND 3) AND 4</booleanFilter>
+        <criteriaItems>
+            <column>Account.Delivery_Performances__r$Shipped_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_N_MONTHS:12</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Delivery_Performances__r$Shipped_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Delivery_Performances__r$SAP_Profit_Center_Short_Desc_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C,RP - A&amp;C</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMEA</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Account.Delivery_Performances__r$Shipped_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$IND_Billing_Region__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$IND_Customer_Classification__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>A&amp;C Delivery Perfromance EMEA</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Delivery_Performance__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Delivery_Performances__r$Shipped_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

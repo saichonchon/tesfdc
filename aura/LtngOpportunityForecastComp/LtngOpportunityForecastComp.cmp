@@ -1,0 +1,29 @@
+<aura:component controller="LtngOpportunityForecastCtrl" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName" access="global">
+	
+    <ltng:require styles="/resource/SLDS221/resetCSS.css, /resource/SLDS221/assets/styles/salesforce-lightning-design-system.min.css" 
+    			scripts="{!join(',', $Resource.Jquery224, 
+                         			$Resource.LtngOppyForecastJS)}" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+
+    <aura:attribute name="originalId" 						default="{!v.recordId}" type="String" access="global" />
+    <aura:attribute name="originalName" 					default="{!v.sObjectName}"	type="String" access="global" />
+    
+    <aura:attribute name="isView"							type="Boolean" default="true"/>
+	<aura:attribute name="isAPL"							type="Boolean" default="false"/>
+    <aura:attribute name="isShowMussUpdate"							type="Boolean" default="false"/>
+    
+    <aura:handler name="modeEvent" event="c:LtngOpportunityForecastModeEvt" 	action="{!c.handleModeEvt}"/>
+    
+    
+    <div>
+        
+        <aura:if isTrue="{!v.isView}">
+            <c:LtngOpportunityForecastViewComp originalId="{!v.originalId}" originalName="{!v.originalName}" />
+                
+            	<aura:set attribute="else">
+            <c:LtngOpportunityForecastEditComp isAPL="{!v.isAPL}" isShowMussUpdate="{!v.isShowMussUpdate}" originalId="{!v.originalId}" originalName="{!v.originalName}" />
+            	</aura:set>
+        </aura:if>
+
+    </div>
+    
+</aura:component>

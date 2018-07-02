@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntitlementProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <SObjectType>Case</SObjectType>
+    <active>true</active>
+    <description>ICT Entitlement Process</description>
+    <entryStartDateField>Case.CreatedDate</entryStartDateField>
+    <exitCriteriaFilterItems>
+        <field>Case.IsClosed</field>
+        <operation>equals</operation>
+        <value>true</value>
+    </exitCriteriaFilterItems>
+    <isVersionDefault>false</isVersionDefault>
+    <milestones>
+        <businessHours>ICT Business Hours</businessHours>
+        <milestoneCriteriaFilterItems>
+            <field>Case.OwnerId</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>TE PIC Standard Case Record Type</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.Priority</field>
+            <operation>equals</operation>
+            <value>Medium</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.Origin</field>
+            <operation>equals</operation>
+            <value>Web</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneName>24 Hour Response Time</milestoneName>
+        <minutesToComplete>1440</minutesToComplete>
+        <timeTriggers>
+            <actions>
+                <name>ICT_Case_20_Hour_Escalation</name>
+                <type>Alert</type>
+            </actions>
+            <timeLength>-4</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </timeTriggers>
+        <timeTriggers>
+            <actions>
+                <name>ICT_Case_24_Breached_Email</name>
+                <type>Alert</type>
+            </actions>
+            <timeLength>0</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </timeTriggers>
+        <useCriteriaStartTime>false</useCriteriaStartTime>
+    </milestones>
+    <name>ICT Entitlement Process</name>
+    <versionMaster>5520L000000D8dA</versionMaster>
+    <versionNumber>1</versionNumber>
+</EntitlementProcess>

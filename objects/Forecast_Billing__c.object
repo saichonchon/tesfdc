@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_From_BBB__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account From BBB</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Forecast Billings</relationshipLabel>
+        <relationshipName>Forecast_Billings</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <description>Filled by batch. This will have to have the sum of the quarter taken from the related Yearly record.</description>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Forecast_Snapshot__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Approval Forecast Snapshot</label>
+        <referenceTo>Forecast_Snapshot__c</referenceTo>
+        <relationshipLabel>Forecast Billings</relationshipLabel>
+        <relationshipName>Forecast_Billings</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Type__c</fullName>
+        <description>Copied from Yearly Booking/Billing record</description>
+        <externalId>false</externalId>
+        <label>Bill Type</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Part__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer Part</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>20</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Date</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Amount__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Bill_Type__c = &apos;Direct&apos;, Amount__c , 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Direct Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Duplicate_Checkbox__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Duplicate Checkbox</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Duplicate_Records__c</fullName>
+        <description>CSV field containing all duplicate billing rec-ords. Duplicates are to be matched with Part number, account ID, and date field</description>
+        <externalId>false</externalId>
+        <label>Duplicate Records</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Load_Status__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>lookup to load status to retrieve fiscal working days etc for reporting</description>
+        <externalId>false</externalId>
+        <label>Load Status</label>
+        <referenceTo>Load_Status__c</referenceTo>
+        <relationshipLabel>Forecast Billings</relationshipLabel>
+        <relationshipName>Forecast_Billings</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Forecast__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity Forecast</label>
+        <referenceTo>Opportunity_Forecast__c</referenceTo>
+        <relationshipLabel>Forecast Billings</relationshipLabel>
+        <relationshipName>Forecast_Billings</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Part__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>To be populated for engineering parts.</description>
+        <externalId>false</externalId>
+        <label>Opportunity Part</label>
+        <referenceTo>Opportunity_Part__c</referenceTo>
+        <relationshipLabel>Forecast Billings</relationshipLabel>
+        <relationshipName>Forecast_Billings</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>POS_Amount__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Bill_Type__c  = &apos;POS&apos;, Amount__c, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>POS Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Reseller__c</fullName>
+        <externalId>false</externalId>
+        <label>Reseller</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Won_Forecast_Snapshot__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Won Forecast Snapshot</label>
+        <referenceTo>Forecast_Snapshot__c</referenceTo>
+        <relationshipLabel>Forecast Billings (Won Forecast Snapshot)</relationshipLabel>
+        <relationshipName>Forecast_Billings1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>acc_opp_part__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity_Part__r.Opportunity__r.Account.Id &amp; &quot;_&quot; &amp; Opportunity_Part__r.Opportunity__r.Id &amp; &quot;_&quot; &amp;  Opportunity_Part__r.Part__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>acc_opp_part</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Forecast Billing</label>
+    <nameField>
+        <label>Forecast Billing Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Forecast Billings</pluralLabel>
+    <recordTypes>
+        <fullName>Engineering</fullName>
+        <active>true</active>
+        <label>Engineering</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Regular</fullName>
+        <active>true</active>
+        <label>Regular</label>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

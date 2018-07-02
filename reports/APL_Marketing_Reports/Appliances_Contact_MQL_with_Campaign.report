@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Campaign$Name</field>
+    </columns>
+    <columns>
+        <field>Campaign.ContactCampaignMembers$Name</field>
+    </columns>
+    <columns>
+        <field>Campaign.ContactCampaignMembers*CampaignMember$Inquiry_Status__c</field>
+    </columns>
+    <columns>
+        <field>Campaign.ContactCampaignMembers$Email</field>
+    </columns>
+    <columns>
+        <field>Campaign.ContactCampaignMembers.TEMarketing__MQLRecords__r$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Campaign.ContactCampaignMembers.TEMarketing__MQLRecords__r$Business_Unit__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Appliances</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Campaign$TEMarketing__Include_In_Opportunity_ROI__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Campaign.ContactCampaignMembers.TEMarketing__MQLRecords__r$TEMarketing__Inquiry_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Sales Rejected</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Appliances Contact MQL with Campaign</name>
+    <params>
+        <name>scopeid</name>
+        <value></value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Contact_MQL_with_Campaign_Information__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Campaign.ContactCampaignMembers.TEMarketing__MQLRecords__r$TEMarketing__MQL_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

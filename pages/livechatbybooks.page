@@ -1,0 +1,1297 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="LiveAgentChatByBooksCTRL">
+<apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/jquery.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/chasitor.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/LiveAgentChatWindow.js')}"/> 
+ 
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-global-en.css')}" 
+       title="default" media="all"/>
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/standardChatWindow.css')}" 
+       title="default" media="all"/>
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/vf.css')}" title="default" 
+       media="all"/>
+    
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--
+ <meta name="viewport" content = "width = device-width, initial-scale = 2.3, user-scalable = no" />
+<meta name="viewport" content = "width = device-width, initial-scale = 2.3, minimum-scale = 1, maximum-scale = 5" />
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    -->
+<meta name="viewport" content="width=device-width,  maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, height=device-height, target-densitydpi=device-dpi" />
+<!-- <script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-2fc7f9a1fc12037dd266657aafe0109cba564dc7-staging.js"></script> -->
+<script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-2fc7f9a1fc12037dd266657aafe0109cba564dc7.js"></script> <!-- Js Added for Page Tracking -->
+<!-- Live Chat Phase 2 -START -->
+    <script type="text/javascript">
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+              
+            } else {
+              $('body').addClass('deskChatWindow');
+            }
+    </script>
+    <script type="text/javascript">        
+        function sendNotification() {
+
+            var QPosition = j$('.liveAgentQueuePosition').html();
+            if(QPosition == 2){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.LiveAgentChatByBooksCTRL.sendRushHourNotification}', 
+                    function(result, event){
+                        
+                    },  
+                     {escape: true}              
+                );
+            }
+        }
+    </script>
+    
+    <script type="text/javascript">
+    
+    function insertCase() {
+        var mobileNo  = j$("#mobileNo").val();
+        var comments = j$("#comments").val();
+        
+        if(mobileNo == '')
+            document.getElementById("validateMobileNo").style.display = "inherit";        
+        else
+            document.getElementById("validateMobileNo").style.display = "none";              
+          
+        if(comments == '')
+           document.getElementById("validateComments").style.display = "inherit"; 
+        else
+            document.getElementById("validateComments").style.display = "none";         
+        
+        
+        if(mobileNo != '' && comments != ''){
+        document.getElementById('submitButton').disabled=true;
+        document.getElementById('submitButton').value='{!mapHTMLTranslations['livechat-chat-Saving']}';
+        
+        var vistorInfo = getCookie('vistorInfo');
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.LiveAgentChatByBooksCTRL.insertCase}', mobileNo, comments, {!CCMessage}, vistorInfo,
+            function(result, event){
+                console.log(result);
+                                    
+                alert('{!mapHTMLTranslations['livechat-chat-popup']}');
+                                
+                j$('.liveAgentCancelButton').click();
+            }, 
+             {escape: true}
+        );
+        }
+    }
+    
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    </script>
+
+    <style type = "text/css">    
+        .white_content {
+          display: none;
+          position: absolute;
+          top: -23%;
+          left: 0%;
+          width: 100%;
+          height: 260px;
+          padding: 16px;
+          border: 1px solid orange;
+          background-color: white;
+          z-index: 1002;
+          overflow: auto;
+        }
+        .divMobileNoLabel {
+            position: absolute;
+            left: 5%;
+            top: 20%;
+            font-size:10pt;            
+        }
+        .divMobileNoText {
+            position: absolute;
+            left: 36%;
+            top: 20%;
+        }
+        .divCommentLabel {
+            position: absolute;
+            left: 5%;
+            top: 42%;
+            font-size:10pt;
+        }
+        .divCommentText {
+            position: absolute;
+            left: 36%;
+            top: 36%;
+        }
+        .divSubmit {     
+            position: absolute;
+            left: 31%;
+            top: 73%;
+        }
+        .divCancel {
+            position: absolute;
+            left: 54%;
+            top: 73%;
+        }
+        .callbackSubmit {
+            background-color: #0066a1;
+            border: none;
+            padding: 5px 5px;
+            color: #fff;
+            font-size: 2em;
+            border-radius: 3px;
+            cursor:pointer;
+        }
+        .callbackCancel {
+            background-color: #0066a1;
+            border: none;
+            padding: 5px 10px;
+            color: #fff;
+            font-size: 2em;
+            border-radius: 3px;
+            cursor:pointer;    
+        }
+        .errorMsg{
+            display:none; 
+            text-align: left;
+            color:red;
+            font-size:10px;
+        }
+        a.one:link {
+            font-size:130%;
+            color:#0066a1; 
+            position: absolute;
+            left: 75%;    
+        }
+        a.one:hover {
+            text-decoration:underline;
+            color:#0066a1;
+            font-size:150%;
+        }
+    
+    </style> 
+    <!-- Live Chat Phase 2 END -->
+    <!-- Add custom CSS here -->
+    <style>
+         input, textarea, select   {
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:16px !important;
+        }
+       
+        input[type="text"]{
+          font-size: inherit;
+        }
+        #logo { 
+            z-index: 999999;
+            display: inline;
+            left: 47.5%;
+            position: relative;
+            top: -9px;
+        }
+        .deskChatWindow #liveAgentChatFileTransfer {
+        z-index: 20 !important;
+        position: absolute !important;
+        width: 100% !important;
+        bottom: 59px !important;
+        }
+        .deskChatWindow .liveAgentFileSendButton {
+        bottom: 8px;
+        right: 102px;
+        width: 98px;
+        color: white;
+        background: purple;
+        padding: 10px 0px;
+        height: 28px;
+        line-height: 10px;
+        border-radius: 4px;
+        margin-right: 5px;
+        }
+        .deskChatWindow .liveAgentFileCancelButton {
+        bottom: 8px;
+        right: 0px !important;
+        width: 98px;
+        color: white;
+        background: purple;
+        padding: 10px 0px;
+        height: 28px;
+        line-height: 10px;
+        border-radius: 4px;
+        margin-right: 5px;
+        position: absolute;
+        left: auto !important;
+        }
+        
+        #oo_tab div { 
+            background-image: url({!IF(VisitorLocaleLang = 'CHINESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-chinese.png'),
+                                IF(VisitorLocaleLang = 'JAPANESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-japanese.png'),
+                                URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-english.png')))}); 
+            } 
+        #oo_tab span { 
+            background: url({!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_tab_icon.gif')}) no-repeat; 
+        }
+         
+        #saveTranscript{
+            position:relative;
+            float:left;
+        }
+    
+        #chatControls{
+            position:relative;
+            float:right; 
+            left:10px;
+        }
+        #liveAgentChatLog{
+            width:451px;
+            margin:0 auto;    
+            padding:5px;
+            height:220px;
+            border:solid 1px #bababa;
+            position:relative;
+            top:-12px; 
+        }
+        .inputBox{
+            position: fixed;
+            bottom:0px;
+            left:12px;
+        }
+        .inputBox input{
+            position: absolute;
+            padding:5px;
+            border:solid 1px #bababa;
+            
+        }
+        
+        .liveAgentEndButton{    
+            background-color: #F44336;
+            border: solid 1px #F44336;
+            color:#fff;
+            padding:2px 5px;
+            margin-top:5px; 
+        }
+        .no_save .liveAgentSaveButton {
+            display: initial;
+        }
+        .liveAgentCancelButton {
+            background-color: #0066a1; 
+            color: #fff;  
+            font-size: 2em;
+        } 
+        .liveAgentSaveButton:hover, .liveAgentCancelButton:hover {
+            background-color: #3F51B5;
+        } 
+        .liveAgentSaveButton {
+            background-color: #2196F3;
+            color: #fff;
+            display: inline-block;
+            float: left;
+            margin: 5px 0px 5px 10px;
+            border-radius: 3px;
+            font-size: 1em;
+            padding: 2px 8px;
+        }
+        .liveAgentSaveButton, .liveAgentEndButton, .liveAgentCancelButton {
+            font-family: Arial;
+            line-height: normal;
+            text-align: center;
+            border-style: solid;
+            border-width: 0px;
+            cursor: pointer;
+        }
+         
+        .liveAgentSendButton {
+            background-color: #d6e342 !important;
+            display: inline-block;
+            padding: 0.3rem !important;
+            width: 66px;
+            font-size: 1em;
+            font-family: Arial;
+            border-radius: 3px;
+            border-width: 0px;
+            color: #fff;
+            margin: 5px 0px 5px 0px;
+            right: -67px;
+            top: 0px;
+            position: absolute;
+        } 
+        .deskChatWindow .liveAgentSendButton {
+            display: inline-block;
+            font-size: 1em;
+            font-family: Arial;
+            border-radius: 3px;
+            border-width: 0px;
+            position: absolute;
+            width: 20%;
+            padding: 14px !important;
+            margin: 0px 0px 5px 5px !important;
+            right: 5px !important;
+            top: 4px !important;
+        }
+        .modal{
+            padding:5px;
+        }
+        .liveAgentChatInput {
+            width: auto;
+            height: auto;
+            padding: 10px;
+            border: none;
+            background-color: #ffffff;
+        }
+        .deskChatWindow .liveAgentChatInput {
+             float: left;
+                vertical-align: middle;
+                width: 100% !important;
+                padding: 4px !important;
+                height: 50px !important;                
+        }
+        #chatInput {
+            right: 0;
+            bottom: 0px;
+            left: 0; 
+            margin-right: 67px;
+            position: fixed; 
+        } 
+        .deskChatWindow #chatInput {bottom:0px !important;margin-right:0px !important;z-index: 9999999999999;}
+        .deskChatWindow .file_transfer_standard #liveAgentChatFileTransfer {
+        z-index: 20;
+        position: absolute;
+        width: 100%;
+        bottom: 59px;
+        }
+        #liveAgentChatTextArea{
+            resize: none;
+            font-size: 1em;
+            width: 100%;
+            border: none;
+            font-family: Arial, Helvetica,sans-serif;
+            padding: 0px 10px;
+            outline: none;
+            display: block;
+            -webkit-line-break: after-white-space;
+        }
+        .deskChatWindow #liveAgentChatTextArea {
+            overflow-y: scroll !important;
+            overflow-wrap: break-word;
+            width: 78% !important;
+            height: 65px;
+            line-height: 16px !important;
+        }
+        #liveAgentClientChat textarea#liveAgentChatTextArea {
+            color: #222;
+            border: none;
+            resize: none;
+            width: 100%;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: #fff;
+            line-height: 18px;
+            -webkit-line-break: after-white-space;
+            word-wrap: break-word;
+            outline-style:none;
+            height: 18px;
+            display: block;
+            font-size: 13px;
+            padding: 0px;
+            margin: 0px;
+            font-family: Arial, Helvetica,sans-serif;
+        }
+        
+        .liveAgentState #transcript, .liveAgentStateEnded #transcript, .liveAgentStateStatusMessage #transcript {
+            bottom: 48px; 
+            overflow: auto !important;
+            word-wrap: break-word;
+            position: fixed;
+            right: 0px;
+            left: 0px;
+            background-color: #F7F8F8 !important;
+            border-bottom: solid #D1D8E0 2px;
+        }
+        .deskChatWindow .liveAgentState #transcript, .deskChatWindow .liveAgentStateEnded #transcript, .deskChatWindow .liveAgentStateStatusMessage #transcript {
+        height: auto !important;
+        bottom: 104px !important;
+        position:absolute !important;
+        padding-bottom: 0px !important;
+        }
+        #liveAgentChatLogText .operator .timestamp {
+            left: 10px;
+        }
+        #liveAgentChatLogText .timestamp {
+            display: inline-block;
+            font-size: 0.85em;
+            font-weight: 200;
+            color: #929A9D;
+            text-transform: uppercase;
+            padding: 8px 0px 8px 0px;
+            position: absolute;
+            bottom: -20px;
+        }
+        
+        #liveAgentChatLogText span {
+            text-align: left;
+        }
+        
+        #liveAgentChatLogText .operator {
+            float: left;
+            padding: 8px 10px 0px 10px;
+        }
+        
+        #liveAgentChatLogText .operator, #liveAgentChatLogText .client, #liveAgentChatLogText .system {
+            margin-bottom: 10px;
+            clear: both;
+            position: relative;
+            width: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        } 
+         
+        .liveAgentState #transcript, .liveAgentStateEnded #transcript, .liveAgentStateStatusMessage #transcript {
+            bottom: 48px;
+            overflow: hidden;
+            word-wrap: break-word;
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            background-color: #F7F8F8 !important;
+            border-bottom: solid #D1D8E0 2px;
+        }
+          
+        #liveAgentClientChat #liveAgentChatLog {
+            width: auto;
+            height: auto;
+            border: none;
+        }
+        #liveAgentChatLog {
+            border: 1px solid #000;
+            width: 100%;
+            height: 365px;
+        }
+        
+        .liveAgentState #chatTranscript, .liveAgentStateStatusMessage #chatTranscript, .liveAgentStateEnded #chatTranscript {
+            position: absolute;
+            overflow-y: auto;
+            overflow-x: hidden;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        
+            .liveAgentStateWaiting #wait_marketing {
+                display: table;
+            }
+            #wait_marketing {
+                display: none;
+            }
+            #wait_marketing {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                vertical-align: middle;
+                text-align: center;
+            }
+            table {
+                line-height: 21px;
+                font-size: 75%;
+            }
+         .spinner {
+                margin: 90px auto 0;
+                width: 70px;
+                text-align: center;
+            }       
+         /* display waitingMessage while waiting for agent to answer */
+         .liveAgentStateWaiting .waiting_div {
+                display: block; 
+                position: absolute; 
+                width: 400px;
+                height: 200px; 
+                top:50%;
+                left:50%;
+                margin-left:-200px;/* half width*/
+                margin-top:-100px;/* half height*/
+            }  
+            .deskChatWindow .liveAgentStateWaiting .waiting_div {
+                margin-top: 10% !important;
+                top:20px !important;
+            }
+         .logo_div {
+                display: block; 
+                position: absolute; 
+                width: 400px;
+                height: 200px; 
+                top:50%;
+                left:50%;
+                margin-left:-200px;/* half width*/
+                margin-top:-100px;/* half height*/
+            }       
+        
+            #liveAgentChatLogText .name {
+                display: block !important;
+                white-space: pre;
+            }
+        .header_logo{ 
+            position: relative;
+            width: 130%;
+            height: 200%;
+            left: 50%;
+            top: -23px;
+        }
+        .noagent_logo{ 
+            position: relative; 
+        }
+        
+        #logo_top {
+            text-indent: -5000px;
+            z-index: 999999;
+            display: block;
+            width: 147px;
+            height: 77px;
+            float: left;
+            background: url("{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}") 50% 50% no-repeat;
+            margin-left: 15px;
+            position: absolute;
+            top: -1px;
+        }
+        /* vignesh */
+         @media screen and (-webkit-min-device-pixel-ratio: 0) {
+                select:focus, textarea:focus, input:focus {
+                        font-size: 16px;
+                    }
+                    iframe{bottom:0px !important;}
+        }
+         iframe{bottom:0px !important;}
+        #liveAgentChatLogText .messageText {
+            color: #fff;
+        }
+         #liveAgentChatLogText .operator .bubble {           
+            background-color:#E98501;
+        }
+        #liveAgentChatLogText .client .bubble {
+            background-color: #8CC34B;
+        }
+        #liveAgentChatLogText .bubble {
+            position: relative;
+            display: -moz-inline-stack;
+            display: inline-block;
+            margin: 0.2em 0em 0.4em 0em;
+            padding: 8px 10px 8px 10px;
+            border: 0px solid #E2E8ED;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            max-width: 90%;
+        }
+        .access-MyResources-Header{
+        top:76px !important;
+        }
+        .livechat-titlebar{
+        height:12% !important;
+        }
+        #keystroke_text{ font-size: 12px; }
+        .livechat-no-agent-button {
+            /* padding-left: 550px; */
+            margin: 0 auto;
+            float: none;
+        }
+        .btn-block-11{float:center !important}
+        #toolbar1{height: 45px;
+         background-color: #0066a1 !important;
+         }
+         .deskChatWindow #toolbar1 {
+         height: 90px;
+         position:relative;
+         float:left;
+         width:100%;
+         z-index:9;
+         }
+         #window_outer { background-color: #F7F8F8; }
+        
+         @media only screen and (max-width:649px){
+          #chatInput{
+          /* bottom: 93px !important; */
+          /* bottom: 140px !important; */
+        /* position:fixed !important; */
+            }
+            / * #window_inner{
+            top:45px !important;
+            } */
+            .liveAgentState #transcript{
+            bottom:143px;
+            }
+             .liveAgentState #transcript{margin-bottom: 0px;bottom:144px; }
+         }
+         @media screen and (max-width:649px) and (orientation:landscape){ 
+          #chatInput{
+           /*bottom: 92px !important;*/
+           /*bottom: 140px !important;*/
+            }
+             .liveAgentState #transcript{background-color: #ededee !important;margin-bottom: 0px;bottom:168px; }
+         }
+         @media only screen and (max-width:767px){
+         .livechat-form-wrapper {
+            margin-left: 3% !important;
+            }
+         }
+         @media only screen and (max-width:767px){
+         #toolbar{
+         background-color: #0066a1 !important;
+         width:100%;
+         height:90px !important;
+         }
+         .liveAgentState #transcript{bottom:120px !important;}
+        
+         #header_text { font: normal 14px Arial, Helvetica, sans-serif !important; }
+         /* #window_inner{ top: 90px !important; bottom: 46px !important} */
+        
+         #liveAgentChatLogText .operator .bubble {           
+            color:#E98501;
+        }
+        #liveAgentChatLogText .client .bubble {
+            background-color: #8CC34B;
+        }
+         #liveAgentChatLogText .messageText {
+            color: white;
+            font-weight: bold;
+        }
+        #window_outer{
+            background-color: #F7F8F8;
+        }
+        div#oo_tab {
+                display: none;
+            }  
+            #chatInput{
+           bottom: 0px ;
+            }
+            .livechat-no-agent-header-text{padding-top:7px;}
+            .liveAgentSendButton{
+                    width: 66px;
+                padding: 14px !important;
+                margin: 0px 0px 5px 0px !important;
+                }
+                .liveAgentChatInput {
+                padding:15px;
+                }
+                .liveAgentStateWaiting .waiting_div{
+                top:65% !important;
+                margin-left:-200px !important;
+                width:379 !important;
+                  }
+          @media screen and (max-width:767px) and (orientation:landscape){ 
+          #chatInput{
+            /*bottom:93px !important;*/
+            }
+            #toolbar{
+         background-color: #0066a1 !important;
+         width:100%;
+         height:74px !important;
+         }
+          /* #window_inner{ top: 73px !important;} */
+          #liveAgentChatLogText .operator .bubble {           
+            color:#E98501;
+        }
+        #liveAgentChatLogText .client .bubble {
+            background-color: #8CC34B;
+        }
+        #liveAgentChatLogText .messageText {
+            color: white;
+            font-weight: bold;
+        }
+        #window_outer{
+            background-color: #ededee;
+        }
+        div#oo_tab {
+                display: none;
+            }  
+            .liveAgentStateWaiting .waiting_div{
+            margin-top:0px !important;
+            height:250px !important;
+            top:0 !important;
+            }
+            .liveAgentSendButton{
+                    width: 66px;
+                padding: 16px !important;
+                margin: 3px 0px 5px 0px !important;
+                }
+                .liveAgentChatInput {
+                padding:17px;
+                }
+           .livechat-no-agent-main-header-text{
+           padding-top:0px;
+              }
+              .livechat-no-agent-form-wrapper{padding-top:85px;}
+           
+        }
+         @media screen and (min-width:768px) and (max-width:991px) {
+        
+        }
+        @media screen and (min-width:992px) and (max-width:1199px) {
+        }
+        /* vignesh */
+    </style>
+       <script>
+        document.title = "Chat Window";
+        
+        var j$ = jQuery.noConflict();
+        j$( document ).ready(function() {
+            j$.ajaxSetup ({
+                // Disable caching of AJAX responses */
+                cache: false
+            });
+           
+            
+            j$('#clientChatWindow:j_id1:j_id2:j_id20').click(function() {
+                 closeWindow();
+            });
+            j$('.liveAgentEndButton').click(function() {
+                //Prabhanjan: Mar-9
+                //window.location.href='https://crm.te.com/livechat/apex/livechatbybooks_clone'
+                  j$('#ChatEndedDiv').show();  
+                  _satellite.track("chatEnd"); // Added for Tracking
+                  initialisewindowclose();
+                //  j$('#logo').hide();
+            });
+            j$('.liveAgentChatElement').click(function() {
+                j$('#keystroke_text').hide();  
+                //  j$('#logo').hide();
+                //document.getElementById('toolbar').className = 'toolbar1';
+                //$('#toolbar').removeClass('MyClass');
+                //document.getElementById("toolbar").remove();
+                //document.getElementById('toolbar').id = 'toolbar1';
+                
+                var element =  document.getElementById('toolbar'); //adding as part of Sprint 3 Fix - DCT ICT Project
+                    if (typeof(element) != 'undefined' && element != null)
+                    {
+                      document.getElementById('toolbar').id = 'toolbar1'; 
+                    }  
+                    
+            });
+            
+            // Prabhanjan: case:00901054: adding winheight variable
+            var winheight = 100000;
+             j$('.liveAgentChatElement > #liveAgentChatLogText').on("DOMSubtreeModified propertychange", function() { 
+              //alert("liveAgentChatLogText");
+               j$('div').animate({scrollTop:winheight}, 'fast');
+              
+             });
+            /* $(window).scroll(function(){
+            alert("scroll");
+            var h = 45;    
+                if($(window).scrollTop() < 200){
+                $(".header").css({
+            'paddingTop': h-$(window).scrollTop() + "px",
+            'paddingBottom': h-$(window).scrollTop() + "px"
+        });
+    }
+});*/
+            
+            
+           j$('.liveAgentChatElement').on("DOMSubtreeModified propertychange", function() {
+               //alert("after DOM");
+                // Prabhanjan: case:00901054 : Adding manual scrolldown functioanlity.
+               /* j$('.liveAgentChatElement > #liveAgentChatLogText').on("DOMSubtreeModified propertychange", function() { 
+                //alert("before animate");              
+                    j$('div').animate({scrollTop:winheight}, 'fast');
+                    // winheight = winheight+25;  //moving down by 25 px
+                }); */
+                
+                if(j$(".liveAgentChatElement > #liveAgentChatLogText > span.system:last-child").length > 0){
+                     
+                    var sysmsg = j$('.liveAgentChatElement > #liveAgentChatLogText > span.system:last-child').html();
+                    if(sysmsg.includes("The agent has ended the chat.")){ 
+                        j$('#ChatEndedDiv').show();  
+                        _satellite.track("chatEnd"); // Code Added for Tracking
+                        initialisewindowclose();
+                    }  
+                }
+            });
+            
+            
+            j$('.liveAgentQueuePosition').on("DOMSubtreeModified propertychange", function() {
+              // do something after the div content has changed
+               j$('#queueNumber0').hide();
+                var Q_no_HTML = j$('.liveAgentQueuePosition').html();
+                console.log(j$('.liveAgentQueuePosition').html());
+                var Q_no_Int = parseInt(Q_no_HTML);
+                //alert(Q_no_Int);
+                if(Q_no_Int==0 || Q_no_HTML==''){
+                    j$('#queueNumber0').show();
+                    <!-- Live agent phase - 2 START -->
+                    document.getElementById("FinalAvgTime").innerHTML = 0;
+                }else{                    
+                    var WaitingTime = document.getElementById("AvgWaitingTime").value;            
+                    document.getElementById("FinalAvgTime").innerHTML = Q_no_Int * WaitingTime ;
+                    <!-- Live agent phase - 2 END -->
+                }
+            });
+             
+            j$('.liveAgentAlert').on("DOMSubtreeModified propertychange", function() {
+              // do something after the div content has changed
+                window.focus();
+               j$('#noAgentMsg').show(); 
+                initialisewindowclose();
+                //  j$('#logo').hide();
+            }); 
+            liveagent.addEventListener(liveagent.chasitor.Events.CHAT_ESTABLISHED, Chatstarted);
+            
+            j$('.liveAgentCancelButton').click(function(){ 
+                setTimeout(function(){  closeWindow(); }, 2000);
+            });
+             
+            function initialisewindowclose(){
+                // Prabhanjan: use this variable in case the close time needs to be changed.
+                // Prabhanjan: case:00901054 : changing the timer to 60 seconds from 20 seconds.
+                var countdown = 60;
+                j$('.windowcounter').html(countdown); 
+                var myVar = setInterval(function(){myTimer(countdown);countdown--; },1000);
+            }
+    
+            function myTimer(countdown) {
+                
+                if (countdown >= 0) {
+                     // Prabhanjan: Display 'countdown' wherever you want to display it.
+                    // Prabhanjan: commenting it case:00901054
+                    // j$('.windowcounter').html(countdown); 
+                }
+               
+                if (countdown === 0) {
+                    if(confirm("Please Click 'OK' To Close The Window \n Or \n Click 'Cancel' To Stay On the Page.")) closeWindow(); 
+                    else return;
+                }
+                
+                j$('.windowcounter').html(countdown); 
+            }
+        });
+        
+        function Chatstarted() {
+        //Hide all  the messages when chatsterted. 
+            j$('#waitingMessage').hide(); 
+        }
+        function callSaveChat(){ 
+            j$('.liveAgentSaveButton').trigger( "click" );
+            
+            setTimeout(function(){  closeWindow(); }, 3000);
+        }
+    
+        function refreshVar() {
+            
+        }
+        function closeWindow(){
+            
+            parent.postMessage("closeLiveChatOverlay","http://www-stage.te.com");
+            parent.postMessage("closeLiveChatOverlay","http://www-qa.te.com");
+            parent.postMessage("closeLiveChatOverlay","http://www.te.com");
+            window.close();
+        }
+     
+    
+    /*
+        function displayQueueMessage(){
+            queueNumberInt = 0;
+            queueNumberRaw = j$('.liveAgentQueuePosition').html();
+            queueNumberInt = parseInt(queueNumberRaw);    
+            // console.log(queueNumberRaw)
+            // console.log(queueNumberInt);
+            
+            if (queueNumberInt > 0) {
+                j$('#queueMessage').show();
+                // console.log('showed');
+            } else { 
+                j$('#queueMessage').hide(); 
+                //console.log('in else loop'); 
+            } 
+        }
+        
+       var Int=setInterval(function() { displayQueueMessage(); },1000);  
+       */
+    </script>    
+     
+    <!-- The root element for the chat window. This element gets a CSS class dynamically applied
+to indicate the state of the chat window. Available states are:
+"liveAgentStateWaiting" - indicates that the chat has not yet been answered.
+"liveAgentState" - indicates that the chat is engaged
+"liveAgentStateStatusMessage" - indicates that a status message is being displayed to the
+user.
+"liveAgentStateEnded" - indicates that the chat has ended. -->
+    <!-- hiding logo based on Wendi's review comments
+    <div id="logo">
+        <img src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" style="height:6.5%; width:10%"/>
+    </div>
+    -->
+    <div id="oo_tab" class="oo_tab_right" tabindex="0">
+        <div>
+            <a></a><span></span>
+        </div>
+        <div class="screen_reader">Activate to launch comment card</div>
+    </div>
+    
+    <liveAgent:clientchat >
+        <!-- hiding logo based on Wendi's review comments
+        <div class="logo_div">
+            <apex:image url="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" 
+                       style="height:80%; width:80%" alt="Chat" title="Chat"/>
+        </div>
+        -->
+        
+        <div class="no_brand" id="liveAgentClientChatSettings">
+            <div class="liveAgentState" id="liveAgentClientChat">
+                <div id="window_outer">
+                    <div id="window_inner">
+                    <div id="toolbar">
+                                                           
+                        <div id="header_text">
+                            <span id="livechat-chat-connecting-header"><b>{!mapHTMLTranslations['livechat-chat-connecting-header']}...</b></span>
+                        </div> 
+                        <!--
+                        <div class="header_logo">
+                            <img src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" 
+                              style="height:50%; width:50%; left:50%"/>  
+                        </div> 
+                        -->  
+                        <!-- Keystroke Message added as part of JIRA user story: Nooreen-05-12-2016- also colors of button and message made as per website branding -->                     
+                        <div id="keystroke_text">                          
+                        <span id="keystroke-message"> {!mapHTMLTranslations['keystroke-message']} </span>                 
+                        </div> 
+                        <span id="chatControls">                                             
+                            <liveAgent:clientChatEndButton id="clientChatEndButton" label="{!mapHTMLTranslations['livechat-end-chat']}" />
+                        </span>
+                        <span id="saveTranscript">
+                            <liveAgent:clientChatSaveButton label="{!mapHTMLTranslations['livechat-save-chat']}"/>
+                        </span>
+                    </div>
+                        <div class="pod" id="transcript"> 
+                            <liveAgent:clientChatStatusMessage id="clientChatStatusMessage" reconnectingLabel="Please wait while we connect...!!!"/>
+                            <liveAgent:clientChatLog combineMessagesText="true" showTimeStamp="true"/>
+                            <div id="waitingMessage" class='waiting_div'>  
+                                <table cellpadding="0" cellspacing="0" id="wait_marketing">
+                                    <tbody> 
+                                        <tr>
+                                            <td>
+                                                <div id="wait_text">
+                                                    <strong>
+                                                        <p id="livechat-chat-connecting-wait">
+                                                            <!-- Commenting it as per Wendi's feedback
+                                                            <img src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" style="height:80%; width:80%"/>
+                                                            -->
+                                                            
+                                                         {!mapHTMLTranslations['livechat-chat-connecting-wait']}
+                                                        </p>
+                                                        
+                                                        <!-- Live Chat Phase 2 -START -->     
+                                                        <input type="hidden" value="{!AvgWaitingTime}" id="AvgWaitingTime"/>
+                                                        <apex:outputPanel rendered="{!!CCMessage}">                                                        
+                                                            {!mapHTMLTranslations['livechat-chat-average-wait-time']}                                                        
+                                                                <span id="FinalAvgTime"/> <br /> 
+                                                              
+                                                        </apex:outputPanel>  
+                                                        <!-- Live Chat Phase 2 -END -->  
+                                                          
+                                                        <p >
+                                                            <span id="livechat-chat-queue1">{!mapHTMLTranslations['livechat-chat-queue1']} &nbsp; &nbsp;</span><span id="queueNumber0">0</span> <liveAgent:clientChatQueuePosition /> {!mapHTMLTranslations['livechat-chat-queue2']}</p>
+                                                        <br/>
+                                                        <apex:outputPanel rendered="{!IF(AND(!CCMessage,nondct), TRUE, FALSE)}">
+                                                        <p id="livechat-chat-dont-wait">{!mapHTMLTranslations['livechat-chat-dont-wait']}
+                                                            <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-chat-support-site']} </a>. </p>
+                                                        </apex:outputPanel>
+                                                        
+                                                        <!-- Added by Rajesh --> 
+                                                        <apex:outputPanel rendered="{!IF(AND(!CCMessage,dct), TRUE, FALSE)}">
+                                                        <p id="livechat-chat-dont-wait">{!mapHTMLTranslations['livechat-chat-dont-wait']}
+                                                            <a href="{!mapHTMLTranslations['contact-support-ict']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-chat-support-site']} </a>. </p>
+                                                        </apex:outputPanel>
+                                                    </strong>
+                                                </div>
+                                                <!--[if IE 8]><img src="https://140.la3-c1cs-chi.salesforceliveagent.com/content/images/progress_bar.gif" alt="Progress Bar" /><![endif]-->
+                                                <div class="spinner">
+                                                    <div class="bounce1"></div>
+                                                    <div class="bounce2"></div>
+                                                    <div class="bounce3"></div>
+                                                </div> 
+                                                <span id="clientChatWindow:j_id1:j_id2:j_id20">
+                                                    <liveAgent:clientChatCancelButton label="Cancel Chat" />
+                                                </span>
+                                                <!-- Live Chat Phase 2 START --> 
+                                                                                                
+                                                    <a id="CallBackLink1" href="javascript:void(0)" class="one" onclick="document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{!mapHTMLTranslations['livechat-chat-callback']}</a>
+                                                
+                                                <div id="light" class="white_content">
+                                                    <apex:outputPanel styleClass="popupBackground" layout="block"/>
+                                                
+                                                    <form>    
+                                                                                              
+                                                        <div class="divMobileNoLabel">{!mapHTMLTranslations['livechat-chat-callbacknumber']}</div>
+                                                        <div class="divMobileNoText">
+                                                        <input id="mobileNo" maxlength="40" size="15" onkeypress="return isNumber(event)" /><br/>
+                                                        <span id="validateMobileNo" class= "errorMsg" > Please Enter Mobile No.</span>
+                                                        </div>
+                                                        
+                                                        <div class="divCommentLabel">{!mapHTMLTranslations['livechat-chat-callbackcomment']}</div>
+                                                        <div class="divCommentText"><textarea style="overflow-x:hidden;Width:220px; resize: none;" id="comments" rows="4" ></textarea><br/>
+
+                                                        <span id="validateComments" class= "errorMsg" > Please Enter your Queries.</span>
+                                                        </div>
+                                                        
+                                                        <div class="divSubmit"><input id = "submitButton" class="callbackSubmit" type="button" value="{!mapHTMLTranslations['livechat-chat-submit']}" onclick="insertCase()" /></div>
+                                                        
+                                                        <div class="divCancel"><input class="callbackCancel" type="button" value="{!mapHTMLTranslations['livechat-chat-cancel']}" onclick="document.getElementById('light').style.display='none'" /></div>
+                                                        
+                                                    </form>
+                                                </div>
+                                                <!-- Live Chat Phase 2 END -->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table> 
+                            </div>  
+                        </div> 
+                    </div>
+                </div>
+                <div id="chatInput" class="inputBox">
+                    <liveAgent:clientChatInput useMultiline="true"/> 
+                    <liveAgent:clientChatSendButton label="Send"/>  
+                    <liveAgent:clientChatFileTransfer />
+                </div>
+            </div>
+        </div> 
+        
+        
+        <div class="TE_fileTransfer">
+        </div>
+        
+        <liveAgent:clientChatAlertMessage id="clientChatAlertMessage" agentsUnavailableLabel="No Agent Is Available ...!!!" />
+         
+    </liveAgent:clientchat>
+    
+        
+    <div class="te-page">
+        <div id="noAgentMsg" class="livechat-no-agent-form-wrapper" style="display:none">
+            <div id="logo_top"/>
+            <!-- hiding it based on testing comments
+            <div class="noagent_logo">
+                <img src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" style="height:40%; width:40%"/>
+                <br/>
+            </div> 
+-->
+            <div class="livechat-no-agent-main-header-text" id="livechat-no-agent-main-header-tex">{!mapHTMLTranslations['livechat-no-agent-main-header-tex']}</div>
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text">{!mapHTMLTranslations['livechat-no-agent-header-text']}</div>
+            
+            <apex:outputPanel rendered="{!CCMessage}">
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-2">{!mapHTMLTranslations['livechat-no-agent-header-text-2']}</div>
+            </apex:outputPanel> 
+                          
+            <apex:outputPanel rendered="{!IF(AND(!CCMessage,nondct), TRUE, FALSE)}">
+             
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-3">{!mapHTMLTranslations['livechat-no-agent-header-text-3']} or <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div>                           
+            <div class="livechat-no-agent-header-text" id="livechat-windowclose">
+                 <!-- Prabhanjan: commenting it case:00901054
+                <p> This window will be automatically closed in <span class="windowcounter"></span> seconds...</p>
+                -->
+                <span class="windowcounter" style="display:none"></span>
+            </div>
+            
+            <div class="livechat-no-agent-button-wrapper">
+                <div class="livechat-no-agent-button">
+                    <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank" class="btn-block-11 btn-clr-13 login-button"> {!mapHTMLTranslations['SENDEMAILREQUEST']} <i role="presentation"> > </i> </a>
+                </div>
+            </div>
+            </apex:outputPanel> 
+            <!-- Added by Rajesh -->
+            <apex:outputPanel rendered="{!IF(AND(!CCMessage,dct), TRUE, FALSE)}">    
+             
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-3">{!mapHTMLTranslations['livechat-no-agent-header-text-3']} or <a href="{!mapHTMLTranslations['contact-support-ict']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div>                           
+            <div class="livechat-no-agent-header-text" id="livechat-windowclose">
+                 <!-- Prabhanjan: commenting it case:00901054
+                <p> This window will be automatically closed in <span class="windowcounter"></span> seconds...</p>
+                -->
+                <span class="windowcounter" style="display:none"></span>
+            </div>
+            
+            <div class="livechat-no-agent-button-wrapper">
+                <div class="livechat-no-agent-button">
+                    <a href="{!mapHTMLTranslations['contact-support-ict']}" onclick="closeWindow();" target="_blank" class="btn-block-11 btn-clr-13 login-button"> {!mapHTMLTranslations['SENDEMAILREQUEST']} <i role="presentation"> > </i> </a>
+                </div>
+            </div>
+            </apex:outputPanel> 
+            
+            
+            
+        </div>
+         
+        <div id="ChatEndedDiv" class="livechat-no-agent-form-wrapper" style="display:none">
+            <div id="logo_top"/>
+            <!-- hiding it based on testing comments
+            <div class="noagent_logo">
+                <img src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}" style="height:40%; width:40%"/>
+                <br/>
+            </div> 
+-->
+            <div class="livechat-no-agent-main-header-text" id="livechat-chat-ended"> {!mapHTMLTranslations['livechat-chat-ended']}</div>
+            <div class="livechat-no-agent-header-text" id="livechat-chat-ended-header-text">{!mapHTMLTranslations['livechat-chat-ended-header-text']}</div>
+             <!-- Prabhanjan: commenting it case:00901054
+            <div class="livechat-no-agent-header-text" id="livechat-windowclose">
+                 
+                <p> This window will be automatically closed in <span id="windowcounter2" class="windowcounter">20</span> seconds...</p>
+                
+            </div>
+            -->
+            
+             <!-- Srinath: commented 00901054 UAT bug 08/04/2016
+             <div class="livechat-no-agent-header-text" id="livechat-chat-ended-header-text-2"> <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div> -->
+             
+                <!-- Prabhanjan: commenting it case:00901054 
+                <div class="livechat-no-agent-button">
+                    <a href="#" onclick="callSaveChat();" class="btn-block-11 btn-clr-13 login-button" id="livechat-chat-ended-save-close">{!mapHTMLTranslations['livechat-chat-ended-save-close']} </a>
+                </div>
+             -->
+             <br/>
+                <div class="livechat-no-agent-button" >
+                    <a href="#" onclick="closeWindow();" class="btn-block-11 btn-clr-13 login-button" id="livechat-chat-ended-close-win">  {!mapHTMLTranslations['livechat-chat-ended-close-win']}</a>
+                </div>
+        </div>
+    </div>
+ 
+    
+    <script type="text/javascript">
+    document.title = "Chat Window";
+    
+    (function() {
+        var d=document,
+        h=d.getElementsByTagName('head')[0],
+        s=d.createElement('script');
+        s.type='text/javascript';
+        s.async=true;
+        s.src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_optimized.js')}";
+        s.charset='windows-1252'
+        h.appendChild(s);
+    }());
+    </script> 
+    <script>
+        j$(document).ready(function(){
+        var SetLcalHeight = j$(window).height();
+        localStorage.setItem("InitialMobileHeight", SetLcalHeight);
+            j$(window).on('resize', function(){
+                var ResizeLcalHeight = j$(window).height();
+                var GetLcalHeight = localStorage.getItem("InitialMobileHeight");
+                var ctwidth = j$(window).width();
+                if ((ctwidth <= 767  )){
+                var deviceAgent = navigator.userAgent.toLowerCase();
+                        var agentID = deviceAgent.match(/(iPad|iPhone|iPod)/i);
+                        if (agentID) {     
+                             
+                        }
+                        else
+                        {
+                             if(ResizeLcalHeight < GetLcalHeight){
+                                j$(".liveAgentSendButton").addClass("TempSendBtn");
+                                j$('#chatInput').delay( 1500 ).css('bottom','55px');
+                             }
+                             else if (ResizeLcalHeight = GetLcalHeight) {
+                                if(j$('.liveAgentSendButton').hasClass("TempSendBtn")){
+                                 j$('.liveAgentSendButton').removeClass("TempSendBtn");
+                                 j$('#chatInput').css('bottom','0px');
+                                }
+                                else{
+                                }
+                             }
+                             else {
+                             
+                             }
+                        }
+                    
+                    }
+                });
+            j$(".liveAgentSendButton").on('click',function() {
+                var ctwidth = j$(window).width();
+                if ((ctwidth <= 767  )){
+                
+                var deviceAgent = navigator.userAgent.toLowerCase();
+                        var agentID = deviceAgent.match(/(iPad|iPhone|iPod)/i);
+                        if (agentID) {     
+                             
+                        }
+                        else
+                        {
+                           if(j$(this).hasClass("TempSendBtn")){
+                             j$(this).removeClass("TempSendBtn");
+                             j$('#chatInput').css('bottom','0px');
+                            }
+                            else{
+                            }
+                        }
+                    
+                    }
+                    
+            }); 
+                j$('#liveAgentChatTextArea').on('click',function() {
+                var ctwidth = j$(window).width();
+                if ((ctwidth <= 767  )){
+                
+                var deviceAgent = navigator.userAgent.toLowerCase();
+                        var agentID = deviceAgent.match(/(iPad|iPhone|iPod)/i);
+                        if (agentID) {     
+                               
+                        }
+                        else
+                        {
+                           if(!j$(".liveAgentSendButton").hasClass("TempSendBtn")){
+                             j$(".liveAgentSendButton").addClass("TempSendBtn");
+                             j$('#chatInput').delay( 1500 ).css('bottom','55px');
+                            }
+                            else{
+                            
+                            }
+                        }
+                
+                    }
+                    
+            });
+            // Screen
+            j$("#window_outer").on('click',function() {
+                var ctwidth = j$(window).width();
+                if ((ctwidth <= 767  )){
+                var deviceAgent = navigator.userAgent.toLowerCase();
+                        var agentID = deviceAgent.match(/(iPad|iPhone|iPod)/i);
+                        if (agentID) {     
+                             
+                        }
+                        else
+                        {
+                           if(j$('.liveAgentSendButton').hasClass("TempSendBtn")){
+                             j$('.liveAgentSendButton').removeClass("TempSendBtn");
+                             j$('#chatInput').css('bottom','0px');
+                            }
+                            else{
+                            }
+                        }
+                    
+                    }
+                    
+            });
+                
+        });
+        
+       function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        
+        if (getCookie('vistorInfo') == '') j$('#CallBackLink1').hide();
+        if(getCookie('vistorInfo') != '') setTimeout(sendNotification, 5000);
+        
+     </script>
+</apex:page>

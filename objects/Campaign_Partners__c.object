@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Marketing Desktop Component - 
+Partners associated with a Campaign. Marketing Extension to Partner will be a 1-M relation.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Amount_Budget_Impact__c</fullName>
+        <description>This formula field is used to auto-compute the roll-up Budgeted Co-Marketing Funds custom field at the Campaign level. If Contribution has been made to Partner, then a +ve value will be added to the budget. If amount is Received From partner, a -ve value will be added o the budget. If no option has been selected in the Co-Marketing Fund picklist, amount will have no impact on the budget.</description>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL( Partner_Involvement__c , &apos;Contributed To&apos;), 
+Funding_Amount__c , 
+IF ( ISPICKVAL( Partner_Involvement__c , &apos;Received From&apos;), 
+Funding_Amount__c * -1, 0)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Amount Budget Impact</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Campaign__c</fullName>
+        <description>will be used with the Campaign Extension object is removed</description>
+        <externalId>false</externalId>
+        <label>Campaign</label>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipLabel>Campaign Partner</relationshipLabel>
+        <relationshipName>Partners</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Funding_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Budgeted Amount</label>
+        <precision>15</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Involvement_Details__c</fullName>
+        <description>Details of partner involvement in the Campaign</description>
+        <externalId>false</externalId>
+        <label>Involvement Details</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Partner_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Partner Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Campaign Partners</relationshipLabel>
+        <relationshipName>Partners</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Partner_Involvement__c</fullName>
+        <description>Partner involvement in the Campaign i.e. if the amount is to be received from or contributed to the Partner. Budgeted Co-Marketing Fund field on Campaign object will be computed accordingly.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select if the amount is being Contributed To or Received From the Partner</inlineHelpText>
+        <label>Co-Marketing Funds</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Contributed To</fullName>
+                    <default>false</default>
+                    <label>Contributed To</label>
+                </value>
+                <value>
+                    <fullName>Received From</fullName>
+                    <default>false</default>
+                    <label>Received From</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Partner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Partner account reference</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Partner associated with the Campaign</inlineHelpText>
+        <label>Partner</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Campaign Partner On</relationshipLabel>
+        <relationshipName>Partners</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Campaign Partner</label>
+    <nameField>
+        <displayFormat>PTNR-{0000}</displayFormat>
+        <label>Ref. #</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Campaign Partners</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

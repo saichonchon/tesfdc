@@ -1,0 +1,29 @@
+<!--
+/**********************************************************************************************************************************************
+*******
+Name: ViewOpportunityPartPage
+Copyright © 2014 TE Connectivity | Salesforce Instance : C2S Org
+===============================================================================================================================================
+
+Purpose: This page displays the  detail page of APL Opportunity Part information.
+         This page overrides the standard view button of Opportunity_Parts__c object.
+===============================================================================================================================================
+REQUIREMENT INFORMATION & DEVELOPMENT INFORMATION:                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+VERSION   AUTHOR              DATE          DETAIL                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ 1.0   Padmaja Dadi   12/22/2014    Visualforce Page                       
+***********************************************************************************************************************************************
+*****/
+-->
+<apex:page standardController="Opportunity_Part__c" extensions="ViewOpportunityPartController" action="{!Redirect}">
+ <apex:detail rendered="{!vNDROppPart}" inlineEdit="true" />  
+ <script>
+     var url = location.href;
+     var match = url.match(/inline=1/);
+    if (match != null) { 
+        var newUrl = url.replace(/inline=1/, '');
+        window.top.location=newUrl;
+    }
+</script>
+ </apex:page>

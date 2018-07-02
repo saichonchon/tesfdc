@@ -1,0 +1,49 @@
+<apex:page controller="MassChangeOwnerCase_CCPController" tabStyle="case" id="pid">
+    <!-- Modified By Ramakrishna Singara Start (05/26/2014)-->
+    <apex:includeScript value="/support/console/20.0/integration.js"/>
+    <script type="text/javascript">
+        function saveandclose(){
+            saverec();
+        }
+        function claseatb(){
+            sforce.console.getEnclosingTabId(closeSubtab);            
+        }
+        var closeSubtab = function closeSubtab(result) {
+            var tabId = result.id;
+            sforce.console.closeTab(tabId);
+        };
+        function saveandcloses(){            
+            if(document.getElementById('{!$Component.pid.fid.pbid.hid}').value == 'true'){
+                sforce.console.getEnclosingTabId(closeSubtabs);
+            }
+        }
+        var closeSubtabs = function closeSubtabs(result) {
+            var tabId = result.id;
+            sforce.console.closeTab(tabId);
+        };
+    </script>
+    <!-- Modified By Ramakrishna Singara End (05/26/2014)-->
+    <apex:form id="fid">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock id="pbid">
+            <!-- Modified By Ramakrishna Singara Start (05/26/2014)-->
+            <apex:inputhidden id="hid" value="{!hiddeninput}" />          
+            <apex:pageBlockButtons >  
+                <apex:commandButton value="Save" action="{!Save}" oncomplete="saveandcloses();" status="save" rerender="fid">             
+                    <apex:actionStatus startText="" stopText="" id="save"> 
+                       <apex:facet name="start" >    
+                           Processing... <img src="/apexpages/devmode/img/saveStatus.gif" /> 
+                       </apex:facet> 
+                    </apex:actionStatus>
+                </apex:commandButton>
+                <apex:commandButton value="Cancel" oncomplete="claseatb();" status="save" rerender="fid"/>
+            </apex:pageBlockButtons>          
+            <!-- Modified By Ramakrishna Singara End (05/26/2014)-->
+            <apex:pageBlockSection columns="1">                
+                <apex:inputField value="{!cRec.OwnerId}" required="false"/>                
+                <apex:inputField value="{!cRec.Inquiry_Type__c}"/>
+                <apex:inputField value="{!cRec.Other_Inquiry_Type__c}"/>                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Account$Owner</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account$BillingAddress</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$RTS_ID__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast__r$Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast__r$Date__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>List of Prospect Accounts with active opportunities to be groomed and sent to Steve Travis on a monthly basis</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>P3 - In Quoting Opportunity,QR - Quote Released</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Account.CIS_Prospect</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>New Accounts for Accounting</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Transfer_Report__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast__r$Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

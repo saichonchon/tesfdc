@@ -1,0 +1,238 @@
+<!--
+Author:           Yuan Yao <yuan.yao@capgemini.com>
+Description:      Visualforce page to show quote and quote line item info of sap quote.
+			      The user story number is W-00130.
+Controller class: ExtSAPQuotePdf
+Test Class:       ExtSAPQuotePdf_Test
+History
+2017-09-18 	      Yuan Yao <yuan.yao@capgemini.com> created 
+-->
+<apex:page standardController="Energy_Quote__c"  extensions="ExtSAPQuotePdf"  docType="html-5.0" showHeader="false"  renderAs="pdf" applyBodyTag="false" applyHtmlTag="false" language="{!quoteLanguage}">
+    
+    <HTML>
+        <head>
+            <style type="text/css" media="print">
+                *{margin:0px; padding:0px;border:0}
+                @page {
+                	margin-bottom : 100px;
+                    size: A4;
+                    
+                    @bottom-left {
+                    content: element(footer);
+                    }
+                	@top-right {
+ 					content: element(header); 
+                	}
+                }
+                .pagenumber:before {
+                    content: counter(page);                    
+                }
+                .pagecount:before {
+                    content: counter(pages);
+				}
+                div.content1{
+                counter-reset: page;
+                }
+                div.header {
+                	width:100%;
+                	text-align:right;
+                	position : running(header);
+                }
+				div.footer {
+                  position: running(footer);
+                  border-top: 1px solid #000;
+                  bottom:5px;
+                  font-size: 7.5pt;
+                 	height:200px;
+                }
+     			table{
+                border-left:1px solid black;
+                border-right:1px solid black;
+                }
+                
+                table tr th,table tr td{
+                	border:0.5px solid #000;
+                }
+                table {
+                	border-collapse: collapse;
+                }
+                body{
+                	border-collapse: collapse;
+                }
+                .headTable tr th, .headTable tr td{
+                	border:0;
+                }
+                .itemTable tr th,.itemTable tr td{
+                	padding-left : 5px
+                	
+                }
+            </style>
+        </head> 
+        
+        <div class="footer" align="left" id="Container" style="font-family:Lucida Grande,Helvetica,Arial,sans-serif;font-Style:italic;" >
+            {!$Label.footerPrefix}<b><a href="http://www.te.com/content/dam/te-com/documents/policies-agreements/terms-conditions/terms-us-only.pdf" target="_blank" > {!$Label.footerUrl}<br/>{!$Label.footerUrlPdfName} </a></b>{!$Label.footerContent}</div>
+        <div class="header">
+			<div>{!$Label.PageLabel} <span class="pagenumber"/> {!$Label.PageOf} <span class="pagecount"/></div>
+		</div>
+        
+        <body  cellspacing="0"  style="font-family:Calibri; font-size:11pt;" >
+        	<apex:variable value="{!0}" var="lineNum"/>
+            
+            <table width="100%" class="headTable">
+                <tr>
+                    <td width="30%" style="padding-left : 0px;" >
+                        <apex:image id="theImage" value="{!$Resource.TEConnectivityOfficialLogo}" width="150" height="100"/> 
+                    </td>
+                    <td width="30%"></td>
+                    <td width="18%" align="left" style="padding-left : 10px;border:1px solid black;">
+                        <div style="vertical-align :top;">{!$Label.headerQuoteDate}</div><br/><apex:outputtext style="vertical-align :bottom;" value="{!validFrom}" > </apex:outputtext>  
+                    </td>
+                    <td width="18%" align="left" style="padding-left : 10px;10px;border-top:1px solid black;border-right:1px solid black;border-left:0;border-bottom:1px solid black;">  
+                        <div style="vertical-align :top;">{!$Label.headerQuoteNumber}</div><br/><apex:outputtext value="{!QuoteDetails.Quote_Number__c}" ></apex:outputtext>  
+                    </td>
+                </tr>
+            </table>
+            <br/><br/>
+            <table   width="100%">
+                <tr>
+                    <td width="55%" style="padding-left : 10px;">
+                        <div style="float :right;">
+                            {!$Label.CustomerNumber}&nbsp;-&nbsp;<apex:outputtext value="{!QuoteDetails.Account_name__r.AccountNumber}" ></apex:outputtext>
+                        </div>
+                        <br/>
+                        <div >
+                            {!$Label.SAPQuoteForAttention}&nbsp;{!QuoteDetails.contact__r.Name}
+                            <br/>
+                            {!QuoteDetails.Account_name__r.Name}
+                            <br/>
+                            {!QuoteDetails.Account_name__r.billingStreet}&nbsp;
+                            <br/>
+							<!-- {!QuoteDetails.Account_name__r.billingCity}&nbsp;{!QuoteDetails.Account_name__r.billingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode} -->
+							{!acctSoldToBillingCity}{!QuoteDetails.Account_name__r.billingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode}
+                        </div>
+                        <br/>
+                    </td>
+                    <td width="45%" style="padding-left : 10px;vertical-align:top;">
+                        <div style="float :right;">
+                            {!$Label.CustomerNumber}&nbsp;-&nbsp;<apex:outputtext value="{!QuoteDetails.End_Customer__r.AccountNumber}" ></apex:outputtext>
+                        </div>
+                        {!$Label.DeliveryAddress}
+                        <br/>
+                        <div >
+                            {!QuoteDetails.End_Customer__r.Name}
+                            <br/>
+                            {!QuoteDetails.End_Customer__r.billingStreet}&nbsp;
+                            <br/>
+							<!-- {!QuoteDetails.End_Customer__r.billingCity}&nbsp;{!QuoteDetails.End_Customer__r.billingState}&nbsp;{!QuoteDetails.End_Customer__r.BillingPostalCode} -->
+							{!endCustomerBillingCity}{!QuoteDetails.End_Customer__r.billingState}&nbsp;{!QuoteDetails.End_Customer__r.BillingPostalCode}
+                        </div>
+                        <br/>
+                    </td>
+                    
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td style="padding-left : 10px;padding-top : 5px;padding-bottom : 5px;"> 
+                        {!$Label.ValidityDate}:&nbsp;{!$Label.ValidityDateFrom}&nbsp;<apex:outputtext style="vertical-align :bottom;" value="{0,date,MM'/'dd'/'yyyy}" > <apex:param value="{!QuoteDetails.createddate}"/> </apex:outputtext>&nbsp;{!$Label.ValidityDateTo}&nbsp;<apex:outputtext style="vertical-align :bottom;" value="{0,date,MM'/'dd'/'yyyy}" > <apex:param value="{!validityDateEnd}"/> </apex:outputtext>
+                        <br/>
+                        {!$Label.contactPerson}:&nbsp;<apex:outputtext value="{!QuoteDetails.createdBy.name}" ></apex:outputtext>
+                        <br/>
+                        {!$Label.contactEmailAddress}:&nbsp;<apex:outputtext value="{!QuoteDetails.createdBy.email}" ></apex:outputtext>
+                        <br/>
+                        {!$Label.contactTel}:&nbsp;<apex:outputtext value="{!QuoteDetails.createdBy.phone}" ></apex:outputtext>
+                        <br/>
+                    </td>
+                </tr>
+                
+            </table>
+            <table  width="100%">
+                <tr>
+                    <td style="padding-left : 10px;padding-top : 5px;padding-bottom : 5px;"> 
+                        {!$Label.shipMethod} &nbsp;
+                        <br/>
+                        {!$Label.Sales_Engineer} &nbsp;:<apex:outputtext value="{!QuoteDetails.Opportunity_Name__r.owner.name}" ></apex:outputtext>
+                        <br/>
+                        {!$Label.SAPPdfIncoterms} &nbsp;:<apex:outputtext value="{!IF(QuoteDetails.Override_Incoterms_Details__c == '',QuoteDetails.Account_Name__r.Incoterms_Details__c,QuoteDetails.Override_Incoterms_Details__c)}" ></apex:outputtext>
+                        <br/>
+                        <!-- Commented by Tangyong Li 2018-02-02 by email 'Let's do some REAL coding again!' 1)d) -->
+<!--                         {!$Label.PaymentTerms}&nbsp;:<apex:outputtext value="{!IF(QuoteDetails.Override_Payment_Terms_Description__c == '',QuoteDetails.Account_Name__r.Payment_terms_Desc__c ,QuoteDetails.Override_Payment_Terms_Description__c)}" ></apex:outputtext> -->
+<!--                         <br/> -->
+                        {!$Label.QuoteType}: <apex:outputtext value="{!QuoteDetails.Quote_Type__c}" ></apex:outputtext>
+                        <br/>
+                        {!$Label.POSCustomer}:<apex:outputtext value="{!QuoteDetails.Account_Name__r.Name}" ></apex:outputtext>
+                        <br/>
+                        {!$Label.EndCustomer}:<apex:outputtext value="{!QuoteDetails.End_Customer__r.Name}" ></apex:outputtext>
+                        <br/>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" class="itemTable" style=" page-break-inside:auto;" border="0" cellpadding="0" cellspacing="0">  
+                
+                <tr >            
+                    <th align="left" bgcolor="#DBDBDB" width="7%"><apex:outputText value="{!$Label.ItemNo}"/></th>
+                    <th align="left" bgcolor="#DBDBDB" width="10%"><apex:outputText value="{!$Label.QuantityOrdered}"/></th>
+                    <th align="left" bgcolor="#DBDBDB" width="9%"><apex:outputText value="{!$Label.UnitOfMeasure}"/></th>
+                    <th align="left" bgcolor="#DBDBDB" width="41%"><apex:outputText value="{!$Label.QuoteItemDesc}"/></th>
+                    <th align="left" bgcolor="#DBDBDB" width="10%"><apex:outputText value="{!$Label.quoteLineItemPrice}"/></th>
+					<!--    <th align="left" bgcolor="#DBDBDB" width="11%"><apex:outputText value="{!$Label.quotelineItemUnit}"/></th> -->
+                    <th align="left" bgcolor="#DBDBDB" width="12%"><apex:outputText value="{!$Label.QuoteLIneItemTotal}"/><br/>({!QuoteDetails.CurrencyIsoCode})</th>
+                    <th align="left" bgcolor="#DBDBDB" width="11%"><apex:outputText value="{!$Label.QuoteLineItemLeadTime}"/></th>
+                    
+                </tr>
+                <apex:repeat value="{!quolineitem}" var="qli">
+                	<apex:variable var="lineNum" value="{!lineNum + 1}"/>
+                    <tr style="page-break-inside: avoid;page-break-after:auto;">
+                        
+                        <!-- <td style= "vertical-align:text-top;"><div><apex:outputtext value="{!qli.LineNumber__c}"/></div></td> -->
+                        <td style= "vertical-align:text-top;">{!lineNum}</td>
+                        <td style= "vertical-align:text-top;">
+                        	<div>
+                        		<apex:outputtext value="{0, number, 0}">
+                        			<apex:param value="{!qli.Quantity__c}" />
+                        		</apex:outputtext><br/>
+                        	</div>
+                        </td>
+                        <td style= "vertical-align:text-top;"><div><apex:outputField value="{!qli.Unit_of_Measure__c} "/></div></td>
+                        <td><div>
+                            <div style="width:100%;word-break: break-all;">
+                            {!qli.Part_Number__c }
+                            </div>
+                            {!qli.Description__c }
+                            <br/>
+                            {!qli.Customer_Part_Number__c}
+                            <br/>
+                            {!$Label.QuoteLineItemValidityDate}&nbsp;:<apex:outputtext style="vertical-align :bottom;" value="{0,date,MM'/'dd'/'yyyy}" > <apex:param value="{!QuoteDetails.Valid_From__c }"/> </apex:outputtext>&nbsp;{!$Label.ValidityDateTo}&nbsp;<apex:outputtext style="vertical-align :bottom;" value="{0,date,MM'/'dd'/'yyyy}" > <apex:param value="{!validityDateEnd}"/> </apex:outputtext>
+                            <br/>
+                            <b>{!$Label.CountryOfOrigin}&nbsp;:{!qli.Country_of_Origin__c}</b> 
+                            <br/>
+                            <b>{!$Label.DeliveryUnit}&nbsp;:{!qli.NDR_Delivery_Unit__c}</b>
+                            <br/>
+                            <b>{!$Label.MinimumOrderQuantity}&nbsp;:{!qli.NDR_Minimum_Order_Quantity__c} </b>
+                            <br/>
+                            <b>{!$Label.MinDeliveryQty}&nbsp;:{!qli.NDR_Minimum_Delivery_Quantity__c} </b>
+                            <br/>
+                            <b>{!$Label.PackType}&nbsp;:{!qli.NDR_Unit_Package_Type__c}</b>
+                            <br/>
+                            <b>{!$Label.Comment}&nbsp;:{!qli.Comment__c}</b>
+                            <br/>
+                            <b>{!$Label.TE_Comment}&nbsp;:{!qli.NDR_Customer_Comments__c}</b>
+                            </div>
+                        </td>
+                        <td style= "vertical-align:text-top;"><div></div><apex:outputtext value="{!qli.UnitPrice__c}"/></td>
+						<!--   <td style= "vertical-align:text-top;"><div></div></td> -->
+                        <td style= "vertical-align:text-top;"><div></div><apex:outputtext value="{!qli.TotalPrice__c}"/></td>
+                        <td style= "vertical-align:text-top;"><div></div><apex:outputtext value="{!qli.Lead_Time__c}"/></td>  
+                    </tr>
+                </apex:repeat>
+                <tr>
+                	<td colspan = "8" align="left" style="padding-left:20px">
+                		<b>{!$Label.QuoteTotalPrice}&nbsp;&nbsp;:</b><apex:outputField value="{!QuoteDetails.Actual_Total_Price__c}"/><br/>
+                		<b>{!$Label.QuoteHeaderLevelComments}&nbsp;&nbsp;:</b><apex:outputField value="{!QuoteDetails.Header_Level_Comments__c}"/>
+                	</td>
+                </tr>
+            </table>
+        </body>
+        
+    </HTML>
+</apex:page>

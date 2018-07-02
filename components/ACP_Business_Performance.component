@@ -1,0 +1,101 @@
+<apex:component controller="ACP_Revenue_Growth_Ctrl" allowDML="true">
+<script>    
+    // workaround is necessary since inline editing of VF picklist and/or checkboxes won't commit changes before action if the user doesn't "click out" first.  
+    function focusAndSavePerf() {
+    
+        document.getElementById('focusMe').click();
+        saveFieldsPerf();
+    }
+    </script>
+   <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+   <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+   <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300"/>
+   <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff"/>
+   <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+   <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+   <apex:attribute name="refreshMode" description="This is the value of refresh mode" type="String" assignTo="{!refreshBasedOn}"/>
+   <apex:attribute name="revenueType" description="This is the values of revenue types from bu setting" type="String" assignTo="{!revType}" />
+   <apex:attribute name="PlanYear1" description="" type="String"/>
+   <apex:attribute name="PlanYear2" description="" type="String"/>
+   <apex:attribute name="PlanYear3" description="" type="String"/>
+   <apex:attribute name="revGrowthTotal" type="ACP_Revenue_Growth_Perf__c" assignTo="{!revenueGrowthTotal}" description="" required="false"/>
+   <apex:attribute name="revGrowthList" type="ACP_Revenue_Growth_Perf__c[]" description="" assignTo="{!revenueGrowthList}" required="true"/>
+   <apex:pageBlock mode="maindetail" id="perfblock">
+   <div id = "business">
+    <!--<apex:form id="frmperf">-->
+    <apex:outputPanel id="perfPanelSumm">
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+    <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+<apex:commandButton value="{!$Label.ACP_Update_from_Reports}" styleClass="btn btn-default" id="updatefromReports" action="{!runReport}" style="float:right; width : 180px !important;"/>
+                  <apex:actionFunction name="updaterec" action="{!runReport}"/>            
+     <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="savePerf"  onclick="focusAndSavePerf();" style="float:right; display:none" reRender="perfPanelSumm"  />               
+    <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelPerf" onclick="this.form.reset();" immediate="true" style="float:right; display:none" reRender="perfPanelSumm"/>
+      <input type="text" id="focusMe" style="display:none" /> 
+    <div class="panel-title">
+    <h4 style="color:{!headerTextColor};">{!title}</h4>
+    </div>
+    </div>
+    <apex:outputPanel id="perfPanelSumm1">
+   
+    <html>
+        <table border="1" class="list table">
+            <tr class="headerRow" align="center">
+            <td></td>
+            <td colspan="3">{!$Label.ACP_Past_Actual}</td>
+            <td colspan="2">{!$Label.ACP_Current_Year}</td>
+            <td colspan="3">{!$Label.ACP_Plan}</td>
+            </tr>
+            
+            <tr class="headerRow" align="center">
+            <td align="center">{!$Label.ACP_Bill_Type}</td>
+            <td align="right"> {!pastyr_1}</td>
+            <td align="right"> {!pastyr}</td>
+            <td align="right">{!$Label.ACP_Growth}</td>
+            <td align="right">{!fiscalyr} {!$Label.ACP_YTD}</td>
+            <td>{!$Label.ACP_YOY} {!$Label.ACP_Growth}</td>
+            <td align="right"> {!PlanYear1}</td>
+            <td align="right"> {!PlanYear2}</td>
+            <td align="right"> {!PlanYear3}</td>
+            </tr>
+            <apex:repeat value="{!revenueGrowthList }" var="data">
+          
+            <tr class="dataRow" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" align="center">
+            <td align="center"><apex:outputText value="{!data.ACP_Sales_Mode__c}"/></td>
+            <td align="right"> <apex:outputField value="{!data.ACP_Past_Year_1_Revenue__c}"/> </td>
+            <td align="right"> <apex:outputField value="{!data.ACP_Past_year_Revenue__c}"/></td>             
+            <td align="right"> <apex:outputField value="{!data.ACP_YOY_Current_Year_Perc__c}"/></td>
+            <td align="right"> <apex:outputField value="{!data.ACP_Current_Year_to_Date__c}"/></td>
+            <td style="background-color:{!IF(data.ACP_YOM_Growth_Perc__c != null && data.ACP_YOM_Growth_Perc__c > 0,'green','red')}"><apex:outputField value="{!data.ACP_YOM_Growth_Perc__c}"/></td>
+            <td align="right"> <apex:outputField value="{!data.ACP_Current_Year_1_Plan__c}"><apex:inlineEditSupport showOnEdit="savePerf,cancelPerf" hideOnEdit="updatefromReports" event="ondblclick" />
+             </apex:outputField></td> 
+            <td align="right"> <apex:outputField value="{!data.ACP_Current_Year_3_Plan__c}"><apex:inlineEditSupport showOnEdit="savePerf,cancelPerf" hideOnEdit="updatefromReports" event="ondblclick" />
+             </apex:outputField></td> 
+            <td align="right"> <apex:outputField value="{!data.ACP_Current_Year_5_Plan__c}"><apex:inlineEditSupport showOnEdit="savePerf,cancelPerf" hideOnEdit="updatefromReports" event="ondblclick" />
+             </apex:outputField>
+            </td>
+           
+            </tr>
+            </apex:repeat>
+          
+            <tr class="dataRow" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" align="center">
+            <td align="center" style="font-weight: bold;"><apex:outputText value="{!$Label.ACP_Total}" rendered="{!IF(revenueGrowthTotal != null, true, false)}"/>   </td>
+            <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}"  value="{!revenueGrowthTotal.ACP_Past_Year_1_Revenue__c}"/></td>
+           <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_Past_year_Revenue__c}"/></td>
+           <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_YOY_Current_Year_Perc__c}"/></td>
+           <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_Current_Year_to_Date__c}"/></td>
+           <td style=" background-color:{!IF(revenueGrowthTotal != null && revenueGrowthTotal.ACP_YOM_Growth_Perc__c <= 0, 'red', 'green')}; background-color:{!IF(revenueGrowthTotal == null, 'white', null)};"><apex:outputText rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_YOM_Growth_Perc__c}%"/></td>
+           <td align="right" ><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_Current_Year_1_Plan__c }"/></td>
+           <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_Current_Year_3_Plan__c }"/></td>
+           <td align="right"><apex:outputField rendered="{!IF(revenueGrowthTotal != null, true, false)}" value="{!revenueGrowthTotal.ACP_Current_Year_5_Plan__c }"/></td>
+           
+           </tr>
+        </table>
+    </html> 
+     </apex:outputPanel>
+    </div>
+    </apex:outputPanel>
+    <!--</apex:form>-->
+    </div>
+   </apex:pageBlock>   
+   <apex:actionFunction action="{!updatePerformance}" name="saveFieldsPerf" reRender="perfPanelSumm"  />
+</apex:component>

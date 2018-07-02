@@ -1,0 +1,166 @@
+<apex:page standardcontroller="Opportunity" action="{!deterRedirect}" extensions="ExtProgramOppyForecast" sidebar="false">
+    <apex:stylesheet value="{!$Resource.oppyForecastEntry}"/>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <apex:includeScript value="{!URLFOR($Resource.OppyForecastControl)}" />
+    <style type='text/css'>
+        body{background-color:#fff !important;}
+        .htlb {
+            background: url({!URLFOR($Resource.iconCollapse)}) no-repeat scroll 0 -0px transparent !important;
+            height:15px !important;
+            width:10px !important;
+        } 
+        .stlb {
+            background: url({!URLFOR($Resource.iconExpand)}) no-repeat scroll 0 -0px transparent !important;    
+            height:15px !important;
+            width:10px !important;
+        }
+        .setThWidth{
+            width:110px;
+        }
+        #programOverview td.oppyName img{
+			float:left;
+		}
+        #programOverview td.oppyName a{
+			height:18px;
+			width:90px;
+			display:block;
+			float:left;
+			-o-text-overflow:ellipsis;
+			text-overflow:ellipsis;
+			overflow:hidden;
+			white-space:nowrap;
+		}
+		body .pbBody table.list tr.headerRow td, body .pbBody table.list tr.headerRow th {
+		    background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom white;
+		    height: 14px;
+		}
+		body .pbBody table.list tr.headerRow th.thyear{width:100px;}
+    </style>
+    <input type="hidden" value="{!format}" id="hiddenFormat"/><input type="hidden" id="hiddenCurrencyCode" value="{!opportunity.CurrencyIsoCode}"></input>
+    
+    <apex:form >
+   		<apex:actionFunction name="editForecasts" action="{!editProgram}" status="statusLoad"/>
+        <apex:pageBlock tabstyle="Opportunity" id="oppyPB" mode="maindetail">                                       
+            <apex:pageMessages id="messages" />             
+            <div style="width:65%;text-align:center;">
+                <input type="button" class="btn" value="Edit" onclick="editForecasts();" style="display:{!IF(AND(validOpportunities, isProgramLevelForecasting, OppyForecastStructures.size>0), '', 'none')};"/>
+                <apex:actionStatus startText=" Loading... " stopText="" id="statusSave">
+                    <apex:facet name="start">
+                        <img class="deployingImg" src="/changemgmt/img/spinner24.gif" />            
+                    </apex:facet>
+                </apex:actionStatus>
+            </div>
+            <br/>      
+            <apex:pageBlockSection columns="1" id="oppyBlockSection">       
+                <apex:outputPanel layout="block" styleClass="container setWidthProgramForcast" id="containerPanel" rendered="{!OppyForecastStructures.size>0}" style="max-height:600px; overflow:auto;">                                                                    
+                    <div>
+                    <table class="list" cellspacing="0" cellpadding="0" border="0" id="programOverview">
+                        <thead>
+                            <tr class="headerRow">   
+                            	<th><img class="stlb" title="Show" style="cursor:pointer;" id="opportunityBtn" src="/s.gif" onclick="showAllDisplays(this)"/></th>                                   
+                                <th class="thyear headerCenter oppyForecastTop" style="text-align:left;width:120px;">                                
+                                {!$Label.Opportunity}
+                                </th>
+                                <apex:repeat value="{!Years}" var="year"> 
+                                    <th class="thyear headerCenter setThWidth oppyForecastTop">{!year}</th>
+                                </apex:repeat>                                                                                                                                                                                      
+                            </tr>           
+                        </thead>            
+                        <tbody>  
+                            <tr class="dataRow " onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                            	<td class="dataCell"></td>
+                                <td class="dataCell"><b>{!$Label.Total_Revenue}</b></td>  
+                                <apex:repeat value="{!TotalRevenues}" var="totalRevenue">   
+                                    <td class="dataCell tdTwo"><apex:outputText value="{!totalRevenue.Amount__c}"/></td>
+                                </apex:repeat>                                                                                                                      
+                            </tr>   
+                            <apex:repeat value="{!OppyForecastStructures}" var="forecastStructure">                 
+                                <tr class="dataRow " onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';">
+                                	<td class="dataCell"><img class="stlb" title="Show" style="cursor:pointer;" id="opportunityBtn_{!forecastStructure.oppy.id}" src="/s.gif" onclick="showProDisplays(this)"/></td>
+                                    <td class="dataCell oppyName">
+<!--                                        <img class="stlb" title="Show" style="cursor:pointer;" id="opportunityBtn_{!forecastStructure.oppy.id}" src="/s.gif" onclick="showProDisplays('{!forecastStructure.oppy.id}', this.id, this.title)"/>-->
+										<apex:outputLink value="/{!forecastStructure.oppy.Id}" target="_parent" title="{!forecastStructure.oppy.Name}"> <apex:outputText value="{!forecastStructure.oppy.Name}" /></apex:outputLink>                      
+                                    </td>
+                                    <apex:repeat value="{!forecastStructure.items}" var="item"> 
+                                        <td class="dataCell tdTwo"><apex:outputText value="{!item.totalRevenue.Amount__c}"/></td>
+                                    </apex:repeat>                                                                                                                      
+                                </tr>
+                                <tr class="dataRow {!forecastStructure.oppy.id} opportunityBtn" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';" style="display:none;">
+                                    <td class="dataCell"></td>
+                                    <td class="dataCell tdTwo">{!$Label.Q1}</td>
+                                    <apex:repeat value="{!forecastStructure.items}" var="item"> 
+                                        <td class="dataCell tdTwo"><apex:outputText value="{!item.Q1.Amount__c}"/></td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="dataRow {!forecastStructure.oppy.id} opportunityBtn" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';" style="display:none;">
+                                    <td class="dataCell"></td>
+                                    <td class="dataCell tdTwo">{!$Label.Q2}</td>
+                                    <apex:repeat value="{!forecastStructure.items}" var="item"> 
+                                        <td class="dataCell tdTwo"><apex:outputText value="{!item.Q2.Amount__c}"/></td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="dataRow {!forecastStructure.oppy.id} opportunityBtn" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';" style="display:none;">
+                                    <td class="dataCell"></td>
+                                    <td class="dataCell tdTwo">{!$Label.Q3}</td>
+                                    <apex:repeat value="{!forecastStructure.items}" var="item"> 
+                                        <td class="dataCell tdTwo"><apex:outputText value="{!item.Q3.Amount__c}"/></td> 
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="dataRow {!forecastStructure.oppy.id} opportunityBtn" onmouseOver="this.style.backgroundColor = '#E3F3FF';" onmouseOut="this.style.backgroundColor = '#FFF';" style="display:none;">
+                                    <td class="dataCell"></td>
+                                    <td class="dataCell tdTwo">{!$Label.Q4}</td>
+                                    <apex:repeat value="{!forecastStructure.items}" var="item"> 
+                                        <td class="dataCell tdTwo"><apex:outputText value="{!item.Q4.Amount__c}"/></td>
+                                    </apex:repeat>
+                                </tr>    
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                    </div>                                                                                                                           
+                </apex:outputPanel>
+                <script type="text/javascript">
+                    function isBeginWithNum(txt){
+						txt=''+txt;
+						txt = txt.replace(/^\s+|\s+$/g,"");
+						var rex=/^\d\w*/
+						return rex.test(txt);
+					}
+                    //prepare();  
+                    (function(){
+                    	var $table = $('#programOverview');
+                    	var w = 135,winW = $(window).width();
+                    	$table.children('thead').children().children().each(function(i){
+                    		if(i>1)w += 100;
+                    	});
+                    	$table.parent().width(w);
+                    	if(winW - w <30){
+                    		$table.parent().parent().width(winW - 30);
+                    	}else{
+                    		$table.parent().parent().width(w+30);
+                    	}
+                    	var locale=$('#hiddenFormat').val();                    	
+						var currencylabel=$('#hiddenCurrencyCode').val();
+                    	$table.children('tbody').children().each(function(){
+                    		$(this).children().each(function(){
+                    			if(!$(this).is($('.oppyName')))	{		
+									var txt=$(this).text();			
+									txt=parseFloat(txt);
+									if(isBeginWithNum(txt)&&!isNaN(txt)){
+										txt=roundToKM(txt,locale);
+										txt=currencylabel+txt;
+										$(this).text(txt);
+									}
+								}
+                    		});
+                    	});
+                    }()) 
+                    $(document).ready(function(){
+                        if('{!isSaved}' == 'true'){
+                            window.parent.location.href='/{!opportunity.id}';
+                        }
+                    });       
+                </script>
+            </apex:pageBlockSection>
+        </apex:pageBlock>  
+    </apex:form>
+</apex:page>

@@ -1,0 +1,31 @@
+<!--
+/**********************************************************************************************************************************************
+*******
+Name: ViewNDROpportunityPart
+Copyright © 2013 TE Connectivity | Salesforce Instance : C2S Org
+===============================================================================================================================================
+
+Purpose: This page displays the  detail page of NDR Opportunity Part information.
+         This page overrides the standard view button of Opportunity_Parts__c object.
+===============================================================================================================================================
+REQUIREMENT INFORMATION & DEVELOPMENT INFORMATION:                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+VERSION   AUTHOR              DATE          DETAIL                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ 1.0   Abhijeet Manepstil   05/29/2013    Visualforce Page                       
+***********************************************************************************************************************************************
+*****/
+
+
+-->
+<apex:page standardController="Opportunity_Part__c" extensions="ViewNDROpportunityPartController" action="{!Redirect}">
+ <apex:detail rendered="{!vNDROppPart}" inlineEdit="true" />  
+ <script>
+     var url = location.href;
+     var match = url.match(/inline=1/);
+    if (match != null) { 
+        var newUrl = url.replace(/inline=1/, '');
+        window.top.location=newUrl;
+    }
+</script>
+ </apex:page>

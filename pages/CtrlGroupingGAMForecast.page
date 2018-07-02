@@ -1,0 +1,87 @@
+<apex:page title="Grouping GAM Forecast" sidebar="false" controller="CtrlGroupingGAMForecast" id="thePage" applyBodyTag="true" docType="html-5.0">
+    <head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CtrlGroupingGAMForecastCSS}" />
+        <style type="text/css">
+            .countryimg{
+                background-image:url('{!$Resource.CtrlGroupingCountryflag}');
+            }
+            .reload_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+            }
+            .mark_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/ACGP_new1.png')}');
+            }
+            .mark_new{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/PC.png')}') !important; }
+            .mark_b{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/B.png')}') !important; }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+                background-position:-145px -146px;
+            }
+            .pin.spin{
+                background-position: -129px -146px;
+            }
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingGAMForecastJS}"></script>
+
+        <script type="text/javascript">
+            var CUSTOM_LABEL = {
+                    'savemsg': '{!$Label.APL_save_msg}', 'savemsgsuccess' : '{!$Label.APL_msg_save_success}', 'clickwait' : '{!$Label.APL_msg_click_wait}'
+                };
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+        
+        <div id="contentallid" class="tc">
+        
+            <apex:variable var="inputVal" value="" />
+            <apex:form id="theForm">
+
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                <input value="{!chartURL}" id="charturlid" type="hidden" />
+                
+                <apex:outputPanel id="groupingAllOP" layout="block">
+                    <c:CompGroupingGAMForecastMenu pageCtrl="{!this}"></c:CompGroupingGAMForecastMenu>
+                    <c:CompGroupingGAMForecastBody pageCtrl="{!this}" inputVal="{!inputVal}"></c:CompGroupingGAMForecastBody>
+                </apex:outputPanel>
+                
+            </apex:form>
+    
+        </div>
+        
+        <div id="gototopid" class="gototopcls bradiuscls">TOP</div>
+        
+        <c:CompGroupingProgress ></c:CompGroupingProgress>
+        
+        <span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+            <span id="innerData" class="innerdata"></span>
+        </span>
+    </body>
+    
+    <script type="text/javascript">
+        ;function searchAcctFC_js(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.getGAMFC}';}
+        ;function getGAMRefData(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.getRefData}';}
+        ;function saveGAMFC_js(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.saveGAMFC}';}
+        
+        ;function getAPLsRefData_js(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.getAPLsRefData}';}
+        ;function getBacklogRefData_js(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.getBacklogRefData}';}
+        ;function existAPLsObject_js(){ return '{!$RemoteAction.CtrlGroupingGAMForecast.existAPLsObject}';}
+    </script>
+</apex:page>

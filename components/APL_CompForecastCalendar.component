@@ -1,0 +1,55 @@
+<apex:component layout="none">
+
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	<!-- START table head -->
+	<div class="mainTabFix" id="headmainid" style="display: {!if(pageCtrl['pageConf']['str_tableHead'] = 'null', 'none', '')}">
+		<div class="compwp tabRowFix">
+		
+			<div id="left_head" class="tabCellFix lCellw" style="vertical-align: bottom !important;">
+				<table style="width: 100%; position: relative;" class="table_fix tabbotm" border="0" cellspacing="0" cellpadding="0">
+					<tbody>
+						<tr>
+							<td id="menuBtntd" class="tab_head_left">
+								<input type="button" data-type="historical" data-status="show" data-show="Show Historical" data-hide="Hide Historical" value="Hide Historical" class="btn" />
+								<input type="button" data-type="current" data-status="show" data-show="Show Current" data-hide="Hide Current" value="Hide Current" class="btn" />
+								<input type="button" data-type="future" data-status="show" data-show="Show Future" data-hide="Hide Future" value="Hide Future" class="btn" />
+								<div id="dropBoxId" class="w-drop-box"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div id="right_head" class="noTabCell rCellw minhfix" style=" overflow: hidden; ">
+				<table class=" table_fix tabbotm" border="0" cellspacing="0" cellpadding="0" >
+					<tbody id="rHeadBody">
+						<tr id="tab_head_data" class="tab_head_data">
+							<apex:outputText value="{!pageCtrl['pageConf']['str_tableHead']}" escape="false"/>
+						</tr>
+						
+						<tr id="tab_head_list" class="tab_head_list">
+							<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+							<td class=" {!fd.monthCls} {!fd.qtotalCls} echd headbg {!if(fd.isInput, 'qcell', '')}  {!fd.type}" data-label="{!fd.itemName}" data-date="{!fd.qLabel}" data-months="{!fd.qMonths}" data-month="{!fd.mLabel}">
+								<div class=" fwb p_r">
+									<span>{!fd.itemName}</span>
+								</div>
+							</td>
+							<!-- 
+							<td class=" {!fd.monthCls} echd headbg {!if(fd.isInput, 'qcell', '')}  {!fd.cls}" data-date="{!fd.qLabel}" data-months="{!fd.qMonths}" data-month="{!fd.mLabel}">
+								<div class=" fwb p_r">
+									<span>{!fd.itemName}</span>
+								</div>
+							</td>
+							 -->
+							</apex:repeat>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+	</div>
+	<!-- END table head -->
+</apex:component>

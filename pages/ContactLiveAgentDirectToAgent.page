@@ -1,0 +1,209 @@
+<!--************************************************************************************************************************************************************************************************************************
+Name: ContactLiveAgentDirectToAgent 
+===========================================================================================================================================================================================================
+Purpose: This Page was part of Outbound Chat and for Contact object.
+         This is used by liveAgentDirectEXTN class which is used to let agent get customer details and automaticaaly display TE Chat window popup. 
+===========================================================================================================================================================================================================
+******************************************************************************************************************************************************************************************************************-->
+
+
+<apex:page showHeader="false" standardController="User" extensions="liveAgentDirectEXTN">
+     <style>
+ #logo {
+            //text-indent: -5000px;
+            z-index: 999999;
+            display: block;
+            width: 147px;
+            height: 77px;
+            background: url("{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}") 50% 50% no-repeat;
+            top: -1px;
+            margin-left: 0px;
+            }
+.header {
+   
+   height:60px;   
+   background:#000000;
+   background-image: url('http://imageserverdev.tycoelectronics.com/imageserver/tyco/myte/img/header_myTE.jpg'); 
+   width:100%;
+  
+    
+    }
+
+    
+a.websiteName {
+    margin-left:5px;
+    font:normal 18px/53px Arial;
+    color:#2F4F4F;
+}
+a.websiteName:hover{
+     text-decoration: None !important;
+      }
+         
+a.conName {
+    margin-left:5px;
+    font:normal 15px/45px Georgia;
+    color:#686c70;
+}
+a.conName:hover{
+     text-decoration: None !important;
+      }         
+.header-logo{
+      background: #000  !important;
+      width:100%;
+      height:auto;
+      }
+div.websiteName {
+    margin-left:5px;
+    font:normal 18px/53px Arial;
+    color:#2F4F4F;
+}      
+
+ p {font-weight: bolder }
+    form > #main {
+        text-align: center;
+        padding: 10px;
+        }
+        #firstName{
+         /*margin-top: 15px;*/
+        }
+</style> 
+    <script type='text/javascript' src='{!$Setup.Live_Agent_Org_Settings__c.DeploymentURL__c}'></script> 
+    <!-- This script takes the endpoint URL parameter passed from the deployment page and makes it the action for the form -->
+    <script type='text/javascript'> 
+    (function() { 
+        function handlePageLoad() {
+            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)"); 
+            //   document.getElementById('prechatForm').setAttribute('action',
+            // decodeURIComponent(endpointMatcher.exec(document.location.search)[1].replace("javascript:", "")));
+            
+            // document.getElementById("prechat_submit").click();
+        } if (window.addEventListener) { 
+            //window.addEventListener('load', handlePageLoad, true);
+        } else {
+            //  window.attachEvent('onload', handlePageLoad, true);
+               }})();
+     function target_popup(form) {alert();
+            window.open('', 'formpopup', 'width=400,height=400,resizeable,scrollbars');
+            form.target = 'formpopup';
+        }
+    </script>
+    <div class="header-logo">
+         <div id="logo"> 
+         <span style="color:white; line-height:81px; font-size: 26px;padding: 2px 5px 5px 13%;position:absolute;">CUSTOMER AGENT</span>
+          </div>
+    </div>
+     <div id="dta_online" style="display: none; margin-top: 2%;">
+        <center> <a class="websiteName">Chat with {!user.FirstName }</a></center>
+        <!-- A valid button is required here even though it's direct-to-agent - some button settings still apply. -->
+        <!-- {!left(user.id,15)} is needed to truncate an 18-char ID to the 15-char version that Live Agent uses. -->
+         
+      </div>
+    
+    
+    <!-- dta_offline is displayed if the specific agent is unavailable. -->
+  <div id="dta_offline" style="display: none;">
+
+    <!-- button_online is displayed if any agents are available to chat for the button.-->
+
+    <div id="button_online" style="display: none; margin-top: 2%;">
+     
+ 
+       <center> <a class="websiteName"> Chat with {!user.FirstName} </a></center>
+  
+    </div> 
+    
+ 
+ 
+    <!-- button_offline is displayed if no agents are available to chat for the button. --> 
+    <div id="button_offline" style="display: none;">
+   
+          
+  <center> <div class="websiteName">{!user.FirstName} is not available right now.</div> <div class="websiteName" style="margin-top: -1%"> We apologize for this inconvenience. Please try again later.</div></center>
+      </div>
+
+  </div>
+    <!-- Form that gathers information from the chat visitor and sets the values to Live Agent Custom Details used later in the example -->
+    <form method='post' name='formpopup' id='prechatForm' action="{!directchaturl}" target="newFormWindow" onsubmit="window.open('about:blank', this.target, 'width=550,height=550')">
+         <div id='main'>
+             
+        <input type="hidden" name='liveagent.prechat:ContactFirstName' id='firstName' value="{!contactFirstName}"/>
+        <input type="hidden" name='liveagent.prechat:ContactLastName' id='lastName' value="{!contactLastName}"/>
+        <input type="hidden" name='liveagent.prechat:ContactEmail' id='email' value="{!contactEmail}"/>
+        <input type='submit' value='CHAT NOW' id='prechat_submit' onclick="setName()" Style="background-color:#0066a1;text-align:center;font-style:normal;font-weight:bold;font-size:125%;color:white;height:30px; width:100px;font-family: Arial;border:none; "/>
+        <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
+        <!-- map: Use the data from prechat form to map it to the Salesforce record's fields -->
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Email,true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Email,true" />
+        <!-- linkToEntity: Set the record Contact record, found/created above, as the Contact on the Case that's created --> 
+        <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
+        <!-- showOnCreate: Open the Contact and Case records as sub-tabs to the chat for the agent in the Console -->
+        <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId" />
+        <!-- displayToAgent: Hides the case record type from the agent -->
+        <input type="hidden" name="liveagent.prechat.buttons" value="{!URLENCODE(LEFT(User.id,15))}"/><br />
+        <!-- searchKnowledge: Searches knowledge article based on the text, this assumes that Knowledge is setup -->
+        <input type="hidden" name="liveagent.prechat.save:ContactEmail" value="Email_Address__c" />
+        <input type="hidden" name="liveagent.prechat.save:ContactFirstName" value="First_Name__c" />
+        <input type="hidden" name="liveagent.prechat.save:ContactLastName" value="Last_Name__c" /> 
+        <!-- Set the visitor's name for the agent in the Console to first and last name provided by the customer -->
+        <script type="text/javascript">
+        function setName() {
+            document.getElementById("prechat_field_name").value =  
+                document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+        }
+             
+             
+              function closeWindow() {
+        window.open('','_parent','');
+        window.close();
+    }
+             
+             </script>
+              <!-- dta_online is displayed whenever the specific agent is available to chat. -->
+ 
+
+  
+             <div id="msg_online" style="width:80%;font-family: Arial;font-size:10/12pt;margin: 0 auto;color:rgb(116, 116, 116);display: none;margin-top: 140px; ">
+          
+         By clicking on this link, you agree to the following: (a) you are an employee of your organization who is authorized to receive the communications contained within the link; and (b) the link is personal to you and cannot be shared with any third party. If the link was not sent by TE, then it should not be used. TE reserves the right in its sole discretion to take any legal or other action against any person or organization that fails to comply with the foregoing, or that engages in any misrepresentation or other inappropriate activity as it relates to the link or the information contained therein.
+       
+             </div>
+         </div>
+
+   
+
+  <!-- Change the domain name to the correct one for your org. -->
+  <script type='text/javascript' src='{!DeploymentURL}'></script>
+ <script type='text/javascript'>
+   
+    /* The following calls pass the user ID as the first argument and show whether the agent is online.*/
+    liveagent.showWhenOnline('{!left(user.id,15)}', document.getElementById('dta_online'));
+    liveagent.showWhenOffline('{!left(user.id,15)}', document.getElementById('dta_offline'));
+        /* var a= document.getElementById('dta_offline');*/
+        
+    /* The following calls pass the button ID as the first argument and show whether 
+    any agents are available to handle chats from the button. */
+    liveagent.showWhenOnline('{!directchatId}', document.getElementById('prechat_submit'));
+    liveagent.showWhenOnline('{!directchatId}', document.getElementById('button_online'));
+    liveagent.showWhenOffline('{!directchatId}', document.getElementById('button_offline'));
+    //liveagent.showWhenOffline('{!directchatId}', document.getElementById('prechat_submit1'));
+    liveagent.showWhenOnline('{!directchatId}', document.getElementById('dta_online'));
+    liveagent.showWhenOffline('{!directchatId}', document.getElementById('dta_offline'));
+    liveagent.showWhenOnline('{!directchatId}', document.getElementById('msg_online'));
+    
+    setTimeout(function(){
+        if(document.getElementById('prechat_submit').style.display == "none") {
+         document.getElementById('dta_online').style.display = "none";
+         document.getElementById('dta_offline').style.display = "";  
+        }                     
+
+    }, 1000); 
+    
+  
+    /* This domain and the IDs are specific to your org, so replace these with your own. */
+    
+      liveagent.init('{!initURL}', '{!dDeplyId}', '{!dOrgId}');
+
+  </script>
+    </form>
+</apex:page>

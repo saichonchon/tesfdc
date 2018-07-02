@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_25979703</developerName>
+        <masterLabel>Amount Bucket</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>Forecast_Snapshot__c.Amount__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>0</to>
+            </sourceValues>
+            <value>Zero Value</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>0</from>
+            </sourceValues>
+            <value>Non Zero Value</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>CUST_ID</field>
+    </columns>
+    <columns>
+        <field>BucketField_25979703</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Forecast snapshots that are having amount as zero.</description>
+    <filter>
+        <criteriaItems>
+            <column>BucketField_25979703</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Zero Value</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>FiscalQuarter</dateGranularity>
+        <field>CUST_CREATED_DATE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Forecast Snapshots with Zero Amount</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Forecast_Snapshot__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,61 @@
+<apex:component controller="ACP_Task_Action_Component_Ctrl" allowDML="true">
+<script>    
+    // workaround is necessary since inline editing of VF picklist and/or checkboxes won't commit changes before action if the user doesn't "click out" first.  
+    function focusAndSaveOpenOpp() {
+    
+        document.getElementById('focusMe').click();
+        saveFieldsOpenOpp();
+    }
+    </script>
+    <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+    <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+    <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300" />
+    <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff" />
+    <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+    <apex:attribute name="category" type="String" description="Activity type" assignTo="{!categoryVar}"/>
+    <apex:attribute name="accountPlanId" type="String" required="true" description="Account Plan Id" assignTo="{!accountPlanIdVar}"/>
+    <apex:attribute name="taskList" type="Task[]" description="" assignTo="{!commonTaskList}"/>
+    <apex:pageBlock mode="maindetail" id="tskTopOppBlock">
+        <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+            <apex:commandButton value="{!$Label.ACP_Add}"  id="addTopOppActions" action="{!addTask}" styleClass="btn btn-default" style="float:right" />
+            <apex:commandButton value="{!$Label.ACP_Save}" id="saveTopOppActions" styleClass="btn btn-default"  onclick="focusAndSaveOpenOpp();" style="float:right; display:none" reRender="tskTopOppBlock"/>               
+            <apex:commandButton value="{!$Label.ACP_Cancel}" id="cancelTopOppEdit" styleClass="btn btn-default" onclick="this.form.reset();" immediate="true" reRender="tskTopOppBlock" style="float:right; display:none" />
+            <input type="text" id="focusMe" style="display:none" />
+            <table class = "table table-bordered" >
+                <tr class = "TaskHeader">
+                    <th></th>
+                    <th>{!$Label.ACP_Action_Subject}</th>
+                    <th>{!$Label.ACP_Owner}</th>
+                    <th>{!$Label.ACP_Contact}</th>
+                    <th>{!$Label.ACP_Due}</th>
+                    <th>{!$Label.ACP_Status}&nbsp;
+                        <apex:selectList value="{!actStatus}" size="1" style="background-color: #899F99;">
+                            <apex:selectOptions value="{!statusOptions}"/>
+                            <apex:actionSupport event="onchange" action="{!updatefilter}" reRender="tskTopOppBlock" status="actionStatusDisplay"/>
+                        </apex:selectList>
+                        <apex:actionStatus id="actionStatusDisplay" >
+                            <apex:facet name="start" ><img src="/img/loading.gif" /></apex:facet>
+                        </apex:actionStatus> 
+                    </th>
+                    <th>{!$Label.ACP_Comments}</th>
+                </tr>
+                <apex:repeat value="{!taskListMain}" var="recordOOject">
+                <tr>  
+                    <td><apex:outputLink value="/{!recordOOject.id}/e?retURL=/apex/ACP_Performance_Analytics_Page{!URLENCODE('?acpid=' +accountPlanId + '#topOpenOpp')}" target="_blank">Edit</apex:outputLink>&nbsp;|&nbsp;<a href="javascript:if (window.confirm('Are you sure?')) DeleteTopOppAction('{!recordOOject.Id}');">Del</a></td>
+                        <apex:repeat value="{!$ObjectType.Task.FieldSets.ACP_Actions_UI_Fieldset}" var="FldName">
+                        <td><apex:outputField value="{!recordOOject[FldName]}">
+                            <apex:inlineEditSupport showOnEdit="saveTopOppActions,cancelTopOppEdit" hideOnEdit="addTopOppActions" event="ondblclick" />
+                        </apex:outputField>
+                        </td>
+                    </apex:repeat>
+                </tr>
+                </apex:repeat>
+            </table>
+        <apex:outputLink value="/apex/ACP_Actions_List?actionStatus={!actStatus}&acpId={!accountPlanId}&category={!category}" target="_blank" rendered="{!viewMore}">View More</apex:outputLink>
+        </div>
+        <apex:actionFunction action="{!actionsave}" name="saveFieldsOpenOpp" reRender="errors, fields" />
+        <apex:actionFunction action="{!DeleteAction}" name="DeleteTopOppAction" reRender="tskTopOppBlock" >
+            <apex:param name="relid" value="" assignTo="{!SelectedId}"/>
+        </apex:actionFunction>
+    </apex:pageBlock>
+</apex:component>

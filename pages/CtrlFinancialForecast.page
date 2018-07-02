@@ -1,0 +1,657 @@
+<apex:page sidebar="false" controller="CtrlAccountForecast">
+    <style>
+            #bodyTable td.noSidebarCell{padding: 0px !important;}
+        /* button block */
+        .btnBlockWrapper{height:60px;width:100%;position:relative;}
+        .btnBlock{height:60px; line-height:60px; background-color:rgb(234,143,58); 
+        position:absolute; width: 100%;}
+        .btnDiv{width:350px;margin:0px auto;}
+        .msg_header{position:absolute;top:0px;right:10px;color:#f8f8f8;padding-right:15px;
+            background:url({!URLFOR($Resource.sprites4AMpage,'bg1.png')}) no-repeat right center;}
+        body table tr td .btnBlock .btn.disableBtn{color:#999;background:#eee;}
+        .designedBtn{padding: 5px 10px;
+            color: #333;
+            margin: 1px;
+            border: none;
+            background: #e8e8e9 url('/img/alohaSkin/btn_sprite.png') repeat-x right top;
+            font-weight: 600;
+            font-size: 11px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            font-family: Arial,Helvetica,sans-serif;
+            cursor: pointer;
+            }
+        .Headerfurnature{position: absolute;top: 48px;right: 50px;}
+        /* common */
+        .clear{clear:both;}
+        .cTable{border-collapse:collapse;}
+        .ca{width:217px;/*width:178px;*/
+        padding:5px 0px;border-right:1px solid #f0f3f3;vertical-align:middle;}
+        .ca span{cursor:pointer;}
+        span.cfh{margin-left:-1000px;font-weight:bold;font-size:0.9em;color:#fff;}
+        span.plh{margin-left:-1000px;color:#fff;}
+        span.alh{margin-left:-30px;color:#fff;}
+        .hide{display:none;}
+
+        #tableDiv #fcDiv #dataAreaCtn #mainTbody td{font-size:12px;}
+        #tableDiv #vDiv #lTbody tr td{font-size:12px;}
+        #tableDiv #signDiv #signTbody tr td .sfh{font-size:12px;}
+
+        /* top left */
+        .leftCn,.hbx{overflow:hidden;float:left;}
+        .leftCn{padding-top:2px;}
+        .leftA{float:left;border-collapse: collapse;}
+        .leftA td{padding:5px 0px;}
+        .arrowAllDiv{position:relative;height:30px;padding-left: 20px;}
+        /* #ArrowAll img{cursor:pointer;} */
+        .iconPlus,.iconDeduct{cursor:pointer;
+            height: 14px;width: 12px;margin-bottom:-2px;
+            display: inline-block;}
+        .accrDiv .iconPlus,.accrDiv .iconDeduct{
+            margin-left:12px;
+        }
+        .iconPlus{background:url({!URLFOR($Resource.sprites4AMpage,'expIcon.png')}) center center no-repeat;}
+        .iconDeduct{background:url({!URLFOR($Resource.sprites4AMpage,'clpsIcon.png')}) center center no-repeat;}
+
+        .rfb{background-color:rgb(245,245,245);}
+        .span4height{line-height: 30px;}
+
+        /* top right */
+        .qtxt{display: inline-block;margin-top: 7px;color: #fff;}
+
+        .tLbl{position:relative;vertical-align:top;}
+        .tLbl div{position:relative;}
+        .tLbl .slBl{position:absolute;font-size:12px; word-break:keep-all;
+            word-wrap:normal;white-space:nowrap;left:20px;line-height:28px;}
+        #Theader{font-weight:bold;font-size:0.9em;}
+        #tthd .tLbl{text-align:center;}
+
+        #bthd th{padding:5px 0px;text-align:center;}
+
+        .hyTh{padding:0px;
+            background: url({!URLFOR($Resource.sprites4AMpage,'header3.png')}) repeat-x;
+            color: #f8f8f8;
+            /*width: 56px;max-width:56px;*//*test*/
+            }
+        .leftSideImgDiv{margin-left:0px;float:left;}
+        .rightSideImgDiv{float:right;}
+        .ftTh{padding:0px;
+            background: url({!URLFOR($Resource.sprites4AMpage,'header6.png')}) repeat-x;
+            color: rgb(34,34,34);
+            /*width: 56px;max-width:56px;*//*test*/
+            }
+        .periodLabel{display: inline-block;margin-left:15px;margin-top:6px; float: left;}
+        
+
+        .monthLabel{width: 80px;max-width:80px;min-width:80px; border-right:1px solid #eee;color:rgb(88, 90, 99);background-color:rgb(245,245,245);}/*test*/
+        .qtDiv{position:relative;height:30px;}
+        .qsts{display: inline-block;position: absolute;width: 12px;
+            height: 12px;line-height:12px;font-weight:bold;
+            top: -5px;right: 0px;cursor:pointer;background-color:rgb(17,66,86);color:#f8f8f8;}
+        /* for IE only*/
+        .qsts.qn{line-height:8px\0;}
+          
+        #tthd .hy,#tthd .CM,#tthd .nM{border-top:1px solid #f0f3f3;height:13px;}
+        .rfa td{border-top:1px solid #FFF;}
+        #bthd,#mainTbody tr,#lTbody tr,.rfb {border-bottom:1px solid #f0f3f3;}
+        #bthd {font-size:1.2em;}
+        .Total{background-color:rgb(24,96,118);color:#f8f8f8;width:80px;max-width:80px;min-width:80px;
+            border-right:1px solid #eee;
+            }/*test*/
+        
+
+        /* bottom left */
+        .vbx{overflow:hidden;float:left;}
+        .leftC{float:left;border-collapse: collapse;}
+        .leftC #lTbody td{padding:8px 0px;}
+        .acNameTotal{text-indent:17px;display: inline-block;
+            width:180px;position:relative;}
+        .acName{
+            display: inline-block;
+            width:180px;position:relative;}
+        .acName a{color: #f8f8f8;margin-left: 0px;
+            text-indent:17px;
+            width: 180px;overflow: hidden;
+            white-space:nowrap; text-overflow:ellipsis;
+            text-decoration:none;}
+        .acName a:link{color: #f8f8f8;text-decoration:none;}
+        .acName a:visited{color: #f8f8f8;text-decoration:none;}
+        .acName a:hover{color: #f8f8f8;text-decoration:none;}
+        .acName a:active{color: #f8f8f8;text-decoration:none;}
+
+        .active .acName a{color: #000;}
+        .active .acName a:link{color: #000;}
+        .active .acName a:visited{color: #000;}
+        .active .acName a:hover{color: #000;}
+        .active .acName a:active{color: #000;}
+
+        .expIcn,.clpsIcn{display:inline-block;float:right;cursor:pointer;
+            width: 28px;height: 23px;margin: -6px 0px;}
+        .expIcn{background: url({!URLFOR($Resource.sprites4AMpage,'downArrow.png')}) left center no-repeat;}
+        .clpsIcn{background: url({!URLFOR($Resource.sprites4AMpage,'upArrow.png')}) 37% center no-repeat;}
+        
+        .leftC tr td.tin{text-align:left;white-space:nowrap;border-left:10px rgb(234, 149, 43) solid;}
+        .leftC tr td.rt1,.leftC tr td.rt2,.leftC tr td.rt3{text-indent:10px;}
+
+        .leftC tr td.tjn{text-align:left;white-space:nowrap;border-left:10px rgb(234, 149, 43) solid;
+            text-indent:25px;}
+        .accrDiv{float:left;text-indent:0px;margin-right:3px;}
+        .lit{margin-right:-3px;font-size:10px;}
+        .rtd{position:relative;width: 55px;height: 13px;}
+        .rtd span{position:relative;}
+
+        .leftC .rt1{border-right:5px solid rgb(106,127,125);}
+        .leftC .rt2{border-right:5px solid rgb(119,181,220);}
+        .leftC .rt3{border-right:5px solid rgb(52,105,138);}
+        .leftC .rt4{border-right:5px solid rgb(234,149,43);}
+        
+        #signTbody .rt1{width:8px;background-color:rgb(106,127,125);}
+        #signTbody .rt2{width:8px;background-color:rgb(119,181,220);}
+        #signTbody .rt3{width:8px;background-color:rgb(52,105,138);}
+        #signTbody .rt4{width:8px;background-color:rgb(234,149,43);}
+
+        /* bottom right */
+        .hvbx{overflow-x:auto; overflow-y:hidden;float:left;}
+        
+        #mainTbody tr td{width:80px;min-width:80px;max-width:80px;word-wrap:break-word;
+            white-space:normal;padding:8px 0px;text-align:right;
+            border-right:1px solid #eee;
+            }
+        #mainTbody tr td.pltd{text-align:left;}
+        #mainTbody tr td input{width:50px;margin-top:-3.5px;margin-bottom:-3.5px;
+            margin-left:-2px;margin-right: 1px;text-align:right;height:13px;}
+        #mainTbody tr td .rtd{position:relative;}
+        .rtd div{width:9px;height:30px;position:absolute;height:31px\0;
+            top: -12px;right: -9px;}
+        @-moz-document url-prefix(){.rtd div{height:29px;}}
+
+        .cmtImg{position: relative;}
+        .cmI{cursor: pointer;position: absolute;left: 1px;top: 5px;}
+        .cmiIcon{cursor: pointer;position: absolute;left: 3px;top: -3.5px;background-color: #fff;
+            height: 14px;width: 14px;font-size:14px;line-height: 14px;text-align: center;}
+        .cmiIcon.hasCmts{
+            border:2px solid #333;
+            color:#333;
+        }
+        .cmiIcon.hasNoCmt{
+            border:2px solid #ddd;
+            color:#ddd;
+        }
+        /*.hasCmts{display:block;position: absolute;height: 8px;width: 8px;top:3px;left: 10px;
+            background:url({!URLFOR($Resource.Icon4FinancialForecase,'pencil12.gif')}) no-repeat center center;cursor:pointer;}
+        .hasNoCmt{display:none;}*/
+
+        /*about sign div at bottom right*/
+        #signDiv{float:left;overflow-y:auto;}
+        
+        #signDiv{overflow-y:scroll\0;}
+        
+        .signTable{border-collapse: collapse;}
+        .signTable td{padding:8px 0px;border-bottom: 1px solid #f0f3f3;}
+        .signTable td.signPh{padding:8px 0px;}
+        .sfh{margin-left: -300px;color: #fff;}
+        
+        /* bottom-left line background */
+        #lTbody .odd{background-color:rgb(234,149,43);}
+        #lTbody .evn{background-color:rgb(234,149,43);}
+
+        #lTbody .odd td{background-color:rgb(255,255,255);}
+        #lTbody .evn td{background-color:rgb(240,240,240);}
+
+        #lTbody .acc_start td{background-color:rgb(50,50,50);color:#f8f8f8;}
+        #lTbody .acc_start.active td{background-color:rgb(234,149,43);color:rgb(34,34,34);}
+
+        /* bottom-right line background */
+        #mainTbody .acc_start td{background-color:rgb(255,255,255);}
+        #mainTbody .acc_start td.ct{background-color:rgb(245,245,245);}
+        
+
+        
+        .se1{background-color:rgb(216,223,223);}
+        .se2{background-color:rgb(219,237,249);}
+        .se3{background-color:rgb(193,214,226);}
+        #mainTbody .AccyRow{background-color:rgb(250,229,188);}
+        #mainTbody .zc{background-color:rgb(250,229,188);}
+
+        .se1 .ct{background-color:rgb(210,216,215);}
+        .se2 .ct{background-color:rgb(212,230,242);}
+        .se3 .ct{background-color:rgb(186,206,219);}
+        #mainTbody .AccyRow .ct{background-color:rgb(242,222,181);}
+        #mainTbody .zc .ct{background-color:rgb(242,222,181);}
+
+        /* about hover effect */
+        #lTbody tr:hover{border-bottom: 1px dashed #991FC0 !important;border-top: 1px dashed #991FC0 !important;}
+        #mainTbody tr:hover{border-bottom: 1px dashed #991FC0 !important;border-top: 1px dashed #991FC0 !important;}
+        #lTbody tr.hv{border-bottom: 1px dashed #991FC0 !important;border-top: 1px dashed #991FC0 !important;}
+        #mainTbody tr.hv{border-bottom: 1px dashed #991FC0 !important;border-top: 1px dashed #991FC0 !important;}
+
+       
+        
+        /* comment popup */
+        #popCmt{position:fixed;top:0px;left:0px;width:100%;height:100%;background:#f8f8f8;opacity:0.8;
+            filter:ALPHA(opacity=80);z-index:1000;}
+        #popCtn{width:600px;height:470px;position:fixed;top:50%;left:50%;margin-left:-300px;
+            margin-top:-225px;z-index:9999;border:8px double #eee;border-radius:5px;background-color:#FFF;
+            -webkit-box-shadow:1px 3px 5px #aaa;-moz-box-shadow:1px 3px 5px #aaa;box-shadow:1px 3px 5px #aaa;}
+        .titleLine{background-color:#aca;width:600px;border-bottom:1px solid #aaa;
+            border-radius:3px;font-size:20px;text-align:center;}
+        .icon_close{border-width:1px;border-style:solid;border-color:#bbb;
+            height:20px;width:20px;text-align:center;
+            line-height:20px;cursor:pointer;float:right;font-size:20px;margin:1px;}
+        .icon_close:hover{border-color:#aaa;font-weight:bold;}
+        #popCtn table.hd td{font-weight:bold;}
+        #popCtn table td.pa{width:30px;min-width:30px;max-width:30px;}
+        #popCtn table td.pb{width:100px;min-width:100px;max-width:100px;}
+        #popCtn table td.pc{width:100px;min-width:100px;max-width:100px;}
+        #popCtn table td.pd{width:100px;min-width:100px;max-width:100px;}
+        #popCtn table td.pe{width:250px;min-width:250px;max-width:250px;}
+        .pb select, .pc select{width:80px;}
+        #popCtn table td{padding:5px 0px;text-align:center;}
+        #popCtn table td input.numInput{width:80px;text-align:right;}
+        #popCtn table td input.txtInput{width:220px;}
+        #ptbCtn{height:380px;overflow-y:auto;overflow-x:hidden;}
+        
+        
+        #loadCtDiv{position:absolute;z-index:999;width:600px;height:440px;background:#fff url({!URLFOR($Resource.Icon4FinancialForecase,'loading.gif')}) no-repeat center center;
+        opacity: 0.85;filter: alpha(opacity = 85);}
+        #pageLoading{position:absolute;z-index:999;width:100%;height:100%;background:#fff url({!URLFOR($Resource.Icon4FinancialForecase,'loading.gif')}) no-repeat center center;
+        opacity: 0.85;filter: alpha(opacity = 85);margin: -10px;}
+        
+        /*about button*/
+        .cbtn { display: block; position: relative; background: #fff; padding: 5px; float: left; 
+        color: #333; text-decoration: none; cursor: pointer; height: 20px;line-height: 20px;margin-left:10px;
+        font-weight: 600;
+            font-size: 11px;}
+        .cbtn * { 
+            font-style: normal; background-image: url({!URLFOR($Resource.sprites4AMpage,'btnCorner.png')}); 
+            background-repeat: no-repeat; display: block; position: relative; }
+        .cbtn i { background-position: top left; position: absolute; margin-bottom: -5px;  top: 0; left: 0; width: 5px; height: 5px; }
+        .cbtn span { background-position: bottom left; left: -5px; padding: 0 0 5px 10px; margin-bottom: -5px; }
+        .cbtn span i { background-position: bottom right; margin-bottom: 0; position: absolute; left: 100%; width: 10px; height: 100%; top: 0; }
+        .cbtn span span { background-position: top right; position: absolute; right: -10px; margin-left: 10px; top: -5px; height: 0; }
+
+        * html .cbtn span,
+        * html .cbtn i { float: left; width: auto; background-image: none; cursor: pointer; }
+
+        
+        .cbtn:hover { background-color: #eee; text-decoration:none;color: #333;}
+        .cbtn:active { background-color: #f0f0f0; text-decoration:none;color: #333;}
+        /*.cbtn[class] {  background-image: url({!URLFOR($Resource.sprites4AMpage,'btn_sprite.png')}); */background-position: bottom; }
+
+        * html .cbtn { border: 3px double #aaa; }
+        * html .cbtn:hover { background-color: #eee; border-color: #a00; text-decoration:none;color: #333;}
+    </style>
+    <style>
+        #mainTbody .acc_start td.cRed{background-color: {!pageConf.amRed};}
+        #mainTbody .acc_start td.cGreen{background-color: {!pageConf.amGreen};}
+        #mainTbody .acc_start td.cYellow{background-color: #ffa;}
+        /*.cGreen .cmiIcon{color:{!pageConf.amGreen};}
+        .cRed .cmiIcon{color:{!pageConf.amRed};}
+        .cYellow .cmiIcon{color: rgb(230,215,43);}*/
+    </style>
+    
+    <div id="pageLoading" class=""></div>
+    <apex:form id="theForm">
+        
+        <apex:actionFunction name="getCmt" action="{!getComments}" rerender="commentPanel,pageMsg" oncomplete="udpCmt();">
+        </apex:actionFunction>
+        <apex:actionFunction name="doTerr" action="{!refresh4TerritoryChange}" rerender="pageMsg,theForm,dataPanel" oncomplete="initJobsB();hideLoading();">
+        </apex:actionFunction>
+        <apex:actionFunction name="saveAction" action="{!saveForecast}" rerender="theForm,pageMsg" oncomplete="checkRefTrr();">
+        </apex:actionFunction>
+        <span id="theData" class="hide">{!pageConf.str_fcData}</span>
+        <span id="cmtY"><apex:inputHidden value="{!pageConf.comtSaveYear}"/></span>
+        <span id="cmtM"><apex:inputHidden value="{!pageConf.comtSaveMonth}"/></span>
+        <span id="pAcId"><apex:inputHidden value="{!parentAcctId}"/></span>
+        <span id="saveInfo">
+            <apex:inputHidden value="{!pageConf.str_fcSaveItems}"/>
+        </span>
+        <span id="territoryVal">
+            <apex:inputHidden value="{!pageConf.selectTerritory}"/>
+        </span>
+    </apex:form>
+    <apex:outputPanel id="commentPanel" styleClass="hide">
+        {!str_comment}
+    </apex:outputPanel>
+    <span class="hide" id="numFormat"><apex:outputField value="{!pageConf.tempBBBM.Bill_Amount_USD__c}"/></span>
+    <span class="hide" id="cYear">{!pageConf.currentYear}</span>
+    <span class="hide" id="cMonth">{!pageConf.currentMonth}</span>
+    <span class="hide" id="fiscalInfo">{!pageConf.fiscalDate}</span>
+    <span class="hide" id="effworkDays">{!pageConf.effectiveDays}</span>
+    <span class="hide" id="pickedTerr">{!pageConf.selectTerritory}</span>
+    <span class="hide" id="terris">{!territoryCodes}</span>
+    <span class="hide" id="accPfcInfo">{!pageConf.acctPercent}</span>
+    <!--<apex:outputPanel id="currentPID" styleClass="hide">{!pageConf.currentParentId}</apex:outputPanel>-->
+    <div class="btnBlockWrapper">
+        <div class="btnBlock" id="btnBlock">
+            <div class="btnDiv">
+                <table><tbody><tr><td><b>{!$Label.FinancialPlan_TerritoryCode}</b>
+                <select id="terrCtn" onchange="changeTerr(this.value);"><option value="">--None--</option></select>
+                </td><td>
+                <apex:outputPanel rendered="{!pageConf.isSaveable}" id="saveBtnPanel">
+                    <a class="cbtn" id="btn_save" onclick="javascript:resetSentMap();saveFC();return false;"><i></i><span><i></i><span></span>{!$Label.FinancialPlan_Save}</span></a>
+                </apex:outputPanel>
+                <a class="cbtn" onclick="javascript:cancelPage();return false;"><i></i><span><i></i><span></span>{!$Label.FinancialPlan_Cancel}</span></a>
+                </td>
+                </tr>
+                </tbody>
+                </table>
+            </div>
+            <div class="msg_header">{!$Label.FinancialPlan_headerMsg}</div>
+            <div class="Headerfurnature"><img src="{!URLFOR($Resource.sprites4AMpage,'bg2.png')}"/></div>
+        </div>
+    </div>
+    
+    <apex:pageMessages id="pageMsg"/>
+    
+    <apex:outputPanel id="dataPanel">
+    <div id="tableDiv" style="padding-left: 20px;">
+    <div class="leftCn">
+    <table class="leftA">
+        <tbody>
+            <tr class="rfa">
+                <th class="ca"><span class="cfh">I</span></th>
+            </tr>
+            <tr class="rfb">
+                <th class="ca">
+                    <div class="arrowAllDiv">
+                        <span id="ArrowAll" onclick="eca(this);" class="iconDeduct">
+                           
+                        </span>
+                        <span class="span4height">{!$Label.FinancialPlan_CollapseAll}</span>
+                        <!--<span class="span4height"><div>I</div><div>1</div></span>-->
+                    </div>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="hbx" id="hDiv">
+        <div class="hwbx" id="headerCtn">
+            <table class="cTable">
+                <tbody id="Theader">
+                    <tr id="tthd">
+                        <th class="hyTh">
+                            <span class="leftSideImgDiv"><img src="{!URLFOR($Resource.sprites4AMpage,'header1.png')}"/></span>
+                            <span class="periodLabel">{!$Label.FinancialPlan_Historical}</span>
+                            <div class="rightSideImgDiv"><img src="{!URLFOR($Resource.sprites4AMpage,'header2.png')}"/></div>
+                        </th>
+                        <th class="ftTh">
+                            <span class="leftSideImgDiv"><img src="{!URLFOR($Resource.sprites4AMpage,'header4.png')}"/></span>
+                            <span class="periodLabel">{!$Label.FinancialPlan_Future}</span>
+                            <div class="rightSideImgDiv"><img src="{!URLFOR($Resource.sprites4AMpage,'header5.png')}"/></div>
+                        </th>
+                    </tr>
+                    <tr id="bthd">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th onclick="collapseQt(this);"><span class="qtxt"><div></div><div></div></span><span class="qsts qn"><div></div></span></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th onclick="collapseQt(this);"><span class="qtxt"><div></div><div></div></span><span class="qsts qn"><div></div></span></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th onclick="collapseQt(this);"><span class="qtxt"><div></div><div></div></span><span class="qsts qn"><div></div></span></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th onclick="collapseQt(this);"><span class="qtxt"><div></div><div></div></span><span class="qsts qn"><div></div></span></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th onclick="collapseQt(this);"><span class="qtxt"><div></div><div></div></span><span class="qsts qn"><div></div></span></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="clear"></div>
+        <div class="vbx" id="vDiv">
+            <table class="leftC">
+                <tbody id="lTbody">
+                <tr class="acc_start">
+                    <td class="ca">
+                        <span class="acNameTotal">{!$Label.FinancialPlan_TotalFc}</span>
+                        <span onclick="expandAcc(this);" class="clpsIcn" id="IconFixA"></span>
+                    </td>
+                </tr>
+                <!--according to bin yu,the label in this part use same label with rsm-->
+                <tr class="odd"> 
+                    <td class="tin rt1">
+                        〉{!$Label.FinancialPlan_CalFcProposal}
+                    </td>
+                </tr>
+                <tr class="evn">
+                    <td class="tin rt1">
+                        〉{!$Label.rsm_Previous_Month_Forecast}
+                    </td>
+                </tr>
+                <tr class="odd">
+                    <td class="tin rt2">
+                        〉{!$Label.rsm_Budget_Planning_Baseline}
+                    </td>
+                </tr>
+                <tr class="evn">
+                    <td class="tin rt3">
+                        〉{!$Label.rsm_Demand_Shipped}
+                    </td>
+                </tr>
+                <tr class="odd">
+                    <td class="tin rt3 rowLabel">
+                        〉{!$Label.rsm_Book_to_Bill}
+                    </td>
+                </tr>
+                <tr class="evn">
+                    <td class="tin rt3 rowLabel">
+                        〉{!$Label.rsm_Demand_Open}
+                    </td>
+                </tr>
+                <tr class="odd">
+                    <td class="tjn rt3 rowLabel1">
+                        ●{!$Label.rsm_orders}
+                    </td>
+                </tr>
+                <tr class="evn">
+                    <td class="tjn rt3 rowLabel1">
+                        ●{!$Label.rsm_Scheduling_Agreements}
+                    </td>
+                </tr>
+                <tr class="odd">
+                    <td class="tin rt3 rowLabel">
+                        〉{!$Label.rsm_Currency}
+                    </td>
+                </tr>
+                <tr class="AccyRow evn">
+                    <td class="tin rt4 rowLabel">
+                        <div class="accrDiv">
+                            <span onclick="expandAccy(this);" class="iconPlus" id="IconFixB"></span>
+                        </div>
+                        {!$Label.FinancialPlan_Accuracy}
+                    </td>
+                </tr>
+                <tr class="odd zc M2Acc hide">
+                    <td class="tjn rt4 rowLabel1">
+                        〉{!$Label.rsm_2M_Accuracy}
+                    </td>
+                </tr>
+                <tr class="evn zc hide">
+                    <td class="tjn rt4 rowLabel1">
+                        〉{!$Label.rsm_6M_Accuracy}
+                    </td>
+                </tr>
+                <tr class="odd zc hide">
+                    <td class="tjn rt4 rowLabel1">
+                        〉{!$Label.rsm_Quarterly_Accuracy}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="hvbx" id="fcDiv">
+            <div class="hwbx" id="dataAreaCtn">
+                <table class="cTable">
+                    <tbody id="mainTbody">
+                        <tr id="line_Total" class="acc_start">
+                        </tr>
+                        <tr id="line_a" class="odd se1">
+                        </tr>
+                        <tr id="line_b" class="evn se1">
+                        </tr>
+                        <tr id="line_c" class="odd se2">
+                        </tr>
+                        <tr id="line_d" class="evn se3">
+                        </tr>
+                        <tr id="line_e" class="odd se3">
+                        </tr>
+                        <tr id="line_f" class="evn se3">
+                        </tr>
+                        <tr id="line_g" class="odd se3">
+                        </tr>
+                        <tr id="line_h" class="evn se3">
+                        </tr>
+                        <tr id="line_i" class="odd se3">
+                        </tr>
+                        <tr id="line_m" class="AccyRow">
+                        </tr>
+                        <tr id="line_j" class="evn zc M2Acc hide">
+                        </tr>
+                        <tr id="line_k" class="odd zc hide">
+                        </tr>
+                        <tr id="line_l" class="evn zc hide">
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="signDiv" style="width:10px;">
+            <div class="" id="">
+                <table class="signTable">
+                    <tbody id="signTbody">
+                        <tr class="acc_start">
+                            <td class="signPh"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd se1">
+                            <td class="rt1"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn se1">
+                            <td class="rt1"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd se2">
+                            <td class="rt2"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd se3">
+                            <td class="rt3"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="AccyRow">
+                            <td class="rt4"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn zc M2Acc hide">
+                            <td class="rt4"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="odd zc hide">
+                            <td class="rt4"><span class="sfh">I</span></td>
+                        </tr>
+                        <tr class="evn zc hide">
+                            <td class="rt4"><span class="sfh">I</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </apex:outputPanel>
+    <div id="popCmt" class="hide">
+        
+    </div>
+    <div id="popCtn" class="hide">
+            <div class="titleLine"><span id="popTitle">{!$Label.FinancialPlan_Comment}</span><div class="icon_close" onclick="clsPop();">&times;</div></div>
+            <div id="loadCtDiv"></div>
+            <table class="hd">
+                <tbody>
+                    <tr>
+                    <td class="pa"><image src="{!URLFOR($Resource.Icon4FinancialForecase,'add.png')}" onclick="addC();"/></td>
+                    <td class="pb">{!$Label.FinancialPlan_Account}</td>
+                    <td class="pc">{!$Label.FinancialPlan_PFCenter}</td>
+                    <td class="pd">{!$Label.FinancialPlan_Value}</td>
+                    <td class="pe">{!$Label.FinancialPlan_Comment}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="ptbCtn">
+            
+            <table>
+                <tbody id="popTb">
+                </tbody>
+            </table>
+            </div>
+            <center><input type="button" value="{!$Label.FinancialPlan_Save}" onclick="saveCmt();" id="save_cmt_button"/></center>
+        </div>
+    <script src="{!URLFOR($Resource.TEJqueryMiNi)}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+    <script src="{!URLFOR($Resource.js4ASM)}" type="text/javascript"></script>
+    <script type="text/javascript">
+        //$('#pageLoading').removeClass('hide');
+     //   $('#btnBlock').width($(window).width()-100);
+        var _Other = '{!$Label.FinancialPlan_Other}',
+            GexpLabel = '{!$Label.FinancialPlan_ExpandAll}',
+            GclpLabel = '{!$Label.FinancialPlan_CollapseAll}',
+            GMsgInvalidNum = '{!$Label.FinancialPlan_InvalidNumber}',
+            GtitleMap = [
+                '<span class="lit">〉</span>'+'{!$Label.FinancialPlan_CalFcProposal}',
+                '<span class="lit">〉</span>'+'{!$Label.rsm_Previous_Month_Forecast}',
+                '<span class="lit">〉</span>'+'{!$Label.rsm_Budget_Planning_Baseline}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_Demand_Shipped}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_Book_to_Bill}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_Demand_Open}',
+               '● '+'{!$Label.rsm_orders}',
+               '● '+'{!$Label.rsm_Scheduling_Agreements}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_Currency}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_2M_Accuracy}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_6M_Accuracy}',
+               '<span class="lit">〉</span>'+'{!$Label.rsm_Quarterly_Accuracy}'
+           ],
+           GAccuracy = '{!$Label.FinancialPlan_Accuracy}',
+           GpensilSrc = '{!URLFOR($Resource.Icon4FinancialForecase,'pencil12.gif')}',
+           GcommentSrcRed = '{!URLFOR($Resource.sprites4AMpage,'commentIcon1.png')}',
+           GcommentSrcGreen = '{!URLFOR($Resource.sprites4AMpage,'commentIcon2.png')}',
+           GcmtHint = '{!$Label.FinancialPlan_CommentHint}',
+           msg_NeedSaveData = '{!$Label.FinancialPlan_SaveData}',
+           msg_AccPrcEmpty = '{!$Label.FinancialPlan_AccPrcEmpty}',
+           GminusSrc = '{!URLFOR($Resource.Icon4FinancialForecase,'minus.png')}',
+           GcmtPanel = '{!$Component.commentPanel}',
+           todayYear = '{!pageConf.currentYear}',
+           todayMonth = '{!pageConf.currentMonth}',
+           isSaveable = '{!pageConf.isSaveable}',
+           labelHistory = '{!$Label.FinancialPlan_Historical}',
+           labelFuture = '{!$Label.FinancialPlan_Future}',
+           imgHistoryLeftSide = '{!URLFOR($Resource.sprites4AMpage,'header1.png')}',
+           imgHistoryRightSide = '{!URLFOR($Resource.sprites4AMpage,'header2.png')}',
+           imgFutureLeftSide = '{!URLFOR($Resource.sprites4AMpage,'header4.png')}',
+           imgFutureRightSide = '{!URLFOR($Resource.sprites4AMpage,'header5.png')}';
+           initColor('{!colorConfig}');
+    </script>
+    <!-- load the source into cache -->
+    <span class="hide">
+        <img src="url({!URLFOR($Resource.sprites4AMpage,'downArrow.png')})"/>
+        <img src="url({!URLFOR($Resource.sprites4AMpage,'upArrow.png')})"/>
+    </span>
+</apex:page>

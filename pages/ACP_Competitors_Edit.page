@@ -1,0 +1,52 @@
+<apex:page standardController="ACP_Account_Plan__c" showHeader="false" >
+   
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+   <!--ACPBootstrapStyling--> 
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+      <apex:form >
+         <apex:pageBlock mode="maindetail">
+            <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:outputText value="{!$Label.ACP_Customer_Overview}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+               <div class = "col-md-12" >
+                  <div class="panel panel-default">
+                     <!--<div class="panel-heading"> {!$Label.ACP_Edit_Compeitors}  </div>-->
+                     <div class ="panel-body">
+                     <div class ="informationBar">{!$Label.ACP_Edit_Competitors} </div>
+                     <!--<br/>
+                        
+                        <div class ="col-md-6">
+                           
+                           <div class="form-group">
+                             
+                              <apex:inputField taborderhint="5" value="{!ACP_Account_Plan__c.ACP_Account_Summary__c}" styleClass="inputField" html-placeholder="Enter Summary" required="true" style="width : 140%; height : 100px;" />
+                           </div>
+                           
+                          
+                        
+                        </div>--></div>
+                        
+                        
+                       <div class = "panel-footer">
+                        <div align ="right" style="">
+                         <apex:commandButton value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancel}" styleClass="btn btn-default" />&nbsp;
+                          
+                         </div>
+                          
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </apex:pageBlock>
+      </apex:form>
+              
+   </div>
+    </div>
+    
+     <apex:relatedlist list="Account_Plan_Attachment__r" /> 
+</apex:page>

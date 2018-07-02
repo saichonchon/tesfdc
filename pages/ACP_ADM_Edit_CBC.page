@@ -1,0 +1,69 @@
+<apex:page controller="ACP_Performance_Analytics_ctrl" tabStyle="ACP_Account_Plan__c" standardStylesheets="false" showHeader="true" sidebar="false" >
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+    <!--  <apex:form >
+         <apex:pageBlock mode="edit">
+            <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:pageMessages />
+            <apex:outputText value="Account Plan" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-primary">
+                     <div class="panel-heading"> {!$Label.ACP_Edit_Product} </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar">{!$Label.ACP_Information}</div>
+                     <br/>
+                        
+                        <div class ="col-md-6">
+                           
+                         <div class="form-group">
+                    <label><font style="color:red">*</font>{!$Label.ACP_Product}</label><br/>
+                    <apex:inputField value="{!Mark.ACP_Product_CBC__c}" styleClass="inputField" required="true" html-placeholder="Enter Product" >
+                    <apex:actionsupport event="onchange" reRender="test" action="{!CBC}" >
+                    <apex:param name="ProductCBC"  value="{!Mark.ACP_Product_CBC__c}" assignTo="{!cbcValue}"/></apex:actionsupport> </apex:inputfield>
+                  </div>
+                 
+ 
+                 <div class="form-group">
+                  <apex:outputPanel id="test" >
+                    <label>CBC</label><br/>
+                    <apex:selectList title="Select" multiselect="false" size="1" id="selectListValues" value="{!acpcbc}" >
+                    <apex:selectOptions value="{!admCBCValues}"  />
+                    </apex:selectList>
+                   </apex:outputPanel>
+                  </div>
+                           
+                       <!--   <apex:inputField value="{!MarkComp.ACP_Product_CBC__c}" styleClass="inputField" required="true" html-placeholder="Enter Product" ></apex:inputfield> -->
+                         
+                        
+                  <!--      </div></div>
+                        
+                         <div class="panel-footer">
+                <div align="right" style="">
+                  <apex:commandButton value="{!$Label.ACP_Cancel}" immediate="true" action="{!perfPageRedirection}" styleClass="btn btn-default" />&nbsp;
+
+                <!--  <apex:commandButton action="{!updateCBCProdADM}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" />-->
+                
+          <!--      </div>
+
+              </div>
+                     
+                  </div>
+               </div>
+            </div>
+           
+         </apex:pageBlock>
+      </apex:form>-->
+        
+      <apex:relatedlist list="Account_Plan_Attachment__r"  /> 
+     
+        </div>
+        
+   </div>
+    
+</apex:page>

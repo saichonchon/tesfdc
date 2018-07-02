@@ -1,0 +1,114 @@
+<apex:page standardController="User" extensions="spExams.SPExamsAttachRecipientsToExamCtrl" recordSetVar="" sideBar="{!ISNULL(examIdByParameter)}" showHeader="{!ISNULL(examIdByParameter)}">
+
+    <c:spExamsUserListView_Resources />
+    <c:RaphaelResources />
+    
+    <div id="salesforce_bootstrap">
+        <apex:form >
+            <apex:actionFunction name="goToMappingUsers" 
+                                 action="{!goToMappingUsers}">
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="getUsers" 
+                                 action="{!getUsers}"
+                                 rerender="dinamic-page-table"
+                                 oncomplete="adjustHeader(); $('#btn-attach-users').addClass('disabled')">
+                <apex:param name="userNameSubstring" value=""/>
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="getSelectedUsers" 
+                                 action="{!getSelectedUsers}"
+                                 rerender=""
+                                 oncomplete="goToMappingUsers()">
+                <apex:param name="selectedUsersIds" value=""/>
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="moveInPagination" 
+                                 action="{!moveInPagination}"
+                                 rerender="dinamic-page-table"
+                                 oncomplete="adjustHeader(); $('#btn-attach-users').addClass('disabled')">
+                <apex:param name="direction" value=""/>
+            </apex:actionFunction>
+                                    
+            <div>
+            	<div class="form-horizontal well">
+	                <div class="span12"> 
+	                    <div class="control-group">
+	                        <label class="control-label">Search User</label>
+	                        <div class="controls">
+	                            <input id="search-object-input" placeholder="Type User Name" type="text" onkeyup="getUsers(this.value)"/>
+	                            <a id="btn-attach-users" class="btn pull-right disabled" onclick="getSelectedUsersJS()">Attach Recipients</a>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="span12"> 
+	                    <apex:outputPanel id="dinamic-page-table">
+	                        <div class="dinamic-page table-header">
+	                            <table class="dinamic-page-table table-header {!if(UsersMap == null, 'hide', '')}">
+	                                <tr>
+	                                    <th width="1%">
+	                                        <input class="select-user-all" type="checkbox" onclick="manageSelectAllCheckboxes($('.select-user'), $(this).attr('checked'), $('#btn-attach-users'));"></input>
+	                                    </th>
+	                                    <th width="30%">
+	                                        First Name 
+	                                    </th>
+	                                    <th width="30%">
+	                                        Last Name
+	                                    </th>
+	                                    <th width="30%">
+	                                        Email
+	                                    </th>
+	                                </tr>
+	                            </table>
+	                        </div>
+	                        <div class="dinamic-page">  
+	                            <apex:outputPanel rendered="{!UsersMap == null}">
+	                                <div class="no-found">
+	                                    No User found.
+	                                </div>
+	                            </apex:outputPanel>
+	                            <table class="dinamic-page-table {!if(UsersMap == null, 'hide', '')}">
+	                                <apex:repeat value="{!UsersMap}" var="UserKey">
+	                                    <tr class="object-selected-row">
+	                                        <td width="1%">
+	                                            <input class="select-user" type="checkbox" value="{!UsersMap[UserKey].Id}" onchange="manageSelectionSelectAllCheckbox($('.select-user'), $('.select-user-all'), $('#btn-attach-users'))"></input>
+	                                        </td>
+	                                        <td width="30%">
+	                                            {!UsersMap[UserKey].FirstName}
+	                                        </td>
+	                                        <td width="30%">
+	                                            {!UsersMap[UserKey].LastName}
+	                                        </td>
+	                                        <td width="30%">
+	                                            {!UsersMap[UserKey].Email}
+	                                        </td>
+	                                    </tr>
+	                                </apex:repeat>  
+	                            </table>
+	                        </div>
+	                        <div class="btn-group-pagination"> 
+	                            <a class="btn btn-small {!IF(UserPaginator.Reader.HasPrevious, '','disabled')}" onclick="moveInPaginationJS($(this), 'First')">«</a>
+	                            <a class="btn btn-small {!IF(UserPaginator.Reader.HasPrevious, '','disabled')}" onclick="moveInPaginationJS($(this), 'Previous')">Prev</a>
+	                            <a class="btn btn-small {!IF(UserPaginator.Reader.HasNext, '','disabled')}" onclick="moveInPaginationJS($(this), 'Next')">Next</a>
+	                            <a class="btn btn-small {!IF(UserPaginator.Reader.HasNext, '','disabled')}" onclick="moveInPaginationJS($(this), 'Last')">»</a>
+	                        </div>
+	                    </apex:outputPanel>     
+	                </div> 
+	            </div>
+            </div>  
+        </apex:form>
+        
+        
+        
+        <!--=================================  TEMPLATES  ======================================-->
+        
+        <!--=================================  INNER MSG  ======================================-->
+        
+        <div class="alert hide msg-inner template">
+            <button type="button" class="close" onclick="manageMsgInner($(this).parent(), 'Hide', null, null);">&times;</button>
+            <div>Information</div>
+        </div>
+    </div>              
+        
+        
+</apex:page>

@@ -1,0 +1,69 @@
+<apex:page controller="ReportController1" readOnly="true">
+  <style>
+      table.reportResults { 
+          width: 100%;
+      }
+  </style>   
+  <apex:pageBlock title="My MQLs">
+  <apex:outputText value="Below are a list of your Marketing Qualified Leads (MQL).  Please click on a record which needs to be qualified." rendered="true"/>
+  <apex:outputPanel id="reportResults" layout="block">
+      <apex:outputText value="Running..." rendered="{!reportIsRunning}"/>
+      <apex:outputPanel rendered="{!NOT(reportIsRunning)}">
+         <table class="reportResults">
+           <thead>
+                   <th>Full name</th>
+                   <th>Type</th>
+                   <th>Rating</th>
+                   <th>{!IF(TEXT($Profile.UserType) = 'PowerPartner', 'Date Passed To Partner', 'MQL Date')}</th>
+                   <th>Age (Days)</th>
+                   <th>Account/Company</th>
+                   <th>{!IF(TEXT($Profile.UserType) = 'PowerPartner', 'Partner Owner', 'MQL Owner')}</th>
+                   <th>DCT Flag</th>
+               <apex:outputPanel rendered="{!TEXT($Profile.UserType) = 'PowerPartner'}"><th>TE Owner</th></apex:outputPanel>
+           </thead>
+ 
+           <tbody>
+               <apex:repeat value="{!MQLs}" var="mql">
+                   <tr>
+                       <td>
+                           <apex:outputLink value="/{!mql.Id}" target="_top">{!mql.FullName}</apex:outputLink>
+                       </td>
+                       <td>
+                           <apex:outputText value="{!mql.Type}"></apex:outputText>
+                       </td>
+                       <td>
+                           <apex:outputText value="{!mql.Rating}"></apex:outputText>
+                       </td>
+                       <td>
+                       <apex:outputText value=" {0,date,dd-MMM-yyyy}">
+                           <apex:param value="{!mql.MqlDate}" />
+                       </apex:outputText>
+                       </td>
+                       <td>
+                           <apex:outputText value="{!mql.Age}" rendered="{!mql.Age>=0}"></apex:outputText>
+                           <apex:outputText value="0" rendered="{!mql.Age<0}"></apex:outputText>
+                       </td>
+                       <td>
+                           <apex:outputLink value="/{!mql.AccountId}" id="link" target="_top" rendered="{!mql.Type=='Contact'}">{!mql.AccountName}</apex:outputLink>
+                           <apex:outputText value="{!mql.AccountName}" rendered="{!mql.Type=='Lead'}"></apex:outputText>
+                       </td>
+                       <td>
+                           <apex:outputText value="{!mql.MQLOwner}"></apex:outputText>
+                       </td>
+                       <td>
+                           <apex:outputText value="{!mql.DCTFlag}"></apex:outputText>
+                       </td>
+
+                       <apex:outputPanel rendered="{!TEXT($Profile.UserType) = 'PowerPartner'}">
+                           <td>
+                               <apex:outputText value="{!mql.LeadContactOwner}"></apex:outputText>
+                           </td>
+                       </apex:outputPanel>
+                   </tr>
+               </apex:repeat>
+           </tbody>
+         </table>
+      </apex:outputPanel>
+  </apex:outputPanel>
+  </apex:PageBlock>
+</apex:page>

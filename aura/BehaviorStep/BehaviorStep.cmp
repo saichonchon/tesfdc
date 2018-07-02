@@ -1,0 +1,21 @@
+<aura:component extends="APXTConga4:BaseStep">
+	<aura:handler name="behaviorSelect" event="APXTConga4:CongaEvent" action="{!c.handleBehaviorSelect}"/>
+	<aura:handler name="behaviorSaveComplete" event="APXTConga4:CongaEvent" action="{!c.handleBehaviorSave}"/>
+	<aura:attribute name="behaviorArea" type="Aura.Component[]"/>
+	
+	<div>
+		<div class="slds-m-around_large slds-has-divider_bottom-space">
+          	<h2 class="slds-align-middle slds-text-heading_large">{!$Label.c.Behavior_Settings_Header}</h2>
+          	<p class="slds-truncate slds-text-body_small">{!$Label.c.Behavior_Settings_Description}</p>
+    	</div>
+		<div class="slds-grid slds-wrap">
+			<div class="slds-p-around_large slds-size_1-of-1 slds-large-size_2-of-12">
+				<APXTConga4:BehaviorTree />
+			</div>
+			<div class="slds-p-around_large slds-size_1-of-1 slds-large-size_10-of-12">
+				{!v.behaviorArea}
+			</div>
+		</div>
+		<APXTConga4:StepFooter acceptButton="Next" declineButton="Back"/>
+	</div>
+</aura:component>

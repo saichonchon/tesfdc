@@ -1,0 +1,246 @@
+<!--
+Author:           Yuan Yao <yuan.yao@capgemini.com>
+Description:      Visualforce page to show quote and quote line item info of MFGPRO quote.
+                  The user story number is W-00130.
+Controller class: ExtMFGPROQuotePdf
+Test Class:       ExtMFGPROQuotePdf_Test
+History
+2017-09-18        Yuan Yao <yuan.yao@capgemini.com> created 
+04-23-2018        Onkar Kumar added RPN part number and Description in Table (used new Custom lable MFGPROQuotePartNumberWithRPN for Table Header) 
+-->
+<apex:page standardController="Energy_Quote__c" extensions="ExtMFGPROQuotePdf" showHeader="false" cache="true" renderAs="pdf" language="{!quoteLanguage}">
+    <HTML>
+        <head>
+            <style>
+                
+                div.content1{
+                counter-reset: page;
+                }                       
+                }                      
+            </style>
+        </head> 
+        <body style="font-family:Courier; font-size:9pt;" > 
+            <!-- <body style="font-size:9pt;font-family:Georgia,helvetica,sans-serif;"> -->
+            <apex:variable value="{!1}" var="count1"/> 
+            <apex:variable value="{!1}" var="count2"/>
+            <apex:variable value="{!0}" var="cNum"/> 
+            <apex:variable value="{!0}" var="lineNum"/>
+            
+            
+            
+            <table>
+                <tr>
+                    <th width="30%" style="padding-left:15px;" >
+                        <apex:image id="theImage" value="{!$Resource.TEConnectivityOfficialLogo}" width="180" height="120"/> 
+                    </th>
+                    <th align="right" style="padding-right:80px;  font-family:georgia;color:red; font-size:20px;">
+                        {!$Label.MFGPROQuoteSalesQuote}&nbsp;&nbsp;&nbsp;&nbsp;{!$Label.MFGPROQuoteLabel}
+                        <!--font size="8"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>SALES QUOTE</B></b></font>-->
+                    </th>      
+                </tr>
+            </table>
+            
+            <table style="border:1px solid black;" width="100%">
+                <tr>
+                    <td style="padding-left : 30px;">
+                        {!$Label.MFGPROQuoteCompany} <br/>{!$Label.MFGPROQuoteCompanyLoad} <br/>{!$Label.MFGPROQuoteCompanyCity} <br/> {!$Label.MFGPROQuoteCountry}
+                        <br/>{!$Label.MFGPROQuoteCompanyLoad} <br/><a href='{!$Label.MFGPROQuoteCompanyWeb}'>{!$Label.MFGPROQuoteCompanyWeb}</a>
+                        <!--<br/>{!QuoteAddress1}<br/>{!QuoteAddress2}--></td>
+                    <td style="padding-left : 40px"><b>{!$Label.MFGPROQuoteCreatedDate}:</b><apex:outputtext value="{0,date,MM'/'dd'/'yyyy}" > <apex:param value="{!QuoteDetails.createddate}"/> </apex:outputtext>
+                        <!--<br/><b>{!$Label.MFGPROQuoteNo}:</b><apex:outputtext value="{!QuoteDetails.Quote_Number__c}"/>-->
+                    </td>
+                </tr>                
+                <tr>
+                    <td style="padding-left : 30px">
+                        {!$Label.MFGPROQuotePreparedBy}:<apex:outputField value="{!QuoteDetails.CreatedBy.name}"/>
+                    </td>
+                    <td style="padding-left : 40px">
+                        <b>{!$Label.MFGPROQuoteContName}:</b><apex:outputField value="{!QuoteDetails.contact__r.Name}"/> 
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left : 30px">
+                        <b>{!$Label.MFGPROQuotePhone}:</b><apex:outputField value="{!QuoteDetails.CreatedBy.phone}"/>
+                    </td>
+                    <td style="padding-left : 40px">
+                        <b>{!$Label.MFGPROQuotePhone}:</b><apex:outputField value="{!QuoteDetails.Phone__c}"/> 
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="padding-left : 30px">
+                        <b>{!$Label.MFGPROQuoteEmail}:</b><apex:outputField value="{!QuoteDetails.CreatedBy.email}"/>  
+                    </td>
+                    <td style="padding-left : 40px">
+                        <b>{!$Label.MFGPROQuoteEmail}:</b><apex:outputField value="{!QuoteDetails.Email__c}"/> 
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="padding-left : 30px">
+                        <br/>
+                        <b><!--{!$Label.MFGPROQuoteBillingName}-->{!$Label.MFGPROQuoteSoldTo}: </b>
+                    </td>
+                    <td style="padding-left : 40px">
+                        <br/>
+                        <b>{!$Label.MFGPROQuoteShipToName}:</b>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left : 30px">
+                        <b><!--{!$Label.MFGPROQuoteBillingTo}:-->
+                            {!QuoteDetails.Account_name__r.Name}<br/>
+                            {!QuoteDetails.Account_name__r.BillingStreet}&nbsp;<br/>
+                            <!-- {!QuoteDetails.Account_name__r.BillingCity}&nbsp;{!QuoteDetails.Account_name__r.BillingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode}&nbsp;<br/> -->
+                            {!acctSoldToBillingCity}{!QuoteDetails.Account_name__r.BillingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode}&nbsp;<br/>
+                            {!QuoteDetails.Account_name__r.BillingCountry}</b>
+                    </td>
+                    <td style="padding-left : 40px">
+                        <b>{!QuoteDetails.End_Customer__r.Name}<br/>
+                            {!QuoteDetails.End_Customer__r.BillingStreet}&nbsp;<br/>
+                            <!-- {!QuoteDetails.End_Customer__r.BillingCity}&nbsp;{!QuoteDetails.End_Customer__r.BillingState }&nbsp;{!QuoteDetails.End_Customer__r.BillingPostalCode}&nbsp;<br/> -->
+                            {!endCustomerBillingCity}{!QuoteDetails.End_Customer__r.BillingState }&nbsp;{!QuoteDetails.End_Customer__r.BillingPostalCode}&nbsp;<br/>
+                            {!QuoteDetails.End_Customer__r.BillingCountry}</b>
+                    </td>
+                </tr>
+            </table>
+            
+            <div style="border-right:1px solid black;border-left:1px solid black;" width="700"> 
+                <table>
+                    <br/>
+                    <tr> 
+                        <td style="padding-left : 30px"><b>{!$Label.MFGPROQuoteSoldTo}:</b><apex:outputField value="{!QuoteDetails.Account_name__r.AccountNumber}" /></td><td style="padding-left : 285px" ><b>End&nbsp;User/Project:</b><br/> </td>
+                    </tr>
+                    <tr> 
+                        <td style="padding-left : 30px; font-family:georgia;color:blue;"><b><apex:outputField value="{!QuoteDetails.Account_name__r.name}"/></b> </td><td style="padding-left : 285px" >{!QuoteDetails.Opportunity_Name__r.Name}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left : 30px"><!--<apex:outputField value="{!QuoteDetails.Billing_Address__c}"/>-->
+                        <!-- {!QuoteDetails.Account_name__r.billingStreet}<br/>{!QuoteDetails.Account_name__r.BillingCity}&nbsp;{!QuoteDetails.Account_name__r.BillingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode}<br/>{!QuoteDetails.Account_name__r.billingcountry} -->
+                        {!QuoteDetails.Account_name__r.billingStreet}<br/>{!acctSoldToBillingCity}{!QuoteDetails.Account_name__r.BillingState}&nbsp;{!QuoteDetails.Account_name__r.BillingPostalCode}<br/>{!QuoteDetails.Account_name__r.billingcountry}
+                            <br/><br/></td>                  
+                    </tr>
+                </table>
+            </div>
+            
+            <table style="border:1px solid black;" width="100%">
+                <!-- Commented by Tangyong Li 2018-02-02 by email 'Let's do some REAL coding again!' 1)d) -->
+<!--                 <tr> -->
+<!--                     <td style="padding-left : 30px"><br/><br/><b>{!$Label.MFGPROQuoteCreditTerms}:</b> -->
+<!--                         <apex:outputField value="{!QuoteDetails.Opportunity.Account.Credit_Terms__c}"/> -->
+<!--                         {!IF(QuoteDetails.Override_Payment_Terms_Description__c == null || QuoteDetails.Override_Payment_Terms_Description__c == '', QuoteDetails.Account_name__r.Payment_terms_Desc__c , QuoteDetails.Override_Payment_Terms_Description__c)} -->
+<!--                     </td>              -->
+<!--                 </tr>   -->
+                
+                <!-- <tr> 
+                    <td style="padding-left : 30px"><b>{!$Label.MFGPROQuoteRemarks}:</b><br/><br/></td>              
+                </tr> -->         
+                
+                <tr>
+                    <td style="padding-left : 30px"  colspan="7">{!$Label.MFGPROQuoteTERMSANDCONDTIONS}:<br/><br/>
+                        {!$Label.MFGPROQuoteTeamContentOne}<b><a href="{!$Label.MFGPROQuoteTeamUrl}" target="_blank">{!$Label.MFGPROQuoteTeamUrl}</a></b>
+                        {!$Label.MFGPROQuoteTeamContentTwo}</td><td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left : 30px"  colspan="7"><br/>
+                        {!$Label.MFGPROQuoteTermContentThree}
+                    </td><td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left : 30px"  colspan="7"><br/>{!$Label.MFGPROQuoteTermContentFour}
+                    </td><td></td>
+                </tr> 
+                <!--tr>
+<td style="padding-left : 30px" colspan="7"><br/><apex:outputLabel >Quote Comments:<br/><apex:outputField value="{!QuoteDetails.Comments__c}"/></apex:outputLabel></td>
+</tr--> 
+                
+                
+            </table>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            
+            
+            
+            <!--tr>
+<td style="padding-left : 30px" >
+<br></br> 
+<apex:variable value="{!1}" var="num"/-->
+            
+            <apex:outputLabel ><b>{!$Label.MFGPROQuoteComments}:</b><br/><apex:outputField value="{!QuoteDetails.Comments__c}"/></apex:outputLabel>               
+            <div style="page-break-after: always"/> 
+            <table border="1" cellspacing="0" cellpading="0" width="100%" >  
+                
+                <tr>            
+                    <th align="left" bgcolor="#C3CDF0" width="5%"><apex:outputText value="{!$Label.MFGPROQuoteLine}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="15%"><apex:outputText value="{!If($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c,$Label.MFGPROQuotePartNumberWithRPN,$Label.MFGPROQuotePartNumber) }"/></th>
+                    <!--  <th align="left" bgcolor="#C3CDF0" width="15%"><apex:outputText value="Decription"/></th> -->
+                    <th align="left" bgcolor="#C3CDF0" width="30%"><apex:outputText value="{!$Label.MFGPROQuoteCatalogNum}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="10%"><apex:outputText value="{!$Label.MFGPROQuoteQuantity}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="10%"><apex:outputText value="{!$Label.MFGPROQuoteNumber}"/></th>
+                    <!--<th align="left" bgcolor="#C3CDF0" width="10%"><apex:outputText value="{!$Label.MFGPROQuoteUOM}"/></th>-->
+                    <th align="left" bgcolor="#C3CDF0" width="10%"><apex:outputText value="{!$Label.MFGPROQuoteSPQty}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="10%"><apex:outputText value="{!$Label.MFGPROQuoteLT}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="15%"><apex:outputText value="{!$Label.MFGPROQuoteMaxQtyLeadTime}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="15%"><apex:outputText value="{!$Label.MFGPROQuotePrice}"/></th>
+                    <th align="left" bgcolor="#C3CDF0" width="15%"><apex:outputText value="{!$Label.MFGPROQuoteTotalPrice}"/></th>
+                    
+                </tr>
+                <apex:repeat value="{!quolineitem}" var="qli">
+                	<apex:variable var="lineNum" value="{!lineNum + 1}"/>
+                    <tr>
+                        <!--<td><apex:outputtext value="{!qli.LineNumber__c}"/></td>-->
+                        <!-- <td><apex:outputField value="{!qli.Part__c}"/><br/><apex:outputtext value="{!qli.Comment__c}"/></td> -->
+                        <!-- <td><apex:outputField value="{!qli.Part__c}"/></td> -->
+<!--                        <td><apex:outputtext value="{!qli.Part__r.name}"/></td>-->
+                        <td>{!lineNum}</td>
+                        <td>
+                        <apex:OutputText value="{!IF(AND($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c , NOT(ISNULL(qli.quoteLineItem.Part__r.RPN_Part__c))),qli.quoteLineItem.Part__r.RPN_Part__c,'')}"/><br></br>
+                        <apex:OutputText value="{!qli.quoteLineItem.Part__r.Name}"/>
+                        
+                        </td>
+                        <td><apex:outputField value="{!qli.quoteLineItem.Description__c} "/></td>
+                        <td><apex:outputField value="{!qli.quoteLineItem.Quantity__c}"/>&nbsp;<apex:outputField value="{!qli.quoteLineItem.Opportunity_Part__r.NDR_Customer_Requested_Price_UOM__c}"/></td>
+<!--                         <td><apex:outputField value="{!qli.quoteNum}"/></td> -->
+                        <td><apex:outputText value="{!qli.quoteNum}"/></td>
+                        <td><apex:outputField value="{!qli.quoteLineItem.Primary_Pack_Quantity__c}"/></td>
+                        <td><apex:outputField value="{!qli.quoteLineItem.Lead_Time__c}"/></td>  
+                        <td><apex:outputField value="{!qli.quoteLineItem.Max_Qty_in_Standard_lead_time__c} "/></td>                         
+                        <td><apex:outputField value="{!qli.quoteLineItem.UnitPrice__c}"/></td>
+                        <td><apex:outputField value="{!qli.quoteLineItem.TotalPrice__c}"/></td>
+                        
+                    </tr>
+                </apex:repeat>
+                
+            </table>
+            <table>
+                <!-- 
+                <tr>
+                    <td style="text-align:right" colspan="7" ><br/><b>{!$Label.MFGPROQuoteSubTotal}&nbsp;:</b><apex:outputField value="{!QuoteDetails.Subtotal}"/><br/><br/></td>
+                </tr>   
+                <tr>
+                    <td style="text-align:right" colspan="7" ><br/> <b>{!$Label.MFGPROQuoteDiscount}&nbsp;:</b><apex:outputField value="{!QuoteDetails.Discount}"/><br/><br/></td>
+                </tr>
+                 -->
+                <tr>
+                    <td style="text-align:right" colspan="7" ><br/> <b>{!$Label.MFGPROQuoteTotalPrices}&nbsp;:</b><apex:outputField value="{!QuoteDetails.TotalPrice__c}"/><br/><br/></td>
+                </tr> 
+                <!-- 
+                <tr>
+                    <td style="text-align:right" colspan="7" ><br/> <b>{!$Label.MFGPROQuoteGrandTotal}&nbsp;:</b><apex:outputField value="{!QuoteDetails.GrandTotal}"/><br/><br/></td>
+                </tr> 
+                 -->
+                <tr>
+                    
+                    <td style="padding-left : 30px"  colspan="7"><b>{!$Label.MFGPROQuoteNOTES}: {!$Label.MFGPROQuoteSPQty} </b>= {!$Label.MFGPROQuoteSPQtyNote}<br/>
+                        <b>{!$Label.MFGPROQuoteLT} =</b> {!$Label.MFGPROQuoteLTNote}
+                    </td>
+                </tr> 
+                
+            </table>
+            
+            
+            
+            
+        </body>
+    </HTML>
+</apex:page>

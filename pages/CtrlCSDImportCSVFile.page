@@ -1,0 +1,25 @@
+<apex:page controller="CtrlCSDImportCSVFile" showHeader="false" sidebar="flase" id="thePage">
+<head>
+	<style type="text/css">
+		html, body {height: 100%;}
+	</style>
+	<script type="text/javascript">
+		function checkFile(target){
+			window.parent.document.getElementById('loading-curtain-div').style.display = '';
+			var id = '{!$Component.thePage.theForm.changeFileBtn}';
+			document.getElementById(id).click();
+		}
+	</script>
+</head>
+
+<body style="text-align: right;">
+	<apex:form id="theForm">
+		<div id="errormessagedivId" style="display:none;"><apex:messages /></div>
+		<apex:inputFile onchange="checkFile(this)"  value="{!fi.contentFile}" filename="{!fi.nameFile}" contentType="{!fi.contentType}" />
+		<apex:commandButton value="changeFile" action="{!parseCsvFile}" id="changeFileBtn" style="display:none;"/>
+		<apex:inputHidden value="{!fi.isError}" id="isError" />
+		<input type="hidden" value="{!jsonhead}" id="jsonhead"/>
+		<input type="hidden" value="{!jsons}" id="jsonbody"/>
+	</apex:form>
+</body>
+</apex:page>

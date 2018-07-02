@@ -1,0 +1,21 @@
+<apex:page controller="CtrlNPSOptOutPage" sideBar="false" showHeader="false" title="Opt Out Page" action="{!init}">
+
+	<apex:form > 
+		<apex:pageMessages id="messages"/>
+	    <apex:image url="{!$Resource.tyco_logo}"/>
+    	<apex:pageBlock rendered="{!mode!='Error'}">
+    		<apex:pageBlockButtons location="bottom">
+    			<apex:commandButton value="{!saveBtn}" action="{!save}" rendered="{!!isSuccess}"/>
+    			<apex:commandButton value="{!cancelBtn}" onclick="window.open('', '_self', '');window.close();" rendered="{!!isSuccess}"/>
+    			<apex:commandButton value="{!closeBtn}" onclick="window.open('', '_self', '');window.close();"  rendered="{!isSuccess}"/>
+    		</apex:pageBlockButtons>
+ 			<apex:pageBlockSection columns="1" rendered="{!!isSuccess}">
+ 				<apex:outputLabel value="{!salutation}"/>
+ 				<apex:outputLabel value="{!introduceBody}"/>
+ 			</apex:pageBlockSection>
+ 			<apex:pageBlockSection rendered="{!!isSuccess}">
+ 				<apex:inputField value="{!cm.NPS_OPT_OUT__c}" />
+ 			</apex:pageBlockSection>    	
+    	</apex:pageBlock>
+    </apex:form>
+</apex:page>

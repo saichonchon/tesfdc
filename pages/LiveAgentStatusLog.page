@@ -1,0 +1,42 @@
+<!-- Prabhanjan N: The purpose of this page is to create the live agent status changes into Live_Agent_Status_Log__c object
+---  The owner/ created by id is considered as the agent 
+-->
+
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeScript value="/support/console/29.0/integration.js"/>
+
+<!-- Adding the Remot object for Live_Agent_Status_Log__c object-->    
+    <apex:remoteObjects jsNamespace="RemoteObjectModel">
+        <apex:remoteObjectModel name="Live_Agent_Status_Log__c" fields="Id,Status__c"> 
+        </apex:remoteObjectModel>
+    </apex:remoteObjects>
+    
+    <script type="text/javascript">
+        var eventHandler = function (result) {
+            //alert("Agent's State has Changed to: " + result.state);
+            createStateChange(result.state);
+        };
+        
+        // Prabhanjan: onAgentStateChanged() monitors the live agent state changes and calls the eventHandler method.
+        sforce.console.chat.onAgentStateChanged(eventHandler);
+ 
+ //This method is used for creating the records in the log object
+function createStateChange(vStatus){
+
+    var ROData = { Status__c: vStatus  };
+    var RO = new RemoteObjectModel.Live_Agent_Status_Log__c();
+         RO.create(ROData, function(err) {
+            if(err) { 
+                console.log(err);
+                //alert(err);
+            }
+            else { 
+                //alert(RO.get('Id')); // Id is set when create completes
+            }
+        });
+ 
+} 
+
+</script>
+    
+</apex:page>

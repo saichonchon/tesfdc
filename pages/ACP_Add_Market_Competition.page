@@ -1,0 +1,138 @@
+<apex:page Controller="ACP_Performance_Analytics_ctrl" tabStyle="ACP_Account_Plan__c" standardStylesheets="false" showHeader="true" sidebar="false" >
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+    
+      <apex:form >
+         <apex:pageBlock mode="maindetail" >
+             <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:pageMessages />
+            <apex:outputText value="{!$Label.ACP_Market_Competition}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-default">
+                     <div class="panel-heading"> {!$Label.ACP_Create_Market_Competition} </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar">{!$Label.ACP_Market_Competition_Information}</div>
+                     <br/>
+
+                <div class="col-md-6">
+                                 
+              
+                       <div class="form-group">
+                  <apex:outputPanel id="cbc1" >
+                    <label><font style="color:red">*</font>{!$Label.ACP_CBC1_Description}</label><br/>
+                    <apex:selectList title="Select" multiselect="false" size="1" id="selectListValues" value="{!cbc1Value}"><br/>
+                    <apex:selectOptions value="{!CBC1}" />
+                <apex:actionSupport event="onchange" reRender="cbc2"/>
+                    </apex:selectList>
+                   </apex:outputPanel>
+                 
+                  </div>
+                 
+                      <div class="form-group">
+                  <apex:outputPanel id="cbc2" >
+                    <label>{!$Label.ACP_CBC2_Description}</label><br/>
+                    <apex:selectList title="Select" multiselect="false" size="1" id="cbc2selectListValues" value="{!cbc2Value}"><br/>
+                    <apex:selectOptions value="{!CBC2}" />
+                 <apex:actionSupport event="onchange" reRender="cbc3" />
+                    </apex:selectList>
+                   </apex:outputPanel>
+                 
+                  </div>
+                  <div class="form-group">
+                  <apex:outputPanel id="cbc3" >
+                    <label>{!$Label.ACP_CBC3_Description}</label><br/>
+                    <apex:selectList title="Select" multiselect="false" size="1" id="cbc3selectListValues" value="{!cbc3Value}"><br/>
+                    <apex:selectOptions value="{!CBC3}" />
+                
+                    </apex:selectList>
+                   </apex:outputPanel>
+                 
+                  </div>
+                  <div class="form-group">
+                  <apex:outputLabel value="{!$Label.ACP_TAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"/>
+                  <apex:outputLabel value="{!$Label.ACP_TAM_LY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"/>
+                    
+                    <apex:inputField value="{!MarkComp.ACP_TAM_LY_Bill__c}" styleClass="form-control" html-placeholder="Enter TAM"  rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"></apex:inputField>
+                    <apex:inputField value="{!MarkComp.ACP_TAM__c}" styleClass="form-control" html-placeholder="Enter TAM"  rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"></apex:inputField>
+                   
+                  </div>
+                  <div class="form-group">
+                  <apex:outputLabel value="{!$Label.ACP_PAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"/>
+                  <apex:outputLabel value="{!$Label.ACP_TAM_CY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"/>
+
+                  
+                    <apex:inputField value="{!MarkComp.ACP_PAM__c}" styleClass="form-control" html-placeholder="Enter PAM" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"></apex:inputField>
+                    <apex:inputField value="{!MarkComp.ACP_TAM_CYRR__c}" styleClass="form-control" html-placeholder="Enter TAM CY"  rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"></apex:inputField>
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                </div>
+                
+                <div class="col-md-6">
+                
+                    <div class="form-group">
+                    <label>{!$Label.ACP_Main_Competitor_Share}</label><br/>
+                    <apex:inputField value="{!MarkComp.ACP_Main_Competitor__c}" styleClass="inputField" html-placeholder="Enter Main Competitor" />
+                  </div>
+                  <div class="form-group">
+                    <label>{!$Label.ACP_NY_Fcst}</label>
+                    <apex:inputField value="{!MarkComp.ACP_NY_Fcst__c}" styleClass="form-control" html-placeholder="Enter NY Fcst" />
+               </div>
+                  <div class="form-group">
+                    <label>{!$Label.ACP_TE_Position}</label><br />
+                    <apex:inputField value="{!MarkComp.ACP_TE_Position__c}" styleClass="form-control" html-placeholder="Enter TE Position" />
+                  </div>
+                
+                  
+                  
+                  <div class="form-group">
+                    <label>{!$Label.ACP_Main_Competitor}</label><br/>
+                    <apex:inputField value="{!MarkComp.ACP_Main_Competitor_Share__c}" styleClass="form-control" html-placeholder="Enter Main Competitor Share" />
+                  </div>
+                  <div class="form-group">
+                  <apex:outputLabel value="{!$Label.ACP_SAM}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"/>
+                  <apex:outputLabel value="{!$Label.ACP_TAM_NY}" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"/>
+                  
+                    <apex:inputField value="{!MarkComp.ACP_SAM__c}" styleClass="form-control" html-placeholder="Enter SAM" rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = false,true,false)}"></apex:inputField>
+                    <apex:inputField value="{!MarkComp.ACP_TAM_NY_Fcst__c}" styleClass="form-control" html-placeholder="Enter TAM NY"  rendered="{!If(markrec.ACP_Show_TAM_LY_CY_NY__c = true,true,false)}"></apex:inputField>
+                  </div>
+           </div>    
+               
+</div>
+           
+
+              <div class="panel-footer">
+                <div align="right" style="">
+                  <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="MrktCompDetail" />
+                         </apeX:commandLink>&nbsp;
+                <apex:commandButton action="{!SaveandNewMark}" value="{!$Label.ACP_Save_And_New}" disabled="{!IF(MarkCompList.size < markrec.ACP_No_Of_Records__c-1, false, true)}" styleClass="btn btn-default" />&nbsp;
+                  
+                  <apex:commandButton action="{!SaveMarkComp}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" />
+                  
+                  
+                  
+
+                </div>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </apex:pageBlock>
+    </apex:form>
+  </div>
+  </div>
+  
+</apex:page>

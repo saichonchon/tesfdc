@@ -1,0 +1,260 @@
+<!--
+Author:           Yuan Yao <yuan.yao@capgemini.com>
+Description:      Visualforce page to show quote and quote line item info of Ampics quote.
+			      The user story number is W-00130.
+Controller class: ExtAMPICSQuotePdf
+Test Class:       ExtAMPICSQuotePdf_Test
+History
+2017-09-18 	      Yuan Yao <yuan.yao@capgemini.com> created 
+-->
+<apex:page standardController="Energy_Quote__c" renderAs="pdf" extensions="ExtAMPICSQuotePdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+<HTML>
+<head>
+<style type="text/css" media="print">
+@page {
+    size: A4 landscape;
+    @top-center {
+        content: element(header);
+    }
+    @bottom-left {
+        content: element(footer);
+    }
+}
+
+th {
+    border-bottom: 2px solid; 
+}
+.header {
+    padding: 5px;
+    position: running(header);
+}
+div.footer {
+    position: running(footer);
+    border-top: 2px solid #000;
+    bottom:40px;
+}
+.pagenumber:before {
+    content: counter(page);
+}
+.pagecount:before {
+    content: counter(pages);
+}
+p.ex {
+    color:blue;
+}
+.container{
+    color:#FF00FF;
+}
+</style>
+</head>
+<apex:variable value="{!1}" var="rowNum"/>
+<div class="footer" align="center" id="Container" style="color:#0066CC; font-family:Lucida Grande,Helvetica,Arial,sans-serif;font-size:9pt;font-Style:italic;" >
+    <b>
+        <span style="color:#0066CC">AMPACT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style="color:#DBA901">KRONE</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style="color:#0066CC">SIMEL</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style="color:#DBA901">RAYCHEM</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style="color:#0066CC">TAPPAT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style="color:#DBA901">UTILUX</span>
+    </b>
+</div>
+<br/>
+<body style="font-size:9pt;font-family:arial,helvetica,sans-serif;">
+    <apex:variable value="{!1}" var="rowNum"/>
+    <table width="100%">  
+        <tr>
+            <td >
+                <apex:image id="theImage" value="{!$Resource.TEConnectivityOfficialLogo}" width="180" height="120"/> 
+            </td>
+            <!--<td align="left">-->
+            <td>
+            	<span style="display:inline-block;text-align:left;float:right;">
+	            	<!-- <apex:outputLabel >{!Energy_Quote__c.Account_Name__r.BillingStreet}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!Energy_Quote__c.Account_Name__r.BillingCity}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!Energy_Quote__c.Account_Name__r.BillingState}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!Energy_Quote__c.Account_Name__r.BillingPostalCode}</apex:outputLabel> 
+	                <br/>
+	                <apex:outputLabel >{!Energy_Quote__c.Account_Name__r.BillingCountry}</apex:outputLabel><br/> -->
+	                <apex:outputLabel >{!currentUser.Street}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!currentUser.City}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!currentUser.State}</apex:outputLabel>
+	                <br/>
+	                <apex:outputLabel >{!currentUser.PostalCode}</apex:outputLabel> 
+	                <br/>
+	                <apex:outputLabel >{!currentUser.Country}</apex:outputLabel> <br/>
+	                <apex:outputLabel >{!$Label.AMPICSQuoteABN}</apex:outputLabel> 
+	                <!--<apex:outputLabel rendered="{!ApproveStatus}" style="color:#FF0000;font-size:13pt;font-family:arial,helvetica,sans-serif;">
+	                    <br/><br/>
+	                    <b>Not Approved</b>
+	                </apex:outputLabel>-->
+                </span>
+            </td>
+        </tr>
+        <tr style="background-color:#000000">
+            <td width="100%" align="center" colspan="4">
+                <apex:outputLabel style="color:#ffffff;font-size:12pt;">
+                    <b>{!$Label.AMPICSQuoteSubject}</b>
+                </apex:outputLabel>
+            </td>
+        </tr> 
+    </table>
+    <table width="100%">
+        <tr>
+            <td width="50%">
+                <table width="100%">
+                    <tr><td align="right"><b>{!$Label.AMPICSQuoteDate}:</b></td> <td>&nbsp;&nbsp;&nbsp;&nbsp; <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!Energy_Quote__c.createdDate}"/>
+                        </apex:outputText></td></tr>
+                    
+                    <tr><td align="right"><b>{!$Label.AMPICSQuoteTo}:</b></td> <td></td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuoteName}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.contact__r.name}</td></tr>
+                    <tr><td align="right" valign="top">{!$Label.AMPICSQuoteTitle}:</td> <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.contact__r.Title}</td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuoteOrg}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.Account_name__r.name}</td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuotePhone}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.contact__r.phone}</td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuoteFax}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.contact__r.fax}</td></tr>         
+                    <tr><td align="right">{!$Label.AMPICSQuoteCustomerRefNum}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.Customer_Ref_Number__c}</td></tr>
+                    <!--<tr><td align="right">{!$Label.AMPICSQuoteRevisionNum}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;<apex:outputField value="{!Energy_Quote__c.contact__r.Email}"/></td></tr>-->
+                </table>
+            </td>
+            <td width="50%">
+                <table width="100%">
+                    <tr><td align="right"><b>{!$Label.AMPICSQuoteFrom}:</b></td> <td></td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuoteName}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.createdBy.name}</td></tr>
+                    <tr><td align="right" valign="top">{!$Label.AMPICSQuoteTitle}:</td> <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.createdBy.Title}</td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuotePhone}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.createdBy.Phone}</td></tr>
+                    <tr><td align="right">{!$Label.AMPICSQuoteFax}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.createdBy.fax}</td></tr>         
+                    <tr><td align="right">{!$Label.AMPICSQuoteEmail}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.createdBy.Email}</td></tr>
+                    <tr><td align="right" width="30%">{!$Label.AMPICSQuoteTERefNum}:</td> <td>&nbsp;&nbsp;&nbsp;&nbsp;{!Energy_Quote__c.Quote_Number__c}</td></tr>
+                </table>
+            </td>
+        </tr>
+        <hr width="10%"/>
+    </table>
+    <table>
+        <tr>
+            <td width="18%" align="left" valign="top" colspan="2"> <apex:outputLabel ></apex:outputLabel></td>
+        </tr>
+        <tr>
+            <td width="18%" align="left" valign="top" colspan="4"> <apex:outputLabel >{!$Label.AMPICSQuoteLineItemsPrefix}</apex:outputLabel></td>
+        </tr>
+        <br/>
+        <tr>
+            <td width="100%" align="right" valign="top">
+                <table cellspacing="0">
+                    <tr>
+                        <th align="center" width="5%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteSeqNo}</b></th>
+                        <th align="center" width="12%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteCustomerPartNo}</b></th>
+                        <th align="center" width="8%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuotePartNumber}</b></th>
+                        <th align="center" width="12%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteProdName} </b></th>
+                        <th align="center" width="24%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteItemDesc} </b></th>
+                        <th align="center" width="5%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteQty}</b></th> 
+                        <th align="center" width="12%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteUnitPrice}<br/>({!Energy_Quote__c.currencyIsoCode})</b></th>
+                        <th align="center" width="10%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteExtended}<br/>({!Energy_Quote__c.currencyIsoCode})</b></th>
+                        <th align="center" width="6%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteDelWorkWeeks}</b></th>
+                        <th align="center" width="6%" style="border-color: #000000 #D0D0D0;border-style: solid;border-width: 2px 1px;"><b>{!$Label.AMPICSQuoteExStockQty}</b></th>
+                    </tr>
+                    
+                    <apex:repeat value="{!list_energyQuoteLineItem}" var="energyItem">
+                        <tr>
+                            <!-- <td align="center" width="5%" style="border:1px solid #D0D0D0;">{!energyItem.LineNumber__c}</td> -->
+                            <td align="center" width="5%" style="border:1px solid #D0D0D0;">{!energyItem.ANZ_Item_Id__c}</td>
+                            <td align="center" width="12%" style="border:1px solid #D0D0D0;">{!energyItem.Opportunity_Part__r.Customer_Part_Number__c}</td>
+                            <td align="center" width="8%" style="border:1px solid #D0D0D0;"> {!energyItem.Part__r.Name} </td>
+                            <td align="center" width="12%" style="border:1px solid #D0D0D0;">
+                                <apex:outputField value="{!energyItem.Part__r.Description__c}" style="{!IF(energyItem.Part__r.Proposal_Part__c,'display:none;','')}"/>
+                            	<input value="{!IF(energyItem.Opportunity_Part__r.reason_lost_comments__c == null || energyItem.Opportunity_Part__r.reason_lost_comments__c == '',energyItem.Part__r.Description__c,energyItem.Opportunity_Part__r.reason_lost_comments__c)}" style="{!IF(energyItem.Part__r.Proposal_Part__c,'','display:none;')}"/>
+                            </td>
+                            <td align="center" width="24%" style="border:1px solid #D0D0D0;"> {!energyItem.Opportunity_Part__r.Part_Name__c} </td>
+                            <td align="center" width="5%" style="border:1px solid #D0D0D0;"> <apex:outputField value="{!energyItem.Quantity__c}"/> </td>
+                            <!--<td align="center" width="12%" style="border:1px solid #D0D0D0;"> <apex:outputField value="{!energyItem.UnitPrice__c}"/> </td>
+                            <td align="center" width="10%" style="border:1px solid #D0D0D0;"><apex:outputField value="{!energyItem.TotalPrice__c}"/> </td>-->
+							
+							<!-- Modified by Tangyong Li 2018-01-12 -->
+							<!-- <td align="center" width="12%" style="border:1px solid #D0D0D0;">$&nbsp;<apex:outputText value="{0, number, 0.00}"><apex:param value="{!energyItem.UnitPrice__c}" /></apex:outputText></td> -->
+							<td align="center" width="12%" style="border:1px solid #D0D0D0;"><apex:outputText value="{0, number, 0.00}"><apex:param value="{!energyItem.UnitPrice__c}" /></apex:outputText></td>
+							<!-- <td align="center" width="10%" style="border:1px solid #D0D0D0;">$&nbsp;<apex:outputText value="{0, number, 0.00}"><apex:param value="{!energyItem.TotalPrice__c}" /></apex:outputText></td> -->
+							<td align="center" width="10%" style="border:1px solid #D0D0D0;"><apex:outputText value="{0, number, 0.00}"><apex:param value="{!energyItem.TotalPrice__c}" /></apex:outputText></td>
+
+                            <td align="center" width="6%" style="border:1px solid #D0D0D0;"><apex:outputField value=" {!energyItem.Deliver_Work_Weeks__c}"/></td>
+                            <td align="center" width="6%" style="border:1px solid #D0D0D0;"><apex:outputField value=" {!energyItem.Opportunity_Part__r.Ex_Stock__c}"/></td>
+                        </tr>
+                    </apex:repeat>
+                </table>        
+            </td>
+        </tr>   
+    </table>
+    <div style="margin-left:645px; height:auto;">             
+          <apex:pageBlock ><br/><apex:outputLabel ><b>{!$Label.AMPICSQuoteTotalExcludingGST}: </b></apex:outputLabel>
+              <span>
+                  <span>{!Energy_Quote__c.currencyIsoCode}</span>
+				  <!-- <span>$</span> -->
+                  <span>{!totalExcludGST}</span>
+              </span>
+              <!--<span style="{!IF(Energy_Quote__c.currencyIsoCode == 'USD','display:none;','')}">
+                  (USD <span>{!totalExcludGSTUSD}</span>)
+              </span>-->
+              <!-- <apex:outputField value="{!Energy_Quote__c.Actual_Total_Price__c}"/> -->
+		  </apex:pageBlock>
+              
+          <apex:pageBlock ><br/><apex:outputLabel ><b>{!$Label.AMPICSQuotePlusGST}  : </b></apex:outputLabel>
+          	  <!-- <apex:outputField value="{!Energy_Quote__c.Opportunity_Name__r.Plus_GST_10__c}"/> -->
+              <span>
+                  <span>{!Energy_Quote__c.currencyIsoCode}</span>
+				  <!-- <span>$</span> -->
+                  <span>{!totalExcludGST_10}</span>
+              </span>
+              <!--<span style="{!IF(Energy_Quote__c.currencyIsoCode == 'USD','display:none;','')}">
+                  (USD <span>{!totalExcludGST_10_USD}</span>)
+              </span>-->
+          </apex:pageBlock>  
+          
+          <apex:pageBlock ><br/><apex:outputLabel ><b>{!$Label.AMPICSQuoteTotalIncludingGST}  : </b></apex:outputLabel>
+			  <!-- <apex:outputField value="{!Energy_Quote__c.Opportunity_Name__r.Total_Including_GST__c}"/> -->
+              <span>
+                  <span>{!Energy_Quote__c.currencyIsoCode}</span>
+				  <!-- <span>$</span> -->
+                  <span>{!totalIncludGST}</span>
+              </span>
+              <!--<span style="{!IF(Energy_Quote__c.currencyIsoCode == 'USD','display:none;','')}">
+                  (USD <span>{!totalIncludGSTUSD}</span>)
+              </span>-->
+		  </apex:pageBlock>
+    </div>
+    <div style="margin-left:75px; height:auto;">  
+        <apex:pageBlock ><br/>
+            <table>
+                <apex:repeat value="{!anzClause}" var="anz" id="theRepeat">
+                    <tr><td valign="top" align="right" width="20%"><b><apex:outputText value="{!anz.Name}"/></b>:&nbsp;&nbsp;</td><td width="80%" align="left" ><apex:outputText value="{!anz.Insurance__c}" escape="false"/></td></tr>
+                </apex:repeat>
+            </table>        
+        </apex:pageBlock>          
+    </div>
+    <br/>
+    <label><apex:pageBlock >
+        <!--<apex:outputText rendered="{!Energy_Quote__c.Opportunity_Name__r.Override_Incoterms_Details__c != null}">{!Energy_Quote__c.Opportunity_Name__r.Override_Incoterms_Details__c}</apex:outputText> 
+        <apex:outputText rendered="{!Energy_Quote__c.Opportunity_Name__r.Override_Incoterms_Details__c == null}">{!Energy_Quote__c.Opportunity_Name__r.Account_Incoterms_Details__c}</apex:outputText><br/><br/><br/>
+        <apex:outputText rendered="{!Energy_Quote__c.Opportunity_Name__r.Override_Payment_Terms_Description__c != null}">{!Energy_Quote__c.Opportunity_Name__r.Override_Payment_Terms_Description__c}</apex:outputText>
+        <apex:outputText rendered="{!Energy_Quote__c.Opportunity_Name__r.Override_Incoterms_Details__c == null}">{!Energy_Quote__c.Opportunity_Name__r.Account_Payment_Terms_Desc__c}</apex:outputText><br/><br/>-->
+        <br/>{!$Label.AMPICSQuoteAppreciatePrefix}<apex:outputField value="{!Energy_Quote__c.Quote_Number__c}"/> {!$Label.AMPICSQuoteAppreciateSuffix}</apex:pageBlock>
+        <br/><br/>
+    </label>
+    <div>
+        <table>
+            <tr>
+                <td>{!$Label.AMPICSQuoteFaithfully}<br/><!--{!$Label.AMPICSQuoteCompName}--> TE Connectivity - Energy Division<br/>
+                    <br/><br/><br/><br/><br/><br/>
+                    <apex:outputText value="{!Energy_Quote__c.Opportunity_Name__r.Owner.name}" /><br/>
+                    <apex:outputText value="{!Energy_Quote__c.Opportunity_Name__r.Owner.Title}" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</HTML>
+    
+</apex:page>

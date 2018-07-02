@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Used by IND for sample requests for Cable Assemblies</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Approval_Lead_Time__c</fullName>
+        <description>lead time calculation for approval. From submission to either approved or rejected</description>
+        <externalId>false</externalId>
+        <formula>IF(
+ISBLANK(Sample_Request_Appr_Rej_Date__c),-1,
+
+
+CASE(MOD(  Sample_Request_Submitted_Date__c  - DATE(1985,6,24),7),
+0 , CASE( MOD( Sample_Request_Appr_Rej_Date__c -Sample_Request_Submitted_Date__c ,7),1,1,2,2,3,3,4,4,5,4,6,4,0),
+1 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,1,2,2,3,3,4,3,5,3,6,4,0),
+2 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,1,2,2,3,2,4,2,5,3,6,4,0),
+3 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,1,2,1,3,1,4,2,5,3,6,4,0),
+4 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,0,2,0,3,1,4,2,5,3,6,4,0),
+5 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6 , CASE( MOD( Sample_Request_Appr_Rej_Date__c - Sample_Request_Submitted_Date__c ,7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+999)
++
+(FLOOR((  Sample_Request_Appr_Rej_Date__c  - Sample_Request_Submitted_Date__c )/7)*5)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approval Lead Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Can_alternative_components_available_in__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Could we use alternative components available in the sample shop?</inlineHelpText>
+        <label>Alternative components can be used</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Can_alternative_wire_cable_available_in__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Could we use alternative wire/cable availble in the sample shop?</inlineHelpText>
+        <label>Alternative wire/cable can be used</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Sample Requests</relationshipLabel>
+        <relationshipName>Sample_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Customer_may_be_contacted_directly__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates whether the customer may be contacted directly or wants to be contacted by Sales only</inlineHelpText>
+        <label>Customer may be contacted directly</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Date_due_back_to_TE__c</fullName>
+        <externalId>false</externalId>
+        <label>Date due back to TE</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_received_back__c</fullName>
+        <externalId>false</externalId>
+        <label>Date received back</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Days_Since_Sample_Request_Created__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+
+NOT(ISBLANK( CreatedDate )),
+
+
+
+CASE(MOD( Datevalue(CreatedDate)  - DATE(1985,6,24),7),
+0 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,1,2,2,3,3,4,4,5,4,6,4,0),
+1 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,1,2,2,3,3,4,3,5,3,6,4,0),
+2 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,1,2,2,3,2,4,2,5,3,6,4,0),
+3 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,1,2,1,3,1,4,2,5,3,6,4,0),
+4 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,0,2,0,3,1,4,2,5,3,6,4,0),
+5 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6 , CASE( MOD( TODAY() - Datevalue(CreatedDate),7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+999)
++
+(FLOOR(( TODAY() - Datevalue(CreatedDate))/7)*5),NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Days Since Sample Request Created</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engineering__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Engineering</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests6</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Intercontec_Inside_Sales__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>contains the IC inside sales team user from the Opp Team</description>
+        <externalId>false</externalId>
+        <label>Intercontec Inside Sales</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests8</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Intercontec_Sample_Request__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>This checkbox is set automatically if the samples are for Intercontec products</inlineHelpText>
+        <label>Intercontec Sample Request</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_the_sample_for_show_and_tell_not_fun__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Non-functional sample (show and tell)</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_the_sample_needed_for_validation_fun__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Functional sample (for validation)</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Late_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+OR(
+ ISBLANK(Lead_Time_Number_Field__c),
+ ISBLANK(Service_Level_Agreement__c)
+) ,&apos;&apos;,
+IF(
+OR(
+AND(
+  Service_Level_Agreement__c  = &apos;1&apos;,
+ Lead_Time_Number_Field__c &lt;=3
+),
+AND(
+ Service_Level_Agreement__c = &apos;2&apos;,
+ Lead_Time_Number_Field__c &lt;=6
+),
+AND(
+ Service_Level_Agreement__c = &apos;3&apos;,
+ Lead_Time_Number_Field__c &lt;=9
+),
+AND(
+ Service_Level_Agreement__c = &apos;4&apos;,
+ Lead_Time_Number_Field__c &lt;=12
+)
+),
+&apos;On Time&apos;,&apos;Late&apos;
+)
+)</formula>
+        <inlineHelpText>Displays &apos;Late&apos; or &apos;OnTime&apos;, depending on the lead time in relation to the service level agreement.</inlineHelpText>
+        <label>Late Indicator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Time_Number_Field__c</fullName>
+        <description>needed to create a single number field to write the lead time into, otherwise the formula for late_indicator would not compile</description>
+        <externalId>false</externalId>
+        <label>Lead Time Number Field</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Time__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(MOD(  DATEVALUE( CreatedDate )  - DATE(1985,6,24),7),
+0 , CASE( MOD(  Samples_Built_Date__c  -DATEVALUE( CreatedDate ) ,7),1,1,2,2,3,3,4,4,5,4,6,4,0),
+1 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,1,2,2,3,3,4,3,5,3,6,4,0),
+2 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,1,2,2,3,2,4,2,5,3,6,4,0),
+3 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,1,2,1,3,1,4,2,5,3,6,4,0),
+4 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,0,2,0,3,1,4,2,5,3,6,4,0),
+5 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6 , CASE( MOD( Samples_Built_Date__c - DATEVALUE( CreatedDate ) ,7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+999)
++
+(FLOOR(( Samples_Built_Date__c - DATEVALUE( CreatedDate ) )/7)*5)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lead Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <description>The opportunity for which the sample requests are ordered</description>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Sample Requests</relationshipLabel>
+        <relationshipName>Sample_Requests1</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Project_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests7</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Purchasing__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Purchasing</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests5</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the quantity of the samples ordered</inlineHelpText>
+        <label>Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_AP_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Regional_PM_AP__r.FirstName &amp; &quot; &quot; &amp; Opportunity__r.Regional_PM_AP__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Regional PM AP</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_AP__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Regional PM AP</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_EMEA_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Regional_PM_EMEA__r.FirstName &amp; &quot; &quot; &amp;  Opportunity__r.Regional_PM_EMEA__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Regional PM EMEA</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_EMEA__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This field contains the regional PM for the opportunity part. Used for automatic approver in the sample request approval process</description>
+        <externalId>false</externalId>
+        <label>Regional PM EMEA</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_India_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Regional_PM_India__r.FirstName &amp;&quot; &quot;&amp;Opportunity__r.Regional_PM_India__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Regional PM India</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_India__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Regional PM India</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests4</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_Japan_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Regional_PM_Japan__r.FirstName &amp; &quot; &quot; &amp; Opportunity__r.Regional_PM_Japan__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Regional PM Japan</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_Japan__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Regional PM Japan</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests3</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_US_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Regional_PM_US__r.FirstName &amp;&quot; &quot;&amp; Opportunity__r.Regional_PM_US__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Regional PM US</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_PM_US__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Regional PM US</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Sample_Requests1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Remarks_to_the_above_Checklist__c</fullName>
+        <externalId>false</externalId>
+        <label>Remarks to the Checklist</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Request_Number__c</fullName>
+        <displayFormat>{000000}</displayFormat>
+        <externalId>false</externalId>
+        <label>Request Number</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Requested_Delivery_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the date when you want to have the samples delivered</inlineHelpText>
+        <label>Requested Delivery Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Sample_Location__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( Opportunity__r.CCAO_Sample_Location__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sample Location</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sample_Request_Appr_Rej_Date__c</fullName>
+        <description>Date when sample request was approved or rejected</description>
+        <externalId>false</externalId>
+        <label>Sample Request Appr/Rej Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Sample_Request_Submitted_Date__c</fullName>
+        <description>Date when the sample request was submitted for approval</description>
+        <externalId>false</externalId>
+        <label>Sample Request Submitted Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Samples_Built_Date__c</fullName>
+        <description>Records the date when samples have been built, filled by WF</description>
+        <externalId>false</externalId>
+        <label>Samples Built Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Samples_Built__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Please check this box when the requested samples are built, Salesforce will record the date.</inlineHelpText>
+        <label>Samples Built</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Samples_Built_vs_Request_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Samples_Built_Date__c - Requested_Delivery_Date__c &gt;= 0,
+
+CASE(MOD( Requested_Delivery_Date__c - DATE(1985,6,24),7),
+0 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-4,5,-4,6,-4,0),
+1 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-3,5,-3,6,-4,0),
+2 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-2,4,-2,5,-3,6,-4,0),
+3 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,-1,2,-1,3,-1,4,-2,5,-3,6,-4,0),
+4 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,0,2,0,3,-1,4,-2,5,-3,6,-4,0),
+5 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,0,2,-1,3,-2,4,-3,5,-4,6,-5,0),
+6 , CASE( MOD( Samples_Built_Date__c - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-4,5,-5,6,-5,0),
+999)
++
+(FLOOR(( Samples_Built_Date__c - Requested_Delivery_Date__c )/7)*-5),
+
+IF(
+AND(
+TODAY() - Requested_Delivery_Date__c &gt;= 0,
+ISBLANK(Samples_Built_Date__c)),
+
+CASE(MOD( Requested_Delivery_Date__c - DATE(1985,6,24),7),
+0 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-4,5,-4,6,-4,0),
+1 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-3,5,-3,6,-4,0),
+2 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-2,4,-2,5,-3,6,-4,0),
+3 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,-1,2,-1,3,-1,4,-2,5,-3,6,-4,0),
+4 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,0,2,0,3,-1,4,-2,5,-3,6,-4,0),
+5 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,0,2,-1,3,-2,4,-3,5,-4,6,-5,0),
+6 , CASE( MOD( TODAY() - Requested_Delivery_Date__c ,7),1,-1,2,-2,3,-3,4,-4,5,-5,6,-5,0),
+999)
++
+(FLOOR(( TODAY() - Requested_Delivery_Date__c )/7)*-5),
+
+
+CASE(MOD(Samples_Built_Date__c - DATE(1985,6,24),7),
+0 , CASE( MOD( Requested_Delivery_Date__c -Samples_Built_Date__c ,7),1,1,2,2,3,3,4,4,5,4,6,4,0),
+1 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,1,2,2,3,3,4,3,5,3,6,4,0),
+2 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,1,2,2,3,2,4,2,5,3,6,4,0),
+3 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,1,2,1,3,1,4,2,5,3,6,4,0),
+4 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,0,2,0,3,1,4,2,5,3,6,4,0),
+5 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6 , CASE( MOD( Requested_Delivery_Date__c - Samples_Built_Date__c ,7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+999)
++
+(FLOOR(( Requested_Delivery_Date__c - Samples_Built_Date__c )/7)*5)
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Samples Built vs Request Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Send_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Send Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Service_Level_Agreement__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.CCAO_SLA__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Service Level Agreement as defined on the opportunity</inlineHelpText>
+        <label>Service Level Agreement</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Shipping Address</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Shipping_Information__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter shipping details, like courier service and tracking number</inlineHelpText>
+        <label>Shipping Information</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Shipping_address_available__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Shipping address available</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Special_Packaging_required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Special Packaging required</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Special_Test_Requirements__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Special Test Requirements</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>New</fullName>
+                    <default>true</default>
+                    <label>New</label>
+                </value>
+                <value>
+                    <fullName>In Approval</fullName>
+                    <default>false</default>
+                    <label>In Approval</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+                <value>
+                    <fullName>Requested</fullName>
+                    <default>false</default>
+                    <label>Requested</label>
+                </value>
+                <value>
+                    <fullName>Sent</fullName>
+                    <default>false</default>
+                    <label>Sent</label>
+                </value>
+                <value>
+                    <fullName>Returned</fullName>
+                    <default>false</default>
+                    <label>Returned</label>
+                </value>
+                <value>
+                    <fullName>Overdue</fullName>
+                    <default>false</default>
+                    <label>Overdue</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TE_Return_address__c</fullName>
+        <externalId>false</externalId>
+        <label>TE Return address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>View__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id,IMAGE(&quot;/img/icon/tasks16.gif&quot;,&quot;View&quot;),&quot;_parent&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>View</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>What_Documentation_is_needed__c</fullName>
+        <externalId>false</externalId>
+        <label>What Documentation is needed ?</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <label>Sample Request</label>
+    <nameField>
+        <label>Sample Request Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Sample Requests</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>AT_Sample_Request</fullName>
+        <active>true</active>
+        <label>AT Sample Request</label>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overdue</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Requested</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Returned</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sent</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>CCAO_Sample_Request</fullName>
+        <active>true</active>
+        <description>This record type is used for sample requests for CCAO products</description>
+        <label>CCAO Sample Request</label>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Intercontec_Sample_Request</fullName>
+        <active>true</active>
+        <description>Applies to Sample Requests for Intercontec Products</description>
+        <label>Intercontec Sample Request</label>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Date_received_back_Validation</fullName>
+        <active>true</active>
+        <description>Ensure Date Received back date not greater than Today&apos;s date</description>
+        <errorConditionFormula>AND( OR( ISNEW(), ISCHANGED( Date_received_back__c )  ), Date_received_back__c   &gt;   TODAY(),
+OR($Profile.Name = &quot;AT User&quot;,
+$Profile.Name = &quot;AT Marketing User&quot;))</errorConditionFormula>
+        <errorMessage>Date received back date should not be greater than Today&apos;s date.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

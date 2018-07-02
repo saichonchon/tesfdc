@@ -1,0 +1,92 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_Account_Plan_Edit_Ctrl" tabStyle="ACP_Account_Plan__c" standardStylesheets="false"  showHeader="true" sidebar="false">
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+    <apex:form >
+        <div class = "bootstrap-sfdc">
+            <div class="container-fluid">
+                
+                <apex:pageBlock mode="edit">
+                    <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+                    <br/><br/><br/>
+                    <div style="margin-left: 15%;">
+                        <apex:pageMessages />
+                        <apex:outputText value="Account Plan" styleClass="SectionHeader"> </apex:outputText></div>
+                    <br/><br/>
+                    <div class = "row" >
+                        <div class = "col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> {!$Label.ACP_AccountPlan_Edit}  </div>
+                                <div class ="panel-body">
+                                    <div class ="informationBar">{!$Label.ACP_Information}</div>
+                                    <br/>
+                                    
+                                    <div class ="col-md-6">
+                                        
+                                        <div class="form-group">
+                                            <apex:outputLabel value="Account Plan" for="act"></apex:outputLabel><br/>
+                                            <apex:inputField id="actPl" taborderhint="1" label="{!ACP_Account_Plan__c.Name}"  value="{!accplan.Name}" styleClass="form-control" html-placeholder="Enter Account Plan"/><br/>
+                                            <apex:outputLabel value="Account" for="act"></apex:outputLabel>
+                                            <apex:inputField id="act" taborderhint="2" label="{!ACP_Account_Plan__c.ACP_Account_Name__c}"  value="{!accplan.ACP_Account_Name__c}"  html-placeholder="Enter Account"/><br/>
+                                            <apex:outputLabel value="Account Manager" for="actM"></apex:outputLabel>
+                                            <apex:inputField id="actM" taborderhint="3" label="Account Manager"  value="{!accplan.ACP_Account_Manager__c}"  html-placeholder="Enter Account Manager"/><br/>
+                                            <apex:outputLabel value="Account Summary" for="actsum"></apex:outputLabel>
+                                            <apex:inputField id="actsum" taborderhint="4" value="{!accplan.ACP_Account_Summary__c}" styleClass="form-control" html-placeholder="Enter Summary" required="true"  /><br/>
+                                            <apex:outputLabel value="Account Plan Type" for="acpType"></apex:outputLabel>
+                                            <apex:inputField id="acpType" taborderhint="5" value="{!accplan.Account_Plan_Type__c}" styleClass="form-control" html-placeholder="Select Account Plan Type" html-disabled="true" /><br/>
+                                            
+                                        </div>
+                                        
+                                        
+                                        
+                                    </div></div>
+                                
+                                
+                                <div class = "panel-footer">
+                                    <div align ="right" style="">
+                                        <apex:commandButton value="Cancel" immediate="true" action="{!cancelEdit}" styleClass="btn btn-default" />&nbsp;
+                                        
+                                        <apex:commandButton action="{!updateAccountPlan}" value="Save" styleClass="btn btn-primary" /></div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </apex:pageBlock>
+                
+                
+            </div>        
+        </div>
+        
+        <!--<apex:relatedlist list="Account_Plan_Attachment__r"  />-->
+        <apex:pageBlock >
+            <apex:actionFunction action="{!DeleteAccount}" name="DeleteAccount" reRender="form" >
+                <apex:param name="accountid" value="" assignTo="{!SelectedAccountId}"/>
+            </apex:actionFunction>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="New Account Plan Attachment" immediate="true" action="{!gotoAttachmentPage}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable var="ac" value="{!acpaList}" rendered="{!IF(AND(NOT(ISBLANK(acpaList)),acpaList.size>0),true,false)}"> 
+                <!--<apex:column headerValue="Action">
+<apex:outputLink value="{!URLFOR($Action.ACP_Account_Plan_Attachment__c.Delete, ac.Id)}">
+Del
+</apex:outputLink>
+</apex:column>-->
+                <apex:column headerValue="Action" style="width:100px;">
+                    <apex:commandLink action="{!DeleteAccount}" onclick="if(!confirm('Will you delete, {!ac.Name} ?')) return false;" value="Del" style="color:#015ba7"> 
+                        <apex:param name="deleteid" value="{!ac.Id}" assignTo="{!SelectedAccountId}"/>    
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Name" > 
+                    <apex:outputField value="{!ac.Name}"/> 
+                </apex:column> 
+                <apex:column headerValue="Type"> 
+                    <apex:outputField value="{!ac.ACP_Type__c}"/> 
+                </apex:column> 
+                <apex:column headerValue="Attachment Name"> 
+                    <apex:outputLink target="_blank" value="/{!ac.Attachments[0].id}" rendered="{!IF(AND(NOT(ISBLANK(ac.Attachments)),ac.Attachments.size>0),true,false)}">{!ac.Attachments[0].Name}</apex:outputLink>
+                </apex:column> 
+            </apex:pageBlockTable> 
+        </apex:pageBlock> 
+    </apex:form>
+</apex:page>

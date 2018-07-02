@@ -1,0 +1,249 @@
+<apex:page extensions="CAMPAIGNCAL.ccEdit" standardStylesheets="true" showHeader="false" sidebar="false" standardController="Campaign" tabStyle="Campaign">
+    <!-- <apex:includeScript value="{!URLFOR($Resource.ccZipfile, 'jquery/jquery-1.5.2.min.js')}" /> -->
+    <apex:styleSheet value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'bootstrap/css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/jquery-1.11.1.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'icsgen.js')}" /> 
+    <script type="text/javascript">
+        function getIsIE()
+        {
+            return (/Trident\/7\./).test(navigator.userAgent) ? true : false
+        }
+
+        if ({!closeDialog})
+        {
+            parent.resetEvents=true;
+            if(parent.inlineEditsFromModal == true){
+                if(parent.planningViewPage == true){
+                    parent.loadAndRenderWithDelay('The campaign has been updated, reloading...');
+                }
+                else {
+                    parent.loadText = 'The campaign has been updated, reloading...';
+                    parent.$j('#blccCalendar').fullCalendar('refetchEvents');
+                }
+                parent.inlineEditsFromModal = false;
+            } else{
+                // parent.$j('#campaign-modal').modal('hide');
+                if(parent.planningViewPage == true){
+                    parent.loadAndRenderWithDelay('The campaign has been updated, reloading...');
+                }
+                else {
+                    parent.loadText = 'The campaign has been updated, reloading...';
+                    parent.$j('#blccCalendar').fullCalendar('refetchEvents');
+                }
+            }
+            parent.$j('#campaign-modal').modal('hide');
+        }
+        var $j = jQuery.noConflict();
+        var icsData = [];
+        $j(document).ready(function(){
+            $j(".dataCol span:contains('<a href=')").each(function(){
+                $j(this).html($j(this).text());
+            });
+            $j('a').on('click', function() {
+                if($j(this).attr('href')!== undefined){
+                    if($j(this).attr('href').indexOf('javascript')==-1 && $j(this).attr('href')!='#' && !$j(this).parent().parent().hasClass('nav-tabs'))
+                    {
+                        window.open($j(this).attr('href'));
+                        return false;
+                    }
+                }
+            });
+            var campaignName = '{!JSENCODE(Campaign.name)}';
+            var campaignUserName = '{!JSENCODE(Campaign.Owner.Name)}';
+            var campaignEmail = '{!JSENCODE(Campaign.Owner.Email)}';
+            var campaignId = '{!JSENCODE(Campaign.Id)}';
+            var campaignDescription = '{!JSENCODE(Campaign.Description)}';
+            var startDateArr = $j('.campaign-start-date-for-ics').text().split('/');
+            var endDateArr = $j('.campaign-end-date-for-ics').text().split('/');
+            var campaignStart = new Date(startDateArr[2], startDateArr[0]-1, startDateArr[1])
+            var campaignEnd = new Date(endDateArr[2], endDateArr[0]-1, endDateArr[1]);
+            var editMode = {!isSecondForm};
+
+            if(editMode){
+                $j('.inline-edit-toggle-btn').show();
+                $j('.inline-edit-toggle-btn').css('display','inline-block');
+            }
+            
+            icsData.push({start: campaignStart,end: campaignEnd, id: campaignId, ownerName: campaignUserName, ownerEmail: campaignEmail, name: campaignName, description: campaignDescription});
+
+            $j('.inlineEditWrite').on('dblclick',function(e){
+                showEditButtonsFromInlineEdit();
+            });
+
+            $j('.detailList').on('focus click','.dataCol input,select',function(e){
+                focusedOnInput();
+            });
+            
+            function focusedOnInput(){
+                parent.inlineEditsFromModal=true;
+            }
+
+            function showEditButtonsFromInlineEdit(){
+                //If it's edit mode
+
+                $j('.inline-edit-toggle-btn').show();
+                $j('.inline-edit-toggle-btn').css('display','inline-block');
+                $j('.hide-on-inline-edit').hide();
+                parent.inlineEditsFromModal=true;
+            }
+
+            if(campaignId != ''){
+                $j('.pageDescription').css('color','#0088cc');
+                $j('.pageDescription').css('cursor','pointer');
+                $j('.pageDescription').click(function(){
+                    window.open('/'+campaignId, '_blank');
+                });
+            }
+
+        });
+
+        function genIcs(){
+            if(getIsIE()){
+               var blob = new Blob([generateICSString(icsData)]);
+                window.navigator.msSaveOrOpenBlob(blob, 'Calendar.ics');
+            } else{
+                window.open( "data:text/calendar;charset=utf8," + escape(generateICSString(icsData)));
+            }
+        }
+
+        parent.$j('.ui-dialog-content').unmask();
+    </script>
+
+    <style type="text/css">
+        .cc-bs .btn.inline-edit-toggle-btn{
+            display:none;
+        }
+        .cc-bs .bPageTitle{
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .bPageBlock{
+            background-color: white !important;
+            border: none !important;
+        }
+        body{
+            margin:0 10px !important;
+        }
+
+        .bPageBlock .detailList tr td, .bPageBlock .detailList tr th,
+        .hoverDetail .bPageBlock .detailList tr td,
+        .hoverDetail .bPageBlock .detailList tr th{
+            border-bottom: 1px solid #ECECEC !important; /*Can't figure out why this isn't overriding the earlier stylesheets. Ah well. Code Karma-- */
+        }
+        .modal-footer {
+          padding: 14px 15px 15px;
+          margin-bottom: 0;
+          text-align: right;
+          background-color: transparent;
+          border-top: 1px solid transparent !important;
+        }
+        .modal-footer:before,
+        .modal-footer:after {
+          display: table;
+          content: "";
+        }
+        .modal-footer:after {
+          clear: both;
+        }
+        body .bPageTitle .ptBody .pageType{
+            margin-left: 20px;
+            display:inline-block;
+            width: 100%;
+        }
+        body .bPageTitle .ptBody .pageDescription {
+            margin-left: 20px;
+            display:inline-block;
+            margin-top: 0;
+        }
+
+        .pageTitleIcon{
+            display: none !important;
+        }
+        .pageDescription:hover{
+            text-decoration: underline;
+        }
+        .dataCol input[type="checkbox"]{
+            margin-top:6px;
+        }
+        .dataCol span span{
+            /*margin-top:6px;*/
+            display: inline-block;
+        }
+
+        /*Chatter hackery*/
+        .cc-bs .feedpage .feedrightbar{
+            margin-right: 0;
+        }
+        .cc-bs ul.zen-inlineList{
+            margin-bottom: 0;
+        }
+        .cc-bs #publisherBottomBar{
+            height: auto !important;
+            display: inline-block !important;
+            width: 100% !important;
+        }
+    </style>
+    <!-- Page layout now supports field sets. Ken Hua -->
+      <div class="cc-bs campaignTab" style="padding: 5px 15px 15px 15px">
+
+    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" styleClass="campaign-start-date-for-ics" style="display:none;">
+        <apex:param value="{!Campaign.StartDate}" /> 
+    </apex:outputText>
+
+    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" styleClass="campaign-end-date-for-ics" style="display:none;">
+        <apex:param value="{!Campaign.EndDate}" /> 
+    </apex:outputText>
+
+    <apex:sectionHeader title="{!$ObjectType.Campaign.label} Details" subtitle="{!Campaign.name}"/>
+    <apex:pageMessages />
+    <chatter:feedWithFollowers entityId="{!Campaign.Id}"></chatter:feedWithFollowers>
+    <apex:form target="_self">
+    <apex:pageBlock title="" mode="edit" id="thePageBLock">
+        <apex:pageBlockSection showHeader="false" title="Campaign Information" columns="2">
+            <apex:repeat value="{!$ObjectType.Campaign.FieldSets.CAMPAIGNCAL__Campaign_Calendar}" var="f">
+                <!-- <apex:outputField value="{!myCampaign[f]}" rendered="{!NOT(isSecondForm)}" />
+                <apex:pageBlockSectionItem rendered="{!isSecondForm}">
+                    <apex:outputLabel value="{!f.label}" />
+                    <apex:inputField value="{!myCampaign[f]}" required="{!f.required}"/>
+                </apex:pageBlockSectionItem> -->
+
+                <!-- Edit mode -->
+                    <apex:inputField value="{!myCampaign[f]}" styleClass="fieldSet-{!f}" rendered="{!isSecondForm && NOT(CONTAINS(f.FieldPath,'__r'))}" required="{!f.Required}" />
+                    <apex:outputField value="{!myCampaign[f]}" rendered="{!isSecondForm && CONTAINS(f.FieldPath,'__r')}"></apex:outputField>
+                <!-- End Edit Mode -->
+
+                <!-- no edit mode -->
+                    <apex:inputField value="{!myCampaign[f]}" styleClass="fieldSet-{!f}" rendered="{!(NOT(isSecondForm) && (f=='OwnerId' && $ObjectType.Campaign.updateable)) }" required="{!f.Required}" />
+                    <apex:outputField value="{!myCampaign[f]}" html-field-path="{!HTMLENCODE(f.FieldPath)}" rendered="{!(NOT(isSecondForm) && f!='OwnerId') || (NOT($ObjectType.Campaign.updateable))}" ><apex:inlineEditSupport disabled="{!NOT($ObjectType.Campaign.updateable) || CONTAINS(f.FieldPath,'__r')}"></apex:inlineEditSupport></apex:outputField>
+                <!-- end no edit mode -->
+
+            </apex:repeat>
+        </apex:pageBlockSection> 
+        <div class="modal-footer">
+        <apex:outputPanel styleClass="">
+            <apex:commandLink action="{!next}" value="Edit" rendered="{!NOT(isSecondForm) && $ObjectType.Campaign.Updateable}" styleclass="btn btn-primary edit-btn hide-on-inline-edit"/>
+                <apex:actionSupport event="onclick" rerender="thePageBlock"/>
+            <apex:commandLink onClick="$j('body').trigger('click');" action="{!saveAndClose}" value="Save" styleclass="btn btn-primary save-and-close inline-edit-toggle-btn"/>
+            <apex:commandLink action="{!cancel}" onclick="parent.$j('.modal').modal('hide');return false;" value="Cancel" rendered="{!NOT(isSecondForm)}" styleclass="btn btn-default cancel"/>
+            <apex:commandLink action="{!back}" value="Cancel" rendered="{!isSecondForm}" styleclass="btn btn-default cancel-edit-mode"/>
+                <apex:actionSupport event="onclick" rerender="thePageBlock"/>               
+            <!-- <apex:commandLink action="{!viewDetails}" onclick="window.open('/{!Campaign.Id}', '_blank');parent.$j('.modal').modal('hide');return false;" value="Full Campaign Details" rendered="{!NOT(isSecondForm)}" styleclass="btn btn-default"/> -->
+            <apex:outputPanel rendered="{!NOT(isICSButtonDisabled)}">
+                <a onclick="genIcs();return false;" class="btn btn-default">Download ICS</a>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        </div>
+        <!-- <apex:pageBlockButtons >
+            <apex:commandButton action="{!next}" value="Edit" rendered="{!NOT(isSecondForm) && $ObjectType.Campaign.Updateable}" />
+                <apex:actionSupport event="onclick" rerender="thePageBlock"/>
+            <apex:commandButton action="{!saveAndClose}" value="Save" rendered="{!isSecondForm}" />
+            <apex:commandButton action="{!cancel}" onclick="parent.dialog.dialog('close');return false;" value="Cancel" rendered="{!NOT(isSecondForm)}"/>
+            <apex:commandButton action="{!back}" value="Cancel" rendered="{!isSecondForm}"/>
+                <apex:actionSupport event="onclick" rerender="thePageBlock"/>               
+            <apex:commandButton action="{!viewDetails}" onclick="window.open('/{!Campaign.Id}', '_blank');parent.dialog.dialog('close');return false;" value="Full Campaign Details" rendered="{!NOT(isSecondForm)}"/>
+            <input type="submit" value="ICS" onclick="genIcs();return false;" class="btn" />
+        </apex:pageBlockButtons> -->
+    </apex:pageBlock>
+    </apex:form> 
+    </div>
+</apex:page>

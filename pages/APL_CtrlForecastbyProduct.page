@@ -1,0 +1,129 @@
+<apex:page title="Forecast by product" controller="APL_CtrlForecastbyProduct"  sidebar="false" id="thePage" applyBodyTag="true" docType="html-5.0">
+	
+	<head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+		<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/css3animate/animate.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/fancytree/skin-win7/ui.fancytree.min.css')}" />
+		<link type="text/css" rel="stylesheet" href="{!$Resource.APL_CtrlForecastbyProductCSS}" />
+		<style type="text/css">
+			.reload_img{ background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}'); }
+            .mark_img{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/ACGP_new1.png')}'); }
+            .mark_new{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/PC.png')}') !important; }
+            .mark_b{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/B.png')}') !important; }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+				background-position:-145px -146px;
+            }
+            .pin.spin{ background-position: -129px -146px; }
+		</style>
+		
+		<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/fancytree/jquery.fancytree-all.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, '/base64/base64.min.js')}"></script>
+		
+		<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}" type="text/javascript"></script>
+		<script src="{!$Resource.APL_CtrlForecastbyProductJS}" type="text/javascript"></script>
+	
+		<script type="text/javascript">
+	        function setFocusOnLoad() {}
+	        addListener(window, 'load', initDocument, {'locale':'{!lc.locale}'});
+		</script>
+	
+	</head>
+	
+	
+	<body>
+		<div id="loading-curtain-div" title="Please Wait..."></div>
+		
+		<div id="contentallid" class="tc">
+		
+			<apex:form id="theForm">
+				<input type="text" style="display: none; "/><!-- DO NOT DELETE |In the form only when a text box automatically submit bug| -->
+				<input value="{!json_rsmTypeList}" id="rsmtypeid" type="hidden" />
+				<input value="{!pricePlaces}" id="pricepoint" type="hidden" />
+				
+				<div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+        		<apex:outputPanel id="groupingAllOP" layout="block">
+
+					<apex:inputHidden id="managerid" value="{!pageConf.managerId}"/>
+					<apex:outputPanel id="groupingFC" layout="block">
+
+						<input id="mapquartersfuture" value="{!pageConf.str_futureQuarterMap}" type="hidden" />
+						
+						<div class="menu_divcls" id="menudivid">
+							<input class="btn" onclick="event_reload_click(this)" type="button" value="Reload" />
+						</div>
+						
+						<div id="forecastdiv_id" style="min-width:800px; visibility: hidden;" class="mgauto">
+
+	                        <c:APL_CompForecastCalendar pageCtrl="{!this}" />
+	                        
+	                        <!-- START table body -->
+							<div class="mainTabFix">
+								<div class="compwp tabRowFix" id="div_body">
+								
+									<!-- START left table -->
+									<div class="lCellw fol minh ov distable">
+										<div id="left_body">
+											<table style="width: 100%;" class="table_fix" border="0" cellspacing="0" cellpadding="0">
+												<tbody class="ltbodycls overbody" id="ltabid">
+													<c:APL_CompForecastLeft pageCtrl="{!this}" 
+					                            							listData="{!this['list_RSMGroupingData']}" 
+					                            							listColumns="{!this['list_Level1Columns']}" />
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- END left table -->
+									
+									<!-- START right tabel -->
+									<div id="rCellScroll" class="noTabCell rCellw minh" style="overflow: auto; ">
+										<div id="rcellbody" style="width: 100%; position: relative; ">
+											<table id="rTabDataId" class="table_fix" border="0" cellspacing="0" cellpadding="0" >
+												<tbody class="rtbodycls overbody" id="rtabid">
+													<c:APL_CompForecastRight pageCtrl="{!this}" 
+	                            											listData="{!this['list_RSMGroupingData']}" 
+	                            											listColumns="{!this['list_Level1Columns']}" 
+	                            											listDate="{!this['list_allDateItems']}"/>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- END right tabel -->
+									
+								</div>
+							</div>
+							<!-- END table body -->
+
+	                    </div>
+						<c:APL_CompForecastRSMTemplate pageCtrl="{!this}" />
+	                </apex:outputPanel>
+					
+					
+				</apex:outputPanel>
+			</apex:form>
+		
+		</div>
+		
+		<span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+			<span id="innerData" class="innerdata"></span>
+		</span>
+		
+		<script type="text/javascript">
+        	;function existObject_js(){ return '{!$RemoteAction.APL_CtrlForecastbyProduct.existAPLsObject}';}
+	        ;function getRefData_js(){ return '{!$RemoteAction.APL_CtrlForecastbyProduct.getRefData}';}
+	        ;function getBacklogRefData_js(){ return '{!$RemoteAction.APL_CtrlForecastbyProduct.getBacklogRefData}';}
+    	</script>
+	</body>
+	
+</apex:page>

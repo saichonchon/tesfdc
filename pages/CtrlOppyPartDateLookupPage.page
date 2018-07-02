@@ -1,0 +1,54 @@
+<apex:page docType="html-5.0" controller="CtrlOppyPartDateLookupPage" sidebar="false" showheader="false">
+    <script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script>
+       function fillIn(orderDate1, billingDate1, field)
+       {
+			var billingDate = document.getElementById(billingDate1).value;
+            var orderDate = document.getElementById(orderDate1).value;
+            //alert(billingDate);
+            //alert(orderDate);
+            if(billingDate == '')
+            {                
+                alert("Error: You must input Initial Billing Date here");
+                return;
+            }            
+			parent.document.getElementById(field + 'BillingDate').value = billingDate;
+            parent.document.getElementById(field + 'OrderDate').value =orderDate; 
+            parent.onConfidenceSelect();           
+        	parent.closePopUp();         
+       }
+       function cancelUpdate(field) 
+       {            
+            parent.document.getElementById(field).value ='Pre-prod';
+            parent.closePopUp();
+       } 
+   </script>
+   <apex:messages />
+    <apex:form id="form">                
+        <apex:pageBlock mode="maindetail">
+            <table class="detailList" cellspacing="0" cellpadding="0" border="0">                                                   
+	            <tr>
+		            <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Initial_Billing_Date__c.Label}" id="billingdateLabel"/></td>
+		            <td class="dataCol">
+			            <apex:inputField value="{!part.Initial_Billing_Date__c}" id="bill" required="true"/>
+			            <p Style="color:red;">Please input Initial Billing Date</p>
+		            </td>          
+		            <td class="labelCol"><apex:outputLabel value="{!$ObjectType.Opportunity_Part__c.fields.Initial_Order_Date__c.Label}" id="orderdateLabel"/></td>
+		
+		            <td class="dataCol">
+		            	<apex:inputField value="{!part.Initial_Order_Date__c}" id="order" />
+		            	<p Style="color:red;">Please confirm Initial Order Date</p>                                         
+		            </td>
+	            </tr>                           
+            </table>
+            <br/>            
+            <div style="width:100%;text-align:center;">
+                <input type="button" value="OK" class="btn" onclick="fillIn('{!$Component.order}','{!$Component.bill}','{!field}');return false;"/>
+                <input type="button" value="Cancel" class="btn" onclick="cancelUpdate('{!field}');"/>                  
+            </div> 
+                   
+        </apex:pageBlock>       
+    </apex:form>
+</apex:page>

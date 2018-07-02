@@ -1,0 +1,325 @@
+<apex:page standardController="HW1__Call_Plan__c" extensions="HW1.CallPlanPDFController" renderas="pdf">
+    <!-- Stylesheets -->
+    <apex:stylesheet value="{!$Resource.HW1__PDFDocumentStyle}" />
+    <head>
+        <title>Call Planner</title>
+        <style type="text/css">
+            body {
+                color: black;
+                font-family: Arial Unicode MS, Calibri, Arial, Helvetica, sans-serif;
+                font-size:12px; 
+            }
+            .userResponse {
+                padding: 10px;
+                color: black;
+                font-family: Arial Unicode MS, "Times New Roman", Times, serif;
+                font-size:12px; 
+            }
+            
+            h1 {
+                color: #FFF;
+                font-family: Calibri, Arial, Helvetica, sans-serif;
+                font-size: 32px;
+            }
+            
+            h4 {
+                color: #58595b;
+                font-family: Calibri, Arial, Helvetica, sans-serif;
+                font-size:9px;
+            }
+            
+            table.CheckedBox {
+                background-image: url("{!URLFOR($Resource.HW1__checkbox_checked)}");
+                height:15px;                        
+                background-position:center;
+                background-repeat:no-repeat;
+                width:100%;                     
+            }
+            
+            table.UncheckedBox {            
+                background-image: url("{!URLFOR($Resource.HW1__checkbox_unchecked)}");
+                height:15px;                        
+                background-position:center;
+                background-repeat:no-repeat;
+                width:100%;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+
+            .noLeftBorder {
+                border-top-style:solid;
+                border-right-style:solid;
+                border-bottom-style:solid;
+                border-left-style:none;
+            }
+            
+            .noLeftRightBorder {
+                border-top-style:solid;
+                border-right-style:none;
+                border-bottom-style:solid;
+                border-left-style:none;
+            }
+            
+        </style>
+    </head>
+    <body>
+    <!-- First Page Header -->
+    <c:PDFHeaderFooter type="header" position="center">                       
+    </c:PDFHeaderFooter>
+        
+    <!-- All Pages Header--> 
+    <c:PDFHeaderFooter type="header" position="center">    
+        <table border="0" align="center" cellpadding="0" cellspacing="0">  
+          <tr>
+            <td height="15">
+                &nbsp;
+            </td>
+            <td height="15">
+                &nbsp;
+            </td>
+          </tr>
+          <tr>
+                <td class="pageHeader">&nbsp;</td>        
+                <td class="pageHeader">&nbsp;</td>        
+          </tr>
+        </table>             
+    </c:PDFHeaderFooter>
+    
+    <!-- All Pages Footer -->
+    <c:PDFHeaderFooter type="footer" position="left" showPageNumbers="False">
+        <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="left" valign="bottom">
+                    <h4>Call Plan<br />&copy; 2011 Huthwaite, Inc.</h4>
+                </td>
+                <td align="right" valign="bottom">
+                    <h4>www.huthwaite.com</h4>
+                </td>
+            </tr>
+        </table>
+    </c:PDFHeaderFooter>
+    
+    <!-- Content -->
+    <table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#4182c3">
+        <tr>
+            <td width="700" height="" align="left" valign="top" bgcolor="#f47920">
+                <h1>&nbsp;&nbsp;Call Plan</h1>
+            </td>
+      </tr>
+    </table>
+    <br /> 
+    <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="left" valign="top">
+                {!ContactLeadText}<br /> 
+                {!OpportunityText}<br /> 
+                {!CompanyText}
+            </td> 
+            <td align="right" valign="top">
+                Date of Call: {!CallDate}
+            </td> 
+      </tr> 
+    </table> 
+
+    <hr />
+
+    What is the <b>ADVANCE</b> you are planning to achieve?<br />
+    (Use the SMART criteria to strengthen an Advance)<br />
+    <br />
+
+    <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="left" valign="top">
+                Primary:
+                <div class="userResponse"><apex:outputText escape="false" value="{!Advance_Primary}"/></div>
+                <br />
+                Alternative:<br />
+                <div class="userResponse"><apex:outputText escape="false" value="{!Advance_Alternative}"/></div>
+            </td>
+            <td width="250" align="left">
+                <table border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td></td>
+                        <td width="17" align="center"><table class="{!ClassName_Advance_S}"><tr><td></td></tr></table></td>
+                        <td><b>S</b>pecific</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td width="17" align="center"><table class="{!ClassName_Advance_M}"><tr><td></td></tr></table></td>
+                        <td><b>M</b>easurable</td>
+                    </tr>
+                    <tr>
+                        <td align="right">Customer</td>
+                        <td width="17" align="center"><table class="{!ClassName_Advance_A}"><tr><td></td></tr></table></td>
+                        <td><b>A</b>ction-oriented</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td width="17" align="center"><table class="{!ClassName_Advance_R}"><tr><td></td></tr></table></td>
+                        <td><b>R</b>ealistic</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td width="17" align="center"><table class="{!ClassName_Advance_T}"><tr><td></td></tr></table></td>
+                        <td><b>T</b>ime-based</td>
+                    </tr>
+                </table>
+            </td>           
+        </tr>
+    </table> 
+    
+    <br />
+    <br />
+    
+    <b>Current Situation:</b><br />
+    What business issues, challenges and/or market place trends are impacting this customer?
+    <br />
+    <div class="userResponse"><apex:outputText escape="false" value="{!Current_Situation}"/></div>
+    <br />
+    What additional resources can you consult to prepare for this meeting?<br />
+    <br />
+    <div class="userResponse"><apex:outputText escape="false" value="{!Current_Situation_Resources}"/></div>
+    <br />
+    
+    <hr />
+    
+    <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <th align="center">Customer Needs</th>
+            <th align="center" width="75">Expressed?</th>
+            <th align="center" width="75">To Be Developed</th>
+            <th align="center" width="75">Implied?</th>
+            <th align="center" width="75">Explicit?</th>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_1}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_1_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_1_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_1_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_1_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_2}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_2_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_2_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_2_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_2_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_3}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_3_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_3_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_3_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_3_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_4}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_4_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_4_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_4_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_4_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_5}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_5_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_5_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_5_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_5_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+        <tr>
+            <td><div class="userResponse"><apex:outputText escape="false" value="{!Customer_Need_6}"/></div></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_6_Expressed}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_6_ToBeDeveloped}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_6_Implied}"><tr><td></td></tr></table></td>
+            <td align="center"><table class="{!ClassName_Customer_Need_6_Explicit}"><tr><td></td></tr></table></td>
+        </tr>
+    </table>
+    
+    <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="noLeftBorder" valign="top">
+                <table width="350">
+                    <tr>
+                        <td>
+                            What information do you need to know?<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Situation}"/></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>SITUATION</b> Questions you might ask, to focus the discussion:<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Situation_Questions}"/></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="noLeftRightBorder" valign="top">
+                <table width="350">
+                    <tr>
+                        <td>
+                            What potential <b>PROBLEMS</b> exist that you can solve?<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Problem}"/></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>PROBLEM</b> Questions you might ask:<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Problem_Questions}"/></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <br />
+    
+    <b>CAPABILITIES:</b><br />
+    <div class="userResponse"><apex:outputText escape="false" value="{!Capabilities}"/></div>
+    
+    <table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="noLeftBorder" valign="top">
+                <table width="350">
+                    <tr>
+                        <td>
+                            What are the potential desired outcomes and <b>VALUE</b> derived from resolving this issue?<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Need_Payoff}"/></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>NEED-PAYOFF</b> Questions you might ask:<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Need_Payoff_Questions}"/></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="noLeftRightBorder" valign="top">
+                <table width="350">
+                    <tr>
+                        <td>
+                            What are the <b>IMPLICATIONS</b> that make these problems more serious or urgent?<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Implication}"/></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>IMPLICATION</b> Questions you might ask:<br />
+                            <div class="userResponse"><apex:outputText escape="false" value="{!Implication_Questions}"/></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <br />
+    
+    Given your objective for the call, how will you open with a <b>CUSTOMER-CENTERED PURPOSE</b>?<br />
+    <div class="userResponse"><apex:outputText escape="false" value="{!Customer_Centered_Purpose}"/></div>  
+
+  </body>
+</apex:page>

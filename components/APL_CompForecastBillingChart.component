@@ -1,0 +1,365 @@
+<apex:component layout="block" controller="APL_CompForecastBillingChart">
+    <apex:attribute name="tcode" assignTo="{!currentTerritoryCode}" description="territory code" type="String" required="false"/>
+    <apex:attribute name="src" assignTo="{!source}" description="source" type="String" required="false"/>
+    <apex:attribute name="uid" assignTo="{!userId}" description="userId" type="String" required="false"/> 
+
+	
+	<script type="text/javascript">
+	
+     	var current = new Array();
+     	var next = new Array();
+     	var year = {!currentFiscalYear};
+     	var mio = 1000000;
+     	var TcodeAMGroupingMAP;
+		var	RSMGroupingAMGroupingMAP;
+		var	TcodeRelayGroupingMAP;
+		var	RSMRelayGroupingRelayGroupingMAP;
+     	
+     	function drawForecastChart(c,n){
+     	
+     		//START:calculate total and difference
+     		var difference = new Array();
+     		var formatCurrent = new Array();
+     		var formatNext = new Array();
+     		var y = {!currentFiscalYear};
+     		var ny = Number(y) + 1;
+     		var totalCurrent = 0, totalNext = 0, formatTotalCurrent, formatTotalNext, formatTotalDiff;
+     		if(c.length == n.length){
+                //console.log('c ' + c);
+	     		for(i = 1; i <= 4; i++) { 
+                    //console.log('c[i] ' + c[i]);
+	        		totalCurrent += Number(c[i]);
+	        		formatCurrent[i] = formatNumber(c[i].toFixed(1));
+	        		
+	        		totalNext += Number(n[i]);
+	        		formatNext[i] = formatNumber(n[i].toFixed(1));  
+	     
+	        		if (c[i] == 0){
+	        	  
+	        			difference[i] = 0;
+	        		} else {
+	     
+	        			difference[i] = formatNumber(((n[i]/c[i]-1)*100).toFixed(1)); 
+	        		} 
+	     		
+	        	}
+	        	
+	        	formatTotalCurrent = formatNumber(totalCurrent.toFixed(1));  
+	        	formatTotalNext = formatNumber(totalNext.toFixed(1));  
+	        	if (totalCurrent == 0){
+	        		formatTotalDiff = 100;
+	        	} else {
+	        		formatTotalDiff = formatNumber(((totalNext/totalCurrent-1)*100).toFixed(1));
+                    //console.log("ftdiff", formatTotalDiff);
+	        	}
+        	}
+        	else{
+        		alert('result is not finished');
+        	}
+            //console.log('totalCurrent ' + totalCurrent);
+            //console.log('formatTotalCurrent ' + formatTotalCurrent);
+        		
+     		//END:calculate total and difference
+			var chart = AmCharts.makeChart("AplAmchart", {
+	            "type": "serial",
+	            "theme": "light",
+	            "legend": {
+			        "horizontalGap": 10,
+			        "maxColumns": 1,
+			        "position": "top",
+					"useGraphSettings": true,
+					"markerSize": 10
+			    },
+	            "dataProvider": [{
+	                "Name": 'Q1',
+	                "Current": c[1].toFixed(1),
+	                "Next": n[1].toFixed(1),
+	                "Description" : n[1].toFixed(1) + ' , ' + difference[1] + '%'
+					
+	            }, {
+	                "Name": 'Q2',
+	                "Current": c[2].toFixed(1),
+	                "Next": n[2].toFixed(1),
+	                "Description" : n[2].toFixed(1) + ' , ' + difference[2] + '%'
+					
+	            }, {
+	                "Name": 'Q3',
+	                "Current": c[3].toFixed(1),
+	                "Next": n[3].toFixed(1),
+	                "Description" : n[3].toFixed(1) + ' , ' + difference[3] + '%'
+					
+	            }, {
+	                "Name": 'Q4',
+	                "Current": c[4].toFixed(1),
+	                "Next": n[4].toFixed(1),
+	                "Description" : n[4].toFixed(1) + ' , ' + difference[4] + '%'
+					
+	            }, {
+	                "Name": 'Year',
+	                "Current": formatTotalCurrent,
+	                "Next": formatTotalNext,
+	                "Description": formatTotalNext +' , ' + formatTotalDiff + '%'
+	            }],
+	            "valueAxes": [{
+	                "unit": "",
+	                //"stackType": "regular",
+	                "gridAlpha": 0.2,
+	                "gridColor":"#9e9e9e",
+	                "dashLength": 0
+	            }],
+	            "categoryAxis": {
+	                "autoWrap" : true,
+	                "gridPosition": "start",
+	                "gridAlpha": 0,
+	                "tickPosition":"start",
+	                "twoLineMode":true
+	            },
+	            "gridAboveGraphs": true,
+	            "colors": ["#4685d1", "#d34441", "#4685d1", "#d34441"],
+	            "startDuration": 1,
+	            "graphs": [{
+	                "balloonText": "<b>[[title]]</b><br><span><b>[[value]]</b></span>", 
+	                "labelText": "[[value]]",
+	                "fillAlphas": 0.8,
+	                "lineAlpha": 0.3,
+	                "title": y,
+	                "type": "column",
+	                "newStack": true,
+	                "color": "#111111",
+	                "valueField": "Current"
+	            },{
+	                "balloonText": "<b>[[title]]</b><br><span><b>[[description]]</b></span>",
+	                "labelText": "[[value]]",
+	                "fillAlphas": 0.8,
+	                "lineAlpha": 0.3,
+	                "type": "column",
+	                "title": ny,
+	                "color": "#111111",
+	                "valueField": "Next",
+	                "descriptionField": "Description"
+	            }],
+	            "columnWidth": 0.9,
+	            "categoryField": "Name"
+	        });		        		     	
+     	}
+
+     	    
+       function convert2Mio(value){
+           var numValInMio = Number(value) / mio;
+           var numValRound = Math.round(numValInMio * 10) / 10;
+           var numReturn = Number(numValRound.toFixed(1));
+           return numReturn;
+        }
+        function formatNumber(value) {
+            //return Globalize.format(Number(value));
+            value = value.toString();
+            if(value.indexOf('.') == -1) {
+                value = value + '.0'; 
+            }
+            return value;
+        }
+		console.log( '{!source}' );
+		
+		if('{!source}' == 'AM'){
+            //console.log('aMGrouping' + '{!aMGrouping}');
+            //console.log('productFamily' + '{!productFamily}');
+			var drawgroup = {
+				"amGrouping": $.parseJSON('{!JSENCODE(aMGrouping)}'), 
+				"productFamily": $.parseJSON('{!JSENCODE(productFamily)}')					
+			}			
+		} else if('{!source}' == 'Relay'){
+			var drawgroup = {
+				"relayGrouping": $.parseJSON('{!JSENCODE(relayGrouping)}'), 
+				"productFamily": $.parseJSON('{!JSENCODE(productFamily)}')
+			}					
+		} else if('{!source}' == 'GAM'){
+			var drawgroup = {
+				"region": $.parseJSON('{!JSENCODE(region)}'), 
+				"productFamily": $.parseJSON('{!JSENCODE(productFamily)}')
+			}					
+		} else if('{!source}' == 'RSM'){
+			var drawgroup = {
+				"territoryCode": $.parseJSON('{!JSENCODE(RSMTerritoryCode)}'),
+				"rsmGrouping": $.parseJSON('{!JSENCODE(rSMGroupingJSON)}'),
+				"productFamily": $.parseJSON('{!JSENCODE(productFamily)}'),
+				"amGrouping": $.parseJSON('{!JSENCODE(aMGroupingJson)}')	
+			}					
+			TcodeAMGroupingMAP = $.parseJSON('{!JSENCODE(TcodeAMGroupingMAP)}');
+			RSMGroupingAMGroupingMAP = $.parseJSON('{!JSENCODE(RSMGroupingAMGroupingMAP)}');
+            
+            //console.log("a", TcodeAMGroupingMAP);
+            //console.log("b", RSMGroupingAMGroupingMAP);
+		
+		} else if('{!source}' == 'RSMRelay'){
+			var drawgroup = {
+				"territoryCode": $.parseJSON('{!JSENCODE(RSMRelayTerritoryCode)}'),
+				"rsmRelayGrouping": $.parseJSON('{!JSENCODE(rSMRelayGroupingJSON)}'),
+				"productFamily": $.parseJSON('{!JSENCODE(productFamily)}'),
+				"relayGrouping": $.parseJSON('{!JSENCODE(relayGroupingJson)}')
+			};
+
+			TcodeRelayGroupingMAP = $.parseJSON('{!JSENCODE(TcodeRelayGroupingMAP)}');
+			RSMRelayGroupingRelayGroupingMAP = $.parseJSON('{!JSENCODE(RSMRelayGroupingRelayGroupingMAP)}');					
+
+		}
+
+		function RBtn(y,q, cy) {
+			searchRemoteChart(y, q, cy);
+			/*
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.APL_CompForecastBillingChart.getChartData}', 
+		        forecastActualBillingChart.getValues(y, q), function(result, event){
+		        	//store the result to array accordingly
+                    if(result.message == 'success'){ //successful
+                        if(y == cy) current[q] = Number(result.amount);
+                        else next[q] = Number(result.amount);
+                        
+                        //delete the status box for current quarter
+                        var c = $("#actionResult").html();
+                        var $status_cell=$("#actionResult").find('b.ref_box[data-quarter="'+ y +'-'+ q +'"]');
+                      	$status_cell.animate({backgroundColor: '#51C957'}, 130);
+                        //console.log("resultHtml", $status_cell.html());
+                        $status_cell.remove();
+                		if($("#actionResult").html() == ''){ 
+                    		drawForecastChart(current, next);
+                    		$(".LoadingDiv").hide();                      	                     
+						}
+                    }
+                    else{//failed, show error message and create a link to allow user to retry
+                    	var $status_cell = $("#actionResult").find('b.ref_box[data-quarter="'+ y +'-'+ q +'"]');
+                    	$status_cell.attr("title",  y +'-' + q + ':' + result.message);
+                    	$status_cell.animate({backgroundColor: '#C95151'}, 130);
+                    	var cFalse = '<span onclick="RBtn(' +　y　+　','　+　q　+　','　+　cy　+　')">Reload</span>';
+                    	$status_cell.html(cFalse);
+                    }
+		        }
+			);
+			*/
+		}
+    
+		function myRBtn()	{
+			try{
+				$("#actionResult").html('');
+	            year = {!currentFiscalYear};
+	            var y,q;
+	            y = {!currentFiscalYear};
+	            for(n=1;n<=8;n++){
+	                q = n;
+					if(n > 4) {				
+	              		q = n - 4;
+						if(q == 1) y++;
+					}
+	  
+	                //START: create a mark for every quarter.
+	
+	                // draw boxes to record the status of every quarter
+	                var c = $("#actionResult").html() + '<b data-quarter="' + y +'-'+ q+'" data-status="false" class="ref_box"> </b>';
+	                $("#actionResult").html(c);               
+	                         
+	                //END: create a mark for every quarter.
+	            	RBtn(y,q, year);
+	            }
+			
+			}catch(e){
+			
+			}
+		}
+		
+		
+		function EBtn(y,q) {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.APL_CompForecastBillingChart.getExportData}', 
+		        forecastActualBillingChart.getExport_result(y, q), function(result, event){
+                    //("result", result);
+		        }
+			);
+		}
+		
+		function myEBtn()	{
+			try{
+				$("#actionResult").html('');
+	            year = {!currentFiscalYear};
+	            var y,q;
+	            y = {!currentFiscalYear};
+	            for(n=1;n<=8;n++){
+	                q = n;
+					if(n > 4) {				
+	              		q = n - 4;
+						if(q == 1) y++;
+					}
+	                
+	            	EBtn(y,q, year);
+	            }
+			
+			}catch(e){
+			
+			}
+		}
+		
+  		addListener(window, 'load', initCtrlDocument, {});
+    </script>
+
+	<div class="LoadingDiv" id="loadingdivid">
+		<div class="reloadexport" id="reloadbox">
+			<div id="reloadpoint" class="reload_img"></div>
+			<div id="reloadmsg"></div>
+		</div>
+		<img class="LoadingImg" src="/img/loading32.gif" title="Please Wait..."/>
+	</div>  
+    <div id="Component">
+    	<div style="margin: 10px;">
+            <span id="sourceDiv" style="display:none;">{!source}</span>
+            <span id="cfyDiv" style="display:none;">{!currentFiscalYear}</span>
+            <span id="cfqDiv" style="display:none;">{!currentFiscalQuarter}</span>
+            <span id="uidDiv" style="display:none;">{!userId}</span>
+    		<apex:outputLabel rendered="{!source=='Relay'|| source=='AM'}">Territory Code: <span id="territoryCodeDiv" >{!currentTerritoryCode}</span></apex:outputLabel>
+    	</div>
+    	<div class="inputDiv">
+	    	<input type="button" value="Refresh" id="refreshBtn" class="refreshBtn" />
+	    	<input data-url="{!$Page.APL_CtrlExportCSVFile}"  type="button" value="Export" id="exportBtn" class="exportBtn" />
+    	</div>
+    </div>
+    <div id="actionResult"></div>
+    <div id="AplAmchart" class="AplAmchart">
+    </div>
+    
+    <div id="filterreport" class="filterreport">
+    	<table style="width: 100%; display:none;" class="list tabfix" border="0" cellspacing="0" cellpadding="0">
+    		<thead>
+    			<tr id="reporthead">
+    				<apex:repeat var="head" value="{!list_exportHead}">
+	    				<th class="headdark" data-q="{!head}">{!head}</th>
+    				</apex:repeat>
+    				<!-- 
+    				<th class="headdark">product family </th>
+    				<th class="headdark">territory code </th>
+    				<th class="headdark">grouping </th>
+    				<th class="headdark"> this year Q1 </th>
+    				<th class="headdark"> this year Q2 </th>
+    				<th class="headdark"> this year Q3 </th>
+    				<th class="headdark"> this year Q4 </th>
+    				<th class="headdark"> next year Q1 </th>
+    				<th class="headdark"> next year Q2 </th>
+    				<th class="headdark"> next year Q3 </th>
+    				<th class="headdark"> next year Q4 </th>
+    				 -->
+    			</tr>
+    		</thead>	
+    		<tbody id="reportbody" class="reportbody">	
+    		</tbody>
+    		
+    		<tfoot id="templatefootid" style="display: none !important;">
+    			<tr>
+    				<apex:repeat var="head" value="{!list_exportHead}">
+	    				<td>&nbsp;</td>
+    				</apex:repeat>
+    			</tr>
+    		</tfoot>
+    	</table>
+    </div>
+    
+    <script type="text/javascript">
+    	;function getExportGroup_js(){ return '{!$RemoteAction.APL_CompForecastBillingChart.getExportGroup}';}
+    	;function getExportData_js(){ return '{!$RemoteAction.APL_CompForecastBillingChart.getExportData}';}
+    	;function getChartData_js(){ return '{!$RemoteAction.APL_CompForecastBillingChart.getChartData}';}
+    </script>
+    
+</apex:component>

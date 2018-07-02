@@ -1,0 +1,98 @@
+<!-- 
+	Lightning Component that mimics both the Dupe Dectector and Merge Recent Cases inline visualforce pages. There is
+	an option to control which ones are displayed.
+
+	03/08/18 	BE 		Created (00157774)
+	03/12/18	BE 		Updated to include a spinner when loading, show error messages if needed, and a message if both tools are hidden (00157774)
+	04/10/18	BE		New Attributes for showing/hiding the spinner and error parts of the component. The CSS is not always applied in the init
+						controller function (00157774).
+-->
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes" controller="csmrgp.CaseToolsCtrl" access="global">
+	
+	<!-- Dupe Detector -->
+	<aura:attribute name="showDupeDetector" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="duplicatesText" type="String" default="No Duplicates"/>
+	<aura:attribute name="dupesFound" type="Boolean" default="false"/>
+
+	<!-- Recent Cases -->
+	<aura:attribute name="showRecent" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="recentCases" type="Case[]"/>
+
+	<!-- Error Handling -->
+	<aura:attribute name="errorMessage" type="String"/>
+
+	<!-- Display -->
+	<aura:attribute name="showSpinner" type="Boolean" default="true"/>
+	<aura:attribute name="showError" type="Boolean"/>
+
+	<!-- Handlers -->
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<aura:handler name="render" value="{!this}" action="{!c.onRender}"/>
+
+	<lightning:card title="Case Merge Premium">
+		<aura:if isTrue="{!v.showSpinner}">
+			<lightning:spinner aura:id="loadingSpinner" variant="brand" size="large" alternativeText="Loading"/>
+		</aura:if>
+		<aura:if isTrue="{!and(not(v.showDupeDetector),not(v.showRecent))}">
+			<!-- No components displayed message -->
+			<div class="slds-text-align_center">
+				<p>To display "Duplicates" or "Merge With Recent Cases" here, click the Setup Icon <lightning:icon iconName="utility:setup" size="small"/>.</p>
+				<p>In the menu that pops up click "Edit Page". Click on this component and check the checkboxes for which tool(s) you want to show.</p>
+			</div>
+			<aura:set attribute="else">
+				<!-- Main Content -->
+				<aura:if isTrue="{!not(v.showError)}">
+					<div> <!-- Show the components -->
+						<aura:if isTrue="{!v.showDupeDetector}">
+							<label class="slds-form-element__label">Duplicates</label>
+							<lightning:layout class="alignTextWithButton">
+								<lightning:layoutItem class="slds-m-right_xx-small flexFill">
+									<aura:if isTrue="{!v.dupesFound}">
+										<a href="javascript:void(0)" onclick="{!c.goToFind}" class="ltngUnderline dupeLink">{!v.duplicatesText}</a>
+										<aura:set attribute="else">
+											{!v.duplicatesText}
+										</aura:set>
+									</aura:if>
+								</lightning:layoutItem>
+								<lightning:layoutItem class="slds-m-left_xx-small flexNoShrink">
+									<lightning:button variant="brand" label="{!'View' + if(v.dupesFound,' Duplicates','')}" onclick="{!c.goToFind}"/>
+								</lightning:layoutItem>
+							</lightning:layout>
+						</aura:if>
+						<aura:if isTrue="{!and(v.showRecent, v.showDupeDetector)}">
+							<div class="slds-border_top slds-m-vertical_large"></div>
+						</aura:if>
+						<aura:if isTrue="{!v.showRecent}">
+							<label class="slds-form-element__label">Merge with Recent Case</label>
+							<aura:if isTrue="{!empty(v.recentCases)}">
+								<div class="italic"> No Recent Cases</div>
+								<aura:set attribute="else">
+									<lightning:layout >
+										<lightning:layoutItem class="mergeWithRecentSelectContainer slds-m-right_xx-small flexFill">
+											<!-- [BE] Any custom lightning applications will crash if label="" is not there (even though I'm hiding the label anyway), I'm being serious -->
+											<lightning:select aura:id="recentCaseSelect" label="" class="mergeWithRecentSelect">
+												<aura:iteration items="{!v.recentCases}" var="cs">
+													<option value="{!cs.Id}">{!cs.Subject}</option>
+												</aura:iteration>
+											</lightning:select>
+										</lightning:layoutItem>
+										<lightning:layoutItem class="slds-m-left_xx-small flexNoShrink">
+											<lightning:button variant="brand" label="Merge" onclick="{!c.goToMerge}"/>
+										</lightning:layoutItem>
+									</lightning:layout>
+								</aura:set>
+							</aura:if>
+						</aura:if>
+					</div>
+					<!-- Error -->
+					<aura:set attribute="else">
+						<div class="errorArea slds-text-align_center">
+							<h2>Error</h2>
+							<p>{!v.errorMessage}</p>
+						</div>
+					</aura:set>
+				</aura:if>
+			</aura:set>
+		</aura:if>
+	</lightning:card>
+</aura:component>

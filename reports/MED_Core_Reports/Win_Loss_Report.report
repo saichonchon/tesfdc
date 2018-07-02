@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_49111649</developerName>
+        <masterLabel>Win</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity$MED_Opp_Status__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>LS - Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>CN - Lost (Canceled)</sourceValue>
+            </sourceValues>
+            <value>Loss</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>AC - Active Project</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>CM - Complete</sourceValue>
+            </sourceValues>
+            <value>Win</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>HL - Hold</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>QR - Quote Released</sourceValue>
+            </sourceValues>
+            <value>Open</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#CCCCFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumnGrouped</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Opportunity$MED_Quote_Approval_Date__c</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>BucketField_49111649</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Large</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>Win / Loss - Past 90 Days</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Owner.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>WN - Win,AC - Active Project,CN - Lost (Canceled),LS - Lost,HL - Hold,CM - Complete</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsDown>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Opportunity$MED_Quote_Approval_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_49111649</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Win Loss Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <roleHierarchyFilter>X101816_Worldwide_Medical</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$MED_Quote_Approval_Date__c</dateColumn>
+        <endDate>2017-03-27</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2016-10-03</startDate>
+    </timeFrameFilter>
+</Report>

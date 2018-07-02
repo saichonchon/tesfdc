@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Industrial Object, linked to coaching object</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Plan__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Please use this field if you want to discuss a topic specific to an account plan during a coaching session.</inlineHelpText>
+        <label>Account Plan</label>
+        <referenceTo>Account_Plan__c</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Please use this field if you want to discuss a topic specific to an account during a coaching session.</inlineHelpText>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Call_Plan__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Please use this field if you want to discuss a topic specific to a call plan during a coaching session.</inlineHelpText>
+        <label>Call Plan</label>
+        <referenceTo>HW1__Call_Plan__c</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Coaching_Record__c</fullName>
+        <externalId>false</externalId>
+        <label>Coaching Record</label>
+        <referenceTo>Coaching__c</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Coaching_Result__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the result of your coaching session in this field</inlineHelpText>
+        <label>Coaching Result</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Contact.Inactive__c</field>
+                <operation>equals</operation>
+                <value>False</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Content_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Topic__c , 
+
+&quot;Performance - Annual price negotiation&quot;,&quot;Performance&quot;, 
+&quot;Performance - Forecasting and Forecast Achievement&quot;,&quot;Performance&quot;, 
+&quot;Performance - Net Promoter Score&quot;,&quot;Performance&quot;, 
+&quot;Performance - Competitor Replacement and Share Gain&quot;,&quot;Performance&quot;, 
+&quot;Performance - Tech Day Coordination&quot;,&quot;Performance&quot;, 
+&quot;Performance - Technical Customer Support&quot;,&quot;Performance&quot;, 
+&quot;Performance - Top Projects, alignment to application and account&quot;,&quot;Performance&quot;, 
+&quot;Performance - AM/FE alignment&quot;,&quot;Performance&quot;, 
+&quot;Performance - Feedback&quot;,&quot;Performance&quot;, 
+&quot;Performance - Performance and Coaching Review&quot;,&quot;Performance&quot;, 
+
+&quot;Product / Application - Application Solution&quot;, &quot;Product / Application&quot;, 
+&quot;Other&quot;, &quot;Other&quot;,
+
+&quot;Professionalism&quot; 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Content Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Follow_up_Activity_Result__c</fullName>
+        <externalId>false</externalId>
+        <label>Follow-up Activity Result</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Follow_up_Activity__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter any follow-up activities that you agreed on during the coaching session, if any.</inlineHelpText>
+        <label>Follow-up Activity</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Highlight_Lowlight__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Please use this field if you want to discuss a topic specific to an highlight/lowlight during a coaching session.</inlineHelpText>
+        <label>Highlight / Lowlight</label>
+        <referenceTo>Highlight_Lowlight__c</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Please use this field if you want to discuss a topic specific to an opportunty during a coaching session.</inlineHelpText>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>Coaching_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Topic_Detail__c</fullName>
+        <externalId>false</externalId>
+        <label>Topic Detail</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Topic_Text_Long__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE( Topic__c , 
+&quot;Performance - Annual price negotiation&quot;, &quot;Annual price negotation process and align to strategy such as PE target/defend business/growth&quot;, 
+&quot;Professionalism - BFAS&quot;, &quot;BFAS Understanding of customer strategy (get the facts)-&gt; key stokehold management -&gt; account plan in place including executive summary-&gt; account plan execution&quot;, 
+&quot;Performance - Forecasting and Forecast Achievement&quot;, &quot;Monthly &amp; Quarterly forecasting process and commitment to booking/billing achievement&quot;, 
+&quot;Performance - Net Promoter Score&quot;,&quot;NPS driving, detractor following, escalation process and regular customer engagement&quot;, 
+&quot;Professionalism - BFOS&quot;, &quot;Buyer Focused Opportunity Strategy: Qualifier Assessment, Win Criteria, Customer Contact Roles&quot;, 
+&quot;Performance - Competitor Replacement and Share Gain&quot;, &quot;Competitor Replacement and Share Gain&quot;, 
+&quot;Performance - Tech Day Coordination&quot;, &quot;Co-ordinate Tech Day/Seminar program&quot;, 
+&quot;Performance - Technical Customer Support&quot;, &quot;Technical support and customer focus service on product/technology&quot;, 
+&quot;Performance - Top Projects, alignment to application and account&quot;, &quot;Must Win projects, align to application/product focus, align to account strategy/plan, drive to success&quot;, 
+&quot;Professionalism - Call Plan and SPIN&quot;, &quot;Spin call plan and SPIN methodology&quot;, 
+&quot;Professionalism - Customer Visit and Follow-Up&quot;, &quot;Professional Customer Visit and Follow-Up&quot;, 
+&quot;Performance - AM/FE alignment&quot;, &quot;Align AM/FE to achieve performance target align to budget and account strategy&quot;, 
+&quot;Performance - Feedback&quot;, &quot;Regular feedback, annual assessment, mid year, monthly coaching feedback&quot;, 
+&quot;Performance - Performance and Coaching Review&quot;, &quot;Regular performance review and coaching, quarterly, monthly, weekly&quot;, 
+&quot;Professionalism - Team Member 1:1 Coaching&quot;, &quot;Team Member 1:1 Coaching&quot;, 
+&quot;Product / Application - Application Solution&quot;,&quot;Application solution, including major products we can offer, and key product&apos;s value proposition&quot;,
+&quot;Other&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Topic Text Long</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Topic__c</fullName>
+        <externalId>false</externalId>
+        <label>Topic</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Performance - AM/FE alignment</fullName>
+                    <default>false</default>
+                    <label>Performance - AM/FE alignment</label>
+                </value>
+                <value>
+                    <fullName>Performance - Annual price negotiation</fullName>
+                    <default>false</default>
+                    <label>Performance - Annual price negotiation</label>
+                </value>
+                <value>
+                    <fullName>Performance - Competitor Replacement and Share Gain</fullName>
+                    <default>false</default>
+                    <label>Performance - Competitor Replacement and Share Gain</label>
+                </value>
+                <value>
+                    <fullName>Performance - Feedback</fullName>
+                    <default>false</default>
+                    <label>Performance - Feedback</label>
+                </value>
+                <value>
+                    <fullName>Performance - Forecasting and Forecast Achievement</fullName>
+                    <default>false</default>
+                    <label>Performance - Forecasting and Forecast Achievement</label>
+                </value>
+                <value>
+                    <fullName>Performance - Net Promoter Score</fullName>
+                    <default>false</default>
+                    <label>Performance - Net Promoter Score</label>
+                </value>
+                <value>
+                    <fullName>Performance - Performance and Coaching Review</fullName>
+                    <default>false</default>
+                    <label>Performance - Performance and Coaching Review</label>
+                </value>
+                <value>
+                    <fullName>Performance - Tech Day Coordination</fullName>
+                    <default>false</default>
+                    <label>Performance - Tech Day Coordination</label>
+                </value>
+                <value>
+                    <fullName>Performance - Technical Customer Support</fullName>
+                    <default>false</default>
+                    <label>Performance - Technical Customer Support</label>
+                </value>
+                <value>
+                    <fullName>Performance - Top Projects, alignment to application and account</fullName>
+                    <default>false</default>
+                    <label>Performance - Top Projects, alignment to application and account</label>
+                </value>
+                <value>
+                    <fullName>Product / Application - Application Solution</fullName>
+                    <default>false</default>
+                    <label>Product / Application - Application Solution</label>
+                </value>
+                <value>
+                    <fullName>Professionalism - BFAS</fullName>
+                    <default>false</default>
+                    <label>Professionalism - BFAS</label>
+                </value>
+                <value>
+                    <fullName>Professionalism - BFOS</fullName>
+                    <default>false</default>
+                    <label>Professionalism - BFOS</label>
+                </value>
+                <value>
+                    <fullName>Professionalism - Call Plan and SPIN</fullName>
+                    <default>false</default>
+                    <label>Professionalism - Call Plan and SPIN</label>
+                </value>
+                <value>
+                    <fullName>Professionalism - Customer Visit and Follow-Up</fullName>
+                    <default>false</default>
+                    <label>Professionalism - Customer Visit and Follow-Up</label>
+                </value>
+                <value>
+                    <fullName>Professionalism - Team Member 1:1 Coaching</fullName>
+                    <default>false</default>
+                    <label>Professionalism - Team Member 1:1 Coaching</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>View__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id,IMAGE(&quot;/img/icon/tasks16.gif&quot;,&quot;View&quot;),&quot;_parent&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>View</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Coaching Topic</label>
+    <nameField>
+        <displayFormat>CQ-{0000}</displayFormat>
+        <label>Coaching Topics Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Coaching Topics</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>csmrgp__Case_Created_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Created Date of the associated Case</description>
+        <externalId>false</externalId>
+        <label>Case Created Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Case_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Status of associated Case</description>
+        <externalId>false</externalId>
+        <label>Case Status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Case__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Duplicate Cases</relationshipLabel>
+        <relationshipName>Duplicate_Cases</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Duplicate_Group__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Duplicate Group</label>
+        <referenceTo>csmrgp__Duplicate_Group__c</referenceTo>
+        <relationshipLabel>Duplicate Cases</relationshipLabel>
+        <relationshipName>Duplicate_Cases</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Has_Parent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates if the associated Case has a Parent Case</description>
+        <externalId>false</externalId>
+        <label>Has Parent</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>csmrgp__Is_Deleted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Is Deleted</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Duplicate Case</label>
+    <nameField>
+        <displayFormat>DC-{000000}</displayFormat>
+        <label>Duplicate Case Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Duplicate Cases</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>csmrgp__CsMrgDupeCaseListBtn</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Merge</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/25.0/connection.js&quot;)}
+var records = {!GETRECORDIDS($ObjectType.csmrgp__Duplicate_Case__c)};
+
+if (records.length &lt; 2 || records.length &gt; 9){
+    alert(&quot;You must select between two and nine duplicate cases to merge.&quot;);
+} else {
+	var selectedIDs = &apos;&apos;; 
+	for (var i = 0; i &lt; records.length; i++){
+		selectedIDs += &quot;&apos;&quot; + records[i] + &quot;&apos;,&quot;;
+	}
+	selectedIDs = selectedIDs.substring(0, selectedIDs.length - 1);
+
+	var strQuery = &quot;SELECT csmrgp__Case__c FROM csmrgp__Duplicate_Case__c WHERE csmrgp__Case__c != null AND ID IN (&quot; + selectedIDs + &quot;)&quot;; 
+	var dupeCases = sforce.connection.query(strQuery).getArray(&quot;records&quot;);
+	var url;
+
+	if (dupeCases.length &lt; 2 || dupeCases.length &gt; 9){ 
+		alert(&quot;You must select between two and nine duplicate cases with non-null case ID references.&quot;); 
+	} else { 
+		url = &apos;/apex/csmrgp__csmrgselect?&apos;; 
+		
+		for (var i = 0; i &lt; dupeCases.length; i++){ 
+			url = url + &quot;cs&quot; + (i+1) + &quot;=&quot; + dupeCases[i].csmrgp__Case__c + &quot;&amp;&quot;; 
+		}
+		
+		if (typeof srcUp == &apos;function&apos;) { 
+			srcUp(url + &apos;isdtp=vw&apos;); 
+		} else { 
+			window.location.href=url; 
+		}
+	}
+}</url>
+    </webLinks>
+</CustomObject>

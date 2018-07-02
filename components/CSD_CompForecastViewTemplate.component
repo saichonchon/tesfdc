@@ -1,0 +1,119 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	<apex:attribute name="listColumns2" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listColumns3" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listColumns4" type="List" required="false" description="the root page controller reference" />
+	
+	
+	<div class="dn">
+		<!-- START template -->
+		<table>
+			<thead id="level2_left">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns2}">
+				<tr class="level2 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " data-level="level2">
+					<td class="{!if(rowNum = 0, '', 'lev2')}">
+			            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+			                <div class="dis_ib mgleft2" >
+			                    <span class="cellbox fcell " >+</span>
+			                    <span class="cellbox pin spin" >&nbsp;</span>
+			                </div>
+			                <div class="dis_ib mgleft" >
+			                    <span class="position_r namecell">  </span>
+			                </div>
+			            </apex:outputPanel>
+			        </td>
+			        <td class="fieldwidth" >{!total['fieldName']}</td>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</thead>
+			<tbody id="level2_right">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns2}">
+				<tr class="{!if(rowNum = 0, '', ' dn ')}">
+					<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+			        <td class=" " ></td>
+			        </apex:repeat>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</tbody>
+		</table>
+		<!-- END template -->
+		
+		<!-- START  template -->
+		<table>
+			<thead id="level3_left">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns3}">
+				<tr class="level3 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " data-level="level3">
+					<td class="{!if(rowNum = 0, '', 'lev3')}">
+			            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+			                <div class="dis_ib mgleft3" >
+			                    <span class="cellbox fcell " >+</span>
+			                    <span class="cellbox pin spin" >&nbsp;</span>
+			                </div>
+			                <div class="dis_ib mgleft" >
+			                    <span class="position_r namecell"> </span>
+			                </div>
+			            </apex:outputPanel>
+			        </td>
+			        <td class="fieldwidth" >{!total['fieldName']}</td>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</thead>
+			<tbody id="level3_right">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns3}">
+				<tr class="{!if(rowNum = 0, '', ' dn ')} ">
+					<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+			        <td class=" " ></td>
+			        </apex:repeat>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</tbody>
+		</table>
+		<!-- END template -->
+		
+		<!-- START template -->
+		<table>
+			<thead id="level4_left">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns4}">
+				<tr class="level4 external {!if(rowNum = 0, ' prot mark ', ' dn ')} " data-level="level4">
+					<td class="{!if(rowNum = 0, '', 'lev4')}">
+			            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+			                <div class="dis_ib mgleft4" >
+			                    <span class="cellbox pin spin pppin" ></span>
+			                </div>
+			                <div class="dis_ib mgleft" >
+			                    <span class="position_r namecell">  </span>
+			                </div>
+			            </apex:outputPanel>
+			        </td>
+			        <td class="fieldwidth " >{!total['fieldName']}</td>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</thead>
+			<tbody id="level4_right">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="total" value="{!listColumns4}">
+				<tr class="{!if(rowNum = 0, '', ' dn ')} ">
+					<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+			        <td class=" " ></td>
+			        </apex:repeat>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</tbody>
+		</table>
+		<!-- END Part template -->
+	</div>
+	
+	
+</apex:component>

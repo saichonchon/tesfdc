@@ -1,0 +1,10 @@
+<messaging:emailTemplate subject="New {!relatedTo.RecordType.Name} [{!relatedTo.AgileVizArt__Project_Name__c}] assigned: {!relatedTo.Name} [ref:{!relatedTo.Id}]" recipientType="User" relatedToType="AgileVizArt__User_Story__c" replyTo="agilevizart@8-5ckao406j8dwjzs7acn41ypu1.ehkvemac.e.apex.salesforce.com">
+    <messaging:htmlEmailBody >
+    <p>Hi {!relatedTo.AgileVizArt__Assigned_To__r.FirstName},</p>    
+    <p>I've assigned you to the following {!relatedTo.RecordType.Name}:<br/></p>
+    <c:CompStoryComments usId="{!relatedTo.Id}" />
+    <p>For further details please check <c:CompVFEmailDetailLink recordId="{!relatedTo.Id}" linkName="here"/> in salesforce.com.</p>                        
+    <p>Best regards,</p>
+    <p>{!relatedTo.LastModifiedBy.Name}</p>
+    </messaging:htmlEmailBody>
+</messaging:emailTemplate>

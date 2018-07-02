@@ -1,0 +1,29 @@
+<apex:page standardController="Opportunity" extensions="POSDetails_Extn">
+<apex:form >  
+    <apex:pageBlock mode="maindetail">
+        <apex:pageBlockButtons location="top"> 
+            <apex:commandButton onclick="window.top.location='{!URLFOR($Action.Opportunity_Partner__c.New, null, [CF00NE0000001gAYS_lkid=Opportunity.Id,CF00NE0000001gAYS=Opportunity.Name,scontrolCaching=1,sfdc.override=1],false)}'" 
+            	value="Add/ Change POS Customer" id="theButton"
+            /> 
+        </apex:pageBlockButtons> 
+        
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockSection > 
+            <apex:outputField label="POS Customer Name" value="{!POS.Partner_Account_Name__c}"/>
+            <apex:outputField value="{!POS.Partner_Account_Manager__c}"/>
+            <apex:outputField label="POS Account Number" value="{!POS.Partner_Account_Number__c}"/>
+            <apex:outputText ></apex:outputText> 
+            <apex:outputField label="POS Customer Street" value="{!POS.Partner_Street__c}"/>
+            <apex:outputText ></apex:outputText> 
+            <apex:outputField label="POS Customer City" value="{!POS.Partner_City__c}"/>
+            <apex:outputText ></apex:outputText> 
+            <apex:outputField label="POS Customer Region" value="{!POS.Partner_Region__c}"/>
+            <apex:outputText ></apex:outputText> 
+            <apex:outputField label="POS Customer Country" value="{!POS.Partner_Country__c}"/>  
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+<script>
+console.log({!POS});
+</script>
+</apex:page>

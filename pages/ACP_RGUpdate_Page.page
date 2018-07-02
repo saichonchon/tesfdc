@@ -1,0 +1,162 @@
+<apex:page id="editPage" standardController="ACP_Account_Plan__c" extensions="ACP_RGUpdate_Page_ctrl" tabStyle="account" standardStylesheets="true" showHeader="true" sidebar="false">
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'gotham.css')}" />
+    <apex:includeScript value="{!$Resource.jQuery_Checkbox}" />
+
+    <div class="bootstrap-sfdc">
+        <div class="container-fluid">
+            <apex:form id="form">
+                <apex:pageBlock id="pBlock" mode="maindetail">
+                    <apex:image url="{!$Resource.status_bar}" width="100%" height="8" />
+                    <br/><br/><br/>
+
+                    <div>
+                        <apex:outputText value="{!$Label.ACP_Revenue_Growth_Updation}" styleClass="SectionHeader"> </apex:outputText>
+                        <br/></div>
+                    <br/>
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            {!$Label.ACP_Refresh_Based_On}<br/>
+                            <apex:selectList value="{!SelectType1}" multiselect="false" size="1" styleClass="inputField">
+                                <apex:selectOptions value="{!RecordTypes1}" />
+                            </apex:selectList>
+                        </div>
+                        <div class="col-md-4">
+                            {!$Label.ACP_Sales_Mode_On}<br/>
+                            <apex:selectList value="{!SelectType}" multiselect="false" size="1" styleClass="inputField">
+                                <apex:selectOptions value="{!RecordTypes}" />
+                            </apex:selectList>&nbsp;
+                            <apex:commandButton value="{!$Label.ACP_GO}" styleClass="btn btn-default" action="{!goGrowthRevenue}" style="float:right;" reRender="true" />
+                        </div>
+
+
+                    </div>
+
+
+                    <br/><br/><br/><br/>
+
+                    <apex:outputPanel rendered="{!IF(SelectType=='Direct'||SelectType=='POS'||SelectType=='CMA'||SelectType=='Combined',true,false)}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> {!$Label.ACP_Revenue_Growth_Updation} </div>
+                                    <div class="panel-body">
+                                        <div class="informationBar">{!$Label.ACP_Information}</div>
+
+
+                                        <br/>
+
+                                        <div class="col-md-6">
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_PlanYearTwo}&nbsp;{!VALUE(revGrowth.ACP_Fiscal_Year__c) - 2 }</label>
+                                                <apex:inputField id="rev1" value="{!revGrowth.ACP_Past_Year_1_Revenue__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_PlanYearOne}&nbsp;{!VALUE(revGrowth.ACP_Fiscal_Year__c) - 1 }</label>
+                                                <apex:inputField id="rev2" value="{!revGrowth.ACP_Past_year_Revenue__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_FY}&nbsp;{!VALUE(revGrowth.ACP_Fiscal_Year__c)}&nbsp;{!$Label.ACP_RRestimatedfinal}</label>                                               
+                                                <apex:inputField id="rev3" value="{!revGrowth.ACP_CYRR_Estimated_Final__c}" styleClass="form-control"  style="text-align:right"/>
+                                           </div>
+                                           
+                                            <div class="form-group">
+                                                <label>{!detrec.ACP_Label_1__c}</label>
+                                                <apex:inputField id="rev4" value="{!revGrowth.ACP_EOL_Lost_Business__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!detrec.ACP_Label_2__c}</label>
+                                                <apex:inputField id="rev5" value="{!revGrowth.ACP_Transfer_In_Out__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!detrec.ACP_Label_3__c}</label>
+                                                <apex:inputField id="rev6" value="{!revGrowth.ACP_LY_Price_Erosion__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!detrec.ACP_Label_4__c}</label>
+                                                <apex:inputField id="rev7" value="{!revGrowth.ACP_LY_Market_Growth__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_FF}&nbsp;{!VALUE(revGrowth.ACP_Fiscal_Year__c)+1}&nbsp;{!$Label.ACP_Repeat_Business}</label>&nbsp;
+                                                <apex:inputField id="rev16" value="{!revGrowth.ACP_Current_Year_Repeat_Business__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label>{!detrec.ACP_Project_1__c}</label>
+                                                <apex:inputField id="rev8" value="{!revGrowth.ACP_Project_1__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label>{!detrec.ACP_Project_2__c}</label>
+                                                <apex:inputField id="rev9" value="{!revGrowth.ACP_Project_2__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label>{!detrec.ACP_Project_3__c}</label>
+                                                <apex:inputField id="rev10" value="{!revGrowth.ACP_Project_3__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label>{!detrec.ACP_Project_4__c}</label>
+                                                <apex:inputField id="rev11" value="{!revGrowth.ACP_Project_4__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label>{!detrec.ACP_Project_5__c}</label>
+                                                <apex:inputField id="rev12" value="{!revGrowth.ACP_Project_5__c}" styleClass="form-control" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_FY}&nbsp;{!VALUE(revGrowth.ACP_Fiscal_Year__c)+1}&nbsp;{!$Label.ACP_Forecast}</label>&nbsp;
+                                                <apex:inputField id="rev13" value="{!revGrowth.ACP_Forecast__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_FY}&nbsp;{!detrec.Revenue_and_Growth_Plan_Year_2__c}&nbsp;{!$Label.ACP_Plans}</label>
+                                                <apex:inputField id="rev14" value="{!revGrowth.ACP_Current_Year_3_Plan__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>{!$Label.ACP_FY}&nbsp;{!detrec.Revenue_and_Growth_Plan_Year_3__c}&nbsp;{!$Label.ACP_Plans}</label>
+                                                <apex:inputField id="rev15" value="{!revGrowth.ACP_Current_Year_5_Plan__c}" styleClass="form-control" html-disabled="true" style="text-align:right" />
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="panel-footer">
+
+                                        <div align="right" style="">
+                                            <apex:commandButton action="{!cancelGrowth}" value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" />&nbsp;
+                                            <apex:commandButton action="{!saveGrowth}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                </apex:pageBlock>
+            </apex:form>
+        </div>
+    </div>
+
+</apex:page>

@@ -1,0 +1,117 @@
+<aura:component >
+    
+    
+    <aura:attribute name="levelType" 				type="String" />
+    <aura:attribute name="uniqueId" 				type="String" />
+    <aura:attribute name="isExp" 					type="Boolean" />
+	<aura:attribute name="isBom" 					type="Boolean" />
+    <aura:attribute name="list_forecastYear" 		type="List" />
+	<aura:attribute name="map_forecast" 			type="Map" />
+    <aura:attribute name="map_change"				type="Map" />
+    
+	<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over tr-price custom-tr-price custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastColumnPriceComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+    </tr>
+	
+    <!-- START Yearly -->
+    <aura:If isTrue="{!v.levelType == 'Yearly'}">
+	<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over year custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastColumnYearlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="0" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}" />
+		</aura:iteration>
+    </tr>
+	</aura:If>
+    <!-- END Yearly -->
+    
+    <!-- START Quarterly -->
+    <aura:If isTrue="{!v.levelType == 'Quarterly'}">
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over fq1 custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastColumnQuarterlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="0" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}" />
+		</aura:iteration>
+	</tr>
+	<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over fq2 custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnQuarterlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="1" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}" />
+		</aura:iteration>
+	</tr>
+	<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over fq3 custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastColumnQuarterlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="2" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}" />
+		</aura:iteration>
+	</tr>
+	<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over fq4 custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastColumnQuarterlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="3" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}" />
+		</aura:iteration>
+	</tr>
+    </aura:If>
+    <!-- END Quarterly -->
+    
+    <!-- START Monthly -->
+    <aura:If isTrue="{!v.levelType == 'Monthly'}">
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over oct custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="0" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over nov custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="1" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over dec custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="2" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over jan custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="3" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over feb custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="4" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over mar custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="5" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over apr custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="6" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over may custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="7" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over jun custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_forecast="{!v.map_forecast}" number="8" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over jul custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="9" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over aug custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="10" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="{!('custom-table-tr-over sep custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+			<c:LtngOpportunityForecastColumnMonthlyComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" number="11" isBom="{!v.isBom}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    </aura:If>
+    <!-- END Monthly -->
+</aura:component>

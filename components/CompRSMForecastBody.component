@@ -1,0 +1,1696 @@
+<apex:component id="compbody" layout="block">
+
+    <apex:attribute name="pageCtrl" type="CtrlRSMForecast" required="true" description="the root page controller reference" />
+    <apex:attribute name="inputVal" type="String" required="false" description="the page controller reference" />
+
+    <div class="mgauto" id="compbodyall" style=" min-width: 800px;visibility: hidden;">
+
+        <div class="mainTabFix" ><!-- START head table -->
+            <div class="compwp tabRowFix">
+                <div id="lcellhead" class="tabCellFix lCellw" style="vertical-align: bottom !important;">
+                    <div id="menudivid" class="ftsize menucls fix_lh " style="cursor: default;">
+                            <div class="p_r">
+                                <b class="menucollapse" style="margin-left: 15px;"></b>
+                                <div style="float: left;width: 80%;">{!$Label.rsm_menu} </div>
+                                <b class="menucollapse"></b>
+                            </div>
+                        </div>
+                    <div id="defidivid">
+                        <table class="ftsize tl border_l border_r" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed; width: 100%;" >
+                            <tr>
+                                <td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'acls', 'datadivid', 'aacls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+                                    <div class="p_r plw" >
+                                            <b class="allbox collapse">-</b>
+                                        <span class="spmg">{!pageCtrl.category_a}</span>
+                                    </div>
+                                </td>
+                                <td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'bcls', 'datadivid', 'bbcls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+                                    <div class="p_r plw1">
+                                            <b class="allbox collapse">-</b>
+                                            <span class="spmg">{!pageCtrl.category_b}</span>
+                                        </div>
+                                </td>
+                                <td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'ccls', 'datadivid', 'cccls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+                                    <div class="p_r">
+                                            <b class="allbox collapse">-</b>
+                                            <span class="spmg">{!pageCtrl.category_channel}</span>
+                                        </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="rcellhead" class="noTabCell rCellw " style="overflow-y: hidden; overflow-x: hidden;">
+
+                    <table border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+                        <tbody>
+                                <tr id="rsmcolspanid">
+                                <apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+                                    <apex:outputText value="{!dateItems.type1}" escape="false"/>
+                                </apex:repeat>
+                            </tr>
+                            <tr id="rsmHeadId">
+                            <apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+                                <apex:repeat var="dSubItems" value="{!pageCtrl.map_dateItems[dateItems.itemName]}">
+                                <td class="{!dSubItems.type} tl trhfix pd_r headbg border_t border_b" workingdays="{!dSubItems.workingDays}" fmonth="{!dSubItems.fMonth}" fyear="{!dSubItems.fYear}">
+                                    <div class="{!dSubItems.type1} fwb tc p_r">
+                                        <span>{!dSubItems.itemName}</span>
+                                    </div>
+                                </td>
+                                </apex:repeat>
+                            </apex:repeat>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div><!-- END head table -->
+
+        <div class="mainTabFix" ><!-- START body table -->
+            <div class="compwp tabRowFix" id="datadivid">
+                <!-- START left tab-->
+                <div class="lCellw fol ov">
+            <div id="lcellbody" class="db ov">
+                    <!-- START A TABLE -->
+                    <apex:variable var="cList" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_a]}"/>
+                    <div class="folw ">
+                        <div class="acls aacls tabRow {!if(or(cList.size = 0, cList = null), 'dn nodata', '')}">
+                            <div class="tabCellFix va_impl cw_fix  border_l cellwb fwb">{!pageCtrl.category_a}</div>
+                            <div class="ldm_wh">
+                                <table class="dataTabcls" cellspacing="0" cellpadding="0" border="0" >
+                                    <tbody id="aTab" >
+                                        <apex:repeat var="cItems" value="{!cList}">
+                                            <tr id="{!cItems.id}" ovid="{!cItems.id}" class="{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  hd left_titlebg" onclick="ck_tdLeftCell(this, 'aTab{!cItems.id}', 'aTab', true)">
+                                                        <div class="p_r trh lineh border_b pd_0_0">
+                                                            <b class="imgce expand" exp=" " col=" "> </b>
+                                                        {!cItems.name}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn allcell aTab{!cItems.id} opmf{!cItems.id}" ovid="opmf{!cItems.id}">
+                                                <td class="tl  border_l  trh border_r">
+                                                        <div class="border_b trh pd_l_1 lineh">{!$Label.rsm_Previous_Month_Forecast}</div>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="acls dn allcell aTab{!cItems.id} oaft{!cItems.id}" ovid="oaft{!cItems.id}">
+                                                <td class="eve tl  border_l  trh border_r hd" onclick="ck_tdSubLeftCell(this, 'oaftsubcell{!cItems.id}', 'aTab', false)">
+                                                        <div class="p_r border_b pd_l_1 trh lineh">
+                                                            <b class="subbox expand" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_AM_Forecast_Total}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftist{!cItems.id}" ovid="oaftist{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftobst{!cItems.id}" ovid="oaftobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="acls dn allcell aTab{!cItems.id} obling{!cItems.id}" ovid="obling{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  hd" onclick="ck_tdSubLeftCell(this, 'blingsubcell{!cItems.id}', 'aTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                            <b class="subbox expand" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Demand_Shipped}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingist{!cItems.id}" ovid="oblingist{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingobst{!cItems.id}" ovid="oblingobst{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell obtb{!cItems.id}" ovid="obtb{!cItems.id}">
+                                                <td class="eve tl trh border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="acls dn aTab{!cItems.id} allcell oblog{!cItems.id}" ovid="oblog{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell ooblog{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r   hd" onclick="ck_tdSubLeftCell(this, 'obsubcell{!cItems.id}', 'aTab', false)">
+                                                        <div class="p_r trh lineh border_b pd_l_2">
+                                                            <b class="subbox expand" exp="-" col="+">+</b>
+                                                            {!$Label.rsm_orders}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogist{!cItems.id}" ovid="ooblogist{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogobst{!cItems.id}" ovid="ooblogobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell osa{!cItems.id}" ovid="osa{!cItems.id}">
+                                                <td class="tl trh  border_l border_r   hd" onclick="ck_tdSubLeftCell(this, 'sasubcell{!cItems.id}', 'aTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_2">
+                                                            <b class="subbox expand" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Scheduling_Agreements}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} sasubcell{!cItems.id} sbcell osaisat{!cItems.id}" ovid="osaisat{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr  class="acls dn aTab{!cItems.id} sasubcell{!cItems.id} sbcell osaobst{!cItems.id}" ovid="osaobst{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell ocurenc{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r   hd" onclick="ck_tdSubLeftCell(this, 'curcsubcell{!cItems.id}', 'aTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                            <b class="subbox expand" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Currency}
+                                                        </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencist{!cItems.id}" ovid="ocurencist{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencobst{!cItems.id}" ovid="ocurencobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell omac{!cItems.id}" ovid="omac{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell omac6{!cItems.id}" ovid="omac6{!cItems.id}">
+                                                <td class="eve tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="acls dn aTab{!cItems.id} allcell oqac{!cItems.id}" ovid="oqac{!cItems.id}">
+                                                <td class="tl trh  border_l border_r  ">
+                                                        <div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="atotal tabRow datatotalcls" >
+                            <table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+                                <tbody id="aTotal">
+                                    <tr class="not_total" >
+                                        <th colspan="2" class="border_b trh tl pd_l_1 dTabbg hd" onclick="ck_thLeftCell(this, 'aTotal', 'aTotal', true)">
+                                            <div class="p_r">
+                                                    <b class="alltotal_b subp expand curcsubcell" exp="-" col="+">+</b>
+                                                {!$Label.rsm_a_total}
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <apex:repeat var="field" value="{!pageCtrl.AFields}">
+                                    <tr class="dn aTotal a{!field.cls} {!field.cls2}" ovid="a{!field.cls}">
+                                        <td class="trh cw_fix dTabbg1 {!field.cls3}"></td>
+                                        <td class="tl trh  border_l border_r  {!if(field.isShow, 'hd', '')}" onclick="ck_tdSubLeftCell(this, '{!field.cls}', 'aTotal', false)">
+                                            <apex:outputPanel layout="block" styleClass="p_r trh lineh border_b {!field.cls1} " rendered="{!field.isShow}">
+                                                <b class="subbox expand oaftsubcell" exp="-" col="+">+</b>
+                                                {!field.labelName}
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="p_r trh lineh border_b {!field.cls1} " rendered="{!!field.isShow}">
+                                                {!field.labelName}
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END A TABLE -->
+                    
+                    <!-- START B TABLE -->
+                    <apex:variable var="cList1" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_b]}"/>
+                    <div class="folw ">
+                        <div class="bcls bbcls tabRow {!if(or(cList1.size = 0, cList1 = null), 'dn nodata', '')}">
+                            <div class="tabCellFix va_impl cw_fix  border_l border_b cellwb fwb">{!pageCtrl.category_b}</div>
+                            <div class="ldm_wh">
+                                <table class="dataTabcls" cellspacing="0" cellpadding="0" border="0" >
+                                    <tbody id="bTab">
+                                        <apex:repeat var="cItems" value="{!cList1}">
+                                        <tr id="{!cItems.id}" ovid="{!cItems.id}" class="{!cItems.id}">
+                                        		<td class="tl trh  border_l border_r  trh hd left_titlebg" onclick="ck_tdLeftCell(this, 'bTab{!cItems.id}', 'bTab', true)">
+                                                <div class="p_r trh lineh border_b pd_0_0">
+                                                    <b class="imgce expand" exp=" " col=" "> </b>
+                                                {!cItems.name}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn allcell bTab{!cItems.id} opmf{!cItems.id}" ovid="opmf{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Previous_Month_Forecast}</div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="bcls dn allcell bTab{!cItems.id} oaft{!cItems.id}" ovid="oaft{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'oaftsubcell{!cItems.id}', 'bTab', false)">
+                                            <div class="p_r trh lineh border_b pd_l_1">
+                                                <b class="subbox expand oaftsubcell" exp="-" col="+">+</b>
+                                                 {!$Label.rsm_AM_Forecast_Total}
+                                            </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftist{!cItems.id}" ovid="oaftist{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftobst{!cItems.id}" ovid="oaftobst{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn allcell bTab{!cItems.id} obling{!cItems.id}" ovid="obling{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'blingsubcell{!cItems.id}', 'bTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                    <b class="subbox expand blingsubcell" exp="-" col="+">+</b>
+                                                     {!$Label.rsm_Demand_Shipped}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingist{!cItems.id}" ovid="oblingist{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingobst{!cItems.id}" ovid="oblingobst{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell obtb{!cItems.id}" ovid="obtb{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+                                            </td>
+                                        </tr>
+                    
+                                        <tr class="bcls dn bTab{!cItems.id} allcell oblog{!cItems.id}" ovid="oblog{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell ooblog{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'obsubcell{!cItems.id}', 'bTab', false)">
+                                                <div class="p_r trh lineh border_b pd_l_2">
+                                                    <b class="subbox expand obsubcell" exp="-" col="+">+</b>
+                                                     {!$Label.rsm_orders}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogist{!cItems.id}" ovid="ooblogist{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogobst{!cItems.id}" ovid="ooblogobst{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell osa{!cItems.id}" ovid="osa{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'sasubcell{!cItems.id}', 'bTab', false)">
+                                                <div class="p_r trh lineh border_b pd_l_2">
+                                                    <b class="subbox expand sasubcell" exp="-" col="+">+</b>
+                                                     {!$Label.rsm_Scheduling_Agreements}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} sasubcell{!cItems.id} sbcell osaisat{!cItems.id}" ovid="osaisat{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr  class="bcls dn bTab{!cItems.id} sasubcell{!cItems.id} sbcell osaobst{!cItems.id}" ovid="osaobst{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell ocurenc{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'curcsubcell{!cItems.id}', 'bTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                    <b class="subbox expand curcsubcell" exp="-" col="+">+</b>
+                                                    {!$Label.rsm_Currency}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencist{!cItems.id}" ovid="ocurencist{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencobst{!cItems.id}" ovid="ocurencobst{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell omac{!cItems.id}" ovid="omac{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell omac6{!cItems.id}" ovid="omac6{!cItems.id}">
+                                            <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="bcls dn bTab{!cItems.id} allcell oqac{!cItems.id}" ovid="oqac{!cItems.id}">
+                                            <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                            <span class="fix_b cw_fix"></span>
+                        </div>
+                        
+                    </div>
+                    
+                    <span id="bTabLabel">
+                        <!-- START LABEL  -->
+                        <apex:repeat var="label" value="{!pageCtrl.map_otherLabel[pageCtrl.category_b]}">
+                        <div class="bcls bbcls tabRow ">
+                            <div class="tabCellFix va_impl cw_fix border_l  border_b cellwb fwb lbbg" style="line-height: 12px;">{!label}</div>
+                            <div class="ldm_wh">
+                                <table class="dataTabcls" cellspacing="0" cellpadding="0" border="0" >
+                                    <tbody >
+                                        <apex:repeat var="cItems" value="{!pageCtrl.map_otherItems[pageCtrl.category_b][label]}">
+                                            <tr id="{!cItems.id}" ovid="{!cItems.id}" class="{!cItems.id}">
+                                                <td class="tl trh   border_l border_r  hd left_titlebg" onclick="ck_tdLeftCell(this, 'bTab{!cItems.id}', 'bTabLabel', true)">
+	                                                <div class="p_r trh lineh border_b pd_0_0">
+	                                                    <b class="imgce expand" exp=" " col=" "> </b>
+	                                                {!cItems.name}
+	                                                </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn allcell bTab{!cItems.id} opmf{!cItems.id}" ovid="opmf{!cItems.id}">
+                                                <td class="tl trh border_b border_l pd_l_1 border_r">{!$Label.rsm_Previous_Month_Forecast}</td>
+                                            </tr>
+                                            
+                                            <tr class="bcls dn allcell bTab{!cItems.id} oaft{!cItems.id}" ovid="oaft{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_AM_Forecast_Total}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftist{!cItems.id}" ovid="oaftist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftobst{!cItems.id}" ovid="oaftobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn allcell bTab{!cItems.id} obling{!cItems.id}" ovid="obling{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Shipped}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingist{!cItems.id}" ovid="oblingist{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingobst{!cItems.id}" ovid="oblingobst{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell obtb{!cItems.id}" ovid="obtb{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="bcls dn bTab{!cItems.id} allcell oblog{!cItems.id}" ovid="oblog{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell ooblog{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_2">{!$Label.rsm_orders}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogist{!cItems.id}" ovid="ooblogist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogobst{!cItems.id}" ovid="ooblogobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell osa{!cItems.id}" ovid="osa{!cItems.id}">
+                                                <td class="tl trh  border_l pd_l_2 ">
+                                                    <div class="trh lineh border_b border_r">{!$Label.rsm_Scheduling_Agreements}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} sasubcell{!cItems.id} sbcell osaisat{!cItems.id}" ovid="osaisat{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr  class="bcls dn bTab{!cItems.id} sasubcell{!cItems.id} sbcell osaobst{!cItems.id}" ovid="osaobst{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell ocurenc{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                    <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Currency}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencist{!cItems.id}" ovid="ocurencist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencobst{!cItems.id}" ovid="ocurencobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell omac{!cItems.id}" ovid="omac{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell omac6{!cItems.id}" ovid="omac6{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="bcls dn bTab{!cItems.id} allcell oqac{!cItems.id}" ovid="oqac{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </apex:repeat>
+                            <!-- END LABEL -->
+                    </span>
+                    
+                    
+                        <!-- START B TOTAL -->
+                        <div class="btotal tabRow datatotalcls" >
+                            <table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+                                <tbody id="bTotal">
+                                    <tr class="not_total">
+                                        <th class="border_b trh dTabbg tl pd_l_1 hd" onclick="ck_thLeftCell(this, 'bTotal', 'bTotal', true)" colspan="2">
+                                            <div class="p_r">
+                                                    <b class="alltotal_b subp expand curcsubcell" exp="-" col="+">+</b>
+                                                    {!$Label.rsm_bu_total}
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                    <tr class="dn bTotal b{!field.cls} {!field.cls2}" ovid="b{!field.cls}">
+                                        <td class="trh cw_fix dTabbg1 {!field.cls3}"></td>
+                                        <td class="tl trh  border_l border_r ">
+                                            <div class="trh lineh border_b {!field.cls1}">{!field.labelName}</div>
+                                        </td>
+                                    </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="btotal tabRow datatotalcls" >
+                            <table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+                                <tbody id="abTotal">
+                                    <tr class="not_total">
+                                        <th class="border_b trh dTabbg tl pd_l_1 hd" onclick="ck_thLeftCell(this, 'abTotal', 'abTotal', true)" colspan="2">
+                                            <div class="p_r">
+                                                    <b class="alltotal_b subp expand curcsubcell" exp="-" col="+">+</b>
+                                                    {!$Label.rsm_total_direct}
+                                                </div>
+                                        </th>
+                                    </tr>
+                                    <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                    <tr class="dn abTotal ab{!field.cls} {!field.cls2}" ovid="ab{!field.cls}">
+                                        <td class="trh cw_fix dTabbg1  {!field.cls3}"></td>
+                                        <td class="tl trh  border_l border_r ">
+                                            <div class="trh lineh border_b {!field.cls1}">{!field.labelName}</div>
+                                        </td>
+                                    </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- END B TOTAL -->
+                        
+                    </div>
+                <!-- END B TABLE -->
+                    
+                <!-- START C TABLE -->
+                    <apex:variable var="cList2" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_channel]}"/>
+                    <div class="folw ">
+                        <div class="ccls cccls tabRow {!if(or(cList2.size = 0, cList2 = null), 'dn nodata', '')}">
+                            <div class="tabCellFix va_impl cw_fix  border_l border_b cellwb fwb">{!pageCtrl.category_channel}</div>
+                            <div class="ldm_wh">
+                                <table class="dataTabcls" cellspacing="0" cellpadding="0" border="0" >
+                                    <tbody id="cTab">
+                                        <apex:repeat var="cItems" value="{!cList2}">
+                                            <tr id="{!cItems.id}" ovid="{!cItems.id}" class="{!cItems.id}">
+                                                <td class="tl trh   border_l border_r hd left_titlebg" onclick="ck_tdLeftCell(this, 'cTab{!cItems.id}', 'cTab', true)">
+	                                                <div class="p_r trh lineh border_b pd_0_0">
+	                                                    <b class="imgce expand" exp=" " col=" "> </b>
+	                                                {!cItems.name}
+	                                                </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn allcell cTab{!cItems.id} opmf{!cItems.id}" ovid="opmf{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Previous_Month_Forecast}</div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="ccls dn allcell cTab{!cItems.id} oaft{!cItems.id}" ovid="oaft{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r hd"  onclick="ck_tdSubLeftCell(this, 'oaftsubcell{!cItems.id}', 'cTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                        <b class="subbox expand oaftsubcell" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_AM_Forecast_Total}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftist{!cItems.id}" ovid="oaftist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftobst{!cItems.id}" ovid="oaftobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn allcell cTab{!cItems.id} obling{!cItems.id}" ovid="obling{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'blingsubcell{!cItems.id}', 'cTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                        <b class="subbox expand blingsubcell" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Demand_Shipped}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingist{!cItems.id}" ovid="oblingist{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingobst{!cItems.id}" ovid="oblingobst{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell obtb{!cItems.id}" ovid="obtb{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} btbsubcell{!cItems.id} sbcell obtbist{!cItems.id}" ovid="obtbist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} btbsubcell{!cItems.id} sbcell obtbobst{!cItems.id}" ovid="obtbobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell oblog{!cItems.id}" ovid="oblog{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell ooblog{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'obsubcell{!cItems.id}', 'cTab', false)">
+                                                    <div class="p_r trh lineh border_b pd_l_2">
+                                                        <b class="subbox expand obsubcell" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_orders}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogist{!cItems.id}" ovid="ooblogist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogobst{!cItems.id}" ovid="ooblogobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell osa{!cItems.id}" ovid="osa{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'sasubcell{!cItems.id}', 'cTab', false)">
+                                                        <div class="p_r trh lineh border_b pd_l_2">
+                                                        <b class="subbox expand sasubcell" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Scheduling_Agreements}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} sasubcell{!cItems.id} sbcell osaisat{!cItems.id}" ovid="osaisat{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr  class="ccls dn cTab{!cItems.id} sasubcell{!cItems.id} sbcell osaobst{!cItems.id}" ovid="osaobst{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell ocurenc{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r hd" onclick="ck_tdSubLeftCell(this, 'curcsubcell{!cItems.id}', 'cTab', false)" >
+                                                    <div class="p_r trh lineh border_b pd_l_1">
+                                                        <b class="subbox expand curcsubcell" exp="-" col="+">+</b>
+                                                        {!$Label.rsm_Currency}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencist{!cItems.id}" ovid="ocurencist{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencobst{!cItems.id}" ovid="ocurencobst{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell omac{!cItems.id}" ovid="omac{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="thh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell omac6{!cItems.id}" ovid="omac6{!cItems.id}">
+                                                <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="ccls dn cTab{!cItems.id} allcell oqac{!cItems.id}" ovid="oqac{!cItems.id}">
+                                                <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>  
+                        
+                            <span id="cTabLabel">
+                        <!-- START c LABEL  -->
+                            <apex:repeat var="label" value="{!pageCtrl.map_otherLabel[pageCtrl.category_channel]}">
+                            <div class="ccls cccls tabRow ">
+                                <div class="tabCellFix va_impl cw_fix border_l  border_b cellwb lbbg fwb" style="line-height: 12px;">{!label}</div>
+                                <div class="ldm_wh">
+                                    <table class="dataTabcls" cellspacing="0" cellpadding="0" border="0" >
+                                        <tbody >
+                                            <apex:repeat var="cItems" value="{!pageCtrl.map_otherItems[pageCtrl.category_channel][label]}">
+                                                <tr id="{!cItems.id}" ovid="{!cItems.id}" class="{!cItems.id}">
+                                                    <td class="tl trh border_l border_r hd" onclick="ck_tdLeftCell(this, 'cTab{!cItems.id}', 'cTabLabel', true)">
+                                                        <div class="p_r trh lineh border_b pd_0_0">
+                                                            <b class="imgce expand" exp=" " col=" "> </b>
+                                                        		{!cItems.name}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn allcell cTab{!cItems.id} opmf{!cItems.id}" ovid="opmf{!cItems.id}">
+                                                    <td class="tl trh border_b border_l pd_l_1 border_r">{!$Label.rsm_Previous_Month_Forecast}</td>
+                                                </tr>
+                                                
+                                                <tr class="ccls dn allcell cTab{!cItems.id} oaft{!cItems.id}" ovid="oaft{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_1">{!$Label.rsm_AM_Forecast_Total}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftist{!cItems.id}" ovid="oaftist{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} oaftsubcell{!cItems.id} sbcell oaftobst{!cItems.id}" ovid="oaftobst{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn allcell cTab{!cItems.id} obling{!cItems.id}" ovid="obling{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Shipped}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingist{!cItems.id}" ovid="oblingist{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} blingsubcell{!cItems.id} sbcell oblingobst{!cItems.id}" ovid="oblingobst{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell obtb{!cItems.id}" ovid="obtb{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+                                                    </td>
+                                                </tr>
+    
+                                                <tr class="ccls dn cTab{!cItems.id} allcell oblog{!cItems.id}" ovid="oblog{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell ooblog{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_orders}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogist{!cItems.id}" ovid="ooblogist{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} obsubcell{!cItems.id} sbcell ooblogobst{!cItems.id}" ovid="ooblogobst{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell osa{!cItems.id}" ovid="osa{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Scheduling_Agreements}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} sasubcell{!cItems.id} sbcell osaisat{!cItems.id}" ovid="osaisat{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr  class="ccls dn cTab{!cItems.id} sasubcell{!cItems.id} sbcell osaobst{!cItems.id}" ovid="osaobst{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_3">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell ocurenc{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                        <div class="trh lineh border_b pd_l_1">{!$Label.rsm_Currency}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencist{!cItems.id}" ovid="ocurencist{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Industrial_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} curcsubcell{!cItems.id} sbcell ocurencobst{!cItems.id}" ovid="ocurencobst{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_2">{!$Label.rsm_Other_BU_Sales_Team}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell omac{!cItems.id}" ovid="omac{!cItems.id}">
+                                                    <td class="tl trh  border_l  trh">
+                                                            <div class="trh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell omac6{!cItems.id}" ovid="omac6{!cItems.id}">
+                                                    <td class="eve tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="ccls dn cTab{!cItems.id} allcell oqac{!cItems.id}" ovid="oqac{!cItems.id}">
+                                                    <td class="tl trh  border_l  border_r">
+                                                            <div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                </apex:repeat>
+                            <!-- END c LABEL -->
+                        </span>                         
+                            
+                    <!-- START C TOTAL -->
+                        <div class="ctotal tabRow datatotalcls" >
+                            <table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+                                <tbody id="cTotal">
+                                    <tr class="not_total">
+                                        <th class="border_b trh dTabbg tl pd_l_1 hd" onclick="ck_thLeftCell(this, 'cTotal', 'cTotal', true)" colspan="2">
+                                            <div class="p_r">
+                                                    <b class="alltotal_b subp expand curcsubcell" exp="-" col="+">+</b>
+                                                    {!$Label.rsm_total_distribution}
+                                                </div>
+                                        </th>
+                                    </tr>
+                                    <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                    <tr class="dn cTotal c{!field.cls} {!field.cls2}" ovid="c{!field.cls}">
+                                        <td class="trh cw_fix   dTabbg1 {!field.cls3}"></td>
+                                        <td class="tl trh  border_l border_r ">
+                                            <div class="trh lineh border_b {!field.cls1}">{!field.labelName}</div>
+                                        </td>
+                                    </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="ctotal tabRow datatotalcls" >
+                            <table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+                                <tbody id="bcTotal">
+                                    <tr class="not_total">
+                                        <th class="border_b trh dTabbg tl pd_l_1 hd" onclick="ck_thLeftCell(this, 'bcTotal', 'bcTotal', true)" colspan="2">
+                                            <div class="p_r">
+                                                    <b class="alltotal_b subp expand curcsubcell" exp="-" col="+">+</b>
+                                                    {!$Label.rsm_total}
+                                                </div>
+                                        </th>
+                                    </tr>
+                                    <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                    <tr class="dn bcTotal bc{!field.cls} {!field.cls2}" ovid="bc{!field.cls}">
+                                        <td class="trh cw_fix   dTabbg1 {!field.cls3}"></td>
+                                        <td class="tl trh  border_l border_r ">
+                                            <div class="trh lineh border_b {!field.cls1}">{!field.labelName}</div>
+                                        </td>
+                                    </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    <!-- END C TOTAL -->
+                    </div>
+                <!-- END C TABLE -->
+                    <!--<div class="clear"></div> clear:both -->
+            </div>
+                </div>
+        <!-- END left tab-->
+        <!-- START right tab-->
+
+                <div id="rCellScroll" class="noTabCell rCellw " style="overflow: scroll; ">
+                    <div id="rcellbody" style=" width: 100%;">
+                        <table id="rTabDataId" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+                            <tbody id="rTabId">
+                                <!-- START aTab -->
+
+                            <apex:repeat var="cItems" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_a]}">
+                                <tr pmfc="{!cItems.prevManagerFc}"  managerfc="{!cItems.managerfc}" class="acls aacls faTab findTab aTab{!cItems.id} {!cItems.id} " classification="{!cItems.classifications}" indcustomer="{!cItems.oldClassifications}" category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td month="{!cell.fYear}-{!cell.fMonth}" class="{!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b  {!cell.type2} pd_r" old="null">
+                                        <apex:outputPanel rendered="{!and(cell.isInput, cell.type2 != 'cfixqtotalw')}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg {!if(pageCtrl.editable, '', 'fixfreeimg')}" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+                                        <apex:inputText rendered="{!and(cell.isInput, pageCtrl.editable)}" value="{!inputVal}" styleClass="inputcls tr" />
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} opmf{!cItems.id} eachtr{!cItems.id} innobg pmforecasts pm{!cItems.id}" fn="pmforecasts" ovid="opmf{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r"  old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <!-- 
+                                <tr class="dn aTab{!cItems.id} obpb{!cItems.id} eachtr{!cItems.id} budgets" fn="budgets" ovid="obpb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b trh {!cell.type2} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                 -->
+                                
+                                <tr class="acls dn aTab{!cItems.id} oaft{!cItems.id} subrow am{!cItems.id}  amforecast" cls="amforecasts" sid="{!cItems.id}" ovid="oaft{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell oaftist{!cItems.id}  oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts amforecasts_in" fn="amforecasts" ovid="oaftist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell oaftobst{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts not_oth amforecasts_oth" fn="amforecasts" ovid="oaftobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                
+                                <tr class="acls dn aTab{!cItems.id} obling{!cItems.id} subrow  billing" cls="billings" sid="{!cItems.id}" ovid="obling{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" billing="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell  blingsubcell{!cItems.id} eachtr{!cItems.id} billings billings_in oblingist{!cItems.id}" fn="billings" ovid="oblingist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings not_oth billings_oth oblingobst{!cItems.id}" fn="billings" ovid="oblingobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} obtb{!cItems.id} book2bill eachtr{!cItems.id}" fn="book2bill" ovid="obtb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+
+                                <tr class="acls dn aTab{!cItems.id} oblog{!cItems.id} innobg backlog" blid="bl{!cItems.id}" ovid="oblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} inbg pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} ooblog{!cItems.id} innobg subrow bl{!cItems.id} orderbacklog" cls="backlog0" sid="{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 backlog0_in ooblogist{!cItems.id}" fn="backlog0" ovid="ooblogist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 not_oth backlog0_oth ooblogobst{!cItems.id}" fn="backlog0" ovid="ooblogobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} osa{!cItems.id} innobg subrow bl{!cItems.id} backlogscheduled" cls="scheduled" sid="{!cItems.id}" ovid="osa{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled scheduled_in osaisat{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaisat{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled not_oth scheduled_oth osaobst{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} ocurenc{!cItems.id} innobg subrow gtcurrency" cls="currency" sid="{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency currency_in ocurencist{!cItems.id}"  fn="currency" ovid="ocurencist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency not_oth currency_oth ocurencobst{!cItems.id}"  fn="currency" ovid="ocurencobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id}  omac{!cItems.id} eachtr{!cItems.id} percent percent_2am" pid="{!cItems.id}" ovid="omac{!cItems.id}" fn="accuracy2m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id}  omac6{!cItems.id} eachtr{!cItems.id} percent percent_6am" pid="{!cItems.id}" ovid="omac6{!cItems.id}" fn="accuracy6m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="acls dn aTab{!cItems.id} oqac{!cItems.id} eachtr{!cItems.id} percent percent_qty" pid="{!cItems.id}" ovid="oqac{!cItems.id}" fn="accuracyQuarterly">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b1 border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                            </apex:repeat>
+                            
+                    <!-- START A total -->
+                            <tr class="atotal fwb not_total" id="faTabId">
+                                <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                <td billing="null" class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+                                </apex:repeat>               
+                            </tr>
+                            
+                            <apex:repeat var="field" value="{!pageCtrl.AFields}">
+                            <tr class="dn aTotal fwb find{!field.cls} a{!field.cls} {!field.cls2}" ovid="a{!field.cls}" fn="{!field.cls}">
+                                <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                <td class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+                                </apex:repeat>
+                            </tr>
+                            </apex:repeat>
+                    <!-- END A total -->
+                            
+                                
+                                <!-- START bTab -->
+                            <apex:repeat var="cItems" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_b]}">
+                                <tr pmfc="{!cItems.prevManagerFc}" managerfc="{!cItems.managerfc}" class="bcls bbcls fbTab findTab bTab{!cItems.id} {!cItems.id} " classification="{!cItems.classifications}" indcustomer="{!cItems.oldClassifications}" category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td month="{!cell.fYear}-{!cell.fMonth}" class="{!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b   {!cell.type2} pd_r" old="null" >
+                                        <apex:outputPanel rendered="{!and(cell.isInput, cell.type2 != 'cfixqtotalw')}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg {!if(pageCtrl.editable, '', 'fixfreeimg')}" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+                                        <apex:inputText rendered="{!and(cell.isInput, pageCtrl.editable)}" value="{!inputVal}" styleClass="inputcls tr" />
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} opmf{!cItems.id} eachtr{!cItems.id} innobg pmforecasts pm{!cItems.id}" fn="pmforecasts" ovid="opmf{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <!-- 
+                                <tr class="dn bTab{!cItems.id} obpb{!cItems.id} eachtr{!cItems.id} budgets" fn="budgets" ovid="obpb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b trh {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                 -->
+                                
+                                <tr class="bcls dn bTab{!cItems.id} oaft{!cItems.id} subrow am{!cItems.id}  amforecast" cls="amforecasts" sid="{!cItems.id}" ovid="oaft{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell oaftist{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts amforecasts_in" fn="amforecasts" ovid="oaftist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell oaftobst{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts not_oth amforecasts_oth" fn="amforecasts" ovid="oaftobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                
+                                <tr class="bcls dn bTab{!cItems.id} obling{!cItems.id} subrow billing" cls="billings" sid="{!cItems.id}" ovid="obling{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" billing="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings billings_in oblingist{!cItems.id}" fn="billings" ovid="oblingist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings not_oth billings_oth oblingobst{!cItems.id}" fn="billings" ovid="oblingobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} obtb{!cItems.id} book2bill eachtr{!cItems.id}" fn="book2bill" ovid="obtb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+
+                                <tr class="bcls dn bTab{!cItems.id} oblog{!cItems.id} innobg backlog" blid="bl{!cItems.id}" ovid="oblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} ooblog{!cItems.id} innobg subrow bl{!cItems.id} orderbacklog" cls="backlog0" sid="{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 backlog0_in ooblogist{!cItems.id}" fn="backlog0" ovid="ooblogist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 not_oth backlog0_oth ooblogobst{!cItems.id}" fn="backlog0" ovid="ooblogobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} osa{!cItems.id} innobg subrow bl{!cItems.id} backlogscheduled" cls="scheduled" sid="{!cItems.id}" ovid="osa{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled scheduled_in osaisat{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaisat{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled not_oth scheduled_oth osaobst{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} ocurenc{!cItems.id} innobg subrow gtcurrency" cls="currency" sid="{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency currency_in ocurencist{!cItems.id}"  fn="currency" ovid="ocurencist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency not_oth currency_oth ocurencobst{!cItems.id}"  fn="currency" ovid="ocurencobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} omac{!cItems.id} eachtr{!cItems.id} percent percent_2am" pid="{!cItems.id}" ovid="omac{!cItems.id}" fn="accuracy2m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id}  omac6{!cItems.id} eachtr{!cItems.id} percent percent_6am" pid="{!cItems.id}" ovid="omac6{!cItems.id}" fn="accuracy6m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} oqac{!cItems.id} eachtr{!cItems.id} percent percent_qty" pid="{!cItems.id}" ovid="oqac{!cItems.id}" fn="accuracyQuarterly">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b1 border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                            </apex:repeat>
+                            
+                            <!-- START LABEL -->
+                            
+                            <apex:repeat var="label" value="{!pageCtrl.map_otherLabel[pageCtrl.category_b]}">
+                                <apex:repeat var="cItems" value="{!pageCtrl.map_otherItems[pageCtrl.category_b][label]}">
+                                <tr pmfc="{!cItems.prevManagerFc}" managerfc="{!cItems.managerfc}" class="bcls bbcls fbTab findTab bTab{!cItems.id} {!cItems.id} " classification="{!cItems.classifications}" indcustomer="{!cItems.oldClassifications}" category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td month="{!cell.fYear}-{!cell.fMonth}" class="{!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b trh {!cell.type2} pd_r" old="null" >
+                                        <apex:outputPanel rendered="{!and(cell.isInput, cell.type2 != 'cfixqtotalw')}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg {!if(pageCtrl.editable, '', 'fixfreeimg')}" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+                                        <apex:inputText rendered="{!and(cell.isInput, pageCtrl.editable)}" value="{!inputVal}" styleClass="inputcls tr" />
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} opmf{!cItems.id} eachtr{!cItems.id} innobg pmforecasts pm{!cItems.id}" fn="pmforecasts" ovid="opmf{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <!-- 
+                                <tr class="dn bTab{!cItems.id} obpb{!cItems.id} eachtr{!cItems.id} budgets" fn="budgets" ovid="obpb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b trh {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                 -->
+                                
+                                <tr class="bcls dn bTab{!cItems.id} oaft{!cItems.id} subrow am{!cItems.id} amforecast" cls="amforecasts" sid="{!cItems.id}" ovid="oaft{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell oaftist{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts amforecasts_in" fn="amforecasts" ovid="oaftist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell oaftobst{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts not_oth amforecasts_oth" fn="amforecasts" ovid="oaftobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                
+                                <tr class="bcls dn bTab{!cItems.id} obling{!cItems.id} subrow billing" cls="billings" sid="{!cItems.id}" ovid="obling{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" billing="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings billings_in oblingist{!cItems.id}" fn="billings" ovid="oblingist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings not_oth billings_oth oblingobst{!cItems.id}" fn="billings" ovid="oblingobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} obtb{!cItems.id} book2bill eachtr{!cItems.id}" fn="book2bill" ovid="obtb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+
+                                <tr class="bcls dn bTab{!cItems.id} oblog{!cItems.id} innobg backlog" blid="bl{!cItems.id}" ovid="oblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} ooblog{!cItems.id} innobg subrow bl{!cItems.id} orderbacklog" cls="backlog0" sid="{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 backlog0_in ooblogist{!cItems.id}" fn="backlog0" ovid="ooblogist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 not_oth backlog0_oth ooblogobst{!cItems.id}" fn="backlog0" ovid="ooblogobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} osa{!cItems.id} innobg subrow bl{!cItems.id} backlogscheduled" cls="scheduled" sid="{!cItems.id}" ovid="osa{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled scheduled_in osaisat{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaisat{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled not_oth scheduled_oth osaobst{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} ocurenc{!cItems.id} innobg subrow gtcurrency" cls="currency" sid="{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency currency_in ocurencist{!cItems.id}"  fn="currency" ovid="ocurencist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency not_oth currency_oth ocurencobst{!cItems.id}" fn="currency" ovid="ocurencobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"  > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} omac{!cItems.id} eachtr{!cItems.id} percent percent_2am" pid="{!cItems.id}" ovid="omac{!cItems.id}" fn="accuracy2m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id}  omac6{!cItems.id} eachtr{!cItems.id} percent percent_6am" pid="{!cItems.id}" ovid="omac6{!cItems.id}" fn="accuracy6m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="bcls dn bTab{!cItems.id} oqac{!cItems.id} eachtr{!cItems.id} percent percent_qty" pid="{!cItems.id}" ovid="oqac{!cItems.id}" fn="accuracyQuarterly">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b1 border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>                           
+                            
+                            
+                                </apex:repeat>
+                            
+                            
+                            </apex:repeat>
+                            
+                            <!-- END LABEL -->
+                    <!-- START B TOTAL -->      
+                                <tr class="btotal fwb not_total" id="fbTabId">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td billing="null" class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                <tr class="dn bTotal fwb find{!field.cls} b{!field.cls} {!field.cls2}" ovid="b{!field.cls}" fn="{!field.cls}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                </apex:repeat>
+                                
+                                <tr class="abtotal fwb not_total" id="abTotalId">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td billing="null" class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                <tr class="dn abTotal fwb find{!field.cls} ab{!field.cls} {!field.cls2}" ovid="ab{!field.cls}" fn="{!field.cls}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                </apex:repeat>
+                    <!-- END B TOTAL -->        
+            <!-- END bTab -->
+                                
+            <!-- START cTab -->
+                            <apex:repeat var="cItems" value="{!pageCtrl.map_rSMDefinitionItems[pageCtrl.category_channel]}">
+                                <tr pmfc="{!cItems.prevManagerFc}" managerfc="{!cItems.managerfc}" class="ccls cccls fcTab findTab cTab{!cItems.id} {!cItems.id} " classification="{!cItems.classifications}" indcustomer="{!cItems.oldClassifications}" category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td month="{!cell.fYear}-{!cell.fMonth}" class="{!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b trh {!cell.type2} pd_r" old="null" >
+                                        <apex:outputPanel rendered="{!and(cell.isInput, cell.type2 != 'cfixqtotalw')}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg {!if(pageCtrl.editable, '', 'fixfreeimg')}" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+                                        <apex:inputText rendered="{!and(cell.isInput, pageCtrl.editable)}" value="{!inputVal}" styleClass="inputcls tr" />
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} opmf{!cItems.id} eachtr{!cItems.id} innobg pmforecasts pm{!cItems.id}" fn="pmforecasts" ovid="opmf{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <!-- 
+                                <tr class="dn cTab{!cItems.id} obpb{!cItems.id} eachtr{!cItems.id} budgets" fn="budgets" ovid="obpb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                 -->
+                                
+                                <tr class="ccls dn cTab{!cItems.id} oaft{!cItems.id} subrow am{!cItems.id}  amforecast" cls="amforecasts" sid="{!cItems.id}" ovid="oaft{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell oaftist{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts amforecasts_in" fn="amforecasts" ovid="oaftist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell oaftobst{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} not_oth amforecasts amforecasts_oth" fn="amforecasts" ovid="oaftobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                
+                                <tr class="ccls dn cTab{!cItems.id} obling{!cItems.id} subrow billing" cls="billings" sid="{!cItems.id}" ovid="obling{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" billing="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings billings_in oblingist{!cItems.id}" fn="billings" ovid="oblingist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings not_oth billings_oth oblingobst{!cItems.id}" fn="billings" ovid="oblingobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} obtb{!cItems.id} book2bill eachtr{!cItems.id}" fn="book2bill" ovid="obtb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <tr class="ccls dn cTab{!cItems.id} oblog{!cItems.id} innobg backlog" blid="bl{!cItems.id}" ovid="oblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} ooblog{!cItems.id} innobg subrow bl{!cItems.id} orderbacklog" cls="backlog0" sid="{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 backlog0_in ooblogist{!cItems.id}" fn="backlog0" ovid="ooblogist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0  not_oth backlog0_oth ooblogobst{!cItems.id}" fn="backlog0" ovid="ooblogobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} osa{!cItems.id} innobg subrow bl{!cItems.id} backlogscheduled" cls="scheduled" sid="{!cItems.id}" ovid="osa{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled scheduled_in osaisat{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaisat{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled not_oth scheduled_oth osaobst{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} ocurenc{!cItems.id} innobg subrow gtcurrency" cls="currency" sid="{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency currency_in ocurencist{!cItems.id}"  fn="currency" ovid="ocurencist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency not_oth currency_oth ocurencobst{!cItems.id}"  fn="currency" ovid="ocurencobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} omac{!cItems.id} eachtr{!cItems.id} percent percent_2am" pid="{!cItems.id}" ovid="omac{!cItems.id}" fn="accuracy2m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id}  omac6{!cItems.id} eachtr{!cItems.id} percent percent_6am" pid="{!cItems.id}" ovid="omac6{!cItems.id}" fn="accuracy6m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} oqac{!cItems.id} eachtr{!cItems.id} percent percent_qty" pid="{!cItems.id}" ovid="oqac{!cItems.id}" fn="accuracyQuarterly">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b1 border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                            </apex:repeat>
+                            
+                            
+                            <!-- START c LABEL -->
+                            
+                            <apex:repeat var="label" value="{!pageCtrl.map_otherLabel[pageCtrl.category_channel]}">
+                                <apex:repeat var="cItems" value="{!pageCtrl.map_otherItems[pageCtrl.category_channel][label]}">
+                                <tr pmfc="{!cItems.prevManagerFc}" managerfc="{!cItems.managerfc}" class="ccls cccls fcTab findTab cTab{!cItems.id} {!cItems.id} " classification="{!cItems.classifications}" indcustomer="{!cItems.oldClassifications}" category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td month="{!cell.fYear}-{!cell.fMonth}" class="{!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b   {!cell.type2} pd_r" old="null" >
+                                        <apex:outputPanel rendered="{!and(cell.isInput, cell.type2 != 'cfixqtotalw')}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg {!if(pageCtrl.editable, '', 'fixfreeimg')}" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+                                        <apex:inputText rendered="{!and(cell.isInput, pageCtrl.editable)}" value="{!inputVal}" styleClass="inputcls tr" />
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} opmf{!cItems.id} eachtr{!cItems.id} innobg pmforecasts pm{!cItems.id}" fn="pmforecasts" ovid="opmf{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                <!-- 
+                                <tr class="dn cTab{!cItems.id} obpb{!cItems.id} eachtr{!cItems.id} budgets" fn="budgets" ovid="obpb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b trh {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                 -->
+                                
+                                <tr class="ccls dn cTab{!cItems.id} oaft{!cItems.id} subrow am{!cItems.id} amforecast" cls="amforecasts" sid="{!cItems.id}" ovid="oaft{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell oaftist{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} amforecasts amforecasts_in" fn="amforecasts" ovid="oaftist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell oaftobst{!cItems.id} oaftsubcell{!cItems.id} eachtr{!cItems.id} not_oth amforecasts amforecasts_oth" fn="amforecasts" ovid="oaftobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                
+                                
+                                <tr class="ccls dn cTab{!cItems.id} obling{!cItems.id} subrow billing" cls="billings" sid="{!cItems.id}" ovid="obling{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" billing="null"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings billings_in oblingist{!cItems.id}" fn="billings" ovid="oblingist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell blingsubcell{!cItems.id} eachtr{!cItems.id} billings not_oth billings_oth oblingobst{!cItems.id}" fn="billings" ovid="oblingobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} obtb{!cItems.id} book2bill eachtr{!cItems.id}" fn="book2bill" ovid="obtb{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+
+                                <tr class="ccls dn cTab{!cItems.id} oblog{!cItems.id} innobg backlog" blid="bl{!cItems.id}" ovid="oblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} ooblog{!cItems.id} innobg subrow bl{!cItems.id} orderbacklog" cls="backlog0" sid="{!cItems.id}" ovid="ooblog{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 backlog0_in ooblogist{!cItems.id}" fn="backlog0" ovid="ooblogist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell obsubcell{!cItems.id} innobg eachtr{!cItems.id} backlog0 not_oth backlog0_oth ooblogobst{!cItems.id}" fn="backlog0" ovid="ooblogobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} osa{!cItems.id} innobg subrow bl{!cItems.id} backlogscheduled" cls="scheduled" sid="{!cItems.id}" ovid="osa{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r"> </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled scheduled_in osaisat{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaisat{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell sasubcell{!cItems.id} eachtr{!cItems.id} innobg scheduled not_oth scheduled_oth osaobst{!cItems.id} " category="{!cItems.category}" subtotal="{!cItems.subtotal}" sequence="{!cItems.sequence}" industrialsalesteaminclude="{!cItems.industrialSalesTeamInclude}" categoryexclude="{!cItems.categoryExclude}" categoryinclude="{!cItems.categoryInclude}" profitcenter="{!cItems.profitCenter}" ovid="osaobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} ocurenc{!cItems.id} innobg subrow gtcurrency" cls="currency" sid="{!cItems.id}" ovid="ocurenc{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency currency_in ocurencist{!cItems.id}" fn="currency" ovid="ocurencist{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} sbcell curcsubcell{!cItems.id} innobg eachtr{!cItems.id} currency not_oth currency_oth ocurencobst{!cItems.id}" fn="currency" ovid="ocurencobst{!cItems.id}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" c1="null" c2="null" c3="null" c4="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} omac{!cItems.id} eachtr{!cItems.id} percent percent_2am" pid="{!cItems.id}" ovid="omac{!cItems.id}" fn="accuracy2m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id}  omac6{!cItems.id} eachtr{!cItems.id} percent percent_6am" pid="{!cItems.id}" ovid="omac6{!cItems.id}" fn="accuracy6m">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr class="ccls dn cTab{!cItems.id} oqac{!cItems.id} eachtr{!cItems.id} percent percent_qty" pid="{!cItems.id}" ovid="oqac{!cItems.id}" fn="accuracyQuarterly">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="tr trh border_b1 border_r {!cell.type2} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>                           
+                            
+                            
+                                </apex:repeat>
+                            
+                            
+                            </apex:repeat>
+                            
+                            <!-- END LABEL -->                          
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                    <!-- START C TOTAL -->          
+                                <tr class="ctotal fwb not_total" id="fcTabId">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                <tr class="dn cTotal fwb find{!field.cls} c{!field.cls} {!field.cls2}" ovid="c{!field.cls}" fn="{!field.cls}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td billing="null" class="trh  border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                </apex:repeat>
+                                
+                                <tr class="alltotal fwb not_total" id="bcTotalId">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td billing="null" class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                <apex:repeat var="field" value="{!pageCtrl.OthFields}">
+                                <tr class="dn bcTotal fwb bc{!field.cls} {!field.cls2}" ovid="bc{!field.cls}" fn="{!field.cls}">
+                                    <apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+                                    <td class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+                                    </apex:repeat>
+                                </tr>
+                                </apex:repeat>
+                    <!-- START C TOTAL -->          
+            <!-- END cTab -->
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END right tab-->
+            </div>
+            
+        </div><!-- END boyd table -->
+    </div>
+    
+</apex:component>

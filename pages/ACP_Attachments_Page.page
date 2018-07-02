@@ -1,0 +1,96 @@
+<apex:page showHeader="true" sidebar="false" standardStylesheets="true" tabStyle="ACP_Account_Plan_Attachment__c" controller="ACP_Attachments_Page_Ctrl">
+    
+    <head>
+        <style>
+            
+            .tableStyle td {
+            text-align:Left;
+            //border:black 2px;
+            //border-left:2;
+            //margin-top: -1px;
+            }
+            
+            .tableStyle th {
+            //border: solid 2px;
+            //text-align:Left;
+            }
+            
+            .tableStyle td:first-child {
+            //border-left:2px solid;
+            }
+        </style>
+    </head>
+    
+    <apex:sectionHeader title="Account Plan Attachment Edit" subtitle="New Account Plan Attachment"/>
+    <apex:form >
+        <apex:pageBlock title="Account Plan Attachment Edit" mode="edit">
+            <apex:messages />
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!saveAttachment}" onclick="return test();"/>
+                <apex:commandButton value="Cancel" action="{!cancelAttachment}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" title="Information" collapsible="false">
+                
+                <apex:inputField value="{!acpa.ACP_Type__c}" required="true"/>
+                
+                <apex:inputField value="{!acpa.ACP_Account_Plan__c}" html-disabled="true" />
+                
+                <!--<apex:inputField value="{!acpa.Conga_Attachment_Update__c}"/>-->
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Upload a Attachment" columns="2">
+                <!--<apex:pageBlockSectionItem >
+<apex:outputLabel value="File Name" for="fileName"/>
+<apex:inputText value="{!attachment.name}" id="fileName"/>
+</apex:pageBlockSectionItem>-->
+                
+                <apex:pageBlockSectionItem >
+                    
+                    <apex:outputLabel value="File" for="file"/>
+                    <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="inputFile" required="true"/>
+                    
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <body   >
+                        <div style="margin-right: 317px;">
+                            
+                            <table width="100%" cellspacing="0" cellpadding="0" border="1" style="border-color:black;">
+                                <tr style="background:#E98300;font-size:13px;color:wheat;">
+                                    <th>{!$label.ACP_Image_used_for}</th>
+                                    <th>{!$label.ACP_Dimension}</th>
+                                </tr>
+                                <tr style="font-size:12px;">
+                                    <td>{!$label.ACP_Account_Manager_Dimension}</td>
+                                    <td>{!$label.ACP_Account_Manager_Dimension_Value}</td>
+                                </tr>
+                                <tr style="font-size:12px;">
+                                    <td>{!$label.ACP_Company_Logo_Dimension}</td>
+                                    <td>{!$label.ACP_Company_Logo_Dimension_Value}</td>
+                                </tr>
+                                <tr style="font-size:12px;">
+                                    <td>{!$label.ACP_Products_dimension}</td>
+                                    <td>{!$label.ACP_Product_Dimension_Value}</td>
+                                </tr>
+                                <tr style="font-size:12px;">
+                                    <td>{!$label.ACP_Competitor_Logo_dimension}</td>
+                                    <td>{!$label.ACP_Competitor_Logo_Dimension_Value}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </body>
+                    
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+    function test(){
+        var inputFile = document.querySelectorAll("[id*='inputFile']")[0];
+        if(inputFile.value.length === 0){
+            alert("Attachment Required");
+            return false;
+        }
+        return true;
+    }
+    </script>
+</apex:page>

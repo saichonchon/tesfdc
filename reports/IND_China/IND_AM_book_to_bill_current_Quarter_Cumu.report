@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Book_Amount_USD__c:SUM / BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Book to bill ratio</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Book to Bill</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Account.Daily_BBBs__r$Book_Amount_USD__c</column>
+        </chartSummaries>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Account.Daily_BBBs__r$Bill_Amount_USD__c</column>
+        </chartSummaries>
+        <chartType>Line</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Daily_BBBs__r$Transaction_Date__c</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>Book/Bill by Profit(Direct)</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>for weekly show the book/bill in current quarter</description>
+    <filter>
+        <booleanFilter>(((1 AND 2) AND 3) AND 4) AND 5</booleanFilter>
+        <criteriaItems>
+            <column>Account$Formula_IND_Billing_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Greater China</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$SAP_Profit_Center_Short_Desc_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C,RP - A&amp;C,IB,RP - IB,Rail,RP - Rail,Solar,RP - Solar,Deutsch Rail</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Bill_Type_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Obsolete__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$MKTMGRCDE__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>D0535,D0513,D0417,D0400,D0566,D0570,D0419,D0359</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Week</dateGranularity>
+        <field>Account.Daily_BBBs__r$Transaction_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$IND_Profit_Centre_Groups__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$AM_Account_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND AM book to bill current Quarter_Cumu</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Daily_BBB_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Daily_BBBs__r$Transaction_Date__c</dateColumn>
+        <interval>INTERVAL_CURRENT</interval>
+    </timeFrameFilter>
+</Report>

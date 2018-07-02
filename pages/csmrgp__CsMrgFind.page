@@ -1,0 +1,1677 @@
+<!--
+    01/03/2017  MD  Update the Logic Formula image so that it does not include a data literal (00141573)
+    11/27/2017  BE  Updated styling to SLDS (00150552)
+    02/12/2018  BE  Various UI fixes (00150552)
+                    - When initially checked, the checkboxes to add cases will not show the gray X until the user has move out of the checkbox and comes back.
+                    - If a search results in an error page alert appearing, the page scrolls to the alert.
+    02/19/2018  BE  Reorganize elements for new Navigation Tabs JS (00150552)
+    05/23/2018  BE  Fixed issue where cross object lookup fields would cause page to crash. Use output fields to display most lookup links instead of the convoluted way of figuring them
+                    out from before (00160506)
+    06/12/2018  BE  Horizontal scrolling for the results table when there are too many columns (00161049)
+-->
+<apex:page sidebar="false" title="{!IF(SET_DUPE_CRIT, 'Duplicate Criteria', 'Find Duplicates')}" controller="csmrgp.CsMrgFindCtrl" tabStyle="Case_Merge_Premium__tab">
+    <apex:includeScript value="/support/console/28.0/integration.js"/>
+    <apex:slds />
+    <apex:stylesheet value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/style/csmrgp-style.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/action-overlays.js')}"/>    
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/navigation-tabs.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/remove-console-padding.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/icon-util.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/script/xml-entities.js')}"/>
+    <script type="text/javascript">
+        if(sforce.console.isInConsole()) {
+            removeConsolePadding();
+        }
+    </script>
+    <style type="text/css">
+    
+        #bodyTable {    /* Allows the table to scroll horizontally in classic */
+            table-layout: fixed;
+        }
+
+        #resultsTable td, #resultsTable th {    /* results table cell sizes*/
+            min-width: 100px;
+            max-width: 400px;
+        }
+        
+        #tableScrollArea {
+            max-height: 520px;
+        }
+
+        .lookupHoverDetail { /* hides the pop ups that appear when hovering over reference fields */
+            display: none !important;
+        }
+
+        .selectedStringMaximum,.selectedStringWarning{
+            font-weight:bold;
+        }
+        /* Keeps criteria autocomplete from being hidden under page buttons */
+        #tab-criteria {    
+            z-index: 1;
+        }
+
+        /* Criteria "Value" Input */
+        [id$='itValueContainer'] input {
+            padding:0 1rem 0 0.75rem !important;
+            outline:0 !important;
+            border:0 !important;
+            border-color:transparent !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+
+        [id$='itValueContainer'] {
+            padding:0 !important;
+            display:flex !important;
+            flex-wrap: wrap;
+            overflow: none;
+        }
+
+        [id$='itValueContainer'] input.sldsc-input-with-pill {
+            padding-left: 0.25rem !important;
+            flex: 0 0 auto;
+            border-top: 1px solid #d8dde6 !important;
+            border-radius:0 !important;
+            background-color:white !important;
+            border-radius: 0 0 0.25rem 0.25rem !important;
+        }
+
+        [id$='itValueContainer'].containerHasPills {
+            background-color:#f0f0f0;
+        }
+
+        .sldsc-pill-container-disabled {
+            background-color: #ecebea;
+            border-color: #c9c7c5;
+            cursor: not-allowed;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /** Assistance Search Results Table **/
+        [id$='{!$Component.pgForm.assistanceSearchResultsTable}'] {
+            -webkit-transition: max-height 0.5s, height 0.5s;
+            -moz-transition: max-height 0.5s, height 0.5s;
+            -ms-transition: max-height 0.5s, height 0.5s;
+            -o-transition: max-height 0.5s, height 0.5s;
+            transition: max-height 0.5s, height 0.5s;
+            overflow-y: hidden;
+            max-height: 0px;
+            height: 0px;
+        }
+
+        .assistanceSearchResultsTableExpanded {
+            max-height:217px;
+            height: 217px;
+        }
+
+        /** Removes Gray background from listbox options that are not focused or being hovered over**/
+        .slds-listbox__option:hover:not(.slds-has-focus),.slds-listbox__option:focus:not(.slds-has-focus) {
+            background-color:#fff !important;
+        }
+
+        .slds-listbox__option.slds-has-focus.autocomplete {
+            background-color:blue !important;
+            color:white !important;
+        }
+
+        /** Backdrops/Overlays **/
+        .findBackdrop, .criteriaBackdrop {
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9000;
+            position: absolute;
+        }
+
+        .findBackdrop {
+            height:576px;
+            width:100%;
+        }
+
+        .criteriaBackdrop {
+            /** 50% of page - 2rem of padding + 4px of border **/
+            width: calc(50% - 2rem + 4px);
+        }
+
+        /** Results Table **/
+        .manualRow {
+            background-color: #E3CABE;
+        }
+
+        /** Creates the 'X' with gray background whenever a checkmark is hovered over **/
+        .slds-checkbox_add-button:hover input[type=checkbox]:checked~.slds-checkbox_faux {
+            background-color:#b5b5b5;
+        }
+
+        .slds-checkbox_add-button:hover input[type=checkbox]:checked~.slds-checkbox_faux:before {
+            transform: rotate(45deg);
+        }
+
+        .slds-checkbox_add-button:hover input[type=checkbox]:checked~.slds-checkbox_faux:after {
+            transform: rotate(-45deg);
+        }
+
+        .slds-checkbox_add-button:hover input[type=checkbox]:checked~.slds-checkbox_faux:before, .slds-checkbox_add-button:hover input[type=checkbox]:checked~.slds-checkbox_faux:after {
+            height: 1.25rem;
+            top: 0;
+            left: 0;
+            width: 0.125rem;
+        }
+
+        .slds-tabs_scoped__content:focus,.slds-tabs_scoped__item:focus {
+            outline: none !important;
+        }
+    </style>
+    <apex:form id="pgForm">
+        <apex:outputPanel id="debug" layout="block" rendered="{!debug}">
+            <c:DebugLogging />
+        </apex:outputPanel>
+        <!-- Case Id Field for Manually Added Cases -->
+        <apex:inputHidden id="h_dummy_parent_id" value="{!dummyCase.parentId}"/>
+        <div class="slds-scope">
+            <apex:outputPanel id="actionFunctions">
+                <apex:actionFunction name="mergeCases" action="{!mergeCases}" reRender="mergeAlert,pageAlertShowJS"/>
+                <apex:actionFunction name="continueFormulaValidation" action="{!continueFormulaValidation}" rerender="pageAlertShowJS,opResults,debug,recentCasesComp" status="{!IF(SET_DUPE_CRIT,'savingStatus','findStatus')}" oncomplete="handleFormulaValidationOnComplete();">
+                    <apex:param name="jsCritResult" value="{!validityResult}" assignTo="{!validityResult}" />
+                </apex:actionFunction>
+                <apex:actionFunction name="addCaseToResults" action="{!addCaseToResults}" reRender="opResults,pageAlertShowJS,recentCasesComp" status="findStatus">
+                    <apex:param name="caseId" value="" assignTo="{!dummyCase.parentId}"/>
+                </apex:actionFunction>
+                <apex:actionFunction name="searchByText" action="{!searchByText}" reRender="searchByTextList" status="textSearchingStatus"/>
+                <apex:actionFunction action="{!deleteCaseResults}" name="deleteCaseResults" rerender="assistanceSearchResultsTable,clearResultsButtonContainer,debug,pageAlertShowJS" oncomplete="setAssistanceSearchButtonsEnabled(true);"/>
+                <apex:actionFunction action="{!lookupCaseReferences}" name="lookupCaseReferences" rerender="assistanceSearchResultsTable,clearResultsButtonContainer,debug, pageAlertShowJS" oncomplete="setAssistanceSearchButtonsEnabled(true);setTimeout(showAssistanceSearchResults,100);"/>
+                <apex:actionFunction name="deleteCriteriaRow" action="{!removeCriterion}" reRender="opCriteria, editCritFormula, debug" oncomplete="setCriteria();" status="criteriaStatus">
+                    <apex:param name="rowNum" value="" assignTo="{!deleteCritNum}"/>
+                </apex:actionFunction>
+                <apex:actionFunction name="addCriteriaRow" action="{!Add}" rerender="opCriteria" status="criteriaStatus" oncomplete="setCriteria(); document.getElementById('{!$Component.pgForm.addRowButton}').disabled = false;"/>
+            </apex:outputPanel>
+
+            <apex:actionStatus id="savingStatus" onstart="ACTION_OVERLAYS.setEnableTabsForPage(false)" onstop="ACTION_OVERLAYS.setEnableTabsForPage(true)">
+                <apex:facet name="start">
+                    <apex:outputPanel >
+                        <div class="slds-backdrop slds-backdrop_open slds-backdrop_white" style="display:flex;">
+                            <div class="slds-align_absolute-center">
+                                <div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                                <div><div class="slds-text-heading_large" style="font-weight:700;">Saving</div></div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:facet>
+            </apex:actionStatus>
+
+            <c:CsMrgPageHeader title="{!IF(SET_DUPE_CRIT, 'Configure Duplicate Case Criteria', 'Find Cases')}" iconName="{!IF(SET_DUPE_CRIT,'settings','lightbulb')}" showContactUsButton="{!SET_DUPE_CRIT}"/>
+
+            <apex:outputPanel layout="none" rendered="{!SET_DUPE_CRIT}">
+                <c:PageAlert />
+            </apex:outputPanel>
+
+            <!-- Instructions for Set Duplicate Criteria Page -->
+            <apex:outputPanel rendered="{!SET_DUPE_CRIT}">
+                <div class="slds-section slds-is-open slds-p-horizontal_small">
+                    <h3 class="slds-section__title slds-theme_shade">
+                    <span class="slds-truncate slds-p-horizontal_small">Directions</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content slds-p-around_small">
+                        <apex:outputPanel id="opDirections">
+                            <ul class="slds-list_dotted">
+                                <li>Enter the default criteria for finding duplicate cases. To always use a specific value, enter it in the Value field. To use the value from the case you are searching against, mark the Use Case Value check box.   Do not enter both a Value and check the Use Case Value box for the same Field.</li>
+                                <li>Cases must meet ALL specified default criteria to be found on the initial search.  Users may alter the search criteria after the initial search using the default criteria.  To supply additional default criteria, click the Add Row button.</li>
+                                <li>To find cases that have virtually the same Subject, in the Field Picklist below, choose Subject Conversation, which is a formula field. The field trims common email prefixes (Re, Fwd, etc.) from the subject.</li>
+                                <li>Click the "Save" button when finished.</li>
+                            </ul>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+
+                <div class="slds-section slds-is-open slds-p-horizontal_small">
+                    <h3 class="slds-section__title slds-theme_shade">
+                        <span class="slds-truncate slds-p-horizontal_small">Set Criteria</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content slds-p-around_small">
+                        <apex:outputPanel id="opExamples">
+                            Examples:
+                            <ul class="slds-list_dotted">
+                                <li>To find cases associated with the same Account as the case where you clicked Find Duplicates, select "Account ID" for Field, "equals" for Operator, leave Value blank, and check Use Case Value.</li>
+                                <li>To find only cases that are not closed, select "Closed" for Field, "equals" for Operator, enter "false" for Value, and leave Use Case Value unchecked.</li>
+                            </ul>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </apex:outputPanel>
+
+            <!-- Tabs to pull cases from -->
+            <div id="search-tabs" class="{!IF(SET_DUPE_CRIT,'','slds-tabs_default')}">
+                <apex:outputPanel rendered="{!!SET_DUPE_CRIT}" layout="none">
+                    <ul class="slds-tabs_default__nav">
+                        <apex:repeat value="{!tabNames}" var="tab">
+                            <li class="slds-tabs_default__item" onclick="switchNavigationTab(this)" data-navigation-id="search-tabs" data-tab-name="{!LOWER(tab)}">
+                                <a id="tab-{!SUBSTITUTE(LOWER(tab), ' ', '_')}__item" class="slds-tabs_default__link" href="javascript:void(0);" tabindex="0">{!tab}</a>
+                            </li>
+                        </apex:repeat>
+                    </ul>
+                    <apex:outputPanel layout="none">
+                        <c:PageAlert />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <!-- 
+                    The content wrappers of each tab. Right now they are empty divs that will be appeneded to via javascript.
+                -->
+                <apex:repeat value="{!tabNames}" var="tab">
+                    <div id="tab-{!SUBSTITUTE(LOWER(tab), ' ', '_')}" class="slds-tabs_default__content slds-hide tab_content_wrapper slds-p-horizontal_small" data-tab-name="{!LOWER(tab)}" data-navigation-id="search-tabs">
+                    </div>
+                </apex:repeat>
+
+                <!-- Search by Criteria -->
+                <div class="tab_content" data-tab-name="search by criteria">
+                    <div class="slds-grid slds-wrap">
+                        <!-- CRITERIA --> 
+                        <div class="slds-size_1-of-2 sldsc-flex-item slds-m-right_small">
+                            <div class="slds-section slds-is-open">
+                                <h3 class="slds-section__title">
+                                    <apex:outputPanel layout="none" rendered="{!!SET_DUPE_CRIT}">
+                                        <button aria-controls="input-assistance-section" aria-expanded="true" class="slds-button slds-section__title-action" onclick="toggleSection(this); return false;">
+                                            <img src="{!URLFOR($Resource.CaseMergePremiumAssets, 'case-merge-premium-assets/img/custom-icons/icons/utility/switch_white_60.png')}" alt="switch" class="slds-section__title-action-icon slds-button__icon slds-button__icon_left"/>
+                                            <span class="slds-truncate">Search Criteria</span>
+                                        </button>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!SET_DUPE_CRIT}">
+                                        <span class="slds-truncate slds-p-horizontal_small">Duplicate Criteria</span>
+                                    </apex:outputPanel>
+                                </h3>
+                                <div aria-hidden="false" class="slds-section__content">
+                                    <apex:actionStatus id="criteriaStatus" onstart="handleCriteriaStatusOnStart()" onstop="ACTION_OVERLAYS.setEnableTabsForDiv(true,'criteriaTable');">
+                                        <apex:facet name="start">
+                                            <apex:outputPanel layout="block" styleClass="criteriaBackdrop">
+                                                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+                                    <div id="criteriaTable" class="sldsc-border_around" style="border-radius:0.25rem;">
+                                        <apex:outputPanel id="opCriteria">
+                                            <table class="slds-table slds-table_fixed-layout slds-table_cell-buffer slds-no-row-hover">
+                                                <thead style="background-color:transparent;">
+                                                    <tr class="slds-text-title_caps slds-border_bottom">
+                                                        <th style="width: 48px !important;" scope="col"><div class="slds-truncate"></div></th>
+                                                        <th style="width: 48px !important;" scope="col"><div class="slds-truncate"></div></th>
+                                                        <th scope="col"><div class="slds-truncate">Field</div></th>
+                                                        <th scope="col"><div class="slds-truncate">Operator</div></th>
+                                                        <th scope="col"><div class="slds-truncate">Value</div></th>
+                                                        <apex:outputPanel layout="none" rendered="{!SET_DUPE_CRIT}">
+                                                            <th style="width: 125px !important;" scope="col">
+                                                                <div><apex:outputText rendered="{!SET_DUPE_CRIT}" styleClass="slds-text-align">Use Case Value</apex:outputText></div>
+                                                            </th>
+                                                        </apex:outputPanel>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!criteria}" var="cr" id="rptCriteria">
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <button class="slds-button slds-button_icon" onclick="tempSaveCriteria();deleteCriteriaRow('{!cr.numID}'); return false;" title="Remove">
+                                                                    <img src="{!URLFOR($Asset.SLDS,'/assets/icons/utility/clear_60.png')}" class="slds-button__icon"/>
+                                                                </button>
+                                                            </th>
+                                                            <td><apex:outputText value="{!cr.numID}."/></td>
+                                                            <td>
+                                                                <div class="slds-select_container">
+                                                                    <apex:selectList id="critFieldSelect" styleClass="slds-select" value="{!cr.field}" size="1">
+                                                                        <apex:selectOptions value="{!fields}"/>
+                                                                        <apex:actionSupport event="onchange" action="{!cr.refreshOps}" rerender="opOprs, valueAutocomplete, critValueFormat, debug" status="refStat" 
+                                                                        onsubmit="handleCriteriaFieldSelectOnChange('{!$Component.critFieldSelect}','{!$Component.itValue}')"
+                                                                        oncomplete="handleCriteriaFieldSelectCompleteOnChange('{!$Component.critFieldSelect}')"/>
+                                                                    </apex:selectList>
+                                                                </div>
+                                                            </td>
+                                                            <td class="slds-truncate">
+                                                                <apex:outputPanel id="opOprs">
+                                                                    <apex:actionStatus id="refStat">
+                                                                        <apex:facet name="start">
+                                                                            <apex:outputPanel >
+                                                                                <apex:outputtext value="(loading operators...)"/>
+                                                                          </apex:outputPanel>
+                                                                        </apex:facet>
+                                                                        <apex:facet name="stop">
+                                                                            <apex:outputPanel >
+                                                                                <div class="slds-select_container">
+                                                                                    <apex:selectList styleClass="slds-select" value="{!cr.operator}" size="1" >
+                                                                                        <apex:selectOptions value="{!cr.opers}"/>
+                                                                                    </apex:selectList>
+                                                                                </div>
+                                                                            </apex:outputPanel>
+                                                                        </apex:facet>
+                                                                    </apex:actionStatus>
+                                                                </apex:outputPanel>
+                                                            </td>
+                                                            <td>
+                                                                <apex:outputPanel id="valueAutocomplete">
+                                                                    <!-- AUTOCOMPLETE -->
+                                                                    <div class="slds-form-element">
+                                                                        <div class="slds-form-element__control">
+                                                                            <div class="slds-combobox_container">
+                                                                                <div class="slds-combobox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                                                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                                                                                        <apex:inputHidden id="h_cr_inputValue" value="{!cr.inputValue}"/>
+                                                                                        <div id="{!cr.numId}itValueContainer" class="slds-pill_container {!IF(AND(SET_DUPE_CRIT,cr.useCaseValue),'sldsc-pill-container-disabled','')}">
+                                                                                            <apex:inputText id="itValue" disabled="{!AND(SET_DUPE_CRIT,cr.useCaseValue)}" styleClass="slds-dropdown-trigger slds-dropdown-trigger_click slds-input" html-autocomplete="off" html-aria-autocomplete="list" html-aria-controls="crit{!cr.numId}Autocomplete" html-role="textbox" html-criteriaField="{!cr.field}" html-isPicklistField="{!cr.isPicklist}" html-isReferenceField="{!cr.isReference}"
+                                                                                            onfocus="handleCriteriaValueInputOnFocus(this);" 
+                                                                                            onblur="handleCriteriaValueInputOnBlur(event,this);"
+                                                                                            html-oninput="handleCriteriaValueInputOnInput(this);"
+                                                                                            onkeyup="handleCriteriaValueInputOnKeyUp(event,this);" 
+                                                                                            onkeydown="handleCriteriaValueInputOnKeyDown(event,this);"/>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div id="crit{!cr.numId}Autocomplete" role="listbox">
+                                                                                        <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-scrollable_y" role="presentation" style="margin-top:0; display:none; max-height:145px;" onmouseover="inList = true;" onmouseout="inList = false;">
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                            </td>
+                                                            <apex:outputPanel layout="none" rendered="{!SET_DUPE_CRIT}">
+                                                                <td>
+                                                                    <div class="slds-align_absolute-center">
+                                                                        <span class="slds-checkbox">
+                                                                            <apex:inputCheckbox value="{!cr.useCaseValue}" id="ckUseCase" onClick="toggleCriteriaValueInputDisabled('{!$Component.itValue}'); clearValue('{!$Component.itValue}','{!$Component.h_cr_inputValue}');"/>
+                                                                            <apex:outputLabel styleClass="slds-checkbox__label" for="ckUseCase">
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                            </apex:outputLabel>
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
+                                                            </apex:outputPanel>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                </tbody>
+                                            </table>                                        
+                                        </apex:outputPanel>
+                                    </div>
+                                    <div id="criteriaButtons" class="slds-p-top_small">
+                                        <span class="slds-m-left_large">
+                                            <apex:outputPanel rendered="{!!SET_DUPE_CRIT}">
+                                                <button id="findButton" class="slds-button slds-button_brand" onclick="this.disabled = true;handleClickFind('{!$Component.editCritFormula}');return false;">Find</button>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!SET_DUPE_CRIT}">
+                                                <apex:commandButton styleClass="slds-button slds-button_brand" status="savingStatus"  value="Save" onclick="tempSaveCriteria();validateFormula('{!$Component.editCritFormula}', 'dupe');return false;"/>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!SET_DUPE_CRIT}" styleClass="slds-m-left_x-small">
+                                                <apex:commandButton styleClass="slds-button slds-button_brand" status="savingStatus" value="Save & Return" onclick="document.getElementById('{!$Component.h__leaveAfterSave}').value = 'true'; tempSaveCriteria();validateFormula('{!$Component.editCritFormula}', 'dupe'); clickedSaveAndReturn = true;return false;" reRender="h__leaveAfterSave"/>
+                                                <apex:inputHidden id="h__leaveAfterSave" value="{!leaveAfterSave}"/>
+                                            </apex:outputPanel>
+                                        </span>
+                                        <span class="slds-m-left_x-small">
+                                            <apex:commandbutton id="addRowButton" styleClass="slds-button slds-button_brand" value="Add Row" onclick="this.disabled = true;tempSaveCriteria();addCriteriaRow();return false;"/>
+                                        </span>
+                                        <span class="slds-m-left_x-small">
+                                            <apex:commandbutton action="{!clearCriteria}" styleClass="slds-button slds-button_brand" value="Clear Criteria" status="criteriaStatus" reRender="opCriteria,editCritFormula" onclick="this.disabled =true;" oncomplete="this.disabled=false"/>
+                                        </span>
+                                        <span class="slds-m-left_x-small">
+                                            <apex:commandbutton action="{!cancel}" styleClass="slds-button slds-button_brand" value="Reset"/>
+                                        </span>
+                                        <apex:outputPanel rendered="{!SET_DUPE_CRIT}" styleClass="slds-m-left_x-small">
+                                            <apex:commandButton action="{!cancelSetCriteria}" styleClass="slds-button slds-button_brand" value="Cancel"/>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input Assistance -->
+                        <div class="slds-size_1-of-2 sldsc-flex-item slds-m-left_small">
+                            <apex:outputPanel >
+                            <div class="slds-section slds-is-open">
+                                <h3 class="slds-section__title">
+                                <button aria-controls="input-assistance-section" aria-expanded="true" class="slds-button slds-section__title-action" onclick="toggleSection(this); return false;">
+                                    <img src="{!URLFOR($Resource.CaseMergePremiumAssets, 'case-merge-premium-assets/img/custom-icons/icons/utility/switch_white_60.png')}" alt="switch" class="slds-section__title-action-icon slds-button__icon slds-button__icon_left"/>
+                                    Input Assistance
+                                </button>
+                                </h3>
+                                <div aria-hidden="false" class="slds-section__content" id="input-assistance-section">
+                                    <div id="assistance-tabs" class="slds-tabs_scoped">
+                                        <ul class="slds-tabs_scoped__nav">
+                                            <apex:repeat value="{!subTabNames}" var="tab">
+                                                <li class="slds-tabs_scoped__item" onclick="switchNavigationTab(this)" data-navigation-id="assistance-tabs" data-tab-name="{!LOWER(tab)}" tabindex="0">
+                                                    <a id="tab-{!SUBSTITUTE(LOWER(tab), ' ', '_')}__item" class="slds-tabs_scoped__link" href="javascript:void(0);" tabindex="0">{!tab}</a>
+                                                </li>
+                                            </apex:repeat>
+                                        </ul>
+
+                                        <!-- 
+                                            The content wrappers of each tab. Right now they are empty divs that will be appeneded to via javascript.
+                                        -->
+                                        <apex:repeat value="{!subTabNames}" var="tab">
+                                            <div id="tab-{!SUBSTITUTE(LOWER(tab), ' ', '_')}" class="slds-tabs_scoped__content slds-hide tab_content_wrapper" data-tab-name="{!LOWER(tab)}" data-navigation-id="assistance-tabs" tabindex="0">
+                                            </div>
+                                        </apex:repeat>
+
+                                        <!-- Formula -->
+                                        <div class="tab_content" data-tab-name="formula" >
+                                            <div class="slds-p-around_small">
+                                                <!-- FORMULA LOGIC -->
+                                                <apex:outputLabel value="Logic Formula (optional)" styleClass="slds-form-element__label" />
+                                                <apex:inputText styleClass="slds-input" value="{!critFormula}" id="editCritFormula"/>
+                                                <apex:image url="{!URLFOR($Resource.csmrgp__CaseMergePremiumAssets,'case-merge-premium-assets/img/filter_example.png')}" styleClass="slds-m-top_medium"/>  
+                                            </div>  
+                                        </div>
+
+                                        <!-- Find Case Number and Id -->
+                                        <div class="tab_content" data-tab-name="find case number and id">
+                                            <apex:outputText styleClass="slds-form-element__label" value="Contains Case Subject:"/>
+                                            <apex:inputText styleClass="slds-input slds-m-left_small" style="width:inherit !important;" size="20" value="{!searchSubject}" />
+                                            <apex:commandButton id="assistanceSearchButton" value="Search" onclick="assistanceSearch(); return false;" styleClass="slds-button slds-button_neutral slds-m-left_x-small"/>
+                                            <apex:outputPanel id="clearResultsButtonContainer">
+                                                <apex:commandButton id="clearTableButton" value="Clear Table" rendered="{!!assistanceResults.empty}" styleClass="slds-button slds-button_neutral slds-m-left_x-small clearResultsButton" onclick="clearAssistanceSearchResultsTable(); return false;" />
+                                            </apex:outputPanel>
+
+                                            <apex:outputText styleClass="slds-m-left_small" value="Limit 5 results"/>
+                                            <apex:outputPanel id="assistanceSearchResultsTable" layout="block" styleClass="slds-m-top_small">
+                                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                    <thead>
+                                                        <tr class="slds-table-title_caps">
+                                                            <th scope="col">
+                                                                <div class="slds-truncate">Id</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate">Case Number</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate">Account</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate">Subject</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate"></div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <apex:outputPanel layout="none" rendered="{!assistanceResults.empty}">
+                                                            <tr>
+                                                                <td class="slds-text-align_center" colspan="5">
+                                                                    <div class="slds-truncate">
+                                                                        <span style="font-style: italic;">No results found.</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </apex:outputPanel>
+                                                        <apex:repeat value="{!assistanceResults}" var="case">
+                                                            <tr>
+                                                                <td data-label="Id">
+                                                                    <div class="slds-truncate" >
+                                                                        <p onclick="selectText(this);">{!case.ID}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td data-label="Case Number" >
+                                                                    <div class="slds-truncate">
+                                                                        <p onclick="selectText(this);">{!case.CaseNumber}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td data-label="Account">
+                                                                    <div class="slds-truncate" >
+                                                                    <p onclick="selectText(this);">{!case.Account.Name}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td data-label="Subject">
+                                                                    <div class="slds-truncate" >
+                                                                        <p onclick="selectText(this);">{!case.Subject}</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="slds-truncate">
+                                                                        <apex:outputLink value="{!IF(inLightning,'/one/one.app?#/sObject/'+ case.Id + '/view','/' + case.Id)}" target="_blank" style="font-size:90%; text-decoration: underline !important">View</apex:outputLink>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </apex:repeat>
+                                                    </tbody>
+                                                </table>
+                                            </apex:outputPanel>
+                                        </div>
+
+                                        <!-- 
+                                            Add content to corresponding content wrappers.
+                                        -->
+                                        <script type="application/javascript">
+                                            var assistanceNavigationContentWrappers = document.querySelectorAll('#assistance-tabs .tab_content_wrapper');
+                                            var assistanceNavigationContent = document.querySelectorAll('#assistance-tabs  .tab_content');
+                                            for(var i = 0; i < assistanceNavigationContent.length; i++) {
+                                                var anc = assistanceNavigationContent[i];
+                                                var ancTabName = anc.getAttribute(NAVIGATION_TABS.TAB_NAME_ATTR);
+                                                for(var j = 0; j < assistanceNavigationContentWrappers.length; j++) {
+                                                    var ancw = assistanceNavigationContentWrappers[j];
+                                                    if(ancw.getAttribute(NAVIGATION_TABS.TAB_NAME_ATTR) === ancTabName) {
+                                                        ancw.appendChild(anc);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            NAVIGATION_TABS.showTabContent(assistanceNavigationContentWrappers[0]);
+                                            document.querySelectorAll('#assistance-tabs  .' + NAVIGATION_TABS.SCOPED_TAB_ITEM_CLASS)[0].classList.add(NAVIGATION_TABS.ACTIVE_TAB_CLASS);
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>                    
+                </div>
+
+                <!-- Search by Text -->
+                <div class="tab_content" data-tab-name="search by text">
+                    <div class="slds-grid">
+                        <div id="case-lookup" class="slds-form-element slds-size_1-of-2">
+                            <apex:outputLabel value="Text Search" styleClass="slds-form-element__label" for="caseLookupInput"/>
+                            <div class="slds-form-element__control">
+                                <div class="slds-combobox_container slds-has-inline-listbox">
+                                    <div class="slds-combobox slds-combobox-lookup" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                                            <apex:inputText id="caseLookupInput" styleClass="slds-input slds-combobox__input slds-dropdown-trigger slds-dropdown-trigger_click" value="{!textSearchTerm}" html-autocomplete="off" html-aria-controls="searchByTerm-list" html-oninput="handleSearchByTextOnInput(event,this);" 
+                                            onfocus="handleSearchByTextOnFocus(event,this);" 
+                                            onblur="handleSearchByTextOnBlur(event,this);"
+                                            onkeydown="handleSearchByTextOnKeyDown(event,this);" 
+                                            html-placeholder="Search for cases by subject, account name, contact name, or number"/>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" title="Cases">
+                                                <apex:actionStatus id="textSearchingStatus" layout="none">
+                                                    <apex:facet name="start">
+                                                        <apex:outputPanel layout="none">
+                                                            <div role="status" class="slds-spinner slds-spinner_x-small slds-spinner_brand">
+                                                                <span class="slds-assistive-text">Loading</span>
+                                                                <div class="slds-spinner__dot-a"></div>
+                                                                <div class="slds-spinner__dot-b"></div>
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:facet>
+                                                    <apex:facet name="stop">
+                                                        <img src="{!URLFOR($Asset.SLDS,'/assets/icons/utility/search_60.png')}" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" style="right:0 !important;"/>
+                                                    </apex:facet>
+                                                </apex:actionStatus>
+                                            </span>
+                                        </div>
+                                        <apex:outputPanel layout="block" id="searchByTextList">
+                                            <div id="searchByTerm-list" role="listbox">
+                                                <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-scrollable_y" role="presentation" onmouseover="inList = true;" onmouseout="inList = false;" style="margin-top:0px !important;  border-radius: 0 0 .25rem .25rem !important; max-height:318px;">
+                                                    <apex:outputPanel layout="none" rendered="{!!searchByTextResults.empty}">
+                                                        <apex:repeat value="{!searchByTextResults}" var="case">
+                                                            <li role="presentation" class="slds-listbox__item" onclick="handleSearchByTextResultItemOnClick(event, '{!case.id}');" caseId='{!case.id}'>
+                                                                <span role="option" class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" onmouseover="this.classList.add('slds-has-focus');" onmouseleave="this.classList.remove('slds-has-focus');">
+                                                                    <span class="slds-media__figure">
+                                                                        <span class="slds-icon_container slds-icon-standard-case" title="Case {!case.CaseNumber}">
+                                                                            <img class="slds-icon slds-icon_small" src="{!URLFOR($Asset.SLDS,'/assets/icons/standard/case_60.png')}"/>
+                                                                        </span>
+                                                                    </span>
+                                                                    <span class="slds-media__body">
+                                                                        <span class="slds-listbox__option-text slds-listbox__option-text_entity">{!case.CaseNumber}</span>
+                                                                        <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">Status: {!case.Status}{!IF(ISBLANK(case.Subject),'',' • ' + case.Subject)}{!IF(ISBLANK(case.Account.Name),'',' • Account: ' + case.Account.Name)}{!IF(ISBLANK(case.contact.name),'',' • Contact: ' + case.Contact.Name)}</span>
+                                                                    </span>
+                                                                </span>
+                                                            </li>
+                                                        </apex:repeat>
+                                                    </apex:outputPanel> 
+                                                    <apex:outputPanel layout="none" rendered="{!searchByTextResults.empty}">
+                                                        <li class="slds-listbox__item">
+                                                            <span class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta">
+                                                                <span class="slds-media__body">
+                                                                    No matches
+                                                                </span>
+                                                            </span>
+                                                        </li>
+                                                    </apex:outputPanel>                                                    
+                                                </ul>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <script type="text/javascript">
+                                            document.getElementById('searchByTerm-list').querySelector('ul').style.display = 'none';
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+
+                <!-- Recent Cases -->
+                <div class="tab_content" data-tab-name="recent cases">
+                    <c:RecentlyViewedCases parentCtrl="{!ctrl}" callerName="CsMrgFind" reRenderIds="opResults,pageAlertShowJS" actionStatusIds="findStatus"/>
+                </div>
+
+                <!-- 
+                    Add content to corresponding content wrappers.
+                -->
+                <script type="application/javascript">
+                    var searchNavigationContentWrappers = document.querySelectorAll('#search-tabs .tab_content_wrapper');
+                    var searchNavigationContent = document.querySelectorAll('#search-tabs .tab_content');
+                    for(var i = 0; i < searchNavigationContent.length; i++) {
+                        var snc = searchNavigationContent[i];
+                        var sncTabName = snc.getAttribute(NAVIGATION_TABS.TAB_NAME_ATTR);
+                        for(var j = 0; j < searchNavigationContentWrappers.length; j++) {
+                            var sncw = searchNavigationContentWrappers[j];
+                            if(sncw.getAttribute(NAVIGATION_TABS.TAB_NAME_ATTR) === sncTabName) {
+                                sncw.appendChild(snc);
+                                break;
+                            }
+                        }
+                    }
+
+                    // First Tab depends
+                    var tabNum = 0;                         
+                    switch('{!JSENCODE(defaultSearchTab)}') {
+                        case 'criteria':
+                            tabNum = 0;
+                            break;
+                        case 'text':
+                            tabNum = 1;
+                            break;
+                        case 'recent':
+                            tabNum = 2;
+                            break;
+                        default:
+                            tabNum = 0;
+                    }
+                    NAVIGATION_TABS.showTabContent(searchNavigationContentWrappers[tabNum]);
+                    if({!!SET_DUPE_CRIT}) {
+                       document.querySelectorAll('#search-tabs .' + NAVIGATION_TABS.TAB_ITEM_CLASS)[tabNum].classList.add(NAVIGATION_TABS.ACTIVE_TAB_CLASS); 
+                    }
+                </script>
+            </div>
+
+            <!-- Results -->
+            <apex:outputPanel layout="block" id="opResults" rendered="{!!SET_DUPE_CRIT}">
+                <apex:outputPanel rendered="{!showResults}">
+                    <apex:actionStatus id="findStatus" onstart="handleFindStatusOnStart()" onstop="handleFindStatusOnStop()">
+                        <apex:facet name="start">
+                            <apex:outputPanel layout="block" styleClass="findBackdrop">
+                                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </apex:outputPanel>
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <!-- Results Table Options -->
+                    <apex:outputPanel >
+                        <div class="slds-grid slds-wrap slds-text-align_center slds-p-vertical--xx-small slds-m-top_x-large slds-border_top" style="background-color: #fafaf9;">
+                            <div class="slds-size_1-of-8" style="line-height: 2.0rem;">
+                                <apex:outputText value="{!Displaying}" style="{!displayingCSS}" />
+                            </div>
+
+                            <div class="slds-size_1-of-8">
+                                <apex:outputLabel value="Results Per Page "/>
+                                <div class="slds-select_container slds-select_container-inline">
+                                    <apex:selectList styleClass="slds-select" value="{!recordLimit}" size="1">
+                                        <apex:actionSupport event="onchange" action="{!changePageSize}" reRender="opResults, debug, resultsButtons" status="findStatus" />
+                                        <apex:selectOption itemLabel="10" itemValue="10"/>
+                                        <apex:selectOption itemLabel="25" itemValue="25"/>
+                                        <apex:selectOption itemLabel="50" itemValue="50"/>
+                                        <apex:selectOption itemLabel="100" itemValue="100"/>
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                            <div class="slds-size_1-of-8"></div>
+                            <div class="slds-size_2-of-8">
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" id="firstPage" value=" << " action="{!setPageFirst}" reRender="opResults,resultsButtons, debug" disabled="{!currentPage == 1}" status="findStatus"/>
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" id="prevPage" value=" < " action="{!setPagePrev}" reRender="opResults,resultsButtons, debug" disabled="{!currentPage == 1}" status="findStatus" />
+                                <apex:outputLabel styleClass="slds-m-horizontal_small" value="{!PageInfo}"/>
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" id="nextPage" value=" > " action="{!setPageNext}" reRender="opResults,resultsButtons, debug" disabled="{!(currentPage * recordLimit) >= totalRecords || (currentPage * recordLimit) >= (2000 - recordLimit)}" status="findStatus" />
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" id="lastPage" value=" >> " action="{!setPageLast}" reRender="opResults, resultsButtons,debug" disabled="{!!(currentPage < MaxPage)}" status="findStatus" />
+                            </div>
+
+                            <div class="slds-size_1-of-8"></div>
+
+                            <div class="slds-size_1-of-8">
+                                <div class="tooltip">
+                                    <button class="slds-button slds-button_icon tooltip-button" type="button" style="background:url('{!URLFOR($Resource.CaseMergePremiumAssets, 'case-merge-premium-assets/img/custom-icons/icons/utility/tooltip_60.png')}');"/>
+                                    <span class="tooltiptext tooltip_top">
+                                        <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip">
+                                            <div class="slds-popover__body">{!limitWarningMessage}</div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div style="display: inline-flex;vertical-align: middle;padding-left:.5rem;">
+                                <apex:outputLabel id="selectedString" value="{!SelectedString}" styleClass="slds-m-right_small slds-m-right_xx-small {!selectedStringCSSClass}" />
+                                </div>
+                                <apex:commandButton id="clearSelected" value="Clear" action="{!clearSelected}" reRender="opResults, debug" status="findStatus" styleClass="slds-button slds-button_neutral" disabled="{!numSelected == 0}"/>
+                            </div>
+                            <div class="slds-size_1-of-8">
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" value="Back to Case" rendered="{!CASE_ID_FOUND}" action="{!cancelMerge}"/>
+                                <apex:commandButton id="mergeButton" disabled="{!!canMerge}" styleClass="slds-button slds-button_brand" value="Merge" onclick="handleMergeButtonClicked();return false;"/>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <div id="tableScrollArea" class="slds-scrollable">
+                        <table id="resultsTable" class="slds-table slds-table_bordered slds-table_cell-buffer slds-no-row-hover">
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th class="slds-align_absolute-center" scope="col">
+                                        <div class="slds-truncate">Select</div>
+                                    </th>
+                                    <apex:repeat value="{!$ObjectType.Case.FieldSets.csmrgp__Case_Merge_Find}" var="f">
+                                        <th scope="col">
+                                            <div class="slds-truncate">
+                                                <apex:outputText value="{!IF(CONTAINS(f.fieldPath, '.'), f.fieldPath, IF(f.type == 'reference', LEFT(f.label, LEN(f.label) - 3), f.label))}"/>
+                                            </div>
+                                        </th>
+                                    </apex:repeat>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:outputPanel layout="none" rendered="{!currentPageResults.empty}">
+                                    <tr>
+                                        <th colspan="8" class="slds-text-align_center" style="font-style: italic;">
+                                            No cases matching your criteria were found.
+                                        </th>
+                                    </tr>
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="none" rendered="{!!currentPageResults.empty}">
+                                    <apex:repeat value="{!currentPageResults}" var="r">
+                                        <tr class="{!IF(r.isManual,'manualRow','')}">
+                                            <th scope="row" data-label="Add Cases">
+                                                <div class="slds-align_absolute-center">
+                                                    <div class="slds-checkbox_add-button">
+                                                        <apex:inputCheckbox id="caseSelectCheck" styleClass="slds-assistive-text" value="{!r.selected}">
+                                                            <!-- id 'recentCasesComp' is in RecentlyViewedCases -->
+                                                            <apex:actionSupport event="onchange" reRender="selectedString,recentCasesComp,mergeButton,clearSelected" status="findStatus"/>
+                                                        </apex:inputCheckbox>
+                                                        <apex:outputLabel for="caseSelectCheck" styleClass="slds-checkbox_faux"/>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <apex:repeat value="{!$ObjectType.Case.FieldSets.csmrgp__Case_Merge_Find}" var="f">
+                                                <td data-label="{!IF(CONTAINS(f,'.'),f,$ObjectType['Case'].Fields[f].label)}">
+                                                    <div class="slds-truncate">
+                                                        <apex:variable value="{!RIGHT(LOWER(f.fieldPath), 3) == '.id'}" var="IsDotIdField"/>
+                                                        <apex:variable value="{!RIGHT(LOWER(f.fieldPath), 6) == '__r.id'}" var="IsDotIdCustomField"/>
+                                                        <apex:variable value="{!IF(IsDotIdCustomField, LEFT(f.fieldPath, LEN(f.fieldPath) - 6) + '__c', IF(IsDotIdField, LEFT(f.fieldPath, LEN(f.fieldPath) - 3) + 'Id', f))}" var="theField"/>
+                                                        <apex:outputPanel layout="none" rendered="{!f != 'CaseNumber'}">
+                                                            <apex:outputField value="{!r.cs[theField]}"/>
+                                                        </apex:outputPanel>
+                                                        <apex:outputLink value="{!IF(inLightning,'/one/one.app?#/sObject/'+ r.cs.Id + '/view','/' + r.cs.Id)}" rendered="{!f == 'CaseNumber'}" target="_blank">{!r.cs.CaseNumber}</apex:outputLink>
+                                                    </div>
+                                                </td>
+                                            </apex:repeat>
+                                        </tr>
+                                    </apex:repeat>
+                                </apex:outputPanel>
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+    </apex:form>
+    <script type="application/javascript">
+        var lastCasesSelectedValue = 0;
+        // Only automatically show the warning when the number of cases selected goes from the limit to limit + 1. 
+        function showTooManyCasesWarningTextIfNeeded() {
+            var selectedText = document.getElementById('{!$Component.pgForm.selectedString}');
+            var s = selectedText.innerText;
+            var nextNum = parseInt(s.split(':')[1].split('/')[0]);
+            if(nextNum > {!caseMergeLimit}) {
+                document.getElementsByClassName('tooltip')[0].style.display='inline-block';
+                if(lastCasesSelectedValue === {!caseMergeLimit}) {
+
+                    document.querySelector('.tooltip button').focus();
+                }
+            }
+            else {
+                document.getElementsByClassName('tooltip')[0].style.display='none';
+            }
+            lastCasesSelectedValue = nextNum;
+        }
+
+        var inList = false;
+
+        // Key Codes
+        var backspaceCode = 8;
+        var upArrowCode = 38;
+        var downArrowCode = 40;
+        var enterKeyCode = 13;
+        var escKeyCode = 27;
+        var semicolonCode = 186;
+        var tabKeyCode = 9;
+        var onInputTimeout;
+        var clickedSaveAndReturn = false;
+
+        function switchNavigationTab(newActiveNavigationTab) {
+            NAVIGATION_TABS.switchNavigationTab(newActiveNavigationTab);
+        }
+
+        // Ignore Tabs and Arrow Keys to change navigation tabs.
+            function disableBackgroundListeners() {
+                ACTION_OVERLAYS.setEnableTabsForPage(false);
+                NAVIGATION_TABS.disableArrowMovement();
+            }
+
+            function enableBackgroundListeners() {
+                ACTION_OVERLAYS.setEnableTabsForPage(true);
+                NAVIGATION_TABS.enableArrowMovement();
+            }
+
+        function toggleSection(sectionToggleButton) {
+                var sectionContent = document.getElementById(sectionToggleButton.getAttribute('aria-controls'));
+                var buttonParent = sectionToggleButton.parentNode;
+                while(!buttonParent.classList.contains('slds-section') && buttonParent !== null) {
+                    buttonParent = buttonParent.parentNode;
+                }
+
+                var section = buttonParent;
+                section.classList.toggle('slds-is-open');
+                var expanded = section.classList.contains('slds-is-open');
+                sectionToggleButton.setAttribute('aria-expanded',''+ expanded);
+                sectionContent.setAttribute('aria-hidden',''+!expanded);
+        }
+
+        function showCriteriaOverlay() {
+            document.querySelector("[id$='criteriaStatus.start']").style.display="block";
+            document.getElementById('{!$Component.pgForm.editCritFormula}').setAttribute('disabled','disabled');       
+            handleCriteriaStatusOnStart();
+        }
+
+        function hideCriteriaOverlay() {
+            ACTION_OVERLAYS.setEnableTabsForDiv(true,'criteriaTable');
+            document.getElementById('{!$Component.pgForm.editCritFormula}').removeAttribute('disabled');    
+            document.querySelector("[id$='criteriaStatus.start']").style.display="none";
+        }
+
+        function setFocusOnLoad() {}
+
+        function toggleInputDisabled(inputElementId) {
+            var inputElement = document.getElementById(inputElementId);
+            var isDisabled = inputElement.hasAttribute('disabled');
+            if(isDisabled) {
+                inputElement.removeAttribute('disabled');
+                var pill = inputElement.previousElementSibling;
+                while(pill) {
+                    pill.querySelector('.slds-button').disabled = false;
+                    pill.style.backgroundColor = "#ffffff";
+                    pill = pill.previousElementSibling;
+                }
+            }
+            else {
+                inputElement.setAttribute('disabled','disabled');
+                var pill = inputElement.previousElementSibling;
+                while(pill) {
+                    pill.querySelector('.slds-button').disabled = true;
+                    pill.style.backgroundColor = '#e0e5ee';
+                    pill = pill.previousElementSibling;
+                }
+            }
+        }
+
+        // Disable the criteria "value" input and "field" select. Keeps the criteria values in sync.
+        function toggleCriteriaValueInputDisabled(inputElementId) {
+            document.getElementById(inputElementId).parentElement.classList.toggle('sldsc-pill-container-disabled');
+            toggleInputDisabled(inputElementId);
+        }
+
+        function unescapeXMLEntities(obj) {
+            if(typeof obj == 'string') {
+                return obj.replace(/(&quot\;)|(&#34\;)/g, '"').replace(/(&amp\;)|(&#38\;)/g, '&').replace(/(&apos\;)|(&#39\;)/g, "'").replace(/(&lt\;)|(&#60\;)/g, '<').replace(/(&gt\;)|(&#62\;)/g, '>');
+            }
+            else if(typeof obj == 'object') {
+                for(var field in obj){
+                    obj[field] = unescapeXMLEntities(obj[field]);
+                }
+                return obj;             
+            }
+        }
+
+        function validateFormula(critFormulaID) {
+            // Validate the criteria formula. Return a helpful error message if its invalid. Return "true" if it passes.
+            var elem = document.getElementById(critFormulaID);
+            if (!elem){
+                continueFormulaValidation("true");
+                return false;
+            }
+            var formula = elem.value;
+            if (formula != null)
+                formula = formula.trim();
+                if (!formula || formula.length === 0){  //Empty is okay
+                    continueFormulaValidation("true");
+                    return false;
+                }
+                formula = formula.toLowerCase();    //To make it easier to search for substrings
+                if (formula.indexOf("and") === -1 && formula.indexOf("or") === -1 && formula.match(/\d+/g).length > 1){
+                    continueFormulaValidation("No logical operators (AND or OR) were found");
+                    return false;
+                }
+                if (formula.indexOf("or") != -1 && formula.indexOf("and") != -1 && formula.indexOf("(") === -1 && formula.indexOf(")") === -1){
+                    continueFormulaValidation("Parentheses are required for grouping OR clauses.");
+                    return false;
+                }
+                if (formula.indexOf("&&") != -1 || formula.indexOf("||") != -1 || formula.indexOf("&") != -1 || formula.indexOf("|") != -1){
+                    continueFormulaValidation("Please use AND and OR as operators instead of other symbols like && and ||.");
+                    return false;
+                }
+
+            //Replace the AND and OR operators with && and ||
+            var re = new RegExp("and", "g");
+            formula = formula.replace(re, "&&");
+            re = new RegExp("or", "g");
+            formula = formula.replace(re, "||");
+            var charArr = formula.split("");
+            var ch;
+            for (var i = 0; i < charArr.length; i++){
+                ch = charArr[i];
+                re = new RegExp("\\s"); //whitespace
+                if ((isNaN(parseFloat(ch)) || !isFinite(ch)) && ch != "(" && ch != ")" && ch != "|" && ch != "&" && ch.search(re) == -1){
+                    continueFormulaValidation("Found unexpected non-numerical character: " + ch);
+                    return false;
+                }
+            }
+
+            //Now replace all the criteria numbers with "true" so that Javascript can evaluate the boolean statement
+            re = new RegExp("\\d+", "g");
+            formula = formula.replace(re, "true")
+
+            try {
+                eval("var bool = (" + formula + ");");
+            } catch (e) {
+                continueFormulaValidation("Found a syntax error in logical expression. (Check that each parenthese is closed).");
+                return false;
+            }
+
+            //At this point, we know the formula is logically sound. The criteria-centric validation will be done in Apex
+            continueFormulaValidation("true");
+            return false;
+        }
+
+        // Store the criteria "values" in their respective hidden inputs.
+        function tempSaveCriteria() {
+            var criteriaValueInputs = document.querySelectorAll("input[id*='itValue']");
+            for(var i = 0; i < criteriaValueInputs.length; i++) {
+                var valueString = "";
+                var cvi = criteriaValueInputs[i];
+                var isPicklist = cvi.getAttribute('isPicklistField') === 'true';
+                if(isPicklist) {
+                    var pill = cvi.previousElementSibling;
+                    if(!pill) {
+                        valueString += encodeURIComponent(cvi.value);   
+                    }
+                    else {
+                        while(pill) {
+                            var pillValue = encodeURIComponent(pill.querySelector('.slds-pill__label').innerText);
+                            if(valueString === "") {
+                                valueString += pillValue;
+                            }
+                            else {
+                                valueString += ";" + pillValue;
+                            }
+                            pill = pill.previousElementSibling;
+                        }                       
+                    }
+                    valueString = valueString.split(';').reverse().join(';');
+                }
+                else {
+                    valueString += cvi.value;
+                }
+                cvi.parentElement.previousElementSibling.value = valueString;
+            }
+        }
+
+        function selectText(element) {
+            if (document.selection){
+                var range = document.body.createTextRange();
+                range.moveToElementText(element);
+                range.select();
+            } else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNode(element);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+        }
+
+        /** Apex Status Handlers **/
+        function handleMergeButtonClicked(event) {
+            PAGE_ALERT.hideAlert();
+            mergeCases();
+        }
+
+        function handleCriteriaStatusOnStart() {
+            document.getElementsByClassName('criteriaBackdrop')[0].style.height = document.getElementById('criteriaTable').offsetHeight + "px";
+            ACTION_OVERLAYS.setEnableTabsForDiv(false,'criteriaTable');
+        }
+
+        function handleFindStatusOnStart() {
+            document.getElementsByClassName('findBackdrop')[0].style.height = document.getElementById('{!$Component.pgForm.opResults}').offsetHeight + "px";
+            ACTION_OVERLAYS.setEnableTabsForDiv(false,'{!$Component.pgForm.opResults}');         
+        }
+
+        function handleFindStatusOnStop() {
+            ACTION_OVERLAYS.setEnableTabsForDiv(true,'{!$Component.pgForm.opResults}');
+            showTooManyCasesWarningTextIfNeeded();
+        }
+
+        /** Button Clicked Handlers **/
+        function handleClickFind(critFormulaId) {
+            tempSaveCriteria();
+            validateFormula(critFormulaId);
+            showCriteriaOverlay();
+        }
+
+        /** Checkbox Handler **/
+        // Once the mouse has left the checkbox for the first time after a click, the gray 'X' can appear.
+        function handleShowCheckboxCloseGraphic(event, checkboxElementId) {
+            if(document.getElementById('{!$Component.pgForm.findStatus}.start').style.display !== 'none') {
+                return;
+            }
+            var checkboxElement = document.getElementById(checkboxElementId);
+            if(checkboxElement.checked) {
+                if(event.type === 'mouseout' || event.type === 'mouseover') {
+                   checkboxElement.parentElement.classList.add('addButtonCheckboxCanShowCloseGraphic'); 
+                }   
+            }
+            else {
+                checkboxElement.parentElement.classList.remove('addButtonCheckboxCanShowCloseGraphic');
+            }
+        }
+
+        /** Action Function Handlers **/
+        function handleFormulaValidationOnComplete() {
+            var alertShowing = PAGE_ALERT.showing;
+            var alertIsError = PAGE_ALERT.themeIs(PAGE_ALERT.THEMES.ERROR);
+            if({!SET_DUPE_CRIT} && clickedSaveAndReturn) {
+                if(!alertIsError) {
+                    //window.history.back();
+                    return;
+                }
+                clickedSaveAndReturn = false;
+            }
+            document.getElementById("findButton").disabled = false;
+            var findResultsTable = document.getElementById("resultsTable");
+            if(findResultsTable && ((alertShowing && !alertIsError) || !alertShowing)) {
+                //findResultsTable = findResultsTable.querySelector('thead');
+                findResultsTable.parentElement.scrollIntoView({
+                    behavior: 'smooth'
+                });         
+            }
+            else if(alertShowing && alertIsError) {
+                PAGE_ALERT.getElement().scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+
+            hideCriteriaOverlay();
+        }
+
+        function clearValue(valueInputId, hiddenValueInputId) {
+            var valueInput = document.getElementById(valueInputId);
+            var hiddenValueInput = document.getElementById(hiddenValueInputId);
+            valueInput.value = '';
+            hiddenValueInput.value = '';
+            var pill = valueInput.previousElementSibling;
+            while(pill) {
+                removePicklistPill(pill);
+                pill = valueInput.previousElementSibling;
+            }
+        }
+
+        if({!SET_DUPE_CRIT}) {
+            sforce.console.setTabTitle('Configure Duplicate Criteria - Case Merge Premium');
+            NAVIGATION_TABS.setupArrowKeyListeners(null,['assistance-tabs']);
+        }
+        else {
+            sforce.console.setTabTitle('Find Duplicates - Case Merge Premium');
+            NAVIGATION_TABS.setupArrowKeyListeners(null);
+        }
+    </script>
+
+    <!-- Javascript for input assistance -->
+    <script type="application/javascript">
+        /** Assistance Search **/
+        function assistanceSearch() {
+            setAssistanceSearchButtonsEnabled(false);
+            hideAssistanceSearchResults();
+            // Clear Case results after animation ends.
+            setTimeout(lookupCaseReferences,100);
+        }
+
+        function clearAssistanceSearchResultsTable() {
+            setAssistanceSearchButtonsEnabled(false);
+            hideAssistanceSearchResults();
+            // Clear Case results after animation ends.
+            setTimeout(deleteCaseResults,100);
+        }
+
+        function showAssistanceSearchResults() {
+            document.getElementById('{!$Component.pgForm.assistanceSearchResultsTable}').classList.add('assistanceSearchResultsTableExpanded');
+        }
+
+        function hideAssistanceSearchResults() {
+            document.getElementById('{!$Component.pgForm.assistanceSearchResultsTable}').classList.remove('assistanceSearchResultsTableExpanded');
+        }
+
+        function setAssistanceSearchButtonsEnabled(enabled) {
+            var buttons = document.getElementById('assistance-tabs').querySelectorAll('.slds-button');
+            for(var i = 0; i < buttons.length; i++) {
+                if(enabled) {
+                    buttons[i].removeAttribute('disabled');
+                }
+                else {
+                    buttons[i].setAttribute('disabled','disabled');
+                }
+            }
+            document.getElementById('{!$Component.pgForm.assistanceSearchButton}').parentElement.parentElement.focus();
+        }
+    </script>
+
+    <!-- Javascript for criteria autocomplete -->
+    <script type="application/javascript">
+        // set the criteria "value" inputs to be their respective hidden inputs
+        function setCriteria() {
+            var hiddenValues = document.querySelectorAll("input[id*='h_cr_inputValue']");
+            for(var i = 0; i < hiddenValues.length; i++) {
+                var hiddenValueField = hiddenValues[i];
+                if(hiddenValueField.value) {
+                    var inputField = hiddenValueField.nextElementSibling.querySelector("input[id*='itValue']");
+                    var isPicklist = inputField.getAttribute('isPicklistField') === 'true';
+                    if(isPicklist) {
+                        var values = hiddenValueField.value.split(';');
+                        for(var j = 0; j < values.length; j++) {
+                            addPicklistPill(inputField,decodeURIComponent(values[j]));
+                        }
+                    }
+                    else {
+                       inputField.value = hiddenValueField.value;
+                   }       
+               }
+           }
+        }
+        setCriteria();
+        /** Criteria Table **/
+        function handleCriteriaFieldSelectOnChange(critFieldId, critValueId) {
+            toggleCriteriaValueInputDisabled(critValueId);
+            document.getElementById(critFieldId).disabled = true;
+            tempSaveCriteria();
+        }
+
+        function handleCriteriaFieldSelectCompleteOnChange(critFieldId) {
+            document.getElementById(critFieldId).disabled = false;
+            setCriteria();
+            document.getElementById(critFieldId).focus();
+        }
+
+        /** Critera Value Input Listeners **/
+        function handleCriteriaValueInputOnInput(inputElement) {
+            clearTimeout(onInputTimeout);
+            onInputTimeout = setTimeout(function() {
+                criteriaValueAutocomplete(inputElement);
+            },100);
+        }
+
+        // Show the autoomplete list (if applicable).
+        function handleCriteriaValueInputOnFocus(inputElement) {
+            var listbox = document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('.slds-listbox');
+            if((criteriaValueIsPicklist(inputElement) || criteriaValueIsReference(inputElement)) && (!inList || listbox.style.display === 'none')) {
+                criteriaValueAutocomplete(inputElement);
+            }
+        }
+
+        // Hide the autocomplete list. If the blur was cause by clicking a list item (Picklist only), give focus to the input element. 
+        function handleCriteriaValueInputOnBlur(event, inputElement) {
+            if(inList && document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('.slds-listbox').style.display !== "none") {
+                event.preventDefault();
+                setTimeout(function() {inputElement.focus();}, 1);
+            }
+            else {
+                document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('.slds-listbox').style.display="none";
+            }
+        }
+
+        // Enter key will create a pill
+        function handleCriteriaValueInputOnKeyUp(event,inputElement) {
+            var isPicklist = criteriaValueIsPicklist(inputElement)
+            if(event.keyCode == enterKeyCode && isPicklist) {
+                var value = inputElement.value.trim();
+                if(value !== '' && value !== null) {
+                    addPicklistPillAndRefresh(inputElement,value);
+                }
+            }
+        }
+
+        // Backspace deletes the nearest pill if the input is empty.
+        // Arrow Keys can traverse autocomplete list
+        // Esc Key hides autocomplete
+        // Enter Key selects the highlighted option
+        function handleCriteriaValueInputOnKeyDown(event,inputElement) {
+            var isPicklist = criteriaValueIsPicklist(inputElement)
+            var isReference = criteriaValueIsReference(inputElement)
+            // Delete nearest pill on backspace if there is nothing in the input field.
+            if(event.keyCode === backspaceCode && inputElement.value.length == 0 && isPicklist) {
+                var nearestPill = inputElement.previousElementSibling;
+                if(nearestPill) {
+                    removePicklistPill(nearestPill);
+                    criteriaValueAutocomplete(inputElement);
+                }
+            }
+            // Autocomplete list traversal.
+            else if(event.keyCode === upArrowCode || event.keyCode === downArrowCode) {
+                var listboxDiv = document.getElementById(inputElement.getAttribute('aria-controls'));
+                if(listboxDiv) {
+                    var list = listboxDiv.querySelector('ul.slds-listbox');
+                    if(list) {
+                        var highlightedOption = list.querySelector('.slds-listbox__option.slds-has-focus');
+                        if(highlightedOption) {
+                            highlightedOption = highlightedOption.parentElement;
+                            if(event.keyCode === upArrowCode) {
+                                var newHighlightedOption = highlightedOption.previousElementSibling;
+                                if(newHighlightedOption === null) {
+                                    newHighlightedOption = highlightedOption;
+                                    while(newHighlightedOption.nextSibling !== null) {
+                                        newHighlightedOption = newHighlightedOption.nextSibling;
+                                    }
+                                }                   
+                                highlightedOption.querySelector('.slds-listbox__option').classList.remove('slds-has-focus');
+                                newHighlightedOption.querySelector('.slds-listbox__option').classList.add('slds-has-focus');
+                            }
+                            else if(event.keyCode == downArrowCode) {
+                                var newHighlightedOption = highlightedOption.nextSibling;
+                                // Nothing left, loop back to the top.
+                                if(newHighlightedOption === null) {
+                                    newHighlightedOption = highlightedOption;
+                                    while(newHighlightedOption.previousElementSibling !== null) {
+                                        newHighlightedOption = newHighlightedOption.previousElementSibling;
+                                    }
+                                }
+                                highlightedOption.querySelector('.slds-listbox__option').classList.remove('slds-has-focus');
+                                newHighlightedOption.querySelector('.slds-listbox__option').classList.add('slds-has-focus');
+                            }
+
+                            var offsetDifference = highlightedOption.offsetTop - newHighlightedOption.offsetTop;
+                            if(offsetDifference > 0) {
+                                // NOTE: If SLDS changes how the slds-listbox appears this value will need to be changed.
+                                var upMoveOffset = 4; 
+                                if(newHighlightedOption.nextElementSibling === null) { // moved down at last option, jump to the top
+                                    list.scrollTop = 0;
+                                }
+                                else if(newHighlightedOption.offsetTop < list.scrollTop) { // moved up
+                                    list.scrollTop = newHighlightedOption.offsetTop - upMoveOffset;
+                                }
+                            }
+                            else if(offsetDifference < 0) {
+                                // NOTE: If SLDS changes how the slds-listbox appears these three values will need to be changed.
+                                var listPadding = 10;
+                                var downMoveOffset = 6;
+                                
+                                if(newHighlightedOption.previousElementSibling === null) { // moved up at first option, jump to the bottom
+                                    list.scrollTop = list.scrollHeight;
+                                }
+                                else if(newHighlightedOption.offsetTop  + newHighlightedOption.getBoundingClientRect().height - list.scrollTop >= list.getBoundingClientRect().height - listPadding) { // moved down
+                                    list.scrollTop = (newHighlightedOption.offsetTop - (list.getBoundingClientRect().height - downMoveOffset) + newHighlightedOption.getBoundingClientRect().height);
+                                }
+                            }
+                        }
+                        else {
+                            if(list.children.length > 0) {
+                                if(event.keyCode === upArrowCode) {
+                                    list.children[list.children.length - 1].querySelector('.slds-listbox__option').classList.add('slds-has-focus');
+                                    list.scrollTop = list.scrollHeight;
+                                }
+                                else if(event.keyCode == downArrowCode) {
+                                    list.children[0].querySelector('.slds-listbox__option').classList.add('slds-has-focus');
+                                    list.scrollTop = 0;
+                                }           
+                            }
+
+                        }
+
+                    }
+                }
+            }
+            // Autocomplete select
+            else if(event.keyCode === enterKeyCode) {
+                event.preventDefault();
+                var listboxDiv = document.getElementById(inputElement.getAttribute('aria-controls'));
+                if(listboxDiv) {
+                    var list = listboxDiv.querySelector('ul.slds-listbox');
+                    if(list) { 
+                        var highlightedOption = list.querySelector('.slds-listbox__option.slds-has-focus');
+                        if(highlightedOption) {
+                            var value = highlightedOption.querySelector('.slds-listbox__option-text').innerText;
+                            if(isPicklist) {
+                                addPicklistPillAndRefresh(inputElement,value);
+                            }
+                            else if (isReference) {
+                                inputElement.value = value;
+                                var listbox = document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('ul.slds-listbox');
+                                listbox.style.display = 'none';
+                            }   
+                        }
+                    }
+                }
+            }
+            // Hide Autocomplete
+            else if(event.keyCode === escKeyCode) {
+                var listboxDiv = document.getElementById(inputElement.getAttribute('aria-controls'));
+                if(listboxDiv) {
+                    var list = listboxDiv.querySelector('ul.slds-listbox');
+                    if(list) {
+                        list.style.display = 'none';
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /** Criteria Value Autocomplete **/
+        function criteriaValueAutocomplete(inputElement) {
+            var field = inputElement.getAttribute('criteriaField');
+            var isPicklist = criteriaValueIsPicklist(inputElement);
+            var isReference = criteriaValueIsReference(inputElement);
+            var searchTerm = inputElement.value.trim();
+            if((!isPicklist && !isReference) || field === null) return;
+            else if(isPicklist) {
+                csmrgp.CsMrgFindCtrl.getCriteriaPicklistValues('Case',field, function(picklistValues) {
+                    var values = [];
+                    for(var i = 0; i < picklistValues.length; i++) {
+                        if(picklistValues[i].toLowerCase().trim().search(searchTerm.toLowerCase()) !== -1) {
+                            values.push(unescapeXMLEntities(picklistValues[i]));
+                        }
+                    }
+                    updateAutocomplete(inputElement,values,true);
+                });
+            }
+            else {
+                csmrgp.CsMrgFindCtrl.getReferenceAutocompleteValues(field,searchTerm, function(referenceValues) {
+                    var values = [];
+                    if(referenceValues) {
+                        for(var i = 0; i < referenceValues.length; i++) {
+                            values.push(unescapeXMLEntities(referenceValues[i]));
+                        }
+                    }
+                    updateAutocomplete(inputElement,values,false);
+                }); 
+            }
+        }
+
+        function updateAutocomplete(inputElement,results,usesPills) {
+            var listbox = document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('.slds-listbox');
+            emptyListbox(listbox);
+            if(results !== null && results.length > 0) {
+                for(var i = 0; i < results.length; i++) {
+                    var result = results[i];
+                    var item;
+                    if(usesPills) {
+                        if(!pillsHaveValue(inputElement,result)) {
+                            item = createAutocompleteItem(result,listbox);
+                            (function(value) {item.onclick = function(e) {
+                                e.stopImmediatePropagation();
+                                addPicklistPillAndRefresh(inputElement,value);
+                            }})(result);
+                        }
+                    }
+                    else {
+                        item = createAutocompleteItem(result,listbox);
+                        (function(value) {item.onclick = function(e) {
+                                inputElement.value = value;
+                                listbox.style.display = "none";
+                            }})(result);
+                    }
+
+                    if(item) {
+                       listbox.appendChild(item);  
+                    }
+                    
+                }
+            }
+            listbox.style.display = listbox.hasChildNodes() ? "block" : "none";
+            inList = listbox.style.display === "none";
+        }
+
+        function createAutocompleteItem(text,list) {
+            var item = document.createElement('li');
+            var spanOutter = document.createElement('span');
+            var mediaBody = document.createElement('span');
+            var textNode = document.createElement('span');
+
+            item.setAttribute('role','presentation');
+            item.className= 'slds-listbox__item';
+
+            spanOutter.className = 'slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta autocomplete';
+            spanOutter.setAttribute('role','option');
+
+            mediaBody.className = 'slds-media__body';
+
+            textNode.className = 'slds-listbox__option-text slds-listbox__option-text_entity';
+            textNode.appendChild(document.createTextNode(text));
+
+            mediaBody.appendChild(textNode);
+            spanOutter.appendChild(mediaBody);
+            item.appendChild(spanOutter);
+
+            item.onmouseover = function(e) {
+                var focusedItems = list.querySelectorAll('.slds-has-focus');
+                for(var i = 0; i < focusedItems.length; i++) {
+                    focusedItems[i].classList.remove('slds-has-focus')
+                }
+                spanOutter.classList.add('slds-has-focus');
+            }
+            item.onmouseout = function(e) {spanOutter.classList.remove('slds-has-focus');}
+
+            return item;
+        }
+
+        function emptyListbox(listbox) {
+            // empty the listbox
+            while(listbox.firstChild) {
+                var child = listbox.firstChild;
+                listbox.removeChild(child);
+            }
+        }
+
+        /** Pillification **/
+        function addPicklistPill(inputElement,value) {
+            if(!pillsHaveValue(inputElement,value)) {
+                var span = document.createElement('SPAN');
+                span.className = 'slds-pill';
+
+                var innerSpan = document.createElement('SPAN');
+                innerSpan.className = 'slds-pill__label';
+                innerSpan.title = value;
+                innerSpan.innerHTML = value;
+
+                var closeButton  = document.createElement("BUTTON");
+                closeButton.className = "slds-button slds-button_icon slds-button_icon slds-pill__remove";
+                closeButton.title = "Remove";
+
+                var closeImg = document.createElement("IMG");
+                closeImg.className ="slds-button__icon"; 
+                closeImg.src = "{!URLFOR($Asset.SLDS,'/assets/icons/utility/close_60.png')}";
+
+                closeButton.appendChild(closeImg);
+                closeButton.onclick = function(e) {removePicklistPill(span);};
+                span.appendChild(innerSpan);
+                span.appendChild(closeButton);
+                inputElement.classList.add('sldsc-input-with-pill');
+                inputElement.parentElement.classList.add('containerHasPills');
+                inputElement.parentElement.insertBefore(span,inputElement);
+                inputElement.parentElement.scrollLeft = inputElement.parentElement.scrollWidth;
+            }
+
+            inputElement.value='';
+        }
+
+        function addPicklistPillAndRefresh(inputElement, value) {
+            addPicklistPill(inputElement,value);
+            criteriaValueAutocomplete(inputElement);
+        }
+
+        function removePicklistPill(pill) {
+            var pillContainer = pill.parentElement;
+            // This pill is the last one (other child is the input)
+            if(pillContainer.children.length <= 2) {
+                pillContainer.querySelector("[id$='itValue']").classList.remove('sldsc-input-with-pill');
+                pillContainer.classList.remove('containerHasPills');
+            }
+            pillContainer.removeChild(pill);
+        }
+
+        function pillsHaveValue(inputElement, value) {
+            var pill = inputElement.previousElementSibling;
+            while(pill !== null) {
+                if(pill.querySelector('.slds-pill__label').innerText.toLowerCase() === value.toLowerCase()) {
+                    return true;
+                }
+                pill = pill.previousElementSibling;
+            }
+            return false;
+        }
+
+        function criteriaValueIsPicklist(inputElement) {
+            return inputElement.getAttribute('isPicklistField') === 'true';
+        }
+
+        function criteriaValueIsReference(inputElement) {
+            return inputElement.getAttribute('isReferenceField') === 'true';
+        }
+    </script>
+
+    <!-- Javascript for search by text -->
+    <script type="application/javascript">
+        /** Search by Text **/
+        function handleSearchByTextOnFocus(event,inputElement) {
+            if(inputElement.value.length > 0) {
+                clearTimeout(onInputTimeout);
+                onInputTimeout = setTimeout(function() {
+                    searchByText();
+                }, 500);   
+            }
+            else {
+                document.getElementById('searchByTerm-list').querySelector('ul').style.display = 'none';
+            }      
+        }
+
+        function handleSearchByTextOnBlur(event,inputElement) {
+            if(!inList) {
+                document.getElementById(inputElement.getAttribute('aria-controls')).querySelector('.slds-listbox').style.display="none";
+            }
+        }
+
+        function handleSearchByTextOnInput(event,inputElement) {
+            if(inputElement.value.length > 0) {
+                clearTimeout(onInputTimeout);
+                onInputTimeout = setTimeout(function() {
+                    searchByText();
+                }, 500);   
+            }
+            else {
+                document.getElementById('searchByTerm-list').querySelector('ul').style.display = 'none';
+            }        
+        }
+
+        // Arrow Keys can traverse autocomplete list
+        // Esc Key hides autocomplete
+        // Enter Key selects the highlighted option
+        function handleSearchByTextOnKeyDown(event, inputElement) {
+            var listbox = document.getElementById('searchByTerm-list').querySelector('.slds-listbox');
+            if(event.keyCode === upArrowCode || event.keyCode === downArrowCode || event.keyCode === enterKeyCode) {
+                var focusedOption = listbox.querySelector('.slds-has-focus');
+                if(event.keyCode === upArrowCode || event.keyCode === downArrowCode) {
+                    var nextOption;
+                    if(focusedOption) {
+                        nextOption = event.keyCode === upArrowCode ? focusedOption.parentElement.previousElementSibling : focusedOption.parentElement.nextElementSibling;
+                        focusedOption.classList.remove('slds-has-focus');
+                    }
+                    if(nextOption && focusedOption) {
+                        var offsetDifference = focusedOption.offsetTop - nextOption.offsetTop;
+                        var upMoveOffset = 4;
+                        var listPadding = 10;
+                        var downMoveOffset = 6;
+
+                        if(nextOption.offsetTop < listbox.scrollTop) { // moved up
+                            listbox.scrollTop = nextOption.offsetTop - upMoveOffset;
+                        }
+                        else if(offsetDifference < 0 && nextOption.offsetTop  + nextOption.getBoundingClientRect().height - listbox.scrollTop >= listbox.getBoundingClientRect().height - listPadding) {
+                            listbox.scrollTop = (nextOption.offsetTop - (listbox.getBoundingClientRect().height - downMoveOffset) + nextOption.getBoundingClientRect().height);
+                        }
+                    }
+                    else {
+                        nextOption = event.keyCode === upArrowCode ? listbox.lastElementChild : listbox.firstElementChild;
+                        listbox.scrollTop = event.keyCode === upArrowCode ? listbox.scrollHeight : 0;
+                    }
+                    nextOption.querySelector('.slds-listbox__option').classList.add('slds-has-focus');
+                }
+                else {
+                    // Enter
+                    if(focusedOption) {
+                        addCaseFromSearchByText(focusedOption.parentElement.getAttribute('caseId'));    
+                    }
+                }
+            }
+            else if(event.keyCode === escKeyCode) {
+                listbox.style.display = 'none';
+            }
+        }
+
+        function handleSearchByTextResultItemOnClick(event, caseId) {
+            addCaseFromSearchByText(caseId);
+        }
+
+        function addCaseFromSearchByText(caseId) {
+            var caseLookupInputElement = document.getElementById('{!$Component.pgForm.caseLookupInput}');
+            caseLookupInputElement.value = '';
+            document.getElementById(caseLookupInputElement.getAttribute('aria-controls')).querySelector('.slds-listbox').style.display="none";
+            addCaseToResults(caseId);
+        }
+    </script>
+
+    <!-- Javascript for the page alert. Rerender every time a page alert can show so the animation works properly. -->
+    <apex:outputPanel id="pageAlertShowJS">
+        <script type="text/javascript">
+            function handleAlert() {
+                var alertMessage = unescapeXMLEntities('{!JSENCODE(alertMessage)}');
+                var alertType = '{!JSENCODE(alertType)}';
+                var latestPageMessage = unescapeXMLEntities('{!JSENCODE(latestPageMessage)}');
+                if(alertMessage === null || alertMessage === '') {
+                    if(latestPageMessage === null || latestPageMessage === '') {
+                        PAGE_ALERT.hideAlert();
+                        return; // do not show.
+                    }
+                    else {
+                        alertMessage = latestPageMessage;
+                        alertType = '{!JSENCODE(latestPageMessageType)}';
+                    }
+                }
+
+                switch(alertType) {
+                    case 'error':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.ERROR);
+                        break;
+                    case 'success':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.SUCCESS);
+                        break;
+                    case 'warning':
+                        PAGE_ALERT.setTheme(PAGE_ALERT.THEMES.WARNING);
+                        break;
+                    default:
+                        //console.error('Invalid alert type "' + alertType + '". Valid types are "error","success"," & "warning".');
+                        PAGE_ALERT.hideAlert(); // Invalid Type.
+                        return;
+                }
+                PAGE_ALERT.setMessages([alertMessage]);
+                if(alertType === 'success' && clickedSaveAndReturn) {
+                    PAGE_ALERT.hideAlert();
+                }
+                else {
+                    PAGE_ALERT.showAlert();
+                }
+            }
+            handleAlert();
+        </script>
+    </apex:outputPanel>
+</apex:page>

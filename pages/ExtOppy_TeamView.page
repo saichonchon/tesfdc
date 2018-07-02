@@ -1,0 +1,1277 @@
+<apex:page showHeader="false" sidebar="false">
+<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.10.2.min.js')}"></script><script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.10.4.custom.min.js')}"></script>
+<style type="text/css">
+    table tr td span, .table1-foot div span{
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/teamviewIcon.png')}) no-repeat;
+    }
+    .projected-Projection{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -5px -19px;
+    }
+    .projected-Below{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -61px -19px;
+    }
+    .projected-Above{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -94px -19px;
+    }
+    .projected-Won{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -130px -19px;
+    }
+    .projected-onHold{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -164px -19px;
+    }
+    .progress-Gray{
+        width:10px;
+        height:10px;
+        display: inline-block;
+        background-position: -47px -62px;
+    }
+    .progress-Green{
+        width:10px;
+        height:10px;
+        display: inline-block;
+        background-position: -5px -62px;
+    }
+    .progress-Yellow{
+        width:10px;
+        height:10px;
+        display: inline-block;
+        background-position: -34px -62px;
+    }
+    .progress-Red{
+        width:10px;
+        height:10px;
+        display: inline-block;
+        background-position: -19px -62px;
+    }
+    .size-1{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -61px -49px;
+    }
+    /* .size-2{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -98px -49px;
+    } */
+    .size-2{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -134px -49px;
+    }
+    .size-3{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -169px -49px;
+    }
+    .health-Green{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -5px -81px;
+    }
+    .health-Yellow{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -61px -81px;
+    }
+    .health-Red{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -98px -81px;
+    }
+    .mix-Green{
+        width:22px;
+        height:22px;
+        margin: 3px auto;
+        display: inline-block;
+        background-position: -134px -81px !important;
+    }
+    .mix-RedMore{
+        width:22px;
+        height:22px;
+        margin: 3px auto;
+        display: inline-block;
+        background-position: -169px -81px !important;
+    }
+    .mix-Red{
+        width:22px;
+        height:22px;
+        margin: 3px auto;
+        display: inline-block;
+        background-position: -201px -81px !important;
+    }
+    .title-Arrow{
+        width:20px;
+        height:12px;
+        float: left;
+        margin: 25px 5px;
+        display:inline-block;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/teamviewIcon.png')}) no-repeat;
+        background-position: -205px -52px;
+    }
+    
+    #popup-back{
+        opacity: 0.6;
+        filter:alpha(opacity=60);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        background-color: #000;
+        border: none;
+        width:100%;
+        height:100%;
+        display:none;
+    }
+    
+    .popup-Add{
+        width:531px;
+        height:492px;
+        position: absolute;
+        left: 33%;
+        top: 26%;
+        z-index: 666;
+        border-radius: 4px;
+        box-shadow: 0px 0px 60px #afafaf;
+        background:#ffffff;
+        display:none;
+    }
+    .popup-title{
+        width:100%;
+        height:41px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006a82', endColorstr='#005467',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006a82, #005467);
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .popup-title span{
+        display:inline-block;
+        color:#ffffff;
+        line-height:41px;
+        padding-left:14px;
+    }
+    .popup-content{
+        margin: 0px 23px;
+    }
+    .popup-content-title{
+        border-bottom: 1px solid #000000;
+        padding: 8px 0px;
+        margin: 15px 0px;
+        font-size: 16px;
+        clear: both;
+    }
+    .popup-content-partDiv{
+        margin-bottom:21px;
+    }
+    .popup-successIcon{
+        width:24px;
+        height:25px;
+        display:inline-block;
+        line-height:29px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+        background-position: -266px 0px;
+    }
+    .popup-buttonGray{
+        height:28px;
+        border:1px solid #cfcfcf;
+        padding: 0px 12px;
+        border-radius: 6px;
+        line-height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fefefe, #d9d9d9);
+    }
+    .popup-buttonYellow{
+        height:28px;
+        border:1px solid #da8d00;
+        padding: 0px 12px;
+        border-radius: 6px;
+        line-height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        color:#ffffff;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9b30f', endColorstr='#ef8f03',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#f9b30f, #ef8f03);
+    }
+    .popup-content-partDiv .popup-buttonGray{
+        width:34px;
+        height:29px;
+        line-height:29px;
+    }
+    .popup-content-partDiv .popup-buttonYellow{
+        margin: 11px 0px 0px 42px;
+    }
+    .popup-button{
+        float:right;
+        margin-top:40px;
+    }
+    
+    .popup-Edit{
+        width:531px;
+        height:531px;
+        position: absolute;
+        left: 33%;
+        top: 26%;
+        z-index: 666;
+        border-radius: 4px;
+        box-shadow: 0px 0px 60px #afafaf;
+        background:#ffffff;
+        display:none;
+    }
+    
+    .popup-Search{
+        width:732px;
+        height:620px;
+        position: absolute;
+        left: 26%;
+        top: 15%;
+        z-index: 777;
+        border-radius: 4px;
+        box-shadow: 0px 0px 60px #afafaf;
+        background:#ffffff;
+        display:none;
+    }
+    .popup-content-left{
+        width:370px;
+        height:130px;
+        float:left;
+        position:relative;
+    }
+    .popup-content-right{
+        width:259px;
+        height:121px;
+        float:right;
+        border-radius: 4px;
+        border:1px solid #cfcfcf;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fefefe, #d9d9d9);
+    }
+    .popup-content-right p{
+        padding: 0px 17px;
+    }
+    .popup-content-left .popup-buttonYellow{
+        right: 0px;
+        bottom: 0px;
+        position: absolute;
+    }
+    .popup-content-partDiv table{
+        width:651px;
+        height:211px;
+        border-collapse: collapse;
+        border:1px solid #cfcfcf;
+        border-radius: 4px;
+        float:right;
+    }
+    .popup-content-partDiv table tbody{
+        border:1px solid #cfcfcf;
+    }
+    .popup-content-partDiv table thead tr{
+        height:32px;
+        border:1px solid #cfcfcf;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 );
+        background: linear-gradient(#fefefe, #d9d9d9);
+    }
+    .popup-content-partDiv table tbody tr{
+        height:35px;
+    }
+    .popup-content-partDiv table td, .popup-content-partDiv table th{
+        padding-left:10px;
+        border-right:1px solid #cfcfcf;
+    }
+    .popup-content-partDiv ul{
+        width:34px;
+        padding:0px;
+        margin:0px;
+        float:left;
+    }
+    .popup-content-partDiv ul li{
+        list-style-type: none;
+        margin:0px;
+        height:35px;
+        line-height:35px;
+        text-align:center;
+    }
+    .popup-content-partDiv ul li div{
+        background:#ffffff;
+        width:23px;
+        height:23px;
+        display: inline-block;
+        margin-top: 5px;
+        border-radius: 4px;
+        border:1px solid #cfcfcf;
+    }
+    .popup-content-partDiv ul li div input{
+        display:none;
+    }
+    .popup-content-partDiv ul li div label{
+        width:13px;
+        height:12px;
+        display:inline-block;
+        margin-top: 6px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+        background-position:-110px -69px;
+    }
+    .ulTitle{
+        height:32px !important;
+        line-height:32px !important;
+        font-weight:bold;
+    }
+    .ulDiv-click{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9b30e', endColorstr='#ef8e03',GradientType=0 ) !important;
+        background: linear-gradient(#f9b30e, #ef8e03) !important;
+        border:1px solid #da8d00 !important;
+    }
+    
+    
+    
+    
+    
+    #team-view{
+        width:1180px;
+        height:auto;
+        padding:0px 50px;
+        margin:0px auto;
+    }
+    .top{
+        height:35px;
+        margin-top:40px;
+        width:100%;
+    }
+    .top input{
+        width:49px;
+        height:33px;
+        border:1px solid #cfcfcf;
+        border-radius: 6px;
+        margin-right:7px;
+        float:left;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fefefe, #d9d9d9);
+    }
+    .top select{
+        height:33px;
+        width:207px;
+        border-radius: 6px;
+        border:1px solid #cfcfcf;
+    }
+    .title{
+        margin-top:14px;
+        height:64px;
+        width:100%;
+        border-radius: 6px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fab70f', endColorstr='#f49d02',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fab70f, #f49d02);
+        position: relative;
+    }
+    .inputDate{
+        width:109px;
+        height:27px;
+        float:left;
+        margin:18px 2px;
+        background:#c37d00;
+        border-radius: 6px;
+        position: relative;
+    }
+    .inputDate input{
+        width:76px;
+        height:23px;
+        position: absolute;
+        top:0px;
+        left:0px;
+    }
+    .inputDate span{
+        width:19px;
+        height:19px;
+        position: absolute;
+        left: 85px;
+        top: 3px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/teamviewIcon.png')}) no-repeat;
+        background-position:-194px -19px;
+    }
+    .title select{
+        width:174px;
+        height:27px;
+        margin:18px 17px;
+        border-radius: 6px;
+        float:left;
+    }
+    .title-part1, .title-part2{
+        float:left;
+        width:486px;
+        height:64px;
+    }
+    .title-part1{
+        border-right:1px solid #cfcfcf;
+    }
+    .title-dollarDiv{
+        display:inline-block;
+        width:207px;
+        height:64px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f4f4f', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#4f4f4f, #0e0e0e);
+        color:#ffffff;
+        font-size: 31px;
+        font-weight: bold;
+        text-align:center;
+        line-height:64px;
+        position: absolute;
+        right: 0px;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px; 
+    }
+    
+    .table1, .table2{
+        width:1178px;
+        height:451px;
+        margin:8px auto 4px;
+        border:1px solid #cfcfcf;
+        border-radius: 6px;
+        position: relative;
+    }
+    .table1-head, .table2-head{
+        width:100%;
+        height:39px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fefefe, #d9d9d9);
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px; 
+    }
+    .table1-head div, .table2-head div{
+        float: left;
+        border-left: 1px solid #cfcfcf;
+        line-height: 39px;
+        text-align:center;
+    }
+    .table1-head div h1, .table2-head div h1, .table1-foot h1{
+        font-weight: 600;
+    }
+    .table1-head div span, .table2-head div span{
+        color:#919191;
+    }
+    .table1-foot div{
+        float: left;
+        border-left: 1px solid #cfcfcf;
+        line-height: 41px;
+        color:#ffffff;
+        text-align:center;
+    }
+    .table1-foot div:first-child{
+        margin-left:1px;
+        border:0px;
+        text-align: left;
+    }
+    .table1-foot div > span{
+        width:42px;
+        height:28px;
+        border-radius: 6px;
+        background: #ffffff;
+        margin: 7px 0px;
+        display:inline-block;
+    }
+    .table1-head div:first-child, .table2-head div:first-child{
+        border:0px;
+        text-align:left;
+    }
+    .table1-head div:first-child h1, .table2-head div:first-child h1{
+        padding-left:10px;
+    }
+    .table1-contentDiv, .table2-contentDiv{
+        width:100%;
+        height:371px;
+        overflow: auto;
+    }
+    table{
+        border-collapse: collapse;
+        height:auto;
+        width:1161px;
+    }
+    table tr td{
+        padding:0px;
+    }
+    .table1-contentDiv table tr, .table2-contentDiv table tr{
+        height:35px;
+        width:100%;
+    }
+    .table1-contentDiv table tr td{
+        border-left:1px solid #cfcfcf;
+        text-align:right;
+        font-weight:bold;
+    }
+    .table2-contentDiv table tr td{
+        text-align:right;
+        font-weight:bold;
+    }
+    .table1-contentDiv table tr td h1, .table2-contentDiv table tr td h1, .table1-foot div h1{
+        padding-right:15px;
+    }
+    table tr td:first-child{
+        border-left-width:0px;
+        text-align:left;
+    }
+    table tr td:first-child h1{
+        padding: 0px 0px 0px 16px;
+    }
+    
+    .table1-foot div:first-child h1{
+        padding: 20px;
+    }
+    .trColor-click, .trColor-sel{
+        background:#ffe3b0 !important;
+    }
+    .table1-foot, .table2-foot{
+        width:1180px;
+        height:41px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006a82', endColorstr='#005467',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006a82, #005467);
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        position: absolute;
+        left: -1px;
+        bottom: -1px;
+    }
+    .table2-foot{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006a82', endColorstr='#005366',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006a82, #005366);
+    }
+    .table2-foot div{
+        width:295px;
+        height:100%;
+        text-align:center;
+        line-height: 41px;
+        color: #ffffff;
+        font-size: 15px;
+        margin: 0px auto;
+        font-weight:bold;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5af1a', endColorstr='#eb9503',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#f5af1a, #eb9503);
+    }
+    .iconPart{
+        text-align:center !important;
+    }
+</style>
+
+<script type="text/javascript">
+    function popupBackShow(){
+        $("#popup-back").css("display","block");
+    }
+    function popupBackHidden(){
+        $("#popup-back").css("display","none");
+    }
+    $(function(){
+        $("table tbody tr:even").css("background","#f4f4f4");
+        $("table tbody tr").click(function(){
+            $("table tr").removeClass("trColor-click");
+            $(this).addClass("trColor-click");
+        });
+        $("table tbody tr").hover(
+            function(){$(this).addClass("trColor-sel");},
+            function(){$(this).removeClass("trColor-sel");}
+        );
+        $(".popup-content-partDiv ul li div").click(function(){
+            if (!$(this).hasClass("ulDiv-click")) {
+            $(this).addClass("ulDiv-click");
+            } else {
+            $(this).removeClass("ulDiv-click");
+            }
+        });
+        
+        
+        $(".popup-content-partDiv ul div").hover(function(){
+            $(this).css("cursor","pointe");
+        });
+        $(".top input:eq(0)").click(function(){
+            popupBackShow();
+            $(".popup-Add").css("display","block");
+        });
+        $(".top input:eq(1)").click(function(){
+            popupBackShow();
+            $(".popup-Edit").css("display","block");
+        });
+        $(".popup-SearchClick").click(function(){
+            $(".popup-Search").css("display","block");
+        });
+        
+        $(".popup-Add .popup-button .popup-buttonGray").click(function(){
+            $(".popup-Add").css("display","none");
+            popupBackHidden();
+        });
+        $(".popup-Add .popup-button .popup-buttonYellow").click(function(){
+            $(".popup-Add").css("display","none");
+            popupBackHidden();
+        });
+        
+        $(".popup-Edit .popup-button .popup-buttonGray").click(function(){
+            $(".popup-Edit").css("display","none");
+            popupBackHidden();
+        });
+        $(".popup-Edit .popup-button .popup-buttonYellow").click(function(){
+            $(".popup-Edit").css("display","none");
+            popupBackHidden();
+        });
+        
+        $(".popup-Search .popup-button .popup-buttonGray").click(function(){
+            $(".popup-Search").css("display","none");
+            popupBackHidden();
+        });
+        $(".popup-Search .popup-button .popup-buttonYellow").click(function(){
+            $(".popup-Search").css("display","none");
+            popupBackHidden();
+        });
+        
+        
+        
+    })
+</script>
+<apex:form >
+    <div id="popup-back"></div>
+    <div id="team-view">
+        <div class="top">
+            <input type="button" value="New"/>
+            <input type="button" value="Edit"/>
+            <select>
+                <option>Team XYZ-001</option>
+                <option>Team XYZ-002</option>
+                <option>Team XYZ-003</option>
+            </select>
+        </div>
+        <div class="title">
+            <div class="title-part1">
+                <select>
+                    <option>OP Close Date...</option>
+                    <option>OP Close Date2...</option>
+                    <option>OP Close Date3...</option>
+                </select>
+                <div class="inputDate">
+                    <input type="date" />
+                    <span></span>
+                </div>
+                <span class="title-Arrow"></span>
+                <div class="inputDate">
+                    <input type="date" />
+                    <span></span>
+                </div>
+            </div>
+            <div class="title-part2">
+                <select>
+                    <option>OP Close Date...</option>
+                    <option>OP Close Date2...</option>
+                    <option>OP Close Date3...</option>
+                </select>
+                <div class="inputDate">
+                    <input type="date" />
+                    <span></span>
+                </div>
+                <span class="title-Arrow"></span>
+                <div class="inputDate">
+                    <input type="date" />
+                    <span></span>
+                </div>
+            </div>
+            <div class="title-dollarDiv">
+                <span>$13.412.231</span>
+            </div>
+        </div>
+        <div class="table1">
+            <div class="table1-head">
+                <div style="width:250px;"><h1>Name</h1><span>▲▼</span></div>
+                <div style="width:126px;"><h1>Converted</h1><span>▲▼</span></div>
+                <div style="width:126px;"><h1>Won</h1><span>▲▼</span></div>
+                <div style="width:126px;"><h1>Converted+Won</h1><span>▲▼</span></div>
+                <div style="width:126px;"><h1>Pipeline</h1><span>▲▼</span></div>
+                <div style="width:126px;"><h1>Total</h1><span>▲▼</span></div>
+                <div style="width:128px;"><h1>On Hold</h1><span>▲▼</span></div>
+                <div style="width:68px;" class="iconPart"><h1>Mix</h1></div>
+                <div style="width:94px;"><h1>Count</h1><span>▲▼</span></div>
+            </div>
+            <div class="table1-contentDiv">
+                <table>
+                    <tr>
+                        <td style="width:250px;"><h1>Max Mustermann</h1></td>
+                        <td style="width:126px;"><h1>$1.623.123</h1></td>
+                        <td style="width:126px;"><h1>$563.123</h1></td>
+                        <td style="width:126px;"><h1>$2.123.459</h1></td>
+                        <td style="width:126px;"><h1>$432.893</h1></td>
+                        <td style="width:126px;"><h1>$3.293.912</h1></td>
+                        <td style="width:128px;"><h1>$1.293.912</h1></td>
+                        <td style="width:68px;" class="iconPart"><span class="mix-Red"></span></td>
+                        <td style="width:75px;"><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-RedMore"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Red"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-RedMore"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span class="mix-Green"></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Max Mustermann</h1></td>
+                        <td><h1>$1.623.123</h1></td>
+                        <td><h1>$563.123</h1></td>
+                        <td><h1>$2.123.459</h1></td>
+                        <td><h1>$432.893</h1></td>
+                        <td><h1>$3.293.912</h1></td>
+                        <td><h1>$1.293.912</h1></td>
+                        <td class="iconPart"><span><span class="mix-Green"></span></span></td>
+                        <td><h1>10</h1></td>
+                    </tr>
+                    
+                </table>
+            </div>
+            <div class="table1-foot">
+                <div style="width:250px;"><h1>Total sum</h1></div>
+                <div style="width:126px;"><h1>$5.341.198</h1></div>
+                <div style="width:126px;"><h1>$598.346</h1></div>
+                <div style="width:126px;"><h1>$5.341.198</h1></div>
+                <div style="width:126px;"><h1>$598.346</h1></div>
+                <div style="width:126px;"><h1>$50.981.346</h1></div>
+                <div style="width:128px;"><h1>$13.192.019</h1></div>
+                <div style="width:68px;" class="iconPart"><span><span class="mix-Green"></span></span></div>
+                <div style="width:94px;"><h1>143</h1></div>
+            </div>
+        </div>
+        <div class="table2">
+            <div class="table2-head">
+                <div style="width:137px;"><h1>Account</h1><span>▲▼</span></div>
+                <div style="width:137px;"><h1>Name</h1><span>▲▼</span></div>
+                <div style="width:137px;"><h1>Process</h1><span>▲▼</span></div>
+                <div style="width:137px;"><h1>Stage</h1><span>▲▼</span></div>
+                <div style="width:137px;"><h1>Progress</h1></div>
+                <div style="width:127px;"><h1>End Date</h1><span>▲▼</span></div>
+                <div style="width:49px;"><h1>%</h1><span>▲▼</span></div>
+                <div style="width:109px;"><h1>Amount</h1><span>▲▼</span></div>
+                <div style="width:50px;"><h1>Size</h1></div>
+                <div style="width:58px;"><h1>Health</h1></div>
+                <div style="width:90px;"><h1>Projected</h1></div>
+            </div>
+            <div class="table2-contentDiv">
+                <table>
+                    <tr>
+                        <td style="width:137px;"><h1>Accountname</h1></td>
+                        <td style="width:137px;"><h1>Some Name</h1></td>
+                        <td style="width:137px;"><h1>Enterprice</h1></td>
+                        <td style="width:137px;"><h1>Target selected</h1></td>
+                        <td style="width:137px;" class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td style="width:127px;"><h1>2014-08-11</h1></td>
+                        <td style="width:49px;"><h1>14%</h1></td>
+                        <td style="width:109px;"><h1>$3.123.323</h1></td>
+                        <td style="width:50px;" class="iconPart"><span class="size-1"></span></td>
+                        <td style="width:58px;" class="iconPart"><span class="health-Green"></span></td>
+                        <td style="width:71px;" class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr>
+                    <tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-2"></span></td>
+                        <td class="iconPart"><span class="health-Red"></span></td>
+                        <td class="iconPart"><span class="projected-Above"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Won"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Yellow"></span></td>
+                        <td class="iconPart"><span class="projected-Won"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Below"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Won"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Above"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Below"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-3"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-2"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr><tr>
+                        <td><h1>Accountname</h1></td>
+                        <td><h1>Some Name</h1></td>
+                        <td><h1>Enterprice</h1></td>
+                        <td><h1>Target selected</h1></td>
+                        <td class="iconPart">
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Gray"></span>
+                            <span class="progress-Green"></span>
+                            <span class="progress-Yellow"></span>
+                            <span class="progress-Red"></span>
+                        </td>
+                        <td><h1>2014-08-11</h1></td>
+                        <td><h1>14%</h1></td>
+                        <td><h1>$3.123.323</h1></td>
+                        <td class="iconPart"><span class="size-1"></span></td>
+                        <td class="iconPart"><span class="health-Green"></span></td>
+                        <td class="iconPart"><span class="projected-Projection"></span></td>
+                    </tr>
+                    
+                </table>
+            </div>
+            <div class="table2-foot">
+                <div><span>Selected Member: lsbelle lvonov</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="popup-Add">
+        <div class="popup-title"><span>Add New Team</span></div>
+        <div class="popup-content">
+            <div class="popup-content-title"><span>Choose Team Information</span></div>
+            <input type="text"/><br/>
+            <input type="text"/><br/>
+            <input type="text"/><br/>
+            <div class="popup-content-title"><span>Add Team Member</span></div>
+            <div class="popup-content-partDiv">
+                <input type="text"/><span class="popup-successIcon"></span><br/>
+                <input type="button" class="popup-buttonGray" value="+"/><input type="text"/><br/>
+                <input type="button" class="popup-buttonYellow popup-SearchClick" value="Search for User"/>
+            </div>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray" value="Cancel"/>
+                <input type="button" class="popup-buttonYellow" value="Save"/>
+            </div>
+        </div>
+    </div>
+    <div class="popup-Edit">
+        <div class="popup-title">
+            <span>Edit Team: </span>
+            <span>Team XYZ-001</span>
+        </div>
+        <div class="popup-content">
+            <div class="popup-content-title">
+                <span>Edit Team Information</span>
+                <input type="button" class="popup-buttonGray" value="Delete Team"/>
+            </div>
+            <input type="text"/><br/>
+            <input type="text"/><br/>
+            <input type="text"/><br/>
+            <div class="popup-content-title"><span>Add/Remove Team Member</span></div>
+            <div class="popup-content-partDiv">
+                <input type="button" class="popup-buttonGray" style="color:red" value="-"/><input type="text"/><br/>
+                <input type="button" class="popup-buttonGray" style="color:red" value="-"/><input type="text"/><br/>
+                <input type="button" class="popup-buttonGray" value="+"/><input type="text"/><br/>
+                <input type="button" class="popup-buttonYellow popup-SearchClick" value="Search for User"/>
+            </div>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray" value="Cancel"/>
+                <input type="button" class="popup-buttonYellow" value="Save"/>
+            </div>
+        </div>
+    </div>
+    <div class="popup-Search">
+        <div class="popup-title">
+            <span>Search for User</span>
+        </div>
+        <div class="popup-content">
+            <div class="popup-content-title">
+                <span>Search Information</span>
+            </div>
+            <div class="popup-content-left">
+                <input type="text"/><br/>
+                <input type="text"/><br/>
+                <input type="button" class="popup-buttonYellow" value="Search for User"/>
+            </div>
+            <div class="popup-content-right">
+                <p>Please fill in all informations you have about the User you are searching for.</p>
+                <p>After your search all possible candidates are shown below.Selectall User you want to add to your team.</p>
+            </div>
+            <div class="popup-content-title"><span>Search Results</span></div>
+            <div class="popup-content-partDiv">
+                <ul>
+                    <li class="ulTitle">Add</li>
+                    <li>
+                        <div>
+                            <input type="checkbox" name="vehicle" value="Bike1"/> 
+                            <label></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="checkbox" name="vehicle" value="Bike2"/> 
+                            <label></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="checkbox" name="vehicle" value="Bike3"/> 
+                            <label></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="checkbox" name="vehicle" value="Bike4"/> 
+                            <label></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="checkbox" name="vehicle" value="Bike5"/> 
+                            <label></label>
+                        </div>
+                    </li>
+                    
+                </ul>
+                <table>
+                    <thead>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Role</th>
+                        <th>Profile</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Max</td>
+                            <td>Mustermann</td>
+                            <td>Business Analyst</td>
+                            <td>System Administrator</td>
+                        </tr>
+                        <tr>
+                            <td>lsabelle</td>
+                            <td>lvonov</td>
+                            <td>Business Analyst</td>
+                            <td>Standard User</td>
+                        </tr>
+                        <tr>
+                            <td>Stefan</td>
+                            <td>Gerkas</td>
+                            <td>Business Analyst</td>
+                            <td>Standard User</td>
+                        </tr>
+                        <tr>
+                            <td>Sophia</td>
+                            <td>Sonntag</td>
+                            <td>Business Analyst</td>
+                            <td>Standard User</td>
+                        </tr>
+                        <tr>
+                            <td>Andrea</td>
+                            <td>Zange</td>
+                            <td>Business Analyst</td>
+                            <td>Standard User</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray" value="Cancel"/>
+                <input type="button" class="popup-buttonYellow" value="Add seleced User"/>
+            </div>
+        </div>
+    </div>
+</apex:form>
+</apex:page>

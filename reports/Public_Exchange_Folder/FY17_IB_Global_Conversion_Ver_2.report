@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_70810839</developerName>
+        <masterLabel>Sales Channel</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities$Owner.Profile</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Channel Standard User</sourceValue>
+            </sourceValues>
+            <value>Channel</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Industrial Engineering User w/Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial User w/ Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay User w/ Cost</sourceValue>
+            </sourceValues>
+            <value>Industrial Direct</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Amount__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND 2 AND 4 AND (3 OR 5))</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Snapshot_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Monthly,FY17 Final</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$BU_profit_center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>IB</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Customer_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>Japan,China,EMEA,America,India,Rest of APAC</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Count_Conversion__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$BillingCountry</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>KR,AUS,NZ</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalWeek</dateGranularity>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>FY17 IB Global Conversion Ver.2</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_snapshot__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</dateColumn>
+        <endDate>2017-10-02</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2016-10-01</startDate>
+    </timeFrameFilter>
+</Report>

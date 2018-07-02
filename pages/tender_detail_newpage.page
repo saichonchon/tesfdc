@@ -1,0 +1,48 @@
+<apex:page standardController="Tender__c" extensions="Tenderdetailpickedlist" sidebar="false" showHeader="false"> 
+    <style type="text/css">
+        table.bottomBorder { border-collapse:collapse; }
+        table.bottomBorder td, table.bottomBorder th { border-bottom:1px dotted black;padding:2px; }
+    </style> 
+ 
+    <apex:form id="formId">    
+        <apex:pageblock >                                         
+            <apex:pageblockTable value="{!PageTableList}" var="T">
+                <apex:column headerValue="Action">
+                    <apex:outputPanel rendered="{!T.ActionPlan}">
+                       <!-- <apex:commandLink value="Edit" action="{!redirect}" >
+                            <apex:param value="{!T.Detail}" assignTo="{!vTargetId}" name="bindName"/>  
+                        </apex:commandLink>  -->
+                        <apex:commandLink value="Edit" onclick="window.open('/{!T.Detail}/e?retURL=%2F{!T.TendDetail}', '_parent', '')"/>
+                    </apex:outputPanel>                     
+                </apex:column>
+                <apex:column headerValue="Product Line" styleClass="table">       
+                    <apex:outputText value="{!T.ProductLine}"/>
+                </apex:column>                
+                <apex:column headerValue="PAM per Car">
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp; 
+                    <apex:outputtext value="{!T.PAMPC.PAM__c}"/>
+               </apex:column>
+                <apex:column headerValue="TAM per Car"> 
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp;                    
+                    <apex:outputtext value="{!T.TAMPC.TAM__c}"/>
+                </apex:column>     
+                <apex:column headerValue="Total PAM">
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp;       
+                     <apex:outputtext value="{!T.TPAM.Total_PAM__c}"/>
+                </apex:column>     
+                <apex:column headerValue="Total TAM">
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp;       
+                    <apex:outputtext value="{!T.TTAM.Total_TAM__c}"/>
+                </apex:column>
+                <apex:column headerValue="PAM Tender Total ">
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp;       
+                    <apex:outputtext value="{!T.PAMTot.PAM_Total__c}"/>
+                </apex:column> 
+                <apex:column headerValue="TAM Tender Total ">
+                    <apex:outputtext value="{!T.strCurrency}"/>&nbsp;&nbsp;       
+                    <apex:outputtext value="{!T.TAMTot.TAM_Total__c}"/>
+                </apex:column>                 
+           </apex:pageblockTable>
+        </apex:pageblock>        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,70 @@
+<apex:component layout="none">
+	
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	
+	<div class="popup_main" id="popupmain" style="display: none;"></div>
+    <div class="popup_box" id="popupbox" style="top: 10%; display: none;">
+		<div class="popup_box_content">
+			<div>
+			<apex:componentBody >
+				<div class="popup_box_title">
+					<input type="text" id="searchtext" style="height: 20px"/>
+					<input value="Search" id="searchbtn" data-level="0" data-cls="none" style="margin-top: -3px;" class="btn" type="button" />
+				</div>
+				
+				<div class="popup_loading" id="popup_loading" style="display: none;"> </div>
+				
+				<div class="popup_box_box">
+					<div class="popup_box_box_title" id="boxheadid">
+						<table class="table_fix pupup_tab" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+								<tr id="popuphead">
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="popup_box_box_content" id="boxbodyid">
+						<table class="table_fix pupup_tab" border="0" cellspacing="0" cellpadding="0">
+							<tbody id="popupbody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="popup_box_bottom">
+					<input class="btn" id="addobjectbtn" value="Add" type="button"/>
+					<input class="btn" onclick="event_closePopUP_click(this)" type="button" value="Close" />
+				</div>
+				
+				
+				<table style="display: none;">
+					<tbody>
+						<tr id="level1_tab">
+							<td class="tdborder_br popup_ckboxtd"><input class="lelvel1ck" type="checkbox"/></td>
+							<apex:repeat var="level1" value="{!pageCtrl['list_popupColumnsLevle1']}">
+								<td data-fieldname="{!level1['fieldName']}" class="tdheight tdborder_br popup_td">{!level1['name']}</td>
+							</apex:repeat>
+						</tr>
+						<tr id="level2_tab">
+							<td class="tdborder_br popup_ckboxtd"><input class="lelvel2ck " type="checkbox"/></td>
+							<apex:repeat var="level2" value="{!pageCtrl['list_popupColumnsLevle2']}">
+								<td data-fieldname="{!level2['fieldName']}" class="tdheight tdborder_br popup_td">{!level2['name']}</td>
+							</apex:repeat>
+						</tr>
+						<tr id="level3_tab">
+							<td class="tdborder_br popup_ckboxtd"><input class="lelvel3ck " type="checkbox"/></td>
+							<apex:repeat var="level3" value="{!pageCtrl['list_popupColumnsLevle3']}">
+								<td data-fieldname="{!level3['fieldName']}" class="tdheight tdborder_br popup_td">{!level3['name']}</td>
+							</apex:repeat>
+						</tr>
+					</tbody>
+				</table>
+				
+			</apex:componentBody>
+			</div>
+		</div>
+
+	</div>
+	
+</apex:component>

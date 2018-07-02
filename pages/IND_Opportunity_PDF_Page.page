@@ -1,0 +1,460 @@
+<apex:page standardController="Opportunity" extensions="IND_Opportunity_PDF_Controller" id="thePageGenerate" showHeader="false" sidebar="false" tabStyle="Opportunity" standardStylesheets="false" language="English"  renderAs="PDF" cache="true" contentType="text/html" readOnly="True" >
+  
+
+<apex:stylesheet value="{!$Resource.Opportunity_PDF_V1_CSS_file}" />  
+ <!-- *************************************************** Start of Body of the PDF  **********************************************************************************************************--> 
+   <html>
+     <apex:form id="theformEdited" >
+       <apex:outputPanel >  
+       <h3 Class="OpportunityNameHeader" style="font-color:blue;">
+         <span style="font-color:#FFFFF;"><big><strong>Opportunity Name</strong> : {!Opportunity.Name}</big></span></h3>  
+         
+         <apex:variable value="{!Mainopp}" var="Opp"/>
+         
+         
+         <table border="0" cellpadding="0" cellspacing="0" class="OpportunityNameTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignLeft" style="width: 25%;">
+                <span><strong>Opportunity Numbe</strong>r <strong>:</strong> </span> <span> <span>{!Opp.Opportunity_Number__c}</span></span></td>
+            <td class="textAlignLeft" style="width: 25%;">
+                <span><strong>Owner :</strong> {!oppowner.Name}</span></td>
+            <td class="textAlignLeft" style="width: 25%;">
+                <span><strong>Account Number : </strong></span> <span> <span>{!Opp.Account_Number__c}</span></span></td>
+            <td class="textAlignLeft" style="width: 25%;">
+                <span><strong>Type :</strong> </span> <span> <span>{!Opp.Record_Type_Name__c}</span></span></td>
+        </tr>
+        <tr>
+            <td class="textAlignLeft" colspan="2">
+                <span><strong>Account :&nbsp;</strong><span><span>{!oppacc.Name}</span></span></span></td>
+            <td class="textAlignLeft">
+                <span><strong>Stage :</strong> </span>{!Opp.StageName}</td>
+            <td class="textAlignLeft">
+                <strong>Created Date :&nbsp;</strong> <apex:outputField value="{!Opp.CreatedDate}"/> </td>
+            <td class="textAlignLeft">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="textAlignLeft">
+                <strong>Focus Opportunity :&nbsp;</strong>{!if(Opp.Focus_Opportunity__c==true,'Yes','No')}</td>
+            <td class="textAlignLeft">
+                <strong>Growth Opportunity :</strong>&nbsp;{!if(Opp.Growth_Opportunity__c==true,'Yes','No')}</td>
+            <td class="textAlignLeft">
+                <strong>Buyer Cycle :&nbsp;</strong><apex:outputField value="{!Opp.Buying_Cycle__c}"/> </td>
+            <td class="textAlignLeft">
+                <strong>Close Date :&nbsp;</strong> <apex:outputField value="{!Opp.CloseDate}"/></td>
+        </tr>
+        <tr>
+            <td class="textAlignLeft">
+                <strong><span>Ability to win :&nbsp;</span></strong><span><span><span><span>{!Opp.Summary_Ability__c}</span></span>%</span></span></td>
+            <td class="textAlignLeft">
+                <span><strong>Attractiveness : </strong><span>{!Opp.Summary_Attractiveness__c}%</span></span> <span> </span></td>
+            <td class="textAlignLeft">
+                <!--<div class="checkbox">
+                    &nbsp;</div>--></td>
+            <td class="textAlignLeft">
+                <strong>Man. Start Date :</strong>&nbsp;<apex:outputField value="{!Opp.Manufacturing_Start_Date__c}"/></td>
+        </tr>
+    </tbody>
+</table>
+         
+<h4 class="OpportunityDescriptionHeader">
+    Opportunity Description</h4>
+<table border="0" cellpadding="0" cellspacing="0" class="OpportunityDescriptionTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignLeft">
+                &nbsp;{!Opp.Description}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h4 class="ForecastHeader">
+    Forecast</h4>
+<table border="0" cellpadding="0" cellspacing="0" class="ForecastTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignLeft">
+                <strong>5 Year Revenue:</strong>&nbsp;<apex:outputField value="{!Opp.Five_Year_Revenue__c}"/></td>
+            <td class="textAlignLeft">
+                <span><strong>Total Revenue:</strong>&nbsp;</span> <apex:outputField value="{!Opp.Amount}"/> </td>
+        </tr>
+    </tbody>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" class="ThreeListTable" height="48" width="100%;" style="page-break-after: always;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 33%;">
+                <strong>Problems our Capabilities solve</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 33%;">
+                <strong>Implications of Problems</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 34%;">
+                <strong>Payoffs of solving problems</strong></td>
+        </tr>
+        
+        <tr>
+            <td class="textAlignLeft">
+               <apex:outputtext value="{!Opp.Problems_Our_Capabilities_Solve__c}" escape="false" /> </td> 
+            <td class="textAlignLeft">
+                <apex:outputtext value="{!Opp.Implications_of_Problems__c}" escape="false"/></td>
+            <td class="textAlignLeft">
+                <apex:outputtext value="{!Opp.Payoffs_of_Solving_Problems__c}" escape="false"/></td>
+        </tr>
+        
+        <tr style="{!if((Opp.Problems_Our_Capabilities_Solve__c!= Null || Opp.Implications_of_Problems__c!= Null || Opp.Payoffs_of_Solving_Problems__c!=null),'display:none;','display:table-row;')}">
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h4 class="ContactInformationHeader">
+    Contact Information</h4>
+<table border="0" cellpadding="0" cellspacing="0" class="ContactInformationTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>Name</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Focus Point</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Role</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>NPS Status</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>Reports to</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 35%;">
+                <strong>Business Issues/Priorities</strong></td>
+        </tr>
+        
+       <apex:repeat var="Crole" value="{!ContactInfo}">
+       
+       <tr>
+            <td class="textAlignCenter" style="width: 15%;">
+                <apex:outputfield value="{!Crole.ControleRole.Name__c}"/></td>
+            <td class="textAlignCenter" style="width: 10%;">
+                {!Crole.ControleRole.Focus_Point__c}</td>
+                     
+            <td class="textAlignCenter" style="width: 10%;">
+                {!Crole.ControleRole.Role__c}</td>
+             <td class="textAlignCenter" style="width: 15%;">
+                {!Crole.ContAA.NPS_Status__c}</td>
+           <td class="textAlignCenter" style="width: 15%;">
+                {!Crole.Reptoinfo.Full_Name__c}</td> 
+            <td class="textAlignLeft" style="width: 35%;">
+               <apex:outputtext value="{!Crole.ControleRole.Business_Issues__c}" escape="false"/></td>
+        </tr>
+      </apex:repeat> 
+      
+       
+        <tr style="{!if(ISNULL(ContactInfo),'display:none;','display:table-row;')}">
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+<p>
+
+
+    </p>
+
+<h4 class="ContactInformationHeader">
+
+    Recognition of Needs: Uncover and Develop Needs&nbsp;&nbsp;&nbsp;</h4>
+<table border="0" cellpadding="0" cellspacing="0" class="RecognitionTable" style="width: 100%;page-break-after: always;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>Name</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 60%;">
+                <strong>Needs</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Need Type</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>Need Status</strong></td>
+        </tr>
+       
+       <apex:repeat var="Crole" value="{!NeedInfo}">       
+        <tr >
+            <td class="textAlignCenter">
+                <apex:outputfield value="{!Crole.ControleRole.Name__c}"/></td>            
+            <td class="textAlignCenter">
+               <apex:repeat var="Needs" value="{!Crole.ListNeed}">  
+                    {!Needs.Need__c}<br/></apex:repeat></td>
+            <td class="textAlignCenter">
+               <apex:repeat var="Needs" value="{!Crole.ListNeed}"> 
+                    <strong>{!Needs.Need_Type__c}<br/></strong></apex:repeat></td>
+            <td class="textAlignCenter">
+               <apex:repeat var="Needs" value="{!Crole.ListNeed}"> 
+                     <strong>{!Needs.Need_Status__c}<br/></strong></apex:repeat></td>
+         </tr>         
+        </apex:repeat>
+        <tr > <!--style="{!if((NeedInfo!=null),'display:none;','display:table-row;')}">-->
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="MainDecisionCriteriaHeader">
+    <strong>Main Decision Criteria / Customer View of our Position against the Competition / Key-Player Rating</strong></div>
+<table border="0" cellpadding="0" cellspacing="0" class="MainDecisionCriteriaTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 45%;">
+                <strong>Criteria</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 25%;">
+                <strong>Customer View of our Position against the Competition</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 30%;">
+                <strong>Rating Per Key-Player</strong></td>
+        </tr>
+        <apex:repeat var="DKCP" value="{!DCKPInfo}"> 
+        <tr>
+            <td class="textAlignLeft">
+                
+                <apex:outputtext value="{!DKCP.DCKPin.Question_English__c}" escape="false"/>
+                   
+            </td>
+            <td class="textAlignCenter">
+                <strong><apex:outputField value="{!DKCP.DCKPin.Position__c}"/></strong></td>
+            <td class="textAlignCenter" style="width: 30%;">
+                <apex:repeat var="KP" value="{!DKCP.ListKPC}"> 
+                &nbsp; <strong>{!KP.Key_Player_Name__c}</strong>:&nbsp;<strong><apex:outputField value="{!KP.Priority__c}"/></strong><br />
+                </apex:repeat>
+              </td>
+        </tr>
+        </apex:repeat>
+        <tr ><!--style="{!if(ISBlank(DCKPInfo),'display:none;','display:table-row;')}">-->
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="CompetitorInformationHeader">
+    <strong>Competitor Information</strong></div>
+<table border="0" cellpadding="0" cellspacing="0" class="CompetitorInformationTable" style="width: 100%;page-break-after: always;">
+    <tbody>
+      
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 33%;">
+                <strong>Competitor Name</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 33%;">
+                <strong>Strengths</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 34%;">
+                <strong>Weaknesses</strong></td>
+        </tr>
+       <apex:repeat var="OCom" value="{!OppComp}"> 
+        <tr>
+            <td class="textAlignCenter">
+                
+               <apex:outputField value="{!OCom.Competitor__c}"/> </td>
+            <td class="textAlignCenter">
+                {!OCom.Strengths__c}</td>
+            <td class="textAlignCenter">
+                {!OCom.Weaknesses__c}</td>
+        </tr>
+       </apex:repeat> 
+        <tr ><!--style="{!if((OppComp!=null),'display:none;','display:table-row;')}">-->
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    </p>
+
+<div class="ResolutionHeader">
+
+    <strong>Resolution of Concerns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></div>
+<table border="0" cellpadding="0" cellspacing="0" class="ResolutionTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 20%;">
+                <strong>Name</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 45%;">
+                <strong>Concerns</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 35%;">
+                <strong>Resolution of Concerns</strong></td>
+        </tr>
+        <apex:repeat var="Crole" value="{!ContactInfo}">
+        <tr>
+            <td class="textAlignCenter">
+                
+                <apex:outputfield value="{!Crole.ControleRole.Name__c}"/></td>
+            <td class="textAlignLeft">
+                <apex:outputtext value="{!Crole.ControleRole.Concerns__c}" escape="false"/></td>
+            <td class="textAlignLeft">
+                <apex:outputtext value="{!Crole.ControleRole.Resolution_of_Concerns__c}" escape="false"/>
+                </td>
+        </tr>
+        </apex:repeat>
+        <tr><!--style="{!if(ISBlank(ContactInfo),'display:none;','display:table-row;')}">-->
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="ImplementationConsiderationsHeader">
+    <strong>Implementation Considerations</strong></div>
+<table border="0" cellpadding="0" cellspacing="0" class="ImplementationConsiderationsTable" style="width: 100%;{!if(ISBlank(Opp.Implementation_Considerations__c),'Height:100px;',' ')}">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter">
+               <apex:outputtext value="{!Opp.Implementation_Considerations__c}" escape="false"/> </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="HighlightsLowlightsHeader">
+    <strong>Highlights / Lowlights</strong></div>
+<table border="0" cellpadding="0" cellspacing="0" class="HighlightsLowlightsTable" width="100%" Style="page-break-after: always;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 15%;">
+                <strong>Headline</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Type</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Created Date</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 65%;">
+                <strong>Text</strong></td>
+        </tr>
+         <apex:repeat var="HL" value="{!HighLow}">
+        <tr>
+            <td class="textAlignCenter" style="width: 15%;">
+                <p>
+                    {!HL.Name}</p>
+            </td>
+            <td class="textAlignCenter" style="width: 10%;">
+                {!HL.Type__c}</td>
+            <td class="textAlignCenter" style="width: 10%;">
+               <apex:outputField value="{!HL.CreatedDate}"/> </td>
+            <td class="textAlignLeft" style="width: 65%;">
+               <apex:outputText value="{!HL.Text_and_Pictures__c}" escape="false"/>
+                
+            </td>
+        </tr>
+        </apex:repeat>
+        
+         <tr><!-- style="{!if((HighLow!=null),'display:none;','display:table-row;')}">-->
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+            <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+                 <td class="textAlignLeft" style="height: 100px;">
+                &nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    </p>
+<h4 class="ForecastHeader">
+    Full Forecast Information Per Part ( USD )</h4>
+<table border="0" cellpadding="0" cellspacing="0" class="ForecastTable" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 30%;">
+                <strong>Part Number/Part Description</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Confidence</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year - 1</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year&nbsp; + 1</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year + 2</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year + 3</strong></td>
+            <td class="textAlignCenter BlueBackground fontWeighter" style="width: 10%;">
+                <strong>Current Year + 4</strong></td>
+        </tr>
+       <apex:repeat var="Parts" value="{!OppPart}">
+        <tr>
+            <td class="textAlignCenter">
+                
+                <p>
+                    <strong><apex:outputField value="{!Parts.Part_Number_txt__c}"/> </strong></p>
+                <p>
+                    <strong><apex:outputField value="{!Parts.Item_Description__c}"/></strong></p>
+            </td>
+            <td class="textAlignCenter">
+                <p>
+                    <strong>{!Parts.Status__c}</strong></p>
+            </td>
+            <td class="textAlignCenter">
+                <apex:outputField value="{!Parts.Current_Year_minus_1__c}"/></td>
+            <td class="textAlignCenter">
+                <apex:outputField value="{!Parts.Current_Year__c}"/></td>
+            <td class="textAlignCenter">
+                <apex:outputField value="{!Parts.Current_Year_add_1__c}"/></td>
+            <td class="textAlignCenter">
+                <apex:outputField value="{!Parts.Current_Year_add_2__c}"/></td>
+            <td class="textAlignCenter">
+                <apex:outputField value="{!Parts.Current_Year_add_3__c}"/></td>
+            <td class="textAlignCenter">
+              <apex:outputField value="{!Parts.Current_Year_add_4__c}"/>
+                </td>
+        </tr>
+        </apex:repeat>
+    </tbody>
+</table>
+<p>
+    <br />
+    <br />
+    <strong>Date:-&nbsp; {!Today()}</strong></p>
+<p>
+    <br />
+    &nbsp;</p>         
+         
+ 
+         
+         
+         
+  
+       </apex:outputPanel> 
+     </apex:form>
+  </html>
+ <!-- *************************************************** End of Body of the PDF  **********************************************************************************************************-->     
+</apex:page>

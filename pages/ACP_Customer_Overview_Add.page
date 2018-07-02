@@ -1,0 +1,234 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_View_Customer_Page_ctrl" standardStylesheets="false" showHeader="true" sidebar="false">
+
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+    <!--<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'gotham.css')}" />-->
+    <div class = "bootstrap-sfdc">
+    <div class="container-fluid">
+        <apex:form >
+            <apex:pageBlock >
+                <apex:image url="{!$Resource.status_bar}" width="100%" height="8" />
+                <br/><br/><br/>
+                <div style="margin-left: 15%;">
+                    <apex:pageMessages />
+                    <apex:outputText value="{!$Label.ACP_Customer_Overview}" styleClass="SectionHeader"> </apex:outputText>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"> {!$Label.ACP_Create_Customer_Overview} </div>
+                            <apex:outputPanel rendered="{!IF(SelectType=='Revenue and Growth',true,false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">
+                                        {!$Label.ACP_Customer_Revenue_Information}
+                                    </div>
+                                    <br/>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Year}</label><br />
+                                            <apex:inputField value="{!revenue.ACP_Year__c}" styleClass="inputField" required="true" html-placeholder="Enter Name" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Growth}</label><br/>
+                                            <apex:inputField value="{!revenue.ACP_Growth__c}" styleClass="inputField" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Revenue}</label><br/>
+                                            <apex:inputField value="{!revenue.ACP_Revenue__c}" styleClass="inputField" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp; &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewRevenue}" styleClass="btn btn-default" disabled="{!If(acpRevGrowthList.size < 4,false, true)}" /> &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddRevenue}" styleClass="btn btn-primary" disabled="{!If(acpRevGrowthList.size < 5,false, true)}" />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(SelectType== 'End Markets',true , false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">
+                                        {!$Label.ACP_Customer_End_Information}</div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Market}</label><br />
+                                            <apex:inputField value="{!endmarkets.ACP_Market__c}" styleClass="inputField" required="true" html-placeholder="Enter Name" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Trend}</label>
+                                            <apex:inputField value="{!endmarkets.ACP_Market_Trend__c}" styleClass="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Percent}</label><br/>
+                                            <apex:inputField value="{!endmarkets.ACP_Market_Percent__c}" styleClass="inputField" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp; &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewEnd}" styleClass="btn btn-default" disabled="{!If(acpEndMarketList.size < 4,false, true)}"  /> &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddEnd}" styleClass="btn btn-primary" disabled="{!If(acpEndMarketList.size < 5,false, true)}" />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(SelectType== 'Regions',true , false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">
+                                        {!$Label.ACP_Customer_Region_Information}</div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Region}</label><br />
+                                            <apex:inputField value="{!region.ACP_Region__c}" styleClass="inputField" required="true" html-placeholder="Enter Name" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Trend}</label>
+                                            <apex:inputField value="{!region.ACP_Regions_Trend__c}" styleClass="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Percent} </label><br/>
+                                            <apex:inputField value="{!region.ACP_Region_Percent__c}" styleClass="inputField" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp; &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewRegion}" styleClass="btn btn-default" disabled="{!If(acpRegionsList.size < 4,false, true)}"  />&nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddRegion}" styleClass="btn btn-primary" disabled="{!If(acpRegionsList.size < 5,false, true)}"  />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(SelectType=='Key Manufacturing/Purchasing Locations',true , false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">
+                                        {!$Label.ACP_Customer_Key_Information}</div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Manufacturing}</label><br />
+                                            <apex:inputField value="{!key.ACP_Manufacturing__c}" styleClass="inputField" required="true" html-placeholder="Enter Manufacturing" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Purchasing}</label><br/>
+                                            <apex:inputField value="{!key.ACP_Purchasing__c}" styleClass="inputField" html-placeholder="Enter Purchasing" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp; &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewKey}" styleClass="btn btn-default" disabled="{!If(acpKeyManufList.size < 4,false, true)}"  />&nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddKey}" styleClass="btn btn-primary" disabled="{!If(acpKeyManufList.size < 5,false, true)}"  />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(SelectType=='Key Engineering/Design Locations',true , false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">
+                                        {!$Label.ACP_Customer_Location_Information}</div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Locations}</label><br />
+                                            <apex:inputField value="{!location.ACP_Location__c}" styleClass="inputField" required="true" html-placeholder="Enter Name" />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Focus}</label><br/>
+                                            <apex:inputField value="{!location.ACP_Location_Focus__c}" styleClass="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp;&nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewLocation}" styleClass="btn btn-default" disabled="{!If(acpKeyEngList.size < 4,false, true)}" />&nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddLocation}" styleClass="btn btn-primary" disabled="{!If(acpKeyEngList.size < 5,false, true)}"  />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(SelectType=='Key Vendors in Supply Chain',true , false)}">
+                                <div class="panel-body">
+                                    <div class="informationBar">{!$Label.ACP_Customer_Vendor_Information}</div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label><font style="color:red">*</font>{!$Label.ACP_Vendor}</label><br />
+                                            <apex:inputField value="{!vendor.ACP_Vendor__c}" styleClass="inputField" required="true" html-placeholder="Enter Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Type}</label><br />
+                                            <apex:inputField value="{!vendor.ACP_Type__c}" styleClass="inputField" html-placeholder="Enter Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label><font style="color:red"></font>{!$Label.ACP_Focus}</label><br/>
+                                            <apex:inputField value="{!vendor.ACP_Vendor_Focus__c}" styleClass="inputField" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div align="right" style="">
+                                        <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="customer" />
+                         </apeX:commandLink>
+&nbsp; &nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNewVendor}" styleClass="btn btn-default" disabled="{!If(acpVendList.size < 4,false, true)}"  />&nbsp;
+                                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!AddVendor}" styleClass="btn btn-primary" disabled="{!If(acpVendList.size < 5,false, true)}" />
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </apex:form>
+    </div></div>
+</apex:page>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Shows load status for different data sources and is mainly used to identify last loaded fiscal periods.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Backlog_Updated_Date__c</fullName>
+        <description>filled via the integration when backlog and demand are loaded</description>
+        <externalId>false</externalId>
+        <label>Backlog_Updated_Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Current_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows last loaded date for given data source. Only populated for data sources on daily level.</inlineHelpText>
+        <label>Current Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Month__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows last loaded fiscal month for given data source.</inlineHelpText>
+        <label>Current Fiscal Month</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows last loaded fiscal quarter for given data source.</inlineHelpText>
+        <label>Current Fiscal Quarter</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Week__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows last loaded fiscal week for given data source. Only populated for data sources on daily/weekly level.</inlineHelpText>
+        <label>Current Fiscal Week</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Working_Day_in_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <formula>Case(Current_Fiscal_Month__c,
+1, Fiscal_Working_Days_until_today__c,
+2,(Fiscal_Working_Days_until_today__c + 20),
+3,(Fiscal_Working_Days_until_today__c + 45),
+4, Fiscal_Working_Days_until_today__c,
+5,(Fiscal_Working_Days_until_today__c + 20),
+6,(Fiscal_Working_Days_until_today__c + 45),
+7, Fiscal_Working_Days_until_today__c,
+8,(Fiscal_Working_Days_until_today__c + 20),
+9,(Fiscal_Working_Days_until_today__c + 45),
+10, Fiscal_Working_Days_until_today__c,
+11,(Fiscal_Working_Days_until_today__c + 20),
+(Fiscal_Working_Days_until_today__c + 45))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current Fiscal Working Day in Quarter</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Working_Day_in_Year__c</fullName>
+        <externalId>false</externalId>
+        <formula>Case(Current_Fiscal_Month__c, 
+1, Fiscal_Working_Days_until_today__c, 
+2,(Fiscal_Working_Days_until_today__c + 20), 
+3,(Fiscal_Working_Days_until_today__c + 45), 
+4,(Fiscal_Working_Days_until_today__c + 65), 
+5,(Fiscal_Working_Days_until_today__c + 85), 
+6,(Fiscal_Working_Days_until_today__c + 110), 
+7,(Fiscal_Working_Days_until_today__c + 130), 
+8,(Fiscal_Working_Days_until_today__c + 150), 
+9,(Fiscal_Working_Days_until_today__c + 175), 
+10,(Fiscal_Working_Days_until_today__c + 195), 
+11,(Fiscal_Working_Days_until_today__c + 215), 
+(Fiscal_Working_Days_until_today__c + 235))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current Fiscal Working Day in Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Fiscal_Year__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows last loaded fiscal year for given data source.</inlineHelpText>
+        <label>Current Fiscal Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Data_Source_Description__c</fullName>
+        <description>A human readable text description of what kind of data is contained in the data source named for each Load Status Row.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e. the BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c object contains Bookings/Billings Direct Daily  data.</inlineHelpText>
+        <label>Data Source Description</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Demand_Updated_Date__c</fullName>
+        <description>filled via integration when demand and backlog are loaded</description>
+        <externalId>false</externalId>
+        <label>Demand_Updated_Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Days_until_today__c</fullName>
+        <description>Fiscal Days until today</description>
+        <externalId>false</externalId>
+        <label>Fiscal Days until today</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Working_Days_until_today__c</fullName>
+        <description>Fiscal Working Days until today</description>
+        <externalId>false</externalId>
+        <label>Fiscal Working Days until today</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Previous_Current_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows date of previous snapshot cycle in case periodical snapshots are generated</inlineHelpText>
+        <label>Previous Current Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Previous_Snapshot_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Snapshot date of previous snapshot cycle</inlineHelpText>
+        <label>Previous Snapshot Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status_Message__c</fullName>
+        <description>This field is used to trigger a Chatter message when a data load of the monthly or daily objects has finished. Updated by a workflow rule and field update.</description>
+        <externalId>false</externalId>
+        <label>Status Message</label>
+        <length>100</length>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Fiscal_Days__c</fullName>
+        <description>Total Fiscal Month Days</description>
+        <externalId>false</externalId>
+        <label>Total Fiscal Days</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Fiscal_Working_Days__c</fullName>
+        <description>Total Fiscal Working Days</description>
+        <externalId>false</externalId>
+        <label>Total Fiscal Working Days</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Load Status</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Data_Source_Description__c</columns>
+        <columns>Current_Date__c</columns>
+        <columns>Current_Fiscal_Month__c</columns>
+        <columns>Current_Fiscal_Year__c</columns>
+        <columns>Backlog_Updated_Date__c</columns>
+        <columns>Demand_Updated_Date__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>Current_Fiscal_Working_Day_in_Year__c</columns>
+        <columns>Fiscal_Working_Days_until_today__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Data Source</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Load Status</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Current_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Current_Fiscal_Month__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Current_Fiscal_Week__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Current_Fiscal_Year__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

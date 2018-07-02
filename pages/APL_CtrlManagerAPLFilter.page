@@ -1,0 +1,353 @@
+<apex:page controller="APL_CtrlManagerAPLFilter" sidebar="false" docType="html-5.0" readOnly="true">
+        
+<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.min.css')}" />
+<link type="text/css" rel="stylesheet" href="{!$Resource.APL_CtrlManagerAPLFilterCSS}" />
+
+<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.9.0-min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.9.2-min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.JsLibs,'underscore.1.8.3.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.JsLibs,'jquery-ui-1.11.4.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.JsLibs,'papaparse.js')}"></script>
+<script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+<script src="{!URLFOR($Resource.jQueryTool, '/Blob/Blob.js')}" type="text/javascript"></script>
+<script src="{!URLFOR($Resource.jQueryTool, '/fileSaver/FileSaver.min.js')}" type="text/javascript"></script>
+<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+
+<script type="text/javascript" src="{!$Resource.APL_CtrlManagerAPLFilterJS}"></script>
+
+<style type="text/css">
+    .reload_img{
+         background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+     }
+     .subchildren_img{ background-image:url('{!URLFOR($Resource.APL_Images, 'LoadingImg.gif')}'); color: transparent !important;   cursor: default;}
+</style>
+    
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+        addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+    </script>
+    
+    <apex:outputPanel id="panelLoadingOppy">
+        <script type="text/javascript">
+            var oppyRst = !"{!JSENCODE(oppyRst)}" ? [] : $.parseJSON("{!JSENCODE(oppyRst)}"); // Return from doSearch() and lazySearch();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelLoadingPart">
+        <script type="text/javascript">
+            var pRst =  !"{!JSENCODE(pRst)}" ? [] : $.parseJSON("{!JSENCODE(pRst)}"); // Return from queryOppyChildrens();
+            var pFcstRst =  !"{!JSENCODE(pFcstRst)}" ? [] : $.parseJSON("{!JSENCODE(pFcstRst)}"); // Return from queryOppyChildrens();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelLoadingForecast">
+        <script type="text/javascript">
+            var oppyFcstResult = !"{!JSENCODE(oppyFcstResult)}" ? [] : $.parseJSON("{!JSENCODE(oppyFcstResult)}"); // Return from queryOppyFcst();
+            var list_colunm=$.parseJSON('{!JSENCODE(jsonlistcolunm)}'), 
+                list_colunmChildren=$.parseJSON('{!JSENCODE(jsonlistchildcolunm)}'),
+                list_exportcolumn=$.parseJSON('{!JSENCODE(jsonexportlistcolunm)}');
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelSearchBlock">
+        <script type="text/javascript">
+            // Return child`s information.
+            var ctrlValues = "" == '{!JSENCODE(ctrlValues)}' ? "" : $.parseJSON('{!JSENCODE(ctrlValues)}'); // Json string of a map.
+            var oppytypes = "" == '{!JSENCODE(oppytypes)}' ? "" : $.parseJSON('{!JSENCODE(oppytypes)}'); // Json string of a map.
+        </script>
+    </apex:outputPanel>
+    
+
+    <apex:outputPanel id="panelInitBlock">
+        <script type="text/javascript">
+            var json=$.parseJSON('{!JSENCODE(jsonfilters)}'),
+                jsontemplates=$.parseJSON('{!JSENCODE(jsontemplates)}');
+            
+            function destroyAccordion() {
+                $('#accordion').accordion('destroy');
+            }
+        </script>
+    </apex:outputPanel>
+
+    <apex:outputPanel id="panelTemplateId">
+        <script type="text/javascript">
+            var tid = '{!JSENCODE(tid)}';
+            console.log("page tid=", tid);
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelInitFilter">
+        <script type="text/javascript">
+            var ctrlData = "", jsonidprops = '{!JSENCODE(jsonidprops)}',
+                imgSrc = "{!URLFOR($Resource.APL_Images, 'LoadingImg.gif')}",
+                closeImgSrc = "{!URLFOR($Resource.APL_Images, 'list_close.png')}",
+                csvUrl = "{!$Page.APL_CtrlExportCSVFile}";
+                
+            $(function(){
+                forecastFilter.init(json, jsontemplates);
+                initForecastTable( $.parseJSON('{!JSENCODE(jsonlistcolunm)}'), $.parseJSON('{!JSENCODE(jsonlistchildcolunm)}') );
+            //    forecastFilter.showTable("init");
+                //forecastFilter.saveSuccess();
+            });
+            
+        </script>
+    </apex:outputPanel>
+    
+    
+    <apex:form id="searchForm">
+    
+        <apex:inputHidden id="jsonlistfilterid" value="{!jsonlistfield}" />
+    
+        <!--<apex:actionFunction name="doTemplateRemove" action="{!doTemplateRemove}" oncomplete="forecastFilter.hideMask();" 
+            reRender="themsg, panelInitBlock, panelTemplateId, panelInitFilter" >
+            <apex:param name="firstParam" assignTo="{!tid}" value="" />
+        </apex:actionFunction>-->
+        <apex:actionFunction name="doTemplateRemove2Render" action="{!doTemplateRemove2Render}" oncomplete="forecastFilter.hideMask();" 
+            reRender="themsg, panelInitBlock, panelTemplateId, panelInitFilter" >
+        </apex:actionFunction>
+        <apex:actionFunction name="doTemplateSwitch" action="{!doTemplateSwitch}" 
+            oncomplete="forecastFilter.template.tid = '{!JSENCODE(tid)}';  forecastFilter.hideMask(); " 
+            reRender="themsg, panelInitBlock, panelTemplateId, panelInitFilter" >
+            <apex:param name="firstParam" assignTo="{!tid}" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="doSave2Render" action="{!doRender}" reRender="themsg, panelTemplateId" 
+            oncomplete="forecastFilter.template.tid = '{!JSENCODE(tid)}'; forecastFilter.addTemplateList(); forecastFilter.hideMask();" >
+            <apex:param name="firstParam" assignTo="{!tname}" value="" />
+            <apex:param name="secondParam" assignTo="{!oppyType}" value="" />
+            <apex:param name="thirdParam" assignTo="{!oppyDetails}" value="" />
+            <apex:param name="fourthParam" assignTo="{!jsonfilters}" value="" />
+            <apex:param name="fifthParam" assignTo="{!tid}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="doUpdate2Render" action="{!doRender}" oncomplete="forecastFilter.saveSuccess();" reRender="themsg" >
+            <apex:param name="firstParam" assignTo="{!tid}" value="" />
+            <apex:param name="secondParam" assignTo="{!oppyType}" value="" />
+            <apex:param name="thirdParam" assignTo="{!oppyDetails}" value="" />
+        </apex:actionFunction>
+        <!--
+        <apex:actionFunction name="doSave" action="{!doSave}" reRender="themsg, panelTemplateId" 
+            oncomplete="forecastFilter.template.tid = '{!JSENCODE(tid)}'; forecastFilter.addTemplateList(); forecastFilter.hideMask();" >
+            <apex:param name="firstParam" assignTo="{!tname}" value="" />
+            <apex:param name="secondParam" assignTo="{!oppyType}" value="" />
+            <apex:param name="thirdParam" assignTo="{!oppyDetails}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="doUpdate" action="{!doUpdate}" oncomplete="forecastFilter.saveSuccess();" reRender="themsg" >
+            <apex:param name="firstParam" assignTo="{!tid}" value="" />
+            <apex:param name="secondParam" assignTo="{!oppyType}" value="" />
+            <apex:param name="thirdParam" assignTo="{!oppyDetails}" value="" />
+        </apex:actionFunction>
+		-->
+        
+        <apex:actionFunction name="getCtrlValues" action="{!getCtrlValues}" oncomplete="forecastFilter.redrawChild(); forecastFilter.hideMask();" 
+            reRender="themsg, panelSearchBlock" >
+            <apex:param name="firstParam" assignTo="{!pValues}" value="" />
+            <apex:param name="secondParam" assignTo="{!ctrlIds}" value="" />
+            <apex:param name="thirdParam" assignTo="{!pid}" value="" />
+            <apex:param name="forthParam" assignTo="{!tmpidprops}" value="" />
+        </apex:actionFunction>
+        
+        <apex:inputHidden id="jsonfilters" value="{!jsonfilters}" />
+        <apex:actionFunction name="doSearch" action="{!doSearch}" oncomplete="complete_actionfunction_doSearch();" 
+            reRender="themsg, panelLoadingOppy, panelLoadingForecast, panelTransitVar" >
+            <apex:param name="firstParam" assignTo="{!oppyType}" value="" />
+            <apex:param name="secondParam" assignTo="{!oppyDetails}" value="" />
+            <apex:param name="thirdParam" assignTo="{!tmpidprops}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="lazySearch" action="{!lazySearch}" oncomplete="forecastFilter.appendOppy(); " 
+            reRender="themsg, panelLoadingOppy" >
+            <apex:param name="firstParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="queryOppyFcst" action="{!queryOppyFcst}" oncomplete="forecastFilter.showFcTable(); " 
+            reRender="themsg, panelLoadingForecast" >
+            <apex:param name="firstParam" assignTo="{!oppyIds}" value="" />
+            <apex:param name="secondParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+            
+        <apex:actionFunction name="queryOppyChildrens" action="{!queryOppyChildrens}" oncomplete="forecastFilter.showPartTable();" 
+            reRender="themsg, panelLoadingPart" >
+            <apex:param name="firstParam" assignTo="{!oppyId}" value="" />
+            <apex:param name="secondParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="queryOppyChildrensFcst" action="{!queryOppyChildrensFcst}" oncomplete="forecastFilter.showPartFcTable(); forecastFilter.hideMask();" 
+            reRender="themsg, panelLoadingPart" >
+            <apex:param name="firstParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        
+    </apex:form>
+    
+    <!--*************** START: Export ***************-->
+    <apex:outputPanel id="panelOppy">
+        <script type="text/javascript">
+            var oppyExpt =  !"{!JSENCODE(oppyExpt)}" ? [] : $.parseJSON("{!JSENCODE(oppyExpt)}"); // Return from oppyExport();
+        </script>
+    </apex:outputPanel>
+    <apex:outputPanel id="panelOppyFcst">
+        <script type="text/javascript">
+            var oppyFcstExpt =  !"{!JSENCODE(oppyFcstExpt)}" ? [] : $.parseJSON("{!JSENCODE(oppyFcstExpt)}"); // Return from oppyFcstExport();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelPart">
+        <script type="text/javascript">
+            var oppyPartExpt =  !"{!JSENCODE(oppyPartExpt)}" ? [] : $.parseJSON("{!JSENCODE(oppyPartExpt)}"); // Return from oppyPartExport();
+        </script>
+    </apex:outputPanel>
+    <apex:outputPanel id="panelPartFcst">
+        <script type="text/javascript">
+            var oppyPartFcstExpt =  !"{!JSENCODE(oppyPartFcstExpt)}" ? [] : $.parseJSON("{!JSENCODE(oppyPartFcstExpt)}"); // Return from oppyPartFcstExport();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="panelPartner">
+        <script type="text/javascript">
+            var oppyPartnerExpt =  !"{!JSENCODE(oppyPartnerExpt)}" ? [] : $.parseJSON("{!JSENCODE(oppyPartnerExpt)}"); // Return from oppyExport();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:form id="exportForm">
+        <apex:actionFunction name="oppyExport" action="{!oppyExport}" 
+            oncomplete="forecastFilter.insertOppy(); forecastFilter.getIdGroup(); forecastFilter.checkParentEof();" 
+            reRender="themsg, panelOppy" >
+            <apex:param name="firstParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="oppyFcstExport" action="{!oppyFcstExport}" oncomplete="forecastFilter.queryOppyFcst();" 
+            reRender="themsg, panelOppyFcst" >
+            <apex:param name="firstParam" assignTo="{!oppyIds}" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="oppyPartExport" action="{!oppyPartExport}" 
+            oncomplete="forecastFilter.insertOppy(); forecastFilter.getIdGroup(); forecastFilter.checkParentEof();" 
+            reRender="themsg, panelPart" >
+            <apex:param name="firstParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="oppyPartFcstExport" action="{!oppyPartFcstExport}" oncomplete="forecastFilter.queryPartFcst(); " 
+            reRender="themsg, panelPartFcst" >
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="oppyPartnerExport" action="{!oppyPartnerExport}" 
+            oncomplete="forecastFilter.insertOppy(); forecastFilter.getIdGroup(); forecastFilter.checkParentEof();" 
+            reRender="themsg, panelPartner" >
+            <apex:param name="firstParam" assignTo="{!tmpmapping}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="oppyPartnerFcstExport" action="{!oppyPartnerFcstExport}" oncomplete="forecastFilter.queryPartnerFcst();" 
+            reRender="themsg, panelOppyFcst" >
+            <apex:param name="firstParam" assignTo="{!oppyIds}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <!--*************** END: Export ***************-->
+    
+    <!--*************** END: Export ***************-->
+    <apex:outputPanel id="panelTransitVar">
+        <script type="text/javascript">
+            var oppyFcstType="{!JSENCODE(oppyFcstType)}", labels="{!JSENCODE(labels)}", 
+                mappingIds="{!JSENCODE(mappingIds)}", queryYears="{!queryYears}", 
+                oppyFcstYearRange="{!JSENCODE(oppyFcstYearRange)}", mainSOQL="{!JSENCODE(mainSOQL)}";
+        </script>
+    </apex:outputPanel>
+    <apex:outputPanel id="panelStatic">
+        <script type="text/javascript">
+            var oppyFcInterface="{!JSENCODE($RemoteAction.APL_CtrlManagerAPLFilter.oppyFcstExport)}",
+                partFcInterface="{!JSENCODE($RemoteAction.APL_CtrlManagerAPLFilter.oppyPartFcstExport)}";
+        </script>
+    </apex:outputPanel>
+    <!--*************** END: Export ***************-->
+        
+    <div class="LoadingDiv">
+        <img class="LoadingImg" src="{!URLFOR($Resource.APL_Images, 'LoadingImg.gif')}" title="Please Wait..."/>
+        <span class="LoadingWord"> {!$Label.CSD_OppyMgn_LoadingThreePoint}</span>
+    </div>
+    
+    <div class="pbBody">
+        <span id="errorMsg"><apex:pageMessages id="themsg"/></span>
+        <div class="FilterDiv">
+            <div class="FilterHeader HeaderShowing  ">
+                <span class="templateSpan"></span>
+                <input class="Btns SearchBtn doDelete" onclick="forecastFilter.deleteTemplate(this);" type="button" value="Delete" />
+            </div>
+            <div class="FilterBodyer">
+                <apex:form id="accordionForm"><div id="accordion"></div></apex:form>
+                <div class="FilterBtn">
+                    <input class="Btns SearchBtn doSaveAsNew" onclick="forecastFilter.saveData('New');" type="button" value="Save As" />
+                    <input class="Btns SearchBtn doSaveBtn" onclick="forecastFilter.saveData('Update');" type="button" value="Save" />
+                    <input class="Btns SearchBtn doSearch" onclick="forecastFilter.searchData();" type="button" value="Search" />
+                    <input class="Btns SearchBtn doExport" onclick="forecastFilter.exportStart()" type="button" value="Export" />
+                </div>
+            </div>
+            <div class="divFieldSet" id="fieldboxid"></div>
+        </div>
+
+        <div class="SearchDiv">
+            <div class="SearchBodyer BodyerHiding">
+                <div class="BottomView" id="containerPanel_Bottom">
+                    <div>
+                        <table id="floatTab" style="width: 100%; position:absolute; display: none; z-index: 20;" class="table_fixx searchTable" border="0" cellspacing="0" cellpadding="0">
+                            <thead id="floathead"></thead><tbody></tbody><tfoot></tfoot>
+                        </table>
+                        <table id="tableHeader" style="width: 100%;" class="table_fix searchTable" border="0" cellspacing="0" cellpadding="0">
+                            <thead id="tab_head" style="visibility: visible;"></thead>
+                            <tbody id="tab_body"></tbody>
+                            <tfoot id="tab_foot" style="display: none;"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="dialog-message" title="Warning">
+        <p id="popupContent"></p>
+    </div>
+    <div id="exportTable"></div>
+    
+    <div id="childDiv" style="display: none;">
+        <table class="childTable" border="0" cellspacing="0" cellpadding="0">
+            <thead></thead>
+            <tbody></tbody>
+            <tfoot style="display: none;"></tfoot>
+        </table>
+    </div>
+    
+    <script type="text/javascript">
+        ;function oppyFcstExportNew_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.oppyFcstExportNew}';}
+        ;function asynOppyExportNew_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.asynOppyExportNew}';}
+        ;function asynOppyPartExportNew_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.asynOppyPartExportNew}';}
+        ;function oppyPartFcstExportNew_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.oppyPartFcstExportNew}';}
+        ;function asynOppyPartnerExportNew_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.asynOppyPartnerExportNew}';}
+        ;function existOppyPartnerChildForecast_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.existOppyPartnerChildForecast}';}
+        ;function existOppyPartChildForecast_JS(){ return '{!$RemoteAction.APL_CtrlManagerAPLFilter.existOppyPartChildForecast}';}
+    </script>
+    
+    <script type="text/javascript">
+    //add template by RemoteAction
+    ;function doSave(templateName, oppyType, oppyDetails) {
+        var strJson = $("input[id*='jsonfilters']").val();
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.APL_CtrlManagerAPLFilter.doSave}',
+        	templateName, oppyType, oppyDetails, strJson, 
+            function(result,event) {
+                doSave2Render(templateName, oppyType, oppyDetails, strJson, result);
+            }
+        )
+    }
+    //update template by RemoteAction
+    ;function doUpdate(templateId, oppyType, oppyDetails) {
+        var strJson = $("input[id*='jsonfilters']").val();
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.APL_CtrlManagerAPLFilter.doUpdate}',
+        	templateId, oppyType, oppyDetails, strJson, 
+            function(result,event) {
+                doUpdate2Render(templateId, oppyType, oppyDetails);
+            }
+        )
+    }
+    //del template by RemoteAction
+    ;function doTemplateRemove(templateId) {
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.APL_CtrlManagerAPLFilter.doTemplateRemove}',
+        	templateId,
+            function(result,event) {
+                doTemplateRemove2Render();
+            }
+        )
+    }
+    </script>
+
+</apex:page>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_9436354</developerName>
+        <masterLabel>Opportunity Status</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Opportunities$StageName</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>New</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Approved/Active</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won - Open</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>In Approval</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>New Opportunity</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Quotation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sampling</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>On Hold</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Initiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Exploring Needs</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Developing &amp; Differentiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Refining &amp; Resolving</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Contracting</sourceValue>
+            </sourceValues>
+            <value>Still in Pipline</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lost/Dead - closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rejected - Closed</sourceValue>
+            </sourceValues>
+            <value>Closed / Lost</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Won - Closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified/G3 Approved</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Order Received  or Mass Production</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Production</sourceValue>
+            </sourceValues>
+            <value>Closed Won</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Account.Opportunities$Five_Year_Value__c.CONVERT</column>
+        </chartSummaries>
+        <chartSummaries>
+            <axisBinding>y2</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumnStackedLine</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Opportunities$CreatedDate</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>Account$Customer_Industry__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Five_Year_Value__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account$BillingCountry</field>
+    </columns>
+    <columns>
+        <field>Account$RecordType</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Marketing sourced opportunities which count for Industrial BU profit</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities$TEMarketing__Marketing_Sourced__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Marketing Sourced</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Customer_Industry__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C,IB,Rail,Solar</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Account.Opportunities$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$Customer_Industry__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_9436354</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND Opp value from MQL</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

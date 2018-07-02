@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_26212032</developerName>
+        <masterLabel>MED Strategy</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Opportunity$Application__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>MED - Others (Non Strategy)</sourceValue>
+            </sourceValues>
+            <value>Non Strategy</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>MED - High Speed(4k+) Platform</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Single Use Sub-Assembly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Surgical Robotics</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Rigid Video Sub-Assembly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Flexible Re-usable Sub-Assembly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Advanced Energy Based Devices</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Power</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Stapling</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Basic Ultrasound</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - IVUS/ ICE</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - TEE</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Intra Oral</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>MED - Medical Heat Shrink Tubing</sourceValue>
+            </sourceValues>
+            <value>Strategy</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity$Account</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Customer_Region__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Owner</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Product_Family__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Confidence__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Relevant_for_S_OP__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Transferred__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Opportunity_Owner_GIBU__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Product_Family__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>CREG</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Customer_Region__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>North america,South America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Product_Family__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>CREG</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>CN - Lost (Canceled),LS - Lost,CM - Complete</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>MED AP and EMEA Opps</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunities_with_and_without_Opp_statuses__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity$MED_Relevant_for_S_OP__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,239 @@
+<apex:component layout="block" allowDML="true">
+	
+	<apex:attribute name="pageCtrl" type="CtrlGroupingRSMForecast" required="true" description="the root page controller reference" />
+	<apex:attribute name="inputVal" type="String" required="false" description="the page controller reference" />
+	
+	<div id="forecastdiv_id" style="min-width:800px; visibility: hidden;" class="mgauto">
+		
+		<!-- START table head -->
+		<div class="mainTabFix">
+			<div class="compwp tabRowFix">
+			
+				<div id="left_head" class="tabCellFix lCellw" style="vertical-align: bottom !important;">
+					<table style="width: 100%;" class="table_fix " border="0" cellspacing="0" cellpadding="0">
+						<tbody>
+							<tr>
+								<td class="tab_head_left {!if(pageCtrl.pageConf.str_tableHead = '', 'emptyfix', '')}">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<div id="right_head" class="noTabCell rCellw " style=" overflow: hidden; ">
+					<table class=" table_fix" border="0" cellspacing="0" cellpadding="0" >
+						<tbody>
+							<tr id="tab_head_data" class="tab_head_data">
+								<apex:outputText value="{!pageCtrl.pageConf.str_tableHead}" escape="false"/>
+							</tr>
+							
+							<tr id="tab_head_list" class="tab_head_list">
+								<apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+								<td class=" {!fd.monthCls} {!fd.qtotalCls} echd headbg {!if(fd.isInput, 'qcell', '')}" data-date="{!fd.qLabel}">
+									<div class=" fwb p_r">
+										<span>{!fd.itemName}</span>
+									</div>
+								</td>
+								</apex:repeat>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+		</div>
+		<!-- END table head -->
+		
+		<!-- START table body -->
+		<div class="mainTabFix">
+		
+			<div class="compwp tabRowFix" id="div_body">
+			
+				<div class="lCellw fol ov">
+					<div id="left_body">
+						<table style="width: 100%;" class="table_fix" border="0" cellspacing="0" cellpadding="0">
+							<tbody class="ltbodycls overbody" id="ltabid">
+							
+								<!-- START LEFT table account -->
+								<!-- 
+								<apex:repeat var="acct" value="{!pageCtrl.list_acctFC}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="actRow" value="{!pageCtrl.AcctViewRows}">
+								<tr class="{!if(rowNum = 0, 'cp rt1 col ', 'dn asub')} {!if(rowNum = 0, '', acct.parentId)}_cls {!if(rowNum = 0, acct.parentId, '')}" data-hierarchy="{!if(rowNum = 0, 'root1', '')}" data-num="{!if(rowNum = 0, acct.parentId, '')}_cls" data-aid="{!if(rowNum = 0, acct.parentId, '')}">
+									<td colspan="2">
+										<apex:outputPanel styleClass="t_img a" rendered="{!if(rowNum = 0, true, false)}"></apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide" rendered="{!if(rowNum = 0, true, false)}" layout="block">
+											<span class="cellbox fcell" >+</span>
+											<span class="cellbox scell fixinfoh">{!acct.acctName}&nbsp;</span>
+											<span style="position: relative;" class="reatcls fixinfoh" >
+												<b class="countryimg {!acct.acctISOCode}" ></b>
+												<b class="fmt_cls" data-code="{!acct.acctISOCode}" data-reat=" {!acct.currencyRate} "> </b>
+											</span>
+										</apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide leftd_td" rendered="{!if(rowNum != 0, true, false)}" layout="block"></apex:outputPanel>
+									</td>
+
+									<td class="field {!actRow.cls}">{!actRow.name}</td>
+								</tr>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+									</apex:repeat>
+								
+								<apex:variable value="{!0}" var="cbc2num"/>	
+								<apex:repeat var="cbc2" value="{!pageCtrl.CBC2Data}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="cbc2row" value="{!pageCtrl.CBC2ViewRows}">	
+								<tr class="dn {!if(rowNum = 0, 'cp rt2 col  asub', ' cbc2')} {!cbc2.clsName} {!acct.parentId}_cls {!acct.parentId}_{!cbc2num}{!if(rowNum = 0, '_cbc2_root', '_cbc2')} " data-hierarchy="{!if(rowNum = 0, 'root2', '')}" data-aid="{!if(rowNum = 0, acct.parentId, '')}" data-num="{!acct.parentId}_{!cbc2num}_cbc2" >
+									<td colspan="2" class="pd_1">
+										<apex:outputPanel styleClass="t_img c" rendered="{!if(rowNum = 0, true, false)}"></apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide {!cbc2.clsName}_t" rendered="{!if(rowNum = 0, true, false)}" layout="block">
+											<span class="cellbox fcell fix">+</span>
+											<span class="cellbox fixinfoh cbc_cell" data-cbcname="{!cbc2.code}">{!cbc2.name}</span>
+										</apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide leftd_td" rendered="{!if(rowNum != 0, true, false)}" layout="block"></apex:outputPanel>
+									</td>
+									<td class="field {!cbc2row.cls}">{!cbc2row.name}</td>
+								</tr>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+									</apex:repeat>
+								<apex:variable var="cbc2num" value="{!cbc2num + 1}"/>
+								</apex:repeat>
+								
+								</apex:repeat>
+								 -->
+								<!-- END LEFT table account -->
+								
+								
+								<!-- START LEFT table other account -->
+								<!-- 
+								<apex:repeat var="other" value="{!pageCtrl.list_otherFC}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="actRow" value="{!pageCtrl.AcctViewRows}">
+								<tr class="{!if(rowNum = 0, 'cp rt1 uniq_other customother ', 'dn asub')} {!if(rowNum = 0, '', 'customother')}_cls" data-hierarchy="{!if(rowNum = 0, 'root1', '')}" data-num="{!if(rowNum = 0, 'customother_cls', '')}" data-aid="{!if(rowNum = 0, 'customother', '')}" >
+									<td colspan="2">
+										<apex:outputPanel styleClass="t_img a" rendered="{!if(rowNum = 0, true, false)}"></apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide" rendered="{!if(rowNum = 0, true, false)}" layout="block">
+											<span class="cellbox fcell" >+</span>
+											<span class="cellbox scell fixinfoh">{!other.acctName}</span>
+											<span class="reatcls fixinfoh">
+												<b class="countryimg {!other.acctISOCode}" ></b>
+												<b class="fmt_cls" data-code="{!other.acctISOCode}" data-reat=" {!other.currencyRate} "> </b>
+											</span>
+										</apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide leftd_td" rendered="{!if(rowNum != 0, true, false)}" layout="block"></apex:outputPanel>
+									</td>
+
+									<td class="field {!actRow.cls}">{!actRow.name}</td>
+								</tr>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+									</apex:repeat>
+								
+								<apex:variable value="{!0}" var="cbc2num"/>	
+								<apex:repeat var="cbc2" value="{!pageCtrl.CBC2Data}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="cbc2row" value="{!pageCtrl.CBC2ViewRows}">	
+								<tr class="dn {!if(rowNum = 0, 'cp rt2 col ac_bg asub', ' cbc2 ')} {!cbc2.clsName} customother_cls customother_{!cbc2num}{!if(rowNum = 0, '_cbc2_root', '_cbc2')} " data-hierarchy="{!if(rowNum = 0, 'root2', '')}" data-aid="{!if(rowNum = 0, 'customother', '')}" data-num="customother_{!cbc2num}_cbc2" >
+									<td colspan="2" class="pd_1">
+										<apex:outputPanel styleClass="t_img c" rendered="{!if(rowNum = 0, true, false)}"></apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide {!cbc2.clsName}_t" rendered="{!if(rowNum = 0, true, false)}" layout="block">
+											<span class="cellbox fcell fix">+</span>
+											<span class="cellbox fixinfoh cbc_cell" data-cbcname="{!cbc2.code}">{!cbc2.name}</span>
+										</apex:outputPanel>
+										<apex:outputPanel styleClass="ofhide leftd_td" rendered="{!if(rowNum != 0, true, false)}" layout="block"></apex:outputPanel>
+									</td>
+									<td class="field {!cbc2row.cls}">{!cbc2row.name}</td>
+								</tr>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+									</apex:repeat>
+								<apex:variable var="cbc2num" value="{!cbc2num + 1}"/>
+								</apex:repeat>
+								
+								</apex:repeat>
+								 -->
+								<!-- END LEFT table other account -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div id="rCellScroll" class="noTabCell rCellw " style="overflow: auto; ">
+					<div id="rcellbody" style="width: 100%; position: relative; ">
+						<table id="rTabDataId" class="table_fix" border="0" cellspacing="0" cellpadding="0" >
+							<tbody class="rtbodycls overbody" id="rtabid">
+							<!-- 
+								<apex:repeat var="acct" value="{!pageCtrl.list_acctFC}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="actRow" value="{!pageCtrl.AcctViewRows}">
+									<apex:variable var="map_forecast" value="{!pageCtrl.map_acctGroupId_fcViewObj[acct.parentId][actRow.fieldName]}" />
+								<tr class="{!if(rowNum = 0, '', 'dn')}  {!if(or(actRow.fieldName='currentFC', actRow.fieldName='previousFC', actRow.fieldName='posFC', actRow.fieldName='cmaFC'), 'fmt_rcls', '')}">
+									<apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!fd.qtotalCls} " data-value=" {!if(fd.isInput, map_forecast[fd.qLabel], '')} ">
+										<apex:inputText rendered="{!and(fd.isInput, actRow.isInput)}" value="{!inputVal}" styleClass="inputcls" />
+										
+									</td>
+									</apex:repeat>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+								</tr>
+									</apex:repeat>
+								
+								<apex:repeat var="cbc2" value="{!pageCtrl.CBC2Data}">	
+									<apex:repeat var="gplrow" value="{!pageCtrl.CBC2ViewRows}">	
+								<tr class="dn">
+									<apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!fd.qtotalCls}">
+										<apex:inputText rendered="{!and(fd.isInput, gplrow.isInput, cbc2.clsName != 'cls_relay')}" value="{!inputVal}" styleClass="inputcls" />
+									</td>
+									</apex:repeat>
+								</tr>
+									</apex:repeat>
+								</apex:repeat>
+
+								</apex:repeat>
+							 -->
+								
+								<!-- START RIGHT table other account -->
+							<!-- 
+								<apex:repeat var="other" value="{!pageCtrl.list_otherFC}">
+									<apex:variable value="{!0}" var="rowNum"/>
+									<apex:repeat var="actRow" value="{!pageCtrl.AcctViewRows}">
+									<apex:variable var="map_forecast" value="{!pageCtrl.map_acctGroupId_fcViewObj[other.parentId][actRow.fieldName]}" />
+								<tr class="{!if(rowNum = 0, '', 'dn')}  {!if(or(actRow.fieldName='currentFC', actRow.fieldName='previousFC', actRow.fieldName='posFC', actRow.fieldName='cmaFC'), 'fmt_rcls', '')}">
+									<apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!fd.qtotalCls}" data-value=" {!if(fd.isInput, map_forecast[fd.qLabel], '')} ">
+										<apex:inputText rendered="{!and(fd.isInput, actRow.isInput)}" value="{!inputVal}" styleClass="inputcls" />
+									</td>
+									</apex:repeat>
+									<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+								</tr>
+									</apex:repeat>
+									
+								<apex:repeat var="cbc2" value="{!pageCtrl.CBC2Data}">	
+									<apex:repeat var="gplrow" value="{!pageCtrl.CBC2ViewRows}">	
+								<tr class="dn">
+									<apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!fd.qtotalCls}">
+										<apex:inputText rendered="{!and(fd.isInput, gplrow.isInput, cbc2.clsName != 'cls_relay')}" value="{!inputVal}" styleClass="inputcls" />
+									</td>
+									</apex:repeat>
+								</tr>
+									</apex:repeat>
+								</apex:repeat>
+								
+								</apex:repeat>
+							 -->
+								<!-- END RIGHT table other account -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+		<!-- END table body -->
+
+	</div>
+	
+	
+	
+	
+</apex:component>

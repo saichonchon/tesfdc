@@ -1,0 +1,44 @@
+<apex:page standardController="Lead" Extensions="LeadEditDetailController"  TabStyle="Distributor_Lead__tab" sidebar="false">
+
+    <apex:form >
+
+        <apex:pageBlock title="Lead Edit"  id="Block">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!SaveEdit}" value="Save" onclick="return confirm('Once you click on save, you will not be able to make further changes to the lead');"/>
+                <apex:commandButton value="Cancel" onclick="window.location='DistributorLeadListView'; return false;"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Lead Information" collapsible="False" columns="2">
+                <apex:outputField value="{!Lead.Name}" Label="Contact Name"/>
+                <apex:outputField value="{!Lead.Owner.Name}" label="Owner"/>
+                <apex:outputField value="{!Lead.Rating}"/>
+                <apex:outputField value="{!Lead.ROLE__c}"/>
+                <apex:outputField value="{!Lead.Company}"/>
+                <apex:outputField value="{!Lead.title}"/>
+                <apex:outputField value="{!Lead.Email}"/>
+                <apex:outputField value="{!Lead.Phone}"/>
+                <apex:outputField value="{!Lead.MobilePhone}"/>
+                
+                <apex:inputField value="{!Lead.Distributor_Response__c}">
+                <apex:actionSupport event="onchange" reRender="Block"/>
+                </apex:inputField>                                
+
+                <apex:inputField value="{!Lead.Distributor_Status_Reason_Code__c}" rendered="{!Lead.Distributor_Response__c == 'Dead'}"/>
+                
+          </apex:pageBlockSection>   
+          <apex:pageBlockSection title="Address Information" columns="2">
+                    <apex:outputField value="{!Lead.Street}"/>
+                    <apex:outputField value="{!Lead.City}"/>
+                    <apex:outputField value="{!Lead.State}"/>
+                    <apex:outputField value="{!Lead.PostalCode}"/>
+                    <apex:outputField value="{!Lead.Country}"/>
+                    <apex:outputField value="{!Lead.website}"/>
+         </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Additional Information" columns="1">
+                    <apex:inputField value="{!Lead.Distributor_Comments__c}" style="width:30%;"/>
+                    <apex:outputField value="{!Lead.ACTIVITY_NOTES__c}" style="width:30%;"/>
+                    <apex:outputField value="{!Lead.Description}" style="width:30%;"/>
+                    <apex:outputField value="{!Lead.SUGGESTED_SE__c}"/>
+                </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

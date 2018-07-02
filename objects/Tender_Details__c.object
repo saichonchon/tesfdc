@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Comment__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>PAM_Pipeline_overlap_3yr__c</fullName>
+        <description>this field calculates the overlap in months between the 3-year pipeline of linked opportunities to a Tender and the possible PAM period from MSD to End Date</description>
+        <externalId>false</externalId>
+        <formula>/*PAM can match all or part of the 3 year pipeline (3 years is rolling from TODAY). We need to distinguish 4 cases for which manufacturing start date and end date of Tender are considered*/
+
+/*1st Case MSD is before 3 year period, end date is later*/
+
+IF(
+AND(
+Tender__r.Manufacturing_Start_Date__c &lt; TODAY(),
+Tender__r.End_Date__c &gt; TODAY()+1095
+),
+36, /*all 36 months are being considered*/
+
+/*2nd case: MSD is in 3 year period and end date is later */
+
+IF(
+AND(
+AND(
+TODAY()+1095 &gt; Tender__r.Manufacturing_Start_Date__c,
+Tender__r.Manufacturing_Start_Date__c &gt; TODAY()
+),
+Tender__r.End_Date__c &gt; TODAY()+1095
+),
+(YEAR( TODAY()+1095)-YEAR( Tender__r.Manufacturing_Start_Date__c ))*12+MONTH(TODAY()+1095)-MONTH(Tender__r.Manufacturing_Start_Date__c ), /*calculates the months from MSD until end of 3 year period */
+
+/*3rd case: MSD before TODAY and end date in 3 year period */
+
+IF(
+AND(
+AND(
+Tender__r.End_Date__c &lt; TODAY()+1095,
+Tender__r.End_Date__c &gt; TODAY()
+),
+Tender__r.Manufacturing_Start_Date__c &lt; TODAY()
+),
+36-((YEAR( TODAY()+1095)-YEAR(Tender__r.End_Date__c))*12+MONTH(TODAY()+1095)-MONTH(Tender__r.End_Date__c)),
+/*calculates the months between TODAY and End date */
+
+/*4th case: MSD greater TODAY and end date within 3 year period */
+
+IF(
+AND(
+Tender__r.End_Date__c &lt; TODAY()+1095,
+Tender__r.End_Date__c &gt; TODAY(),
+TODAY()+1095 &gt; Tender__r.Manufacturing_Start_Date__c,
+Tender__r.Manufacturing_Start_Date__c &gt; TODAY()
+),
+36-(((YEAR( TODAY()+1095)-YEAR(Tender__r.End_Date__c))*12+MONTH(TODAY()+1095)-MONTH(Tender__r.End_Date__c)) +
+((YEAR( Tender__r.Manufacturing_Start_Date__c)-YEAR( TODAY()))*12+MONTH(Tender__r.Manufacturing_Start_Date__c)-MONTH(TODAY() )))
+,0
+/* calculates the number of months from MSD until end date within the 3 year period */
+
+))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM/Pipeline overlap 3yr</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAM_Pipeline_overlap_5yr__c</fullName>
+        <description>this field calculates the overlap in months between the 5-year pipeline of linked opportunities to a Tender and the possible PAM period from MSD to End Date</description>
+        <externalId>false</externalId>
+        <formula>/*PAM can match all or part of the 5 year pipeline (5 years is rolling from TODAY). We need to distinguish 4 cases for which manufacturing start date and end date of Tender are considered*/
+
+/*1st Case MSD is before 5 year period, end date is later*/
+
+IF(
+AND(
+Tender__r.Manufacturing_Start_Date__c &lt; TODAY(),
+Tender__r.End_Date__c &gt; TODAY()+1825
+),
+60, /*all 60 months are being considered*/
+
+/*2nd case: MSD is in 5 year period and end date is later */
+
+IF(
+AND(
+AND(
+TODAY()+1825 &gt; Tender__r.Manufacturing_Start_Date__c,
+Tender__r.Manufacturing_Start_Date__c &gt; TODAY()
+),
+Tender__r.End_Date__c &gt; TODAY()+1825
+),
+(YEAR( TODAY()+1825)-YEAR( Tender__r.Manufacturing_Start_Date__c ))*12+MONTH(TODAY()+1825)-MONTH(Tender__r.Manufacturing_Start_Date__c ), /*calculates the months from MSD until end of 5 year period */
+
+/*3rd case: MSD before TODAY and end date in 5 year period */
+
+IF(
+AND(
+AND(
+Tender__r.End_Date__c &lt; TODAY()+1825,
+Tender__r.End_Date__c &gt; TODAY()
+),
+Tender__r.Manufacturing_Start_Date__c &lt; TODAY()
+),
+60-((YEAR( TODAY()+1825)-YEAR(Tender__r.End_Date__c))*12+MONTH(TODAY()+1825)-MONTH(Tender__r.End_Date__c)),
+/*calculates the months between TODAY and End date */
+
+/*4th case: MSD greater TODAY and end date within 5 year period */
+
+IF(
+AND(
+Tender__r.End_Date__c &lt; TODAY()+1825,
+Tender__r.End_Date__c &gt; TODAY(),
+TODAY()+1825 &gt; Tender__r.Manufacturing_Start_Date__c,
+Tender__r.Manufacturing_Start_Date__c &gt; TODAY()
+),
+60-(((YEAR( TODAY()+1825)-YEAR(Tender__r.End_Date__c))*12+MONTH(TODAY()+1825)-MONTH(Tender__r.End_Date__c)) +
+((YEAR( Tender__r.Manufacturing_Start_Date__c)-YEAR( TODAY()))*12+MONTH(Tender__r.Manufacturing_Start_Date__c)-MONTH(TODAY() )))
+,0
+/* calculates the number of months from MSD until end date within the 5 year period */
+
+))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM/Pipeline overlap 5yr</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAM_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Tender__r.PAM_Total__c =0,0,
+
+PAM_Total__c /  Tender__r.PAM_Total__c 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM Ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>PAM_TAM_Ratio_per_Product_Line__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( TAM_Total__c = 0,0,
+
+PAM_Total__c /  TAM_Total__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM/TAM Ratio per Product Line</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>PAM_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>PAM Tender Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PAM__c</fullName>
+        <externalId>false</externalId>
+        <label>PAM per carriage</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PAM_in_pipeline_period_3yr__c</fullName>
+        <description>calculates the PAM value for the overlap of Tender period with 3yr pipeline period</description>
+        <externalId>false</externalId>
+        <formula>Tender__r.Average_Cars_per_year__c *  PAM_Pipeline_overlap_3yr__c *  PAM__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM in pipeline period 3yr</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAM_in_pipeline_period_5yr__c</fullName>
+        <externalId>false</externalId>
+        <formula>Tender__r.Average_Cars_per_year__c * PAM_Pipeline_overlap_5yr__c * PAM__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PAM in pipeline period 5yr</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Line__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Line</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Cable Assemblies</fullName>
+                    <default>false</default>
+                    <label>Cable Assemblies</label>
+                </value>
+                <value>
+                    <fullName>Cable Ident</fullName>
+                    <default>false</default>
+                    <label>Cable Ident</label>
+                </value>
+                <value>
+                    <fullName>Datanet &amp; Fiber Optics</fullName>
+                    <default>false</default>
+                    <label>Datanet &amp; Fiber Optics</label>
+                </value>
+                <value>
+                    <fullName>Datanet Connectors &amp;  Fiber Optics</fullName>
+                    <default>false</default>
+                    <label>Datanet Connectors &amp;  Fiber Optics</label>
+                </value>
+                <value>
+                    <fullName>DC Switching Devices</fullName>
+                    <default>false</default>
+                    <label>DC Switching Devices</label>
+                </value>
+                <value>
+                    <fullName>High Voltage</fullName>
+                    <default>false</default>
+                    <label>High Voltage</label>
+                </value>
+                <value>
+                    <fullName>Labeling</fullName>
+                    <default>false</default>
+                    <label>Labeling</label>
+                </value>
+                <value>
+                    <fullName>Magnetics</fullName>
+                    <default>false</default>
+                    <label>Magnetics</label>
+                </value>
+                <value>
+                    <fullName>Plastic/Composite Detail Connectors</fullName>
+                    <default>false</default>
+                    <label>Plastic/Composite Detail Connectors</label>
+                </value>
+                <value>
+                    <fullName>Relays &amp; Contactors</fullName>
+                    <default>false</default>
+                    <label>Relays &amp; Contactors</label>
+                </value>
+                <value>
+                    <fullName>Resistors</fullName>
+                    <default>false</default>
+                    <label>Resistors</label>
+                </value>
+                <value>
+                    <fullName>Ruggedized Connectors</fullName>
+                    <default>false</default>
+                    <label>Ruggedized Connectors</label>
+                </value>
+                <value>
+                    <fullName>Tubing &amp; Molded Parts</fullName>
+                    <default>false</default>
+                    <label>Tubing &amp; Molded Parts</label>
+                </value>
+                <value>
+                    <fullName>Wire &amp; Cable</fullName>
+                    <default>false</default>
+                    <label>Wire &amp; Cable</label>
+                </value>
+                <value>
+                    <fullName>Others</fullName>
+                    <default>false</default>
+                    <label>Others</label>
+                </value>
+                <value>
+                    <fullName>Signal Connectors</fullName>
+                    <default>false</default>
+                    <label>Signal Connectors</label>
+                </value>
+                <value>
+                    <fullName>Datanet &amp; Fiber Optics Connectors</fullName>
+                    <default>false</default>
+                    <label>Datanet &amp; Fiber Optics Connectors</label>
+                </value>
+                <value>
+                    <fullName>Datanet &amp; Fiber Optics Switching</fullName>
+                    <default>false</default>
+                    <label>Datanet &amp; Fiber Optics Switching</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TAM_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Tender__r.TAM_Total__c =0,0,
+
+TAM_Total__c / Tender__r.TAM_Total__c
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>TAM Ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>TAM_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>TAM Tender Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>TAM__c</fullName>
+        <externalId>false</externalId>
+        <label>TAM per Carriage</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Tender__c</fullName>
+        <externalId>false</externalId>
+        <label>Tender</label>
+        <referenceTo>Tender__c</referenceTo>
+        <relationshipLabel>Tender Details</relationshipLabel>
+        <relationshipName>Tender_Details</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Total_PAM__c</fullName>
+        <externalId>false</externalId>
+        <label>Total PAM</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_TAM__c</fullName>
+        <externalId>false</externalId>
+        <label>Total TAM</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Tender Details</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>T-{0000}</displayFormat>
+        <label>Product Line Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Tender Details</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

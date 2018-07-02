@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object contains the different project gates and the defined timelines out of PLM.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Actual__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Customer__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>External_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Contains the external key, built from PLM Id and Gate.
+e.g. PLM Id + &apos;|&apos; + &apos;PROJECT_START&apos;;</description>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Gate_Ordered__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(TEXT(Gate__c),
+&quot;Definition Completion (G1)&quot;, &quot;1. Definition Completion (G1)&quot;,
+&quot;Concept Completion (G2)&quot;, &quot;2. Concept Completion (G2)&quot;,
+&quot;Design Completion (G3)&quot;, &quot;3. Design Completion (G3)&quot;, 
+&quot;Validation Completion (G4)&quot;, &quot;4. Validation Completion (G4)&quot;, 
+&quot;Industrialize Completion (G5)&quot;, &quot;5. Industrialize Completion (G5)&quot;, 
+&quot;Production Completion (G6)&quot;, &quot;6. Production Completion (G6)&quot;,
+&quot;Project Start&quot;, &quot;0. Project Start&quot;,
+&quot;Launch Date&quot;, &quot;7. Launch Date&quot;,
+&quot;Project Completion&quot;, &quot;8. Project Completion&quot;,
+&quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Define Short help text per milestone</inlineHelpText>
+        <label>Gate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Gate__c</fullName>
+        <externalId>false</externalId>
+        <label>Gate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Definition Completion (G1)</fullName>
+                    <default>false</default>
+                    <label>Definition Completion (G1)</label>
+                </value>
+                <value>
+                    <fullName>Concept Completion (G2)</fullName>
+                    <default>false</default>
+                    <label>Concept Completion (G2)</label>
+                </value>
+                <value>
+                    <fullName>Design Completion (G3)</fullName>
+                    <default>false</default>
+                    <label>Design Completion (G3)</label>
+                </value>
+                <value>
+                    <fullName>Validation Completion (G4)</fullName>
+                    <default>false</default>
+                    <label>Validation Completion (G4)</label>
+                </value>
+                <value>
+                    <fullName>Industrialize Completion (G5)</fullName>
+                    <default>false</default>
+                    <label>Industrialize Completion (G5)</label>
+                </value>
+                <value>
+                    <fullName>Production Completion (G6)</fullName>
+                    <default>false</default>
+                    <label>Production Completion (G6)</label>
+                </value>
+                <value>
+                    <fullName>Project Start</fullName>
+                    <default>false</default>
+                    <label>Project Start</label>
+                </value>
+                <value>
+                    <fullName>Launch Date</fullName>
+                    <default>false</default>
+                    <label>Launch Date</label>
+                </value>
+                <value>
+                    <fullName>Project Completion</fullName>
+                    <default>false</default>
+                    <label>Project Completion</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Engineering Milestones</relationshipLabel>
+        <relationshipName>Engineering_Milestones</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Parent__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Parent</label>
+        <referenceTo>Engineering_Milestone__c</referenceTo>
+        <relationshipLabel>Engineering Milestones</relationshipLabel>
+        <relationshipName>Engineering_Milestones</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Planned__c</fullName>
+        <externalId>false</externalId>
+        <label>Planned</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Revised__c</fullName>
+        <externalId>false</externalId>
+        <label>Revised</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>This formula field compares given milestone dates and shows green, amber, red flages.</description>
+        <externalId>false</externalId>
+        <formula>IF(
+	AND(Customer__c &gt;= Planned__c, Revised__c &lt;= Planned__c, Planned__c &lt;= Customer__c), IMAGE(&quot;/img/samples/flag_green.gif&quot;, &quot;green&quot;),
+		IF(
+			AND(Planned__c &lt; Revised__c, Revised__c &lt;= Customer__c), IMAGE(&quot;/img/samples/flag_yellow.gif&quot;, &quot;yellow&quot;),
+				IF(
+					AND(Revised__c &gt; Customer__c, Planned__c &gt; Customer__c), IMAGE(&quot;/img/samples/flag_red.gif&quot;, &quot;red&quot;), &quot;&quot;
+				)
+		)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id,IMAGE(&quot;/img/icon/tasks16.gif&quot;,&quot;View&quot;),&quot;_parent&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>View</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Engineering Milestone</label>
+    <nameField>
+        <displayFormat>EM-{000000}</displayFormat>
+        <label>Engineering Milestone Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Engineering Milestones</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>New_Milestone</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Milestone</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/a0n/e?CF00NM0000000hwYv={!Opportunity.Name}&amp;CF00NM0000000hwYv_lkid={!Opportunity.Id}&amp;retURL={!Opportunity.Id}&amp;saveURL={!Opportunity.Id}</url>
+    </webLinks>
+</CustomObject>

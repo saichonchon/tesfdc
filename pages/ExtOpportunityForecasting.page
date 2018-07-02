@@ -1,0 +1,639 @@
+<!--
+Author:        Yiming Shen <yiming.shen@capgemini.com>
+Description:   A visualforce page class for show Opportunity_Forecast__c records and save changes embedded in Opportunity standard detail page.
+			   The user story number is W-00145.
+Controller class: ExtOpportunityForecasting
+Test Class:    ExtOpportunityForecasting_Test
+History
+2017-07-10 	Yiming Shen <yiming.shen@capgemini.com> created 
+-->
+<apex:page standardController="Opportunity" docType="html-5.0" applyBodyTag="false" extensions="ExtOpportunityForecasting">
+	<head>	 
+		<apex:stylesheet value="{!URLFOR($Resource.ExtOpportunityForecastingCSS)}" />
+		<!--<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />-->
+		<apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNiEnergy)}" />
+		<apex:includeScript value="{!URLFOR($Resource.ExtOpportunityForecastingJs)}" />
+		<style type="text/css">
+		</style>
+		<script type="text/javascript">
+			var oppyProbability = '{!oppyConfidenceLevel}';
+			var currentOpportunityId = '{!currentOppyId}';
+			var thousandSep = "{!str_thousandSep}";
+    		var decimalSep = "{!str_decimalSep}";
+		</script>
+	</head>
+	
+	<body>
+		<div id="loading"></div>
+		<div id="mask"></div>
+		<apex:outputPanel style="position:absolute;top:50%;height:100%;width:100%;font-size:18px;" layout="block" rendered="{!IF(isShowOppyForecast == false, true, false)}">
+		The potential revenue for this end customer is captured on the <a style="margin-left:5px;text-decoration:underline;color:blue;" target="_blank" href="/{!primaryOppy.Id}">{!primaryOppy.Name}</a> opportunity.
+		</apex:outputPanel>
+		<apex:outputPanel layout="block" rendered="{!IF(isShowOppyForecast == true, true, false)}">
+		<div class="oppyForecastCanvas">
+			<button  class="btn_Edit btn" style="margin-right:50px;" onclick="showLoading();openEditMode();hideLoading();">Edit</button>
+			<button  class="btn_Save btn" style="display:none;" onclick="saveOppyForecasts();">Save</button>
+			<button  class="btn" id="btn_UseOppyProbability" style="margin-left:50px;display:none;" title="Copy Confidence Level values from the Opportunity to all the monthly forecasts" onclick="useOppyProbability();">Use Opportunity Confidence Level</button>
+			<apex:form id="theForm">
+				<apex:inputHidden value="{!isRefreshPage}" id="theHiddenInput" />
+				<apex:actionStatus id="save-status" onstart="showLoading();" onstop="hideLoading();"/>
+				<!--<apex:actionFunction action="{!SaveForecastValue}" name="saveOppyForecastsToDatabase" reRender="showMsg,thePanel" status="save-status" oncomplete="openViewMode();hideLoading();">
+				    <apex:param name="oppyForecastsJsonString" assignTo="{!json_OppyForecasts2Save}" value="" />
+				</apex:actionFunction>-->
+				<apex:actionFunction action="{!SaveForecastValue}" name="saveOppyForecastsToDatabase" reRender="theHiddenInput,showMsg" status="save-status" oncomplete="refreshOppyPage();">
+			    	<apex:param name="oppyForecastsJsonString" assignTo="{!json_OppyForecasts2Save}" value="" />
+			    </apex:actionFunction>
+				<apex:actionFunction action="{!initData}" name="reloadData" reRender="showMsg,thePanel" status="save-status" oncomplete="openViewMode();hideLoading();">
+			    </apex:actionFunction>
+				<apex:pageMessages id="showMsg"/> 
+				<div class="tableContainer">
+					<apex:outputPanel id="thePanel" layout="block" rendered="{!IF(AND(list_DetailedOppyForecastWrappers2Show != null, list_DetailedOppyForecastWrappers2Show.size > 0),true,false)}">
+						<table id="theTable" mode="view" class="dataTable">
+							<tr>
+								<td style="width:70px;"></td>
+								<td style="width:70px;"></td>
+								<td style="width:870px;" colspan="6" class="titleAlignStyle">
+									Forecast Amount (USD)
+								</td>
+							</tr>
+							<tr>
+								<td class="textAlignStyle" style="border-bottom:2px #4F4F4F solid;">Month</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;border-bottom:2px #4F4F4F solid;">Quarter</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td class="numberAlignStrongStyle" style="{!IF(detailedOppyForecastWrapper.FiscalYearLabel == TEXT(currentFiscalYear),'border-bottom:2px #4F4F4F solid;','')};width:145px;">
+										{!detailedOppyForecastWrapper.FiscalYearLabel}
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td class="textAlignStyle">
+										<span style="display:inline-block;width:69%;height:100%;border-right:1px #C9C9C9 solid;float:left;padding-top:8px;">
+											Amount
+										</span>
+										<span style="display:inline-block;width:30%;height:100%;float:left;padding-top:8px;">
+											%
+										</span>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr class="yearTotalStyle">
+								<td class="textAlignStyle"></td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;">Total</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td style="">
+<!-- 										<apex:outputText styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 											<apex:param value="{!ROUND(detailedOppyForecastWrapper.YearTotal,0)}" /> -->
+<!-- 										</apex:outputText> -->
+										<apex:outputText styleClass="number_commas_class" value="{!detailedOppyForecastWrapper.YearTotal}"/>
+										<input step="0.01" isAllowEdit="true" disabled="disabled" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeYearlyTotal(this);hideLoading();"  id="{!detailedOppyForecastWrapper.FiscalYearLabel}" class="yearTotalStyle Total_Yearly inputNumberStyle number_nocommas_class" year="{!detailedOppyForecastWrapper.FiscalYearLabel}"  value="{!detailedOppyForecastWrapper.YearTotal}" />
+										<apex:outputPanel styleClass="picklistOutputPanel" layout="inline">
+											<select isAllowEdit="true" class="Select_Yearly yearTotalStyle" onchange="changeTotalYearPercent(this,'{!detailedOppyForecastWrapper.FiscalYearLabel}')" disabled="disabled" value="">
+												<option value=" "></option>
+												<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:repeat>
+											</select>
+										</apex:outputPanel>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr class="quarterTotalStyle">
+								<td class="textAlignStyle"></td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;">Q1 Total</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td style="">
+<!-- 										<apex:outputText styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 											<apex:param value="{!ROUND(detailedOppyForecastWrapper.Q1Total,0)}" /> -->
+<!-- 										</apex:outputText> -->
+										<apex:outputText styleClass="number_commas_class" value="{!detailedOppyForecastWrapper.Q1Total}"/>
+										<input step="0.01" disabled="disabled" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeQuarterlyTotal(this);hideLoading();" id="{!detailedOppyForecastWrapper.FiscalYearLabel}_Q1"  isAllowEdit="{!detailedOppyForecastWrapper.isQ1Editable}" class="quarterTotalStyle Total_Quarterly inputNumberStyle number_nocommas_class" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" quarter="Q1" value="{!detailedOppyForecastWrapper.Q1Total}" />
+										<apex:outputPanel styleClass="picklistOutputPanel" layout="inline">
+											<select isAllowEdit="{!detailedOppyForecastWrapper.isQ1Editable}" class="Select_Quarterly quarterTotalStyle" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" onchange="changeTotalQuarterPercent(this,'{!detailedOppyForecastWrapper.FiscalYearLabel}','Q1');" disabled="disabled" value="">
+												<option value=" "></option>
+												<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:repeat>
+											</select>
+										</apex:outputPanel>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">October</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'October',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'October',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'October',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'October',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">November</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'November',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'November',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'November',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}"  html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'November',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">December</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'December',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'December',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'December',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'December',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr class="quarterTotalStyle">
+								<td class="textAlignStyle"></td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;">Q2 Total</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td style="">
+<!-- 										<apex:outputText styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 											<apex:param value="{!ROUND(detailedOppyForecastWrapper.Q2Total,0)}" /> -->
+<!-- 										</apex:outputText> -->
+										<apex:outputText styleClass="number_commas_class" value="{!detailedOppyForecastWrapper.Q2Total}"/>
+										<input step="0.01" disabled="disabled" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeQuarterlyTotal(this);hideLoading();" id="{!detailedOppyForecastWrapper.FiscalYearLabel}_Q2"  isAllowEdit="{!detailedOppyForecastWrapper.isQ2Editable}" class="quarterTotalStyle Total_Quarterly inputNumberStyle number_nocommas_class" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" quarter="Q2" value="{!detailedOppyForecastWrapper.Q2Total}" />
+										<apex:outputPanel styleClass="picklistOutputPanel" layout="inline">
+											<select isAllowEdit="{!detailedOppyForecastWrapper.isQ2Editable}" class="Select_Quarterly quarterTotalStyle" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" onchange="changeTotalQuarterPercent(this,'{!detailedOppyForecastWrapper.FiscalYearLabel}','Q2');" disabled="disabled" value="">
+												<option value=" "></option>
+												<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:repeat>
+											</select>
+										</apex:outputPanel>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">January</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'January',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'January',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'January',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'January',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">February</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'February',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'February',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'February',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'February',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">March</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'March',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'March',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'March',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'March',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr class="quarterTotalStyle">
+								<td class="textAlignStyle"></td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;">Q3 Total</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td style="">
+<!-- 										<apex:outputText styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 											<apex:param value="{!ROUND(detailedOppyForecastWrapper.Q3Total,0)}" /> -->
+<!-- 										</apex:outputText> -->
+										<apex:outputText styleClass="number_commas_class" value="{!detailedOppyForecastWrapper.Q3Total}"/>
+										<input step="0.01" disabled="disabled" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeQuarterlyTotal(this);hideLoading();" id="{!detailedOppyForecastWrapper.FiscalYearLabel}_Q3"  isAllowEdit="{!detailedOppyForecastWrapper.isQ3Editable}" class="quarterTotalStyle Total_Quarterly inputNumberStyle number_nocommas_class" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" quarter="Q3" value="{!detailedOppyForecastWrapper.Q3Total}" />
+										<apex:outputPanel styleClass="picklistOutputPanel" layout="inline">
+											<select isAllowEdit="{!detailedOppyForecastWrapper.isQ3Editable}" class="Select_Quarterly quarterTotalStyle" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" onchange="changeTotalQuarterPercent(this,'{!detailedOppyForecastWrapper.FiscalYearLabel}','Q3');" disabled="disabled" value="">
+												<option value=" "></option>
+												<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:repeat>
+											</select>
+										</apex:outputPanel>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">April</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'April',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'April',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'April',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'April',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">May</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'May',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'May',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'May',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'May',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle" >June</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'June',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'June',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'June',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'June',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr class="quarterTotalStyle">
+								<td class="textAlignStyle"></td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;">Q4 Total</td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td style="">
+<!-- 										<apex:outputText styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 											<apex:param value="{!ROUND(detailedOppyForecastWrapper.Q4Total,0)}" /> -->
+<!-- 										</apex:outputText> -->
+										<apex:outputText styleClass="number_commas_class" value="{!detailedOppyForecastWrapper.Q4Total}"/>
+										<input step="0.01" disabled="disabled" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeQuarterlyTotal(this);hideLoading();" id="{!detailedOppyForecastWrapper.FiscalYearLabel}_Q4"  isAllowEdit="{!detailedOppyForecastWrapper.isQ4Editable}" class="Total_Quarterly inputNumberStyle number_nocommas_class" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" quarter="Q4" value="{!detailedOppyForecastWrapper.Q4Total}" />
+										<apex:outputPanel styleClass="picklistOutputPanel" layout="inline">
+											<select isAllowEdit="{!detailedOppyForecastWrapper.isQ4Editable}" class="Select_Quarterly quarterTotalStyle" year="{!detailedOppyForecastWrapper.FiscalYearLabel}" onchange="changeTotalQuarterPercent(this,'{!detailedOppyForecastWrapper.FiscalYearLabel}','Q4');" disabled="disabled" value="">
+												<option value=" "></option>
+												<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<option value="{!selectOption.value}">
+														{!selectOption.label}
+													</option>
+												</apex:repeat>
+											</select>
+										</apex:outputPanel>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">July</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'July',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'July',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'July',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'July',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">August</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'August',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'August',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'August',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'August',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+													<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+													<option value="{!selectOption.value}" selected="selected">
+														{!selectOption.label}
+													</option>
+												</apex:outputPanel>
+												<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+												<option value="{!selectOption.value}">
+													{!selectOption.label}
+												</option>
+											</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr>
+								<td class="textAlignStyle">September</td>
+								<td class="textAlignStyle" style="border-right:2px #4F4F4F solid;"></td>
+								<apex:repeat value="{!list_DetailedOppyForecastWrappers2Show}" var="detailedOppyForecastWrapper">
+									<td>
+										<apex:repeat value="{!detailedOppyForecastWrapper.list_MonthlyForecastWrappers}" var="monthlyForecastWrapper">
+<!-- 											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'September',true,false)}" styleClass="number_commas_class" value="{0, number, #,###}"> -->
+<!-- 												<apex:param value="{!ROUND(monthlyForecastWrapper.MonthlyForecastAmount,0)}" /> -->
+<!-- 											</apex:outputText> -->
+											<apex:outputText rendered="{!IF(monthlyForecastWrapper.MonthName == 'September',true,false)}" styleClass="number_commas_class" value="{!monthlyForecastWrapper.MonthlyForecastAmount}"/>
+											<apex:input rendered="{!IF(monthlyForecastWrapper.MonthName == 'September',true,false)}" disabled="true" onfocus="removeNumFormat(this)" onblur="addNumFormat(this)" onchange="showLoading();changeMonthlyTotal(this);hideLoading();" html-monthNum="{!monthlyForecastWrapper.MonthNumber}" html-oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" html-isAllowEdit="{!monthlyForecastWrapper.isEditable}" styleClass="Total_Monthly inputNumberStyle number_nocommas_class" html-year="{!monthlyForecastWrapper.YearName}" html-quarter="{!monthlyForecastWrapper.QuarterName}" value="{!monthlyForecastWrapper.MonthlyForecastAmount}" />
+											<apex:outputPanel styleClass="picklistOutputPanel" layout="inline" rendered="{!IF(monthlyForecastWrapper.MonthName == 'September',true,false)}">
+												<select monthNum="{!monthlyForecastWrapper.MonthNumber}" oppyForecastId="{!monthlyForecastWrapper.OppyForeCastId}" year="{!monthlyForecastWrapper.YearName}" quarter="{!monthlyForecastWrapper.QuarterName}" isAllowEdit="{!monthlyForecastWrapper.isEditable}" class="Select_Monthly" disabled="disabled" style="{!IF(ISBLANK(monthlyForecastWrapper.MonthlyForecastAmount),'display:none;','')}" value="{!IF(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel, monthlyForecastWrapper.ConfidenceLevel)}">
+													<apex:repeat value="{!list_ConfidenceLevelSelectOptions}" var="selectOption">
+														<apex:outputPanel layout="inline" rendered="{!IF(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)), monthlyForecastWrapper.ConfidenceLevel == selectOption.value),true,false)}">
+															<option value="{!selectOption.value}" selected="selected">
+																{!selectOption.label}
+															</option>
+														</apex:outputPanel>
+														<apex:outputPanel layout="inline" rendered="{!IF(AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel == selectOption.value),true,false)}">
+															<option value="{!selectOption.value}" selected="selected">
+																{!selectOption.label}
+															</option>
+														</apex:outputPanel>
+														<apex:outputPanel layout="inline" rendered="{!IF(OR(AND(NOT(ISBLANK(monthlyForecastWrapper.ConfidenceLevel)),monthlyForecastWrapper.ConfidenceLevel != selectOption.value),AND(ISBLANK(monthlyForecastWrapper.ConfidenceLevel), oppyConfidenceLevel != selectOption.value)),true,false)}">
+														<option value="{!selectOption.value}">
+															{!selectOption.label}
+														</option>
+													</apex:outputPanel>
+													</apex:repeat>
+												</select>
+											</apex:outputPanel>
+										</apex:repeat>
+									</td>
+								</apex:repeat>
+							</tr>
+						</table>
+					</apex:outputPanel>
+				</div>
+			</apex:form>
+			<button class="btn btn_Edit" style="margin-right:50px;" onclick="showLoading();openEditMode();hideLoading();">Edit</button>
+			<button class="btn btn_Save" style="display:none;" onclick="saveOppyForecasts();">Save</button>
+			<button id="btn_Cancel" class="btn" style="margin-left:50px;display:none;" onclick="showLoading();reloadData();hideLoading();">Cancel</button>
+		</div>
+		</apex:outputPanel>
+	</body>
+</apex:page>

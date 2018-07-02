@@ -1,0 +1,2205 @@
+<apex:page standardcontroller="Opportunity" title="Qualifier Overview" extensions="ExtOppy_qualifierOverview" showHeader="false" sidebar="false"> 
+<!-- Begin Default Content REMOVE THIS -->
+<!-- End Default Content REMOVE THIS -->
+<link href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.css')}" rel="stylesheet"></link>
+<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.10.2.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.10.4.custom.min.js')}"></script>
+<style type="text/css">
+    .success, .failed, .document, .comment, .edit,   {
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat;
+    }
+    .process-cursor-icon{
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+    }
+      /* {
+        height: 32px;
+        width: 32px;
+        display: inline-block;
+        text-indent: -10000px;
+        vertical-align: top; 
+    } */
+    .accordion-title  .success {
+        background-position: 0 -29px;
+    }
+    .accordion-title{
+        background-position: -40px -29px;
+    }
+    .accordion-title  .failed {
+        background-position: -76px -29px;
+    }
+    .ui-state-active  .success, .ui-state-hover  .success, .ui-state-focus  .success {
+        background-position: -119px -29px;
+    }
+    .ui-state-hover  .process, .ui-state-focus  .process {
+        background-position: -159px -29px;
+    }
+    .ui-state-active  .failed, .ui-state-hover  .failed, .ui-state-focus  .failed {
+        background-position: -197px -29px;
+    }
+    .ui-state-active .step-name, .ui-state-hover .step-name, .ui-state-focus .step-name {
+        color: #fff;
+    }
+    body {
+        font-size: 12px;
+    }
+    .step-name {
+        color: #333333;
+        display: inline-block;
+        font-size: 1.2em;
+        left: 13px;
+        margin-top: 0; 
+        position: relative;
+        top: 5px;
+    }
+    .ques-icon-con {
+        background: none;
+        height: 26px;
+        display: inline-block;
+        position: relative;
+        padding-top: 3px;
+    }
+    .space {
+        background: none;
+        display: inline-block;
+        height: 26px;
+        width: auto;
+        margin-right: 20px;
+    }
+    .ques-icon {
+        height: 26px;
+        width: 26px;
+        display: inline-block;
+        background-color: none;
+    }
+    .ui-state-active .success, .ui-state-hover .success, .ui-state-focus .success {
+        background-position: -176px 0;
+    }
+    .success {
+        background-position: 0 0; 
+    }
+    .ui-state-active .process, .ui-state-hover .process, .ui-state-focus .process {
+        background-position: -237px 0;
+    }
+    .process {
+        background-position: -79px 0;
+    }
+    .ui-state-active .failed, .ui-state-hover .failed, .ui-state-focus .failed {
+        background-position: -207px 0;
+    }
+    .failed {
+        background-position: -40px 0;
+    }
+    .ui-state-active .process-con, .ui-state-hover .process-con, .ui-state-focus .process-con {
+        border-color: #e08f00;
+    }
+    .process-con {
+        background: #fff;
+        width: 215px;
+        height: 15px;
+        display: inline-block;
+        border-radius: 5px;
+        text-align: left;
+        border: 1px solid #c1c1c1;
+        margin: 0px;
+        vertical-align: top;
+        position: relative;
+    }
+    .percent {
+        color: #333;
+        font-size: 14px;
+        font-weight: bold;
+        left: 110px;
+        position: absolute;
+        top: 0;
+    }
+    .process-total{
+        background: #EF110F;
+        width: 100%;
+        height: 5px;
+        margin:5px auto;
+        display: inline-block;
+    }
+    .process-sum {
+        left: 0;
+        line-height: 15px;
+        position: absolute;
+        right: 0;
+        text-align: center;
+        z-index: 2;
+        font-weight: bold;
+    }
+    .process-status.process{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6d311', endColorstr='#c9aa0c',GradientType=0 ); 
+        background: linear-gradient(#f6d311, #c9aa0c);
+    }
+    .process-status.failed{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#da241e', endColorstr='#ab0806',GradientType=0 ); 
+        background: linear-gradient(#da241e, #ab0806);
+    }
+    .process-status {
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4db12', endColorstr='#83b20e',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#c4db12, #83b20e);
+        display: inline-block;
+        height: 15px;
+        border-radius: 4px;
+        position: absolute;
+        z-index: 1;
+    }
+    .process-all{
+        background-color:#DCE8F5;
+        height: 5px;
+    }
+    .process-finished{
+        background-color:#5C7FA8;
+        height: 5px;
+    }
+    .Acc-content{
+        overflow: hidden;
+        border-radius: 4px;
+        border:1px solid #c5c5c5;
+        margin: 0 0 6px;
+        background-color:#fff;
+        box-shadow: 0 2px 12px -9px #000;
+        height: 95px;
+
+    }
+    .content-div {
+        height: 95px;
+    }
+    .question-con {
+        width:61%;
+        float:left;
+        margin: 5px 5% 5px 0;
+
+    }
+    .comment-con {
+        width:6%;
+        float:left;
+        margin: 15px 0 0;
+    }
+    .answer-con {
+        width:24%;
+        float:right;
+        margin: 0;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006a82', endColorstr='#005365',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006a82, #005365);
+        *background: #006a82;
+    }
+    .answer-con .title {
+        margin-right: 18%;
+        float: left;
+        display: inline-block;
+    }
+    .answer-con .date {
+        margin: 7px 0 0 11%;
+        color: #fff;
+        line-height: 39px;
+        display: block;
+    }
+    .answer-con select {
+        float: left;
+        margin: 0 6.5% 0 11%;
+        height: 26px;
+        width: 63%;
+        padding: 4px 0;
+        font-size: 13px;
+        background: #fffffe;
+    }
+    .document{
+        float:right;
+        border-radius: 4px;
+        height: 16px;
+        width: 25px;
+        background-position: -164px -23px;
+    }
+    .document-info{
+        display:none;
+        position:absolute;
+        width:300px;
+        height:100px;
+        top:22%;
+        right:7%;
+        z-index: 111;
+        background-color:#66FFFF;
+    }
+    
+    .accordion-title{
+        background-color:#CFDAEB;
+        background-image:none;
+    }
+    .accordion-content{
+        background-color:#f49d02;
+        background-image:none;
+    }
+    .ques-info {
+        text-align: center;
+        margin-top: -19px;
+    }
+
+
+    .content-div .ques-icon {
+        margin: 0;
+    }
+    .content-div .success {
+        background-position: -266px 0;
+    }
+    .content-div .process {
+        background-position: -323px 0;
+    }
+    .content-div .failed {
+        background-position: -295px 0;
+    }
+    .required {
+        width: 9px;
+        background: ＃fff;/*#b31717;*/
+        float: left;
+        height: 95px;
+        margin-right: 2%;
+    }
+    .no-sel {
+        background: transparent;
+    }
+    .ques-failed {
+        background: #fff;
+    }
+    .comment {
+        height: 28px;
+        width: 42px;
+        background-position: -49px -65px;
+        color: #fff;
+        display: block;
+        margin-right: 2%;
+    }
+    .edit {
+        background-position: -49px -99px;
+        height: 28px;
+        width: 42px;
+        display: block;
+        margin-right: 2%;
+        margin-top: 6px;
+        position: relative;
+    }
+        .doc-list {
+            width: 200px;
+            height: auto;
+            overflow: hidden;
+            margin: 0;
+            padding: 10px;
+            list-style: none;
+            background: #fff;
+            border:1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+        }
+            .doc-list li{
+                float: left;
+                width: 200px;
+                margin: 0;
+                padding: 0;
+                line-height: 24px;
+            }
+    .comment.sel {
+        background-position: 0 -65px;
+    }
+    .edit.sel {
+        background-position: 0 -99px;
+    }
+
+
+
+
+
+
+
+
+    .content{
+        width:100%;
+        height:400px;
+        background-color:#fff;
+        padding-left: 5px;
+        border-radius: 5px;
+        margin-bottom:10px;
+    }
+    .content-left{
+        width:55%;
+        float:left;
+    }
+    .content-right{
+        width:39%;
+        float:left;
+    }
+    .content-left{
+        margin-right:5%;
+    }
+    .fistDate{
+        width:auto;
+        display:inline-block;
+    }
+    .endDate{
+        width:auto;
+        float:right;
+        display:inline-block;
+        color:#EF110F;
+    }
+    .content-left-function{
+        margin:10px 0px 5px;
+        text-align:center;
+    }
+    .content-left-function div{
+        width:auto;
+        height:40px;
+        border-radius: 3px;
+        border:1px solid #EFEDEF;
+        display: inline-block;
+    }
+    .content-left-function div:nth-child(1){
+        float:left;
+    }
+    .content-left-function div:nth-child(3){
+        float:right;
+    }
+    .content-process-con{
+        background-color:#ffffff;
+    }
+    .content-right table{
+        padding-top:10px;
+        padding-bottom:10px;
+        border-top: 1px solid #e9e9e9;
+        border-bottom: 1px solid #e9e9e9;
+    }
+    /* .content-count{
+        font-size:22px;
+        color:#5C7FA8;
+        float:right;
+        display: inline-block;
+    }
+    .content-left-function div > span:nth-child(1){
+        text-align:center;
+        font-size:16px;
+        line-height:40px;
+    }
+    .content-spanIcon2{
+        font-family:Arial;
+        font-weight: bold;
+    }
+    .content-spanIcon2 > span{
+        font-size:20px;
+        color:#5C7FA8;
+    }
+    .content-spanIcon2 > span + span{
+        font-size:20px;
+        color:#E6E5E7;
+    }
+    .content-spanIcon3{
+        font-size:18px;
+    }
+    .content-spanIcon3 > span{
+        color:#EF110F;
+    }
+    .content-spanIcon3 > span + span{
+        color:#E6E5E7;
+    } */
+    .content-left-title, .content-right-title{
+        font-size:20px;
+        margin: 20px auto 15px;
+        position: relative;
+        color: #1b1b1b
+    }
+    /* .content-title-icon1{
+        width:23px;
+        height:23px;
+        display:inline-block;
+        position: absolute;
+        margin-left: 5px;
+        top: 1px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+        background-position: -17px -86px;
+    } */
+
+    .content-right-title select{
+        width:187px;
+        height:24px;
+        border:1px solid #cfcfcf;
+        border-radius: 3px;
+        margin-left: 50px;
+    }
+    .content-title-icon2{
+        width:14px;
+        height:16px;
+        display:inline-block;
+        position: absolute;
+        margin-left: 11px;
+        top: 6px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+        background-position: -54px -93px;
+    }
+    .title-changeColor{
+        color:#005062;
+        font-weight:600;
+    }
+    .title-changeColor + span{
+        display: inline-block;
+        right: 0px;
+        position: absolute;
+        font-size: 26px;
+        margin-top: -5px;
+    }
+    .bottomButton{
+        width:382px;
+        height:34px;
+        float:left;
+        margin-top:15px;
+    }
+    .bottomButton > div{
+        float: left;
+        height: 32px;
+        border-radius: 3px;
+        border: 1px solid #cfcfcf;
+        text-align: center;
+        line-height: 32px;
+        font-weight: bold;
+    }
+    .content-right-button{
+        position: relative;
+        width: 170px;
+        height: 63px;
+        float: right;
+        margin-top:12px;
+    }
+    .content-right-button > div{
+        height:27px;
+        border: 1px solid #cfcfcf;
+        text-align: center;
+        border-radius: 3px;
+        line-height: 27px;
+        font-weight: bold;
+    }
+    .content-left-dates > div + div{
+        margin-left:22px;
+    }
+    .process-content{
+        margin-top: 10px;
+        border-top: 1px solid #e9e9e9;
+        border-bottom: 1px solid #e9e9e9;
+        height:116px;
+        position: relative;
+    }
+    .process-startDate{
+        border: 1px solid #cfcfcf;
+        border-radius: 3px;
+        height:37px;
+        width:78px;
+        display:inline-block;
+        margin-top:40px;
+        float:left;
+        padding-left: 7px;
+        line-height: 17px;
+    }
+    .process-div{
+        float: left;
+        height: auto;
+        width: 430px;
+        position:relative;
+    }
+    .process-mainPart{
+        height:24px;
+        float:left;
+        display:inline-block;
+        margin-top:47px;
+        width: 430px;
+    }
+    .process-projectedDate{
+        width:430px;
+        height:24px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c80000', endColorstr='#a71928',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#c80000, #a71928);
+        position: relative;
+    }
+    .process-small{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006d85', endColorstr='#295264',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006d85, #295264);
+        position: absolute;
+        z-index:4;
+        width:83%;
+        height:6px;
+        bottom:0px;
+    }
+    .process-plan{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcd810', endColorstr='#93ca04',GradientType=0 );
+        background: linear-gradient(#bcd810, #93ca04);
+        position: absolute;
+        z-index:2;
+        width:80%;
+        height:24px;
+        bottom: 0;
+    }
+    .process-white{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e6e6e6',GradientType=0 );
+        background: linear-gradient(#ffffff, #e6e6e6);
+        position: absolute;
+        z-index:3;
+        width:80%;
+        height:23px;
+        border-top:1px solid #d3d3d3;
+        bottom: 0;
+    }
+    .process-pointer1{
+        position: absolute;
+        right:0px;
+        height:24px;
+        width:3px;
+        z-index:10;
+        background:#3a3a3a;
+        bottom: 0;
+    }
+    .process-pointer2{
+        position: absolute;
+        left:80%;
+        height:24px;
+        width:3px;
+        z-index:8;
+        background:#3a3a3a;
+        bottom: 0;
+    }
+    .process-topInfo{
+        width: 62px;
+        text-align: center;
+        left: 80%;
+        position: absolute;
+        margin-left: -30px;
+        margin-top: 18px;
+        line-height: 17px;
+    }
+    .process-topInfo-icon{
+        width:12px;
+        height:12px;
+        display: inline-block;
+        margin-left: 2px;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+        background-position: -239px -67px;
+    }
+    .process-bottomInfo{
+        text-align: center;
+        right: 0;
+        position: absolute;
+        margin-top: 71px;
+        width: 70px;
+        line-height: 17px;
+        margin-left: -35px;
+    }
+    .process-bottomInfo-icon{
+        width:9px;
+        height:12px;
+        margin-left: 2px;
+        display: inline-block;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+        background-position: -84px -67px;
+    }
+    
+    .process-font{
+        position: absolute;
+        width:32px;
+        height:22px;
+        top: 47px;
+        right: -36px;
+        text-align: center;
+        line-height: 22px;
+        font-weight: bold;
+        border-top:1px solid #cfcfcf;
+        border-right:1px solid #cfcfcf;
+        border-bottom:1px solid #cfcfcf;
+    }
+    .process-fontColor-Red{
+        color:#ba0009;
+    }
+    .process-fontColor-Green{
+        color:#77a700;
+    }
+    .bottomButton-projected{
+        position: relative;
+        width: 148px;
+        text-align: left !important;
+        padding-left: 6px;
+    }
+    .bottomButton-dealSize{
+        position: relative;
+        width: 94px;
+        text-align: left !important;
+        padding-left: 13px;
+        margin-left:7px;
+    }
+    .bottomButton-health{
+        position: relative;
+        width: 77px;
+        text-align: left !important;
+        padding-left: 14px;
+        margin-left:8px;
+    }
+    .bottomButton-closedDead{
+        width:80px;
+        height:27px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        cursor:pointer;
+        white-space: nowrap;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d8d8d8',GradientType=0 ); 
+        background: linear-gradient(#fff, #d8d8d8);
+        color: #1b1b1b;
+        float: left;
+    }
+    .bottomButton-closedLost{
+        width:80px;
+        height:27px;
+        cursor:pointer;
+        position: relative;
+        white-space: nowrap;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d8d8d8',GradientType=0 ); 
+        background: linear-gradient(#fff, #d8d8d8);
+        color: #1b1b1b;
+        float: left;
+    }
+    
+    .bottomButton-onHold{
+        width:69px;
+        height:27px;
+        position: relative;
+        margin-left:5px;
+        cursor:pointer;
+        white-space: nowrap;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d8d8d8',GradientType=0 ); 
+        background: linear-gradient(#fff, #d8d8d8);
+        color: #1b1b1b;
+        float: right;
+    }
+    .bottomButton-reactivate{
+        width:69px;
+        height:27px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        cursor:pointer;
+        white-space: nowrap;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00728b', endColorstr='#004150',GradientType=0 ); 
+        background: linear-gradient(#00728b, #004150);
+        color: #ffffff;
+        border:1px solid #005062 !important;
+        float: right;
+    }
+    
+    .closedLost-hiddenDiv{
+        width:80px;
+        position: absolute;
+        opacity: 0.6;
+        filter:alpha(opacity=60);
+        z-index: 30;
+        background-color: #fff;
+        top: 0px;
+        left: 0px;
+        display:none;
+    }
+    .closedDead-hiddenDiv{
+        width:80px;
+        position: absolute;
+        opacity: 0.6;
+        filter:alpha(opacity=60);
+        z-index: 30;
+        background-color: #fff;
+        bottom: 0px;
+        left: 0px;
+        display:none;
+    }
+    .onHold-hiddenDiv{
+        width:69px;
+        position: absolute;
+        opacity: 0.6;
+        filter:alpha(opacity=60);
+        z-index: 30;
+        background-color: #fff;
+        top: 0px;
+        right: 0px;
+        display:none;
+    }
+    .reactivate-hiddenDiv{
+        width:69px;
+        position: absolute;
+        z-index: 30;
+        color:#a4a4a4;
+        border:1px solid #ececec;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f0f0f0',GradientType=0 ); 
+        background: linear-gradient(#ffffff, #f0f0f0);
+        right: 0px;
+        bottom: 0px;
+        display:none;
+    }
+    .bottomButton-closedDead:hover, .bottomButton-closedLost:hover, .bottomButton-onHold:hover{
+        color:#015ba7;
+    }
+    .bottomButton-buttonDiv{
+        text-align: right;
+    }
+/*     .bottomButton-buttonDiv input{
+        color: #222;
+        border: 1px solid #c3c3c3;
+        border-color: #c3c3c3 #aaa #909090;
+        font-weight: bold;
+        text-decoration: none;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        background: #f0f0f0;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f0f0f0',GradientType=0 ); 
+        background: -moz-linear-gradient(#fff,#f0f0f0);
+        background: -webkit-linear-gradient(#fff,#f0f0f0);
+        background: -ms-linear-gradient(#fff,#f0f0f0);
+    } */
+    
+    
+    .bottomButton-projected span, .bottomButton-dealSize span, .bottomButton-health span{
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/teamviewIcon.png')}) no-repeat;
+        position: absolute;
+        top: 4px;
+        margin-left: 6px;
+    }
+    .projected-Production{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -5px -118px !important;
+    }
+    .projected-Below{
+        width: 25px;
+        height: 20px;
+        display: inline-block;
+        background-position: -34px -119px !important;
+    }
+   .projected-Good{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -69px -117px !important;
+    }
+    .projected-Won{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -95px -119px !important;
+    }
+    .projected-onHold{
+        width:20px;
+        height:20px;
+        display: inline-block;
+        background-position: -116px -119px !important;
+    }
+    .projected-Dead {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+		background-position: -255px -115px !important;
+	}
+    
+    /* .size-1{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -61px -49px !important;
+    } 
+    .size-3{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -98px -49px;
+    }
+    .size-5{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -134px -49px !important;
+    } */
+    .size-3{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -169px -49px !important;
+    }
+    .size-1{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -231px -50px !important;
+    }
+    .size-2{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -262px -50px !important;
+    }
+    .health-Green{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -151px -115px !important;
+    }
+    .health-Yellow{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -186px -115px !important;
+    }
+    .health-Red{
+        width:22px;
+        height:22px;
+        display: inline-block;
+        background-position: -222px -115px !important;
+    }
+    
+
+
+    /* .drow-round{
+        width:10px;
+        height:10px;
+        border-radius:15px;
+        border:4px solid #DCE8F5;
+        background-color:#5C7FA8;
+        margin-top: 25px;
+        margin-left: -1px;
+        position: absolute;
+    }
+    .drow-round:nth-child(2){
+        margin-top:25px;
+        right: -5px;
+    } */
+    .process-fontColor-white{
+        color:#ffffff;
+    }
+    .process-status-low {
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FEC842', endColorstr='#FFAA19',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#FEC842, #FFAA19);
+    }
+    .process-cursor{
+        color: #5C7FA8;
+        left: 58.4%;
+        margin-left: -16px;
+        position: relative;
+    }
+    .process-cursor-icon{
+        width:12px;
+        height:9px;
+        background-position: -223px -27px;
+        display: block;
+        -moz-transform:rotate(90deg);
+        -webkit-transform:rotate(90deg);
+        -o-transform:rotate(90deg);
+        margin-left: 10px;
+    }
+    .content-table thead tr{
+        line-height: 30px;
+    }
+    .content-table thead tr td span{
+        font-weight:600;
+        font-size:15px;
+    }
+    .content-tableth1{
+        padding-left:15px;
+    }
+    .content-table tbody tr{
+        line-height: 25px;
+    }
+    .content-table-nametd{
+        width:41%;
+    }
+    .table-title-icon{
+        width:24px;
+        height:19px;
+        display: none;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/SalesStage.png')});
+    }
+    .table-changeColor span{
+        display:inline-block;
+    }
+    .buyerStage-icon{
+        width:24px;
+        height:19px;
+        display: none;
+        background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/BuyerStage.png')});
+    }
+    .table-BuyerCycle span{
+        display:inline-block;
+    }
+    
+    .title-count-part{
+        position: relative;
+    }
+    .ui-accordion .ui-accordion-header .set-right {
+        right: 0.5em;
+        margin-top: -11px;
+        position: absolute;
+        top: 50%;
+    }
+    
+    .ui-state-default .set-right {
+        background-position: -118px 0;
+    }
+    .ui-state-active .set-right {
+        background-position: -147px 0;
+    }
+    .ques-content{
+        background: #fff;   
+        padding: 6px;
+    }
+    #doc-con {
+        display: none;
+        overflow: hidden;
+        position: absolute;
+        z-index: 1;
+    }
+    #doc-con .doc-list {
+        display: block;
+    }
+    
+    
+    /*---- Mask ----**/
+    #mask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        z-index: 80;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        background-position: 50% 20%;
+        background-image: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/loading32.gif')});
+        filter: alpha(opacity = 85);
+        opacity: .85;
+        display: none;
+    }
+    #progressbar {
+        position: relative;
+        top: 50%;
+        margin-top: 30px;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        display: none;
+    }
+    /*---- Mask ----**/ 
+    #tabs {
+        width: 1010px;
+        border-width:0px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    #tabs > ul {
+        border-collapse: collapse;
+        content: "";
+        display: table;
+    }
+    #tabs > ul li {
+        list-style: none;
+        float: left;
+        position: relative;
+        top: 0;
+        margin: 1px 10px 0 0;
+        border-bottom-width: 0;
+        padding: 0;
+        white-space: nowrap;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d8d8d8',GradientType=0 ); 
+        background: linear-gradient(#fff, #d8d8d8);
+        color: #1b1b1b;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 168px;
+    }
+    #tabs > ul li.sel {
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e3e3e', endColorstr='#272727',GradientType=0 ); 
+        background: linear-gradient(#3e3e3e, #272727);
+        color: #cfcfcf;
+        border: 0;
+        border-top: 1px solid #3e3e3e;
+        border-bottom: 1px solid #272727;
+    }
+    #tabs > ul li.sel a {
+        color: #fff;
+    }
+    #tabs > ul li a {
+        float: left;
+        padding: .5em 0;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    #tabs > ul li a span {
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+    }
+    #tabs > ul li div{
+        width: 175px;
+        height: 66px;
+        top: -1px;
+        left: -1px;
+        position: absolute;
+        z-index: 11;
+        filter: alpha(opacity=70);
+        -moz-opacity: 0.7;
+        opacity: 0.7;
+        background: #ffffff;
+    }
+     /* .closedDead-content, .closedLost-content, .onHold-content{
+        width:420px;
+        height:auto;
+        border-radius: 4px;
+        z-index: 601;
+        position: absolute;
+        top: 30%;
+        left: 40%;
+        display:none;
+    }
+    .content-main{
+        float:left;
+        width:400px;
+    } */
+    
+    #popup-back{
+        opacity: 0.3;
+        filter:alpha(opacity=30);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 60;
+        background-color: #000;
+        border: none;
+        width:100%;
+        height:100%;
+        display:none;
+    }
+    
+    
+    
+    
+    .informationBox-top1{
+        width: 200px;
+        height: auto;
+        position: absolute;
+        margin-left: -64px;
+        z-index: 40;
+        display:none;
+    }
+    .informationBox-top2{
+        width: 200px;
+        height: auto;
+        position: absolute;
+        margin-left: -50px;
+        z-index: 40;
+        display:none;
+    }
+    .informationBox-top3{
+        width: 200px;
+        height: auto;
+        position: absolute;
+        margin-left: -163px;
+        z-index: 40;
+        display:none;
+    }
+    .informationBox-bottom{
+        width: 200px;
+        height: auto;
+        position: absolute;
+        margin-left: -60px;
+        z-index: 40;
+        display:none;
+    }
+    
+    
+    .arrow-top1{
+        position: relative;
+        width: 20px;
+        height: 20px;
+        margin: 0 0 0 85px;
+    }
+    .arrow-top2{
+        position: relative;
+        width: 20px;
+        height: 20px;
+        margin: 0 0 0 85px;
+    }
+    .arrow-top3{
+        position: relative;
+        width: 20px;
+        height: 20px;
+        margin: 0 0 0 160px;
+    }
+    .arrow-bottom{
+        position: relative;
+        width: 20px;
+        height: 20px;
+        margin: 0 0 0 85px;
+    }
+    .arrow-border, .arrow-content{
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        border: 8px solid #136272;
+    }
+    .arrow-bottom .arrow-border, .arrow-bottom .arrow-content{
+        border-style: dashed dashed solid dashed;
+        position: absolute;
+        top: 4px;
+    }
+    .arrow-top1 .arrow-border, .arrow-top2 .arrow-border, .arrow-top3 .arrow-border {
+        border-color: #136272 transparent transparent transparent;
+    }
+    .arrow-top1 .arrow-content, .arrow-top2 .arrow-content, .arrow-top3 .arrow-content {
+        border-color: #ffffff transparent transparent transparent;
+        position: absolute;
+        top: -1px;
+    }
+    .arrow-bottom .arrow-border {
+        border-color: transparent transparent #136272 transparent;
+    }
+    .arrow-bottom .arrow-content {
+        border-color: transparent transparent #ffffff transparent;
+        position: absolute;
+        top: 5px;
+    }
+    .informationBox-content{
+        width:183px;
+        min-height: 60px;
+        border:1px solid #136272;
+        border-radius: 6px;
+        background:#ffffff;
+        padding: 2px 3px;
+    }
+    .informationBox-top3 .informationBox-content div{
+        max-height:89px;
+        overflow:auto;
+    }
+    .informationBox-bottom .informationBox-content{
+        padding-bottom:7px;
+    }
+    .informationBox-content h1{
+        margin: 12px 0px 3px 0px;
+        display: block;
+    }
+    
+    /* .arrow-button{
+        position: relative;
+        width: 20px;
+        height: 20px;
+        margin: 15px 0 0 0;
+        float:left;
+    }
+    .arrow-Triangle{
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        border-width: 10px;
+        border-style: dashed solid dashed dashed;
+        border-color: transparent #006176 transparent transparent;
+    } */
+    .buttonPopup-closeLost{
+        width:436px;
+        height:340px;
+        position: absolute;
+        z-index: 65;
+        left: 35%;
+        top: 14%;
+        display:none;
+    }
+    .buttonPopup-onHold{
+        width:344px;
+        height:278px;
+        position: absolute;
+        z-index: 65;
+        left: 35%;
+        top: 15%;
+        display:none;
+    }
+    .buttonPopup-closeDead{
+        width:436px;
+        height:295px;
+        position: absolute;
+        z-index: 65;
+        left: 35%;
+        top: 15%;
+        display:none;
+    }
+    .buttonPopup-reactivate{
+        width:323px;
+        height:249px;
+        position: absolute;
+        z-index: 65;
+        left: 35%;
+        top: 15%;
+        display:none;
+    }
+    .requiredInput {
+        height: 100%;
+        position: relative;
+    }
+    .requiredInput .requiredBlock {
+        background-color: rgb(204, 0, 0);
+        bottom: 1px;
+        left: -4px;
+        position: absolute;
+        top: 1px;
+        width: 3px;
+    }
+    .closeLost-content{
+        width:416px;
+        height:auto;
+        float:left;
+    }
+    .onHold-content{
+        width:324px;
+        height:auto;
+        float:left;
+    }
+    .closeDead-content{
+        width:416px;
+        height:auto;
+        float:left;
+    }
+    .reactivate-content{
+        width:303px;
+        height:auto;
+        float:left;
+    }
+    .buttonPopup-content-title{
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c6b80', endColorstr='#006176',GradientType=0 ); 
+        background: linear-gradient(#0c6b80, #006176);
+        height:41px;
+        width:100%;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .buttonPopup-content-title span{
+        padding-left:16px;
+        color:#ffffff;
+        font-weight:bold;
+        font-size:16px;
+        line-height:41px;
+    }
+    .reactivate-content{
+        border-radius: 4px;
+        box-shadow: 0px 0px 60px #afafaf;
+    }
+    .buttonPopup-main{
+        background:#ffffff;
+        height:100%;
+    }
+    .buttonPopup-main-centent{
+        padding: 20px 10px 0px 20px;
+    }
+    .buttonPopup-main-centent table th{
+        padding-right: 30px;
+    }
+    .buttonPopup-button{
+        margin: 15px 13px 0px auto;
+        text-align: right;
+        padding-bottom: 14px;
+    }
+    .closedLost-button-cancel, .closedDead-button-cancel, .onHold-button-cancel, .reactivate-button-cancel{
+        height:28px;
+        border:1px solid #cfcfcf;
+        padding: 0px 12px;
+        border-radius: 6px;
+        line-height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#fefefe, #d9d9d9);
+    }
+    .closedLost-button-ok, .closedDead-button-ok, .onHold-button-ok, .reactivate-button-ok{
+        height:28px;
+        border:1px solid #da8d00;
+        padding: 0px 12px;
+        border-radius: 6px;
+        line-height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        color:#ffffff;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9b30f', endColorstr='#ef8f03',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#f9b30f, #ef8f03);
+    }
+    .error-message{
+        display: none;
+        border-color: #f00;
+    }
+    .error-container{
+        max-width: 375px;
+    }
+    .error-container * {
+        white-space: normal;
+    }
+    
+    input[type="button"]{
+        cursor:pointer;
+    }
+    
+    .buttonPopup-main-centent textarea{
+        width: 266px;
+        height: 63px;
+        margin:2px;
+    }
+    .buttonPopup-closeLost .lookupInput input{
+        width:251px;
+    }
+    .buttonPopup-closeLost select, .buttonPopup-closeDead select{
+        width:273px;
+    }
+    .container {
+        height: 700px;
+        width: 100%;
+        overflow: auto;
+        position: relative;
+    }
+    
+
+    .error-popup{
+        width:400px;
+        z-index: 61;
+        text-align: center;
+        background:#ffffff;
+        position: absolute;
+        border-radius: 4px;
+        margin-left: -205px;
+        left:50%;
+        top:30%;
+        display:none;
+    }
+    .popup-title{
+        width:100%;
+        height:41px;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006a82', endColorstr='#005467',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#006a82, #005467);
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        text-align: left;
+    }
+    .popup-title span {
+        display: inline-block;
+        color: #ffffff;
+        line-height: 41px;
+        padding-left: 14px;
+        font-weight: bold;
+    }
+    .error-popup p{
+        font-weight: bold;
+        color:red;
+        padding: 10px 10px;
+    }
+    .error-button{
+        height:28px;
+        border:1px solid #da8d00;
+        padding: 0px 12px;
+        border-radius: 6px;
+        line-height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        color:#ffffff;
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9b30f', endColorstr='#ef8f03',GradientType=0 ); /* IE6-9 */
+        background: linear-gradient(#f9b30f, #ef8f03);
+        margin-bottom: 10px;
+        cursor:pointer;
+    }
+</style>
+<script type="text/javascript">
+    //var oppy = "";
+    //if("{!jsonString}".length <= 0){
+        //$("#tabs").hide();
+    //}else{
+    var oppy = {!jsonString};
+    //}
+    
+    //var oppy = {"startDateString":"13.02.2014","startDate":"2014-02-13","questionNum":8,"projectCloseDateString":"28.02.2014","projectCloseDate":"2014-02-28","oppyProgress":0,"list_clsStages":[{"stageName":"Won - Open","prograss":0,"isCurrentStage":true},{"stageName":"Won - Closed","prograss":0,"isCurrentStage":false},{"stageName":"New Opportunity","prograss":0,"isCurrentStage":false}],"currentDateString":"24.02.2014","currentDate":"2014-02-24","color":"red","closeDateString":"29.03.2014","closeDate":"2014-03-29","answerNum":0};
+    //========= Show and hide the mask ==============//
+    function showMask() {
+        $("#mask").show();
+        $("#mask").css({
+            visibility : 'visible'
+        }); 
+        //$j( "#progressbar" ).progressbar({ disabled: true });
+        /*$j("#progressbar").progressbar({
+          value: 0
+        });*/
+    }
+    //Hide the mask.
+    function hideMask() {
+        $("#mask").css({
+            visibility : 'hidden'
+        });
+        $("#mask").hide();
+    }
+    //show the error infomation.
+    var showError = function(str){
+        if(str){
+        $(".buttonPopup-onHold").hide();
+        $(".buttonPopup-closeLost").hide();
+        $(".buttonPopup-closeDead").hide();
+        $(".buttonPopup-reactivate").hide();
+        $("#popup-back, .error-popup").show();
+        $(".error-popup p").html(str);
+        }
+        else{
+           return false;
+        }
+    }
+
+    //========= Show and hide the mask ==============//
+    var reloadPage = function(){
+                if(window.self ==window.top){
+                    var lc = window.location.href;
+                    lc = lc.replace('mode=edit','mode=view');
+                    window.location.href = lc;
+                }else{
+                    parent.location.href='/{!opportunity.id}';
+                }                        
+    }
+    var getDateSec = function(date, str) { 
+        var arr = date.split(str);
+        if(arr[1].length > 1 && arr[1][0] == 0) {
+            arr[1] = arr[1][1];
+        }
+        return new Date(arr[0], parseInt(arr[1]) - 1, arr[2]).getTime();
+    }
+    var getProcessBar = function() {
+        if(!oppy.projectCloseDate) {
+            $("#tabs").html("");
+            $("#popup-back, .error-popup").show();
+            $(".error-popup p").html("{!$Label.PMV_over_lab_close_date_error}");
+            return false;
+        }
+        if(oppy.isOnHold) {
+            $(".buttonPopup-reactivate .buttonPopup-main-centent p").html("{!$Label.PMV_over_lab_reactivate_popup_info1}");
+        } else {
+            $(".buttonPopup-reactivate .buttonPopup-main-centent p").html("{!$Label.PMV_over_lab_reactivate_popup_info2}");
+        }
+        var startDate = getDateSec(oppy.startDate, "-"),currentDatePercent = 0, projectCloseDate = Math.abs(getDateSec(oppy.projectCloseDate, "-") - startDate), currentDate = Math.abs(getDateSec(oppy.currentDate, "-") - startDate), closeDate = Math.abs(getDateSec(oppy.closeDate, "-") - startDate);
+        var closeDatePercent = projectCloseDate != 0 ? Math.round((closeDate * 100)/projectCloseDate) : 100;
+        var projectCloseDatePercent = closeDate != 0 ? Math.round((projectCloseDate * 100)/closeDate) : 100;
+        var delayDay = (currentDate - closeDate)/(24 * 60 * 60 * 1000);
+        var behindDay = Math.round(Math.abs((projectCloseDate - closeDate)/(24 * 60 * 60 * 1000)));
+        if(closeDatePercent >= 100){
+            $(".process-plan").css("width", "100%");
+            $(".process-pointer2, .process-topInfo").css("left", "100%");
+            $(".process-projectedDate, .process-white").css("width", projectCloseDatePercent + "%");
+            $(".process-pointer1, .process-bottomInfo").css("left", projectCloseDatePercent + "%");
+            $(".process-font span").addClass("process-fontColor-Green");
+            if(closeDate !== 0) {
+            	currentDatePercent = Math.round((currentDate * 100)/closeDate);
+            } else {
+            	currentDatePercent = 100;
+            }
+        } else {
+            $(".process-plan, .process-white").css("width", closeDatePercent + "%");
+            $(".process-pointer2, .process-topInfo").css("left", closeDatePercent + "%");
+            $(".process-projectedDate").css("width", "100%");
+            $(".process-pointer1, .process-bottomInfo").css("left", "100%");
+            if(projectCloseDate !== 0) {
+            	currentDatePercent = Math.round((currentDate * 100)/projectCloseDate);
+            } else {
+            	currentDatePercent = 100;
+            }
+            $(".process-font span").removeClass("process-fontColor-Green");
+        }
+        if(!oppy.reactivate) {
+            $(".closedLost-hiddenDiv, .closedDead-hiddenDiv, .onHold-hiddenDiv").hide();
+            $(".reactivate-hiddenDiv").show();
+        } else {
+            $(".closedLost-hiddenDiv, .closedDead-hiddenDiv, .onHold-hiddenDiv").show();
+            $(".reactivate-hiddenDiv").hide();
+        }
+        if(oppy.isOnHold) {
+            $(".closedLost-hiddenDiv, .closedDead-hiddenDiv").hide();
+        }
+        if(currentDatePercent > 100)
+            currentDatePercent = 100;
+        $(".process-small").css("width", currentDatePercent + "%");
+        if(!oppy.buyingCycle){
+            oppy.buyingCycle = "";
+        }
+        $(".content-right-title select option").text(oppy.buyingCycle);
+        if(oppy.overallHealthStatus=="good"){
+            $(".bottomButton-health span").addClass("health-Green");
+        }
+        else if(oppy.overallHealthStatus=="medium"){
+            $(".bottomButton-health span").addClass("health-Yellow");
+        }
+        else if(oppy.overallHealthStatus=="bad"){
+            $(".bottomButton-health span").addClass("health-Red");
+        }
+        $(".informationBox-top2 span").html(oppy.overallHealthComment);
+        var strCycleComment = oppy.buyingCycleComment != null ? oppy.buyingCycleComment.replace(/\n/g, "<br />") : "";
+        
+        $(".informationBox-top3 span").html(strCycleComment);
+        $(".criteria-num").html(oppy.countCriteria + " Criteria");
+        $(".political-num").html(oppy.countPoliticalMaps + " Contacts");
+        $(".bottomButton-projected span").addClass(oppy.projectedToCloseCls);
+        $(".startDate span, .process-startDate span").html(oppy.startDateString); 
+        $(".closeDate span").html(oppy.closeDateString); 
+        $(".proCloseDate span").html(oppy.projectCloseDateString); 
+        $(".process-bottomInfo span").eq(1).html(oppy.projectCloseDateString);
+        $(".process-topInfo span").eq(0).html(oppy.closeDateString);
+        $(".content-left-title span").eq(1).html(oppy.currentStageName);
+        $(".content-left-title span").eq(2).html(oppy.oppyProgress +"%");
+        $(".ans-ques").html(oppy.answerNum+"/"+oppy.questionNum + " Answers");
+        if(delayDay > 0){
+            $(".timeDelay span").eq(1).html(delayDay+" days");
+        } else {
+            $(".timeDelay").hide();
+        } 
+        //if(behindDay > 0){
+            $(".process-font span").html(behindDay);
+        //} else {
+        //  $(".content-left-warning").hide();
+        //}
+        if(oppy.color && oppy.color!=null && oppy.color != "") {
+            $(".bottomButton-dealSize span").addClass(oppy.color);
+        }else{
+            $(".bottomButton-dealSize span").remove();
+            $(".bottomButton-dealSize h1").after("<label style=\"display: block; width: 160px; color: red;\">{!$Label.PMV_over_configuration_not_complete}</label>");
+        }
+        if(oppy.errorMsg){
+            $(".error-message").show();
+            $(".messageCon").html(oppy.errorMsg);
+        }
+    }
+    var getStageList = function() {
+        var stageList = oppy.list_clsStages, html = "", currentStage = "", status = " success";
+        for(var i = 0; i < stageList.length; i++) {
+            var stage = stageList[i], setColor = "", currentBuyer = "",buyerStyle="",stageStyle="";
+            if(stage.isCurrentStage || stage.isBuyerCycle) {
+                if(stage.isCurrentStage){
+                    currentStage += "<span class=\"table-title-icon\"></span>";
+                    stageStyle = " class=\"table-changeColor\"";
+                }
+                if(stage.isBuyerCycle){
+                    currentBuyer += "<span class=\"buyerStage-icon\"></span>";
+                    buyerStyle = " class=\"table-BuyerCycle\"";
+                }
+            } else {
+                currentStage = "";
+            }
+            if(parseInt(stage.prograss) <= parseInt(stage.threshold))
+                status = " failed";
+            if(parseInt(stage.prograss) > parseInt(stage.threshold) && parseInt(stage.prograss) < 100)
+                status = " process";
+            if(parseInt(stage.prograss) === 100)
+                status = " success";
+            //if(parseInt(stage.prograss) > 60)
+            //    setColor = " process-fontColor-white";
+            html += "<tr>"+
+                    "       <td"+buyerStyle+">"+currentBuyer+"</td>"+
+                    "       <td"+stageStyle+">"+currentStage+"</td>"+
+                    "       <td class=\"content-table-nametd\"><span>"+stage.stageName+":</span>"+
+                    "       </td>"+
+                    "       <td>"+
+                    "           <span class=\"process-con content-process-con\">"+
+                    "               <span class=\"process-sum"+setColor+"\">"+stage.prograss+"%</span>"+
+                    "               <span style=\"width:"+stage.prograss+"%\" class=\"process-status"+status+"\"></span>"+
+                    "           </span>"+
+                    "       </td>"+
+                    "   </tr>";
+        }
+        $(".content-right table tbody").html(html);
+    }
+    var getHtml = function(){
+        getStageList();
+        getProcessBar();
+    }
+    //========= Show and hide the mask ==============//
+    function showMask() {
+        $("#mask").show();
+        $("#mask").css({
+            visibility : 'visible'
+        }); 
+        //$j( "#progressbar" ).progressbar({ disabled: true });
+        /*$j("#progressbar").progressbar({
+          value: 0
+        });*/
+    }
+    //Hide the mask.
+    function hideMask() {
+        $("#mask").css({
+            visibility : 'hidden'
+        });
+        $("#mask").hide();
+    }
+    //========= Show and hide the mask ==============//
+    
+    function popupBackShow(openCon, top){
+        $("#popup-back").show();
+        var height = openCon.height() - parseInt(openCon.css("margin-top")) + top;
+        console.log("height == " + openCon.height() + " ff" + openCon.css("margin-top") + " zzz " + top);
+        height = height < $("#tabs").height() ? $("#tabs").height() : height;
+        $("#popup-back").height(height);
+    }
+    function popupBackHidden(){
+        $("#popup-back").hide();
+    }
+    
+    function clickDead(obj){
+        $("#popup-back").show();
+        $(".buttonPopup-closeDead").show();
+        //var offsetClosedDead = $(".bottomButton-closedDead").offset();
+        //var top = offsetClosedDead.top + $(".container").scrollTop();
+        //popupBackShow(obj, top);
+        //$(".buttonPopup-closeDead").css({"top": top,"left":offsetClosedDead.left});
+    }
+    function clickLost(obj) {
+        $("#popup-back").show();
+        $(".buttonPopup-closeLost").show();
+        //var offsetClosedLost = $(".bottomButton-closedLost").offset();
+        //var top = offsetClosedLost.top + $(".container").scrollTop();
+        //popupBackShow(obj, top);
+        //$(".buttonPopup-closeLost").css({"top": top,"left":offsetClosedLost.left});
+    }
+	
+
+    var canEdit = {!hasAccessEdit};
+    $(function(){
+       $("head").prepend('<title>Qualifier Overview</title>');
+
+        if(!oppy.isPMVOppy){
+            $("#tabs").hide();
+        }else{
+            getHtml();
+        }
+        
+        $(".bottomButton-closedDead").click(function(){
+            clickDead($(".buttonPopup-closeDead"));
+            
+        });
+        $(".bottomButton-closedLost").click(function(){
+            clickLost($(".buttonPopup-closeLost"));
+            
+        });
+        $(".bottomButton-onHold").click(function(){
+            $("#popup-back").show();
+            $(".buttonPopup-onHold").show();
+            //var offsetOnHold = $(".bottomButton-onHold").offset();
+            //var top = offsetOnHold.top + $(".container").scrollTop();
+            //popupBackShow($(".buttonPopup-onHold", top));
+            //$(".buttonPopup-onHold").css({"top": top,"left":offsetOnHold.left});
+        });
+        $(".bottomButton-reactivate").click(function(){
+            $("#popup-back").show();
+            $(".buttonPopup-reactivate").show();
+            //var offsetReactivate = $(".bottomButton-reactivate").offset();
+            //var top = offsetReactivate.top + $(".container").scrollTop();
+            //popupBackShow($(".buttonPopup-reactivate"), top);
+            //$(".buttonPopup-reactivate").css({"top": top,"left":offsetReactivate.left});
+        });
+
+        $(".closedDead-button-cancel").click(function(){
+            $(".buttonPopup-closeDead").hide();
+            $(".closeDead-content").find("select, input[type=text], textarea").val("");
+            popupBackHidden();
+        });
+        
+        $(".closedLost-button-cancel").click(function(){
+            $(".buttonPopup-closeLost").hide();
+            $(".closeLost-content").find("select, input[type=text], textarea").val("");
+            popupBackHidden();
+        });
+        $(".onHold-button-cancel").click(function(){
+            $(".buttonPopup-onHold").hide();
+            popupBackHidden();
+        });
+        
+        
+        $(".reactivate-button-cancel").click(function(){
+            $(".buttonPopup-reactivate").hide();
+            popupBackHidden();
+        });
+        
+        $(".error-button").click(function(){
+            $("#popup-back, .error-popup").hide();
+            reloadPage();
+        });
+
+        $(".process-topInfo").hover(
+            function(){
+                $(".informationBox-top1").show();
+                var offsetTop1 = $(".process-topInfo").offset();
+                $(".informationBox-top1").css({"top":offsetTop1.top-$(".informationBox-top1").height() + $(".container").scrollTop(),"left":offsetTop1.left});
+            },
+            function(){$(".informationBox-top1").hide();}
+        );
+        $(".process-bottomInfo").hover(
+            function(){
+                $(".informationBox-bottom").show();
+                var offsetBottom = $(".process-bottomInfo").offset();
+                $(".informationBox-bottom").css({"top":offsetBottom.top+$(".process-bottomInfo").height() + $(".container").scrollTop(),"left":offsetBottom.left});
+            },
+            function(){$(".informationBox-bottom").hide();}
+        );
+        $(".bottomButton-health").hover(
+            function(){
+                $(".informationBox-top2").show();
+                var offsetTop2 = $(".bottomButton-health").offset();
+                $(".informationBox-top2").css({"top":offsetTop2.top-$(".informationBox-top2").height() + $(".container").scrollTop(),"left":offsetTop2.left});
+            },
+            function(){$(".informationBox-top2").hide();}
+        );
+        if(oppy.buyingCycle && oppy.buyingCycle.length > 0){
+            $(".content-title-icon2").hover(
+                function(){
+                    $(".informationBox-top3").show();
+                    var offsetTop3 = $(".content-title-icon2").offset();
+                    $(".informationBox-top3").css({"top":offsetTop3 < 0 ? 0 : offsetTop3.top-$(".informationBox-top3").height() + $(".container").scrollTop(),"left":offsetTop3.left});
+                },
+                function(){
+                    $(".informationBox-top3").hide();
+                }
+            );
+            $(".informationBox-top3").hover(
+                function(){
+                    $(".informationBox-top3").show();
+                    var offsetTop3 = $(".content-title-icon2").offset();
+                    $(".informationBox-top3").css({"top":offsetTop3.top-$(".informationBox-top3").height() + $(".container").scrollTop(),"left":offsetTop3.left});
+                },
+                function(){$(".informationBox-top3").hide();}
+            );
+        }
+        if(oppy.inActiveAllBtn){
+            $(".closedLost-hiddenDiv, .closedDead-hiddenDiv, .onHold-hiddenDiv, .reactivate-hiddenDiv").show();
+        }
+        /*var checkOption = "";
+        $("#stageName select option").each(function(){
+            checkOption += $(this).html()+ " ";
+        });
+        if(checkOption.indexOf("Lost") < 0){
+            $("#stageName select").append('<option value="Lost" selected="selected">Lost</option>')
+        }else {
+            $("#stageName select").val("Lost");
+        }
+        checkOption = "";
+        $("#closeStageName select option").each(function(){
+            checkOption += $(this).html()+ " ";
+        });
+        if(checkOption.indexOf("Dead") < 0){
+            $("#closeStageName select").append('<option value="Dead" selected="selected">Dead</option>')
+        } else {
+            $("#closeStageName select").val("Dead");
+        }*/
+        
+        $(".closedDead-button-ok").click(function(){
+            var $con = $(".buttonPopup-closeDead .buttonPopup-main-centent");
+                closeDeadBtn();
+                showMask();
+                
+        });
+        $(".onHold-button-ok").click(function(){
+                onHoldBtn();
+                showMask(); 
+                
+        });
+        $(".reactivate-button-ok").click(function(){
+                reactivateBtn();
+                showMask();
+                
+        });
+        
+        $(".closedLost-button-ok").click(function(){
+            var $con = $(".buttonPopup-closeLost .buttonPopup-main-centent");
+                closeLostBtn();
+                showMask();
+                
+        });
+         if(!canEdit){
+            $(".closedLost-hiddenDiv, .closedDead-hiddenDiv, .onHold-hiddenDiv, .reactivate-hiddenDiv").show();
+        }
+
+    })
+    var getStatus = function(type){
+        var returnStr = $("#successOrFail input").val();
+        if(returnStr == "success" || returnStr == "SUCCESSED"){
+            reloadPage();
+        }else{
+            hideMask();
+           
+            returnStr = (returnStr.substring(returnStr.indexOf(",", returnStr.lastIndexOf("first error:")) + 2, returnStr.indexOf(": [")));
+            showError(returnStr);
+            if(type == 'closeDead') {
+                $(".buttonPopup-closeLost .messageCon").html(returnStr);
+            } 
+            if(type == 'closeLost') {
+                $(".buttonPopup-closeDead .messageCon").html(returnStr);
+            }
+            if(type == 'closeHold') {
+                $(".buttonPopup-onHold .messageCon").html(returnStr);
+            }
+            //$(".buttonPopup-closeDead").hide();
+            //$(".buttonPopup-closeLost").hide();
+            //popupBackHidden();
+        }
+    }
+    //add by chenchen on 2017-02-21
+    ;function changeLostReason(LostReason) {
+        showMask();
+        if(LostReason.value == 'Other') {
+            $('#DescriptionLine').css("border-left-color","#CC0000");
+            $('#DescriptionLine').css("border-left-style","solid");
+			$('#DescriptionLine').css("border-left-width","4px");
+        	rerenderDescription(true);
+        }else{
+            $('#DescriptionLine').css("border-left-width","0px");
+            rerenderDescription(false);
+        }
+    }
+	;function changeDeadReason(DeadReason) {
+        showMask();
+        if(DeadReason.value == 'Other') {
+            $('#DescriptionLineforDeadReason').css("border-left-color","#CC0000");
+            $('#DescriptionLineforDeadReason').css("border-left-style","solid");
+            $('#DescriptionLineforDeadReason').css("border-left-width","4px");
+        	rerenderDescriptionforDeadReason(true);
+        }else{
+            $('#DescriptionLineforDeadReason').css("border-left-width","0px");
+            rerenderDescriptionforDeadReason(false);
+        }
+    }
+	//end
+  </script>
+  <div id="mask" ></div>
+  <apex:form >
+  
+  
+  
+  
+  
+  <span id="successOrFail">
+    <apex:inputHidden value="{!returnValue}" id="returnHidden"/>
+  </span>
+  <div class="message error-message">
+    <table cellspacing="0" cellpadding="0" border="0" style="padding:0px;margin:0px;" class="messageTable">
+        <tbody>
+            <tr valign="top">
+                <td><img title="ERROR" src="/s.gif" class="msgIcon" alt="ERROR" /></td>
+                <td class="messageCell">
+                    <div class="messageText">
+                        <span style="color:#cc0000">
+                            <h4>{!$Label.PMV_lab_error_title}</h4>
+                        </span>
+                        <span class="messageCon"></span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  <div id="convas" style="display:none;"></div>
+  <div id="mask" ></div>
+  <div id="doc-con"></div>
+  <div class="container">
+  <div id="popup-back"></div>
+  <div class="error-popup">
+    <div class="popup-title">
+        <span>{!$Label.PMV_lab_error_title}</span>
+    </div>
+    <p></p>
+    <input type="button" class="error-button" value="Refresh"/>
+  </div>
+<div id="tabs">
+    <ul> 
+        <li class="sel"><a href="/apex/ExtOppy_qualifierAccessment?Id={!Id}" target="_parent">{!$Label.PMV_button_assessment}<span class="ans-ques"></span></a></li>
+        <li><a href="/apex/ExtOppy_PoliticalMap?Id={!Id}" target="_parent">{!$Label.PMV_button_relationships}<span class="political-num">16 Contacts</span></a></li>
+        <li><a href="/apex/ExtOppy_DecisionCriteria?Id={!Id}" target="_parent">{!$Label.PMV_button_criteria}<span class="criteria-num"></span></a></li>
+        <li><a href="/apex/ExtOppy_Portfolio?Id={!Id}" target="_parent">{!$Label.PMV_Portfolio}<span>&nbsp;</span></a></li>
+        <!-- <li><div></div><a href="#tabs-4">Further Point<span>noly if needed</span></a></li>
+        <li><div></div><a href="#tabs-5">Further Point<span>noly if needed</span></a></li> -->
+    </ul>
+    <div id="tabs-1">
+        <div class="content" style="display: block;">
+            <div class="content-left">
+                <div class="content-left-title">
+                    <span>Current stage: </span><span class="title-changeColor"> Evidence</span>
+                    <span>83%</span>
+                </div>
+                <div class="process-content">
+                    <div class="process-startDate"><h1>{!$Label.PMV_over_lab_start}</h1><br/><span>30/11/2013</span></div>
+                    <div class="process-div">
+                        <div class="process-topInfo">
+                            <span>20/02/14</span><br/>
+                            <span class="process-topInfo-icon"></span>
+                        </div>
+                        <div class="process-mainPart">
+                            <div class="process-projectedDate"></div>
+                            <div class="process-pointer1"></div>
+                            <div class="process-pointer2"></div>
+                            <div class="process-small"></div>
+                            <div class="process-plan"></div>
+                            <div class="process-white"></div>
+                        </div>
+                        <div class="process-font"><span class="process-fontColor-Red">015</span></div>
+                        <div class="process-bottomInfo">
+                            <span class="process-bottomInfo-icon"></span><br/>
+                            <span>07/03/14</span>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="bottomButton">
+                    <div class="bottomButton-projected"><h1>{!$Label.PMV_over_lab_projected_to_close}</h1><span></span></div>
+                    <div class="bottomButton-dealSize"><h1>{!$Label.PMV_over_lab_deal_size}</h1><span></span></div>
+                    <div class="bottomButton-health"><h1>{!$Label.PMV_over_lab_title_health}</h1><span></span></div>
+                </div>
+                 <div class="content-right-button">
+                    <div class="bottomButton-closedLost"><h1>{!$Label.PMV_over_btn_closed_lost}</h1></div>
+                    <div class="closedLost-hiddenDiv"></div>
+                    <div class="bottomButton-onHold"><h1>{!$Label.PMV_over_btn_on_hold}</h1></div>
+                    <div class="onHold-hiddenDiv"></div>
+                    <div class="bottomButton-closedDead"><h1>{!$Label.PMV_over_btn_closed_dead}</h1></div>
+                    <div class="closedDead-hiddenDiv"></div>
+                    <div class="bottomButton-reactivate"><h1>{!$Label.PMV_over_btn_reactivate}</h1></div>
+                    <div class="reactivate-hiddenDiv"><h1>{!$Label.PMV_over_btn_reactivate}</h1></div>
+                </div>
+                <div class="buttonPopup-closeLost">
+                    <!-- <div class="arrow-button">
+                        <div class="arrow-Triangle"></div>
+                    </div> -->
+                    <div class="closeLost-content">
+                        <div class="buttonPopup-content-title">
+                            <span>{!$Label.PMV_over_lab_close_lost}</span>
+                        </div>
+                        <div class="buttonPopup-main">
+                        <apex:actionRegion >
+                            <div class="buttonPopup-main-centent">
+                            
+                                <table>
+                                    <tr style="display: none;">
+                                        <th>Phase</th>
+                                        <td id="stageName">
+                                            <apex:inputField value="{!oppyPart4lost.Status__c}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2"><div class="error-container"><apex:pageMessages id="pageMessage"/></div></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Lost Reason</th>
+                                        <td>
+                                            <div id="LostReasonVal">
+                                                <apex:inputField id="LostReason" value="{!oppyPart4lost.Lost_Reason__c}" required="true" styleClass="lost-reason-sel" onchange="changeLostReason(this)"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Competitor</th>
+                                        <td>
+                                            <div id="CompetitorVal">
+                                                <apex:inputField value="{!oppyPart4lost.Competitor__c}" required="true" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>
+                                            <div id="DescriptionLine" style="margin-left:-4px;">
+                                            	<apex:inputField id="Description" value="{!oppyPart4lost.Lost_Reason_Text__c}" styleClass="lost-reason-text" required="{!description2Render}" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="buttonPopup-button">
+                                <input type="button" class="closedLost-button-cancel" value="{!$Label.CancelButton}"/>
+                                <input type="button" class="closedLost-button-ok" value="{!$Label.SaveButton}" /> 
+                                <apex:actionfunction name="closeLostBtn" action="{!closeLostBtn}" rerender="pageMessage,returnHidden" oncomplete="getStatus('closeLost')" />
+                                <apex:actionfunction name="rerenderDescription" action="{!renderDescription}" rerender="Description" oncomplete="hideMask();" immediate="true" >
+                                	<apex:param assignTo="{!description2Render}" value="" id="render" name="render"/>
+                                </apex:actionfunction>
+                            </div>
+                            </apex:actionRegion>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttonPopup-onHold">
+                    <!-- <div class="arrow-button">
+                        <div class="arrow-Triangle"></div>
+                    </div> -->
+                    <div class="onHold-content">
+                        <div class="buttonPopup-content-title">
+                            <span>{!$Label.PMV_over_lab_on_hold}</span>
+                        </div><div class="buttonPopup-main">
+                        <apex:actionRegion >
+                            
+                            <div class="buttonPopup-main-centent">
+                            
+                                <table>
+                                    <tr>
+                                        <th colspan="2"><div class="error-container"><apex:pageMessages id="pageMessage2"/></div></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Reactivation Date</th>
+                                        
+                                        <td>
+                                            <apex:inputField value="{!opportunity.Pause_Reactivation_Date__c}" id="reactivationDate"  required="true" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="buttonPopup-button">
+                                <input type="button" class="onHold-button-cancel" value="{!$Label.CancelButton}"/>
+                                <input type="button" class="onHold-button-ok" value="{!$Label.SaveButton}"/>
+                                <apex:actionfunction name="onHoldBtn" action="{!onHoldBtn}" rerender="pageMessage2,returnHidden" oncomplete="getStatus('closeHold')" />
+                            </div>
+                            </apex:actionRegion>
+                        </div>
+                    </div> 
+                </div>
+                <div class="buttonPopup-closeDead">
+                    <!-- <div class="arrow-button">
+                        <div class="arrow-Triangle"></div>
+                    </div> -->
+                    <div class="closeDead-content">
+                        <div class="buttonPopup-content-title">
+                            <span>{!$Label.PMV_over_lab_close_dead}</span>
+                        </div>
+                        
+                        <div class="buttonPopup-main">
+                        <apex:actionRegion >
+                            <div class="buttonPopup-main-centent">
+                                <table>
+                                    <tr style="display: none;">
+                                        <th>Phase</th>
+                                        <td id="closeStageName">
+                                            <apex:inputField value="{!oppyPart4dead.Status__c}"/>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2"><div class="error-container"><apex:pageMessages id="pageMessage3"/></div></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Dead Reason</th>
+                                        <td>
+                                            <apex:inputField value="{!oppyPart4dead.Lost_Reason__c}" required="true" styleClass="close-reason-sel" onchange="changeDeadReason(this)" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>
+                                            <div id="DescriptionLineforDeadReason" style="margin-left:-4px;">
+                                                <apex:inputField id="DescriptionforDeadReason" value="{!oppyPart4dead.Lost_Reason_Text__c}" required="{!isOtherforDeadReason}" styleClass="close-reason-text"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="buttonPopup-button">
+                                <input type="button" class="closedDead-button-cancel" value="{!$Label.CancelButton}"/>
+                                <input type="button" class="closedDead-button-ok" value="{!$Label.SaveButton}" />
+                                <apex:actionfunction name="closeDeadBtn" action="{!closeDeadBtn}" rerender="pageMessage3,returnHidden" oncomplete="getStatus('closeDead')" /> 
+                                <apex:actionfunction name="rerenderDescriptionforDeadReason" action="{!renderDescription}" rerender="DescriptionforDeadReason" oncomplete="hideMask();" immediate="true" >
+                                	<apex:param assignTo="{!isOtherforDeadReason}" value="" id="renderforDeadReason" name="renderforDeadReason"/>
+                                </apex:actionfunction>
+                            </div>
+                            </apex:actionRegion>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttonPopup-reactivate">
+                    <!-- <div class="arrow-button">
+                        <div class="arrow-Triangle"></div>
+                    </div> -->
+                    <div class="reactivate-content">
+                    <apex:actionRegion >
+                        <div class="buttonPopup-content-title">
+                            <span>{!$Label.PMV_over_lab_reactivate}</span>
+                        </div>
+                        <div class="buttonPopup-main">
+                            <div class="buttonPopup-main-centent">
+                                <p></p>
+                            </div>
+                            <div class="buttonPopup-button">
+                                <input type="button" class="reactivate-button-cancel" value="{!$Label.CancelButton}"/>
+                                <input type="button" class="reactivate-button-ok" value="{!$Label.PMV_over_btn_reactivate}"/> 
+                                <apex:actionfunction name="reactivateBtn" action="{!reactivateBtn}" rerender="pageMessage,returnHidden" oncomplete="getStatus('open')" />
+                            </div>
+                        </div>
+                        </apex:actionRegion>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-right">
+                <div class="content-right-title">
+                    <h1>Buyers Cycle </h1><!-- <span class="content-title-icon1"></span> -->
+                        <select disabled="disabled">
+                            <option>Hear should beenough speace</option>
+                        </select>
+                        <span class="content-title-icon2"></span>
+                </div>
+                <table class="content-table">
+                    <!-- <thead>
+                        <tr>
+                            <td colspan="2" class="content-tableth1"><span>Stages</span>
+                            </td>
+                            <td><span>Progress</span>
+                            </td>
+                        </tr> 
+                    </thead> -->
+                    <tbody>
+                       
+                    </tbody>
+                </table>
+               
+            </div>
+        </div>
+        <div class="informationBox-top1">
+            <div class="informationBox-content">
+                <h1>{!$Label.PMV_over_lab_close_date}</h1>
+                <span>Close date expected by Sales</span>
+            </div>
+            <div class="arrow-top1">
+                <div class="arrow-border"></div>
+                <div class="arrow-content"></div>
+            </div>
+        </div>
+        <div class="informationBox-top2">
+            <div class="informationBox-content">
+                <h1>{!$Label.PMV_over_lab_health}</h1>
+                <span>Some information...</span>
+            </div>
+            <div class="arrow-top2">
+                <div class="arrow-border"></div>
+                <div class="arrow-content"></div>
+            </div>
+        </div>
+        <div class="informationBox-top3">
+            <div class="informationBox-content">
+                <div>
+                    <h1>{!$Label.PMV_over_lab_note}</h1>
+                    <span>Action on mouse over...</span>
+                </div>
+            </div>
+            <div class="arrow-top3">
+                <div class="arrow-border"></div>
+                <div class="arrow-content"></div>
+            </div>
+        </div>
+        <div class="informationBox-bottom">
+            <div class="arrow-bottom">
+                <div class="arrow-border"></div>
+                <div class="arrow-content"></div>
+            </div>
+            <div class="informationBox-content">
+                <h1>{!$Label.PMV_over_lab_projected_close_date}</h1>
+                <span>{!$Label.PMV_over_lab_projected_close_date_popup_info}</span>
+            </div>
+        </div>
+        
+        
+        </div>
+    </div>
+</div>
+</apex:form>
+</apex:page>

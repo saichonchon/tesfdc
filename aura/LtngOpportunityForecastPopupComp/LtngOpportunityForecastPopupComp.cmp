@@ -1,0 +1,56 @@
+<aura:component >
+	
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="message" type="String" />
+    
+    <aura:registerEvent name="popupEvent" type="c:LtngOpportunityForecastPopupEvt"/> 
+    
+    
+    <div id="forecastPopup" data-year="" data-type="" style="z-index:200;" aria-hidden="false" role="dialog"  class="slds-modal slds-fade-in-open slds-docked-composer-modal slds-hide">
+      
+        <div id="fcpopupbox" class="slds-modal__container" style="width:20%; height: 75%;">
+        <div class="slds-modal__content">
+          <div class="slds-docked-composer slds-grid slds-grid--vertical" role="dialog" aria-labelledby="panel-heading-01">
+            <div class="slds-docked-composer__header slds-grid slds-shrink-none">
+              <div class="slds-media slds-media--center">
+                <div class="slds-media__figure slds-m-right--x-small">
+                    <div class="slds-grid">
+                        <div>
+                        	<lightning:icon iconName="utility:warning" size="xx-small" class="slds-button__icon"/>
+                        </div>
+                        <div>
+                        	<h2 >{!v.title}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                  
+                </div>
+              </div>
+              <div class="slds-col--bump-left">
+                <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--icon slds-icon--small" title="Close">
+                    <lightning:icon iconName="utility:close" size="small" class="slds-button__icon"/>
+                    <span class="slds-assistive-text">Close Panel</span>
+                </button>
+              </div>
+            </div>
+            <div class="slds-docked-composer__body" style="display: inline-table; display:ruby-base-container; width: 100%;">
+              <div class="slds-align--absolute-center" style="padding:1rem 2rem; font-size: 1rem;">
+              	{!v.message}
+              </div>
+            </div>
+            <footer class="slds-docked-composer__footer slds-shrink-none">
+                <div class="slds-col--bump-left slds-text-align--right">
+                    <div class="slds-button-group" role="group">
+                        <button onclick="{!c.event_deleteYear_click}" class="slds-button slds-button--brand">Ok</button>
+                        <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--neutral">Cancel</button>
+                    </div>
+                </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+        
+    </div>
+    
+</aura:component>

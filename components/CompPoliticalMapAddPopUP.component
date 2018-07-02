@@ -1,0 +1,33 @@
+<apex:component layout="block" allowDML="true">
+<apex:attribute name="pageCtrl" type="ExtOppy_PoliticalMap" required="true" description="the root page controller reference" />
+<apex:form >
+	<div class="popup-Add">
+        <div class="popup-title"><span>{!$Label.PMV_political_add_contanct}</span></div>
+        <div class="popup-content">
+            <div class="tmpteamcls">
+            <apex:pageBlock ><apex:pageBlockSection columns="1">
+            	<!-- <label>{!$ObjectType.Contact.fields.Salutation.label} </label> -->
+                <apex:inputField value="{!pageCtrl.cont.Salutation}" styleClass="salutationnamecls"/>
+                <!-- <label>{!$ObjectType.Contact.fields.FirstName.label} </label> -->
+                <apex:inputField value="{!pageCtrl.cont.FirstName}" styleClass="firstnamecls"/>
+                <!-- <label>{!$ObjectType.Contact.fields.LastName.label} </label> -->
+                <apex:inputField value="{!pageCtrl.cont.LastName}" styleClass="lastnamecls"/>
+                <!-- <label>{!$ObjectType.Contact.fields.Position_Type__c.label}</label> -->
+                <apex:inputField value="{!pageCtrl.cont.Position_Type__c}" styleClass="positionnamecls"/>
+                <!-- <label>{!$ObjectType.Contact.fields.Department_Type__c.label} </label> -->
+                <apex:inputField value="{!pageCtrl.cont.Department_Type__c}" styleClass="departmentnamecls"/>
+                
+            </apex:pageBlockSection></apex:pageBlock>
+            </div>
+            <div id="contactStringId">
+            	<apex:inputHidden value="{!pageCtrl.contactString}" id="contactStringIdx"/>
+            </div>
+            <div class="popup-button">
+                <input type="button" class="popup-buttonGray popup-buttonCancel" value="{!$Label.PMV_team_button_cancel}"/>
+                <input type="button" onclick="createContact(); " class="popup-buttonYellow" value="{!$Label.PMV_team_button_save}"/>
+                <apex:actionfunction name="createContact" action="{!pageCtrl.createContact}" rerender="contactStringIdx" oncomplete="newContact();" />
+            </div>
+        </div>
+	</div>
+</apex:form>	
+</apex:component>

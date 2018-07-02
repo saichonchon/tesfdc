@@ -1,0 +1,175 @@
+<!--
+Author:           Buwen Guo <buwen.guo@capgemini.com>
+Description:      Visualforce page to manage the MTO High Runner records.
+			      The user story number is W-00152.
+Controller class: CtrlMTOHighRunnerDataLoader
+Test Class:       CtrlMTOHighRunnerDataLoader_Test
+History
+2017-07-24 	      Buwen Guo <buwen.guo@capgemini.com> created 
+-->
+<apex:page Controller="CtrlMTOHighRunnerDataLoader" id="CtrlMTOHighRunnerManagement" showHeader="true" sidebar="false" standardStylesheets="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">
+	<!--  -->
+	<apex:includeScript value="{!URLFOR($Resource.JQueryV321)}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+	<!-- <apex:includeScript value="{!URLFOR($Resource.CtrlMTOHighRunnerManagement,'/CtrlMTOHighRunnerManagementResource/CtrlMTOHighRunnerManagementJS.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CtrlMTOHighRunnerManagement,'/CtrlMTOHighRunnerManagementResource/CtrlMTOHighRunnerManagementCSS.css')}" />	-->
+    
+    <apex:includeScript value="{!URLFOR($Resource.CtrlMTOHighRunnerManagementJS)}" /> 
+	<apex:stylesheet value="{!URLFOR($Resource.CtrlMTOHighRunnerManagementCSS)}" />
+	<script>
+	window.onload = function(){
+		showLoading();
+		autoResizeTable();
+		SearchData(true,'',true);
+		bodyOnLoad();
+	}
+	</script>
+	
+	
+	<body>
+	<apex:pageMessages id="themsg"/>
+	<div id="div_main">
+		
+		<article class="slds-card">
+			<div class="slds-card__header slds-grid">
+				<header class="slds-media slds-media_center slds-has-flexi-truncate">
+					<div class="slds-media__body">
+						<h2>
+							<span class="slds-text-heading_small">MTO High Runner</span>
+						</h2>
+						<a style="{!IF(currentProfile=='Energy - Salesman','display:none;','float:right;')}" href="/apex/CtrlMTOHighRunnerDataLoader">Import &amp; Export MTO High Runner</a>
+					</div>
+				</header>	
+			</div>
+			<!-- filter button section start -->
+				<div id="div_filter_button_section" class="div_filter_button_section_class">
+					<div id="div_filter_button_section_float" class="div_filter_button_section_float_class">
+						<select id="select_fileName" onchange="SearchData(true,'',true);" class="slds-select select_filename_class" >
+					    	<apex:repeat value="{!list_fileNamesAfterFilter}" var="fileName">
+		                        <option value="{!fileName}" >{!fileName}</option>
+		                    </apex:repeat>
+					    </select>
+						<!-- <button class="slds-button slds-button--neutral button_custom_class" onclick="SearchData(true,'',true);">Search</button> -->
+						<div class="slds-button-group div_button_footer_group_class" role="group" >
+							<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;" title="Unhide the last hidden column" onclick="showLastTableColumn();">Unhide</button>
+							<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;border-left: 0px;" onclick="showAllColumns();">Show All Columns</button>
+							<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;border-left: 0px;" onclick="saveButtonClick();">Save</button>
+						</div>
+					</div>
+					
+				</div>
+				<br/>
+				<!-- filter button section end -->
+			<div class="slds-card__body">
+			
+			
+			<!-- result dataTable start -->
+			<apex:outputPanel id="theDatasPanel">
+			<apex:form id="theMainForm">
+			<div id="div_table_result" class="div_table_result_class">
+				<table id="table_result" style="font-size: 12px;" class="slds-table slds-table--bordered slds-table--cell-buffer">
+					<thead>
+						<!-- <tr class="slds-text-title--caps removeLastPaddingRight" style="border-top:1px solid #163767;border-bottom:1px solid #d8dde6;" ondragover="allowDrop()">  -->
+						<tr class="slds-text-title--caps removeLastPaddingRight" style="border-top:1px solid #163767;border-bottom:1px solid #d8dde6;" >
+							<apex:variable value="0" var="num"/>
+                			<apex:repeat value="{!list_fieldMappings}" var="fieldMap" >
+	                			<th style="{!IF(fieldMap.API_Name__c != 'OwnerText__c' ,'border-right:solid thin #EAEDF2;','display:none;')}" class="{!IF(VALUE(num) != 0 ,'th_exceptFirstTd_class','')} ">
+									<div class="slds-truncate" style="font-weight: bold;">
+										<div style="float:left;">{!fieldMap.Name}</div>
+										<img onclick="hideTableColumn('{!num}');" class="img_hideColumn_class" src="{!URLFOR($Resource.Image_hide)}"/>
+									</div>
+									<div class="slds-resizable">   
+			                            <label for="cell-resize-handle-50" class="slds-assistive-text">Name column width</label>
+			                            <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-50" tabindex="0"/>
+			                            <span class="slds-resizable__handle" draggable="true" ondragstart="dragStart()" ondragend="setNewWidth('{!num}')" onmousedown="calculateWidth()" onmouseover="removeDragClass()" onmouseout="addDragClass()" onmouseup="setIsDrag()">
+			                                <span class="slds-resizable__divider"></span>
+			                            </span>
+			                        </div>
+                                    <apex:variable var="num" value="{!VALUE(num) + 1}"/>
+								</th>
+                			</apex:repeat>
+						</tr>
+					</thead>
+					<tbody id="tbody_table_result_repeat">
+						<apex:repeat value="{!list_runnerRecords}" var="runner">
+							<tr class="tr_table_result_repeat_class removeLastPaddingRight" data-recordid="{!runner.Id}" data-externalid="{!runner.External_Id__c}">
+								<apex:variable value="0" var="runnerNum"/>
+								<apex:repeat value="{!list_fieldMappings}" var="field">
+									<td data-field="{!field.API_Name__c}" data-value="{!runner [field.API_Name__c]}" data-editable="{!field.IsEditable__c}" class="{!IF(VALUE(runnerNum) != 0 ,'th_exceptFirstTd_class','')} " style="{!IF(field.IsEditable__c,'min-width:45px;','')}">
+										<div class="slds-truncate" style="{!IF(field.API_Name__c != 'OwnerText__c' ,'','display:none;')}">
+											<apex:outputField rendered="{!!field.IsEditable__c}" title="{!runner [field.API_Name__c]}" value="{!runner [field.API_Name__c]}" />
+											<apex:inputField styleClass="slds-input mCurrency removeSLDSinputPaddingRight" rendered="{!field.IsEditable__c}" onchange="numberFieldValidator(this)" value="{!runner [field.API_Name__c]}" html-data-value="{!runner [field.API_Name__c]}" html-min="-99" html-max="99"/>
+											<!-- <input id="input_result_totalRecords" class="slds-input input_result_class" type="text" value="0"/> -->
+										</div>
+										<apex:variable var="runnerNum" value="{!VALUE(runnerNum) + 1}"/>
+									</td>
+								</apex:repeat>								
+							</tr>
+						</apex:repeat>
+					</tbody>
+				</table>
+			</div>
+			</apex:form>
+			</apex:outputPanel>
+			<!-- result dataTable end -->
+			
+			
+			
+			</div>
+			<footer class="slds-card__footer" style="min-height:46px;">
+				<div class="slds-button-group div_button_footer_group_class" role="group" >
+					<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;" title="Unhide the last hidden column" onclick="showLastTableColumn();">Unhide</button>
+					<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;border-left: 0px;" onclick="showAllColumns();">Show All Columns</button>
+					<button class="slds-button slds-button_neutral button_custom_class" style="font-weight: normal;border-left: 0px;" onclick="saveButtonClick();">Save</button>
+				</div>
+				
+				<div id="pager_data" class="slds-text-align--center pager_autoAlignMiddle_class">
+			        <span onclick="prevPage();" data-record="true"><img src="/resource/SLDS0232/assets/icons/utility/chevronleft_60.png" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small" style="margin-right:4px;" /></span>
+			        <span id="span_current_pageNum" class="pager_span_text_class">1</span>&nbsp;
+			        <span class="pager_span_text_class">/</span>&nbsp;
+			        <span id="span_total_pageNum" class="pager_span_text_class">1</span>&nbsp;
+			        <span onclick="nextPage();" data-record="false"><img src="/resource/SLDS0232/assets/icons/utility/chevronright_60.png" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small" /></span>
+			    </div>
+				
+			</footer>
+		</article>
+		<br/>
+		
+		
+		
+		
+		
+		<!-- Loading panel start -->
+		<div id="Loading_Panel" style="display:none;">
+			<div style="position:fixed;" class="slds-spinner_container">
+				<div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+		            <span class="slds-assistive-text">Loading</span>
+		            <div class="slds-spinner__dot-a"></div>
+		            <div class="slds-spinner__dot-b"></div>
+				</div>
+			</div>
+	    </div>
+	    <!-- Loading panel end -->  
+	    
+	    <apex:form id="theDataForm">
+        	<apex:actionFunction name="loadDataFromFileName" oncomplete="checkIsFinished();" rerender="themsg,theParamsPanel" action="{!exportRecords}"/>
+        	<apex:actionFunction name="renderPage" oncomplete="hideLoading()" rerender="themsg,theDatasPanel,theParamsPanel" action="{!reRenderPage}"/>
+        	
+        	<apex:actionFunction name="saveActionFunction" oncomplete="checkSaveResult()" rerender="themsg,theParamsPanel" action="{!importRecords}"/>
+			
+			
+			<apex:outputPanel id="theParamsPanel">
+				<apex:inputHidden value="{!str_selectedFileName}" id="hidden_param_selectFileName" />
+				<apex:inputHidden value="{!str_tempRunnerRecordsJson}" id="hidden_param_tempListRunnersJson" />
+				<apex:inputHidden value="{!str_lastRecordId}" id="hidden_param_lastRecordId" />
+				
+				<apex:inputHidden value="{!str_mtoRunnerRecordsJson}" id="hidden_param_jsonListToSave" />
+				
+				<input type="hidden" id="hidden_param_datas" value="{!str_mtoExportReocrdsJson}" />
+				<input type="hidden" id="hidden_param_importResponse" value="{!str_importResponseJson}" />
+			</apex:outputPanel>
+        </apex:form>
+		
+		</div>
+	</body>
+</apex:page>

@@ -1,0 +1,136 @@
+<apex:component layout="none">
+    
+    <apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+    
+    
+    
+    <div class="dn">
+        <!-- START Sold To template -->
+        <table>
+            <thead id="soldto_left">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_SoldToColumns']}">
+                <tr class="level1 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " data-level="level1">
+                    <td class="{!if(rowNum = 0, '', 'lev1')}">
+                        <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+                            <div class="dis_ib mgleft" >
+                                <span class="search_img">
+                                    <input data-level="level2" onclick="event_popupBox_click(event, this)" value="Search OEM" type="button" class="btn addsoldbtn btnlevel2"/>
+                                </span>
+                                <span class="del_img">
+                                    <input onclick="event_deleteObject_click(event, this)" value="Del SoldTo" type="button" class="btn addsoldbtn btnlevel2"/>
+                                </span>
+                            </div>
+                            <div class="dis_ib mgleft1" >
+                                <span class="cellbox fcell " >+</span>
+                                <span class="cellbox pin spin" >&nbsp;</span>
+                            </div>
+                            <div class="dis_ib mgleft" >
+                                <span class="position_r namecell">  </span>
+                            </div>
+                        </apex:outputPanel>
+                    </td>
+                    <td class="fieldwidth" >{!total.fieldName}</td>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </thead>
+            <tbody id="soldto_right">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_SoldToColumns']}">
+                <tr class="{!if(rowNum = 0, '', ' dn ')}">
+                    <apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+                    <td class=" " ></td>
+                    </apex:repeat>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </tbody>
+        </table>
+        <!-- END Sold To template -->
+        
+        <!-- START OEM template -->
+        <table>
+            <thead id="oem_left">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_OEMColumns']}">
+                <tr class="level2 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " data-level="level2">
+                    <td class="{!if(rowNum = 0, '', 'lev2')}">
+                        <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+                            <div class="dis_ib mgleft l2">
+                                <span class="search_img">
+                                    <input data-level="level3" onclick="event_popupBox_click(event, this)" value="Search Part" type="button" class="btn addsoldbtn btnlevel3"/>
+                                </span>
+                                <span class="del_img l2">
+                                    <input onclick="event_deleteObject_click(event, this)" value="Del OEM" type="button" class="btn addsoldbtn btnlevel3"/>
+                                </span>
+                            </div>
+                            <div class="dis_ib mgleft1" >
+                                <span class="cellbox fcell " >+</span>
+                                <span class="cellbox pin spin" >&nbsp;</span>
+                            </div>
+                            <div class="dis_ib mgleft" >
+                                <span class="position_r namecell"> </span>
+                            </div>
+                        </apex:outputPanel>
+                    </td>
+                    <td class="fieldwidth" >{!total.fieldName}</td>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </thead>
+            <tbody id="oem_right">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_OEMColumns']}">
+                <tr class="{!if(rowNum = 0, '', ' dn ')} ">
+                    <apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+                    <td class=" " ></td>
+                    </apex:repeat>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </tbody>
+        </table>
+        <!-- END OEM template -->
+        
+        <!-- START Part template -->
+        <table>
+            <thead id="part_left">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_PartColumns']}">
+                <tr class="level3 external {!if(rowNum = 0, ' prot mark ', ' dn ')} " data-level="level3">
+                    <td class="{!if(rowNum = 0, '', 'lev3')}">
+                        <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+                            <div class="dis_ib mgleft min_partbox l3">
+                                <span class="del_img l3">
+                                    <input onclick="event_deleteObject_click(event, this)" value="Del Part" type="button" class="btn addsoldbtn btnlevel4"/>
+                                </span>
+                            </div>
+                            <div class="dis_ib mgleft1" >
+                                <span class="cellbox pin spin partpin" ></span>
+                            </div>
+                            <div class="dis_ib mgleft" >
+                                <span class="position_r namecell">  </span>
+                            </div>
+                        </apex:outputPanel>
+                    </td>
+                    <td class="fieldwidth {!if(rowNum = 0, 'textcss', '')}" >{!total.fieldName}</td>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </thead>
+            <tbody id="part_right">
+                <apex:variable value="{!0}" var="rowNum"/>
+                <apex:repeat var="total" value="{!pageCtrl['list_PartColumns']}">
+                <tr class="{!if(rowNum = 0, '', ' dn ')} ">
+                    <apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+                    <td class=" " ></td>
+                    </apex:repeat>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                </apex:repeat>
+            </tbody>
+        </table>
+        <!-- END Part template -->
+    </div>
+</apex:component>

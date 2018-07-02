@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <acrossGroupingContext>Account.Monthly_BBBs__r$Sales_Period__c</acrossGroupingContext>
+        <calculatedFormula>(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM + PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM, 	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,1)+PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM,	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,2)) / 3</calculatedFormula>
+        <datatype>number</datatype>
+        <description>calculates the 3 Months average billings per Month</description>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>Account$AM_Account_Name__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3M average Monthly Billings</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Monthly_BBBs__r$Sales_Period__c</acrossGroupingContext>
+        <calculatedFormula>(BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM + PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM, 	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,1)+PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM,	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,2)) / 3</calculatedFormula>
+        <datatype>number</datatype>
+        <description>calculates the 3 M average Bookings per month</description>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>Account$AM_Account_Name__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3M average Monthly Bookings</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Monthly_BBBs__r$Sales_Period__c</acrossGroupingContext>
+        <calculatedFormula>((BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM + PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM, 	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,1)+PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM,	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,2)) / 3)/
+((BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM + PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM, 	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,1)+PREVGROUPVAL(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM,	BBB_Month_Bill_Book_Cust__c.Sales_Period__c,2)) / 3)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA4</developerName>
+        <downGroupingContext>Account$AM_Account_Name__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3M Book to Bill</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_57695461</developerName>
+        <masterLabel>BU</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Monthly_BBBs__r$SAP_Profit_Center_Short_Desc_Filter__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>A&amp;C</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - A&amp;C</sourceValue>
+            </sourceValues>
+            <value>A&amp;C</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>IB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - IB</sourceValue>
+            </sourceValues>
+            <value>IB</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>RP - Rail</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rail</sourceValue>
+            </sourceValues>
+            <value>Rail</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>RP - Solar</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Solar</sourceValue>
+            </sourceValues>
+            <value>Solar</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA4</column>
+        </chartSummaries>
+        <chartType>VerticalColumn</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account$AM_Account_Name__c</groupingColumn>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Sales_Period__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_N_MONTHS:6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Obsolete__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Bill_Type_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Account.CIS_Account</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Sales_Period__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$AM_Account_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND SM BB accounts by Month</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Monthly_BB_direct_and_Indirect_with_accounts__c</reportType>
+    <scope>team</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Sales_Period__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

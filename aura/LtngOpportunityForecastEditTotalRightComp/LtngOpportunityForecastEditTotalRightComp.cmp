@@ -1,0 +1,121 @@
+<aura:component >
+    
+    <aura:attribute name="opp" 							type="Object" />
+    
+	<aura:attribute name="levelType" 							type="String" />
+    <aura:attribute name="uniqueId" 							type="String" />
+    <aura:attribute name="isExp" 								type="Boolean" />
+    <aura:attribute name="isBom" 								type="Boolean" />
+    <aura:attribute name="list_forecastYear" 					type="List" />
+    <aura:attribute name="list_part" 							type="List" />
+    <aura:attribute name="map_forecast" 						type="Map" />
+    <aura:attribute name="map_totalForecast" 					type="Map" />
+    
+    <aura:attribute name="map_change"				type="Map" />
+    
+    <tr class="{!if(v.isExp, (v.isBom ? 'custom-table-tr-over quantity_cls '+v.uniqueId : 'custom-display-none '+v.uniqueId), 'custom-display-none '+v.uniqueId)}">
+		<aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastTotalColumnQuantityComp isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+    </tr>
+	
+    <!-- START Yearly -->
+    <aura:If isTrue="{!v.levelType == 'Yearly'}">
+	<tr class="{!(v.isExp ? 'custom-table-tr-over year '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnYearlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="0" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+    </tr>
+	</aura:If>
+    <!-- END Yearly -->
+    
+    <!-- START Quarterly -->
+    <aura:If isTrue="{!v.levelType == 'Quarterly'}">
+    <tr class="{!(v.isExp ? 'custom-table-tr-over fq1 '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastTotalColumnQuarterlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="0" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+	<tr class="{!(v.isExp ? 'custom-table-tr-over fq2 '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnQuarterlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="1" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+	<tr class="{!(v.isExp ? 'custom-table-tr-over fq3 '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnQuarterlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="2" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+	<tr class="{!(v.isExp ? 'custom-table-tr-over fq4 '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnQuarterlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="3" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    </aura:If>
+    <!-- END Quarterly -->
+    
+    <!-- START Monthly -->
+    <aura:If isTrue="{!v.levelType == 'Monthly'}">
+    <tr class="{!(v.isExp ? 'custom-table-tr-over oct '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+            <c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="0" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over nov '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="1" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over dec '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="2" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over jan '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="3" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over feb '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="4" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over mar '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="5" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over apr '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="6" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over may '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="7" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over jun '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="8" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over jul '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="9" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over aug '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="10" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    <tr class="{!(v.isExp ? 'custom-table-tr-over sep '+v.uniqueId : 'custom-display-none '+v.uniqueId)}">
+        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+        	<c:LtngOpportunityForecastTotalColumnMonthlyComp opp="{!v.opp}" map_change="{!v.map_change}" number="11" isBom="{!v.isBom}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!v.uniqueId}"/>
+		</aura:iteration>
+	</tr>
+    </aura:If>
+    <!-- END Monthly -->
+</aura:component>

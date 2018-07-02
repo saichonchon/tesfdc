@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>BBB_Month_Bill_Book_Cust__c.Book_Amount_USD__c:SUM / BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>calculates the Book to Bill</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Book to Bill</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM - BBB_Month_Bill_Book_Cust__c.Bill_Cost_Amount__c:SUM)  / BBB_Month_Bill_Book_Cust__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Calculates the Standard Margin</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Standard Margin</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$LYTD_check__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$My_Territory_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>True</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Fiscal_Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Bill_Type_Filter__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$Account_Number_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>MED SE Bill YOY by Customer</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Monthly_BB_direct_and_Indirect_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Fiscal_Date__c</dateColumn>
+        <interval>INTERVAL_PREVCURFY</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>First Review by Regional Sales Manager</description>
+        <label>Review by Regional Sales Director</label>
+        <name>Review_by_Regional_Sales_Director</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Approval by Global Family Leader</description>
+        <label>Global Family Leader Approval</label>
+        <name>Global_Family_Leader_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Appliances_Engineer_Project_Rejected_by_Global_PM</name>
+                <type>Alert</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Appliances_Engineer_Project_EM_Approved</name>
+                <type>Alert</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Opportunity Request Type = New Development
+Approval by Global EM</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Request_Type__c</field>
+                <operation>equals</operation>
+                <value>New Development</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Global Engineering Manager</label>
+        <name>Global_Engineering_Manager</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Appliances_Engineer_Project_Rejected_by_Global_EM</name>
+                <type>Alert</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Appliances_Engineer_Project_REM_Approved</name>
+                <type>Alert</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Opportunity Request Type = Connector(Extension)
+Approval by REM</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Request_Type__c</field>
+                <operation>equals</operation>
+                <value>Cable Assembly,Extension</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>Regional Engineering Manager Approval</label>
+        <name>Regional_Eng_Manager_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Appliances_Engineer_Project_Rejected_by_REM</name>
+                <type>Alert</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>This approval process is used for appliances projects.</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Opportunity.Industry_Code__c</field>
+            <operation>equals</operation>
+            <value>Appliances</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Count_of_Rejection</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>StageName_to_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>APPL ENG Project Approval Process</label>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

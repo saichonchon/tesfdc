@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Account</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Owner</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Confidence__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Relevant_for_S_OP__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>This shows opportunities associated with Accounts managed by EMEA SEs that have a status of P0, P3, or QR.</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Account.Account_Manager__c.MED_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMEA</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>P0 - Pre-Opportunity,P3 - In Quoting Opportunity,QR - Quote Released</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$Account.Account_Manager__c.Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>EMEA Active Opportunities</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <roleHierarchyFilter>X101816_Worldwide_Medical</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$alert_validation_time__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

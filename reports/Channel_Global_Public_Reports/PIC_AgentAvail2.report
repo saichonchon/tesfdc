@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(LiveAgentSession.TimeInChats:SUM + LiveAgentSession.TimeInOnlineStatus:SUM)/3600</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Time Spent Online + Time Spent in Chats</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Total Avail Time [h]</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_44894230</developerName>
+        <masterLabel>Team</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>LiveAgentSession$Agent</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Armin Rolli</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Catherine Tougeron</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Christoph Pollak</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Constant Pennachio</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Manfred Lentsch</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Maurizio Pungitore</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Miguel Asmarats</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Peter Ickelsheimer</sourceValue>
+            </sourceValues>
+            <value>Darmstadt</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Marianne Roivainen</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Valery Kreschuk</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Tonny van Schijndel</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Tiziano De Stefani</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mikael Lilja</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sally Addison</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Nigel Lincoln</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Ian Heald</sourceValue>
+            </sourceValues>
+            <value>DenBosch</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>LiveAgentSession$LoginTime</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LiveAgentSession$TimeInOnlineStatus</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LiveAgentSession$TimeInChats</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LiveAgentSession$TimeInAwayStatus</field>
+    </columns>
+    <columns>
+        <field>LiveAgentSession$LogoutTime</field>
+    </columns>
+    <currency>EUR</currency>
+    <description>Luc_0001</description>
+    <filter>
+        <criteriaItems>
+            <column>LiveAgentSession$Agent</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Manfred Lentsch,Marianne Roivainen,Constant Pennachio,Catherine Tougeron,Armin Rolli,Christoph Pollak,Peter Ickelsheimer,Maurizio Pungitore,Valery Kreschuk,Tonny van Schijndel,Tiziano Stefani,Miguel Asmarats,Mikael Lilja,Sally Addison,Nigel Lincoln,Ian Heald,Jochen Kraft,Luc Silvertant,Sujatha S,Tiziano De Stefani</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_44894230</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>LiveAgentSession$Agent</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>PIC_AgentAvail</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Live_Agent_Sessions_Report_Custom__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>LiveAgentSession$LoginTime</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

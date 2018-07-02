@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_55828466</developerName>
+        <masterLabel>Ageing Limit</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>AGE</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>4</to>
+            </sourceValues>
+            <value>4 Hrs</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>4</from>
+                <to>24</to>
+            </sourceValues>
+            <value>4-24 Hrs</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>24</from>
+                <to>48</to>
+            </sourceValues>
+            <value>24-48 Hrs</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>48</from>
+                <to>72</to>
+            </sourceValues>
+            <value>48 - 72 Hrs</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>72</from>
+            </sourceValues>
+            <value>&gt; 72 Hrs</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>CASE_NUMBER</field>
+    </columns>
+    <columns>
+        <field>SUBJECT</field>
+    </columns>
+    <columns>
+        <field>Case.Inquiry_Type__c</field>
+    </columns>
+    <columns>
+        <field>STATUS</field>
+    </columns>
+    <columns>
+        <field>Case.Case_Group__c</field>
+    </columns>
+    <columns>
+        <field>WEBEMAIL</field>
+    </columns>
+    <columns>
+        <field>Case.Case_Age_in_Total_Hours__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>APAC closed cases - Report</description>
+    <filter>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Case.Customer_Care_Cloud,Case.Customer_Care_Cloud_Case_feed_View</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Case.Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>APAC</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>OWNER</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>APAC closed cases</name>
+    <params>
+        <name>units</name>
+        <value>h</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CaseHistory@Case.Internal_Contact__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATEONLY</dateColumn>
+        <interval>LAST_FISCALPERIOD</interval>
+    </timeFrameFilter>
+</Report>

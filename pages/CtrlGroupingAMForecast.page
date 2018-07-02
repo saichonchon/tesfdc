@@ -1,0 +1,112 @@
+<apex:page title="Grouping AM Forecast" sidebar="false" controller="CtrlGroupingAMForecast" id="thePage" applyBodyTag="false" docType="html-5.0">
+<html>
+    <head>
+
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/multiselect/css/jquery.uix.multiselect.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CtrlAccountGroupingCss}" />
+        <style type="text/css">
+            .countryimg{
+                background-image:url('{!$Resource.CtrlGroupingCountryflag}');
+            }
+            .part_d{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/deleteImage.png')}');
+            }
+            .other_d, .gpl_d, .gplsearch, .othersearch{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/lockover16.png')}');
+                background-position: 1px 1px;
+            }
+            .reload_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+            }
+            .mark_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/ACGP_new1.png')}');
+            }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+				background-position:-145px -146px;
+            }
+            
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/jquery.uix.multiselect.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/locales/jquery.uix.multiselect_en.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingAMForecastJs}"></script>
+
+        <script type="text/javascript">
+            var OTHER_LABEL='{!$Label.APL_Other_Accounts}', OTHER_ID='{!otherAcctId}',
+            	CUSTOM_LABEL = {
+            		'searchpart': '{!$Label.APL_btn_search_part}', 'savemsg': '{!$Label.APL_save_msg}',
+            		'savemsgsuccess' : '{!$Label.APL_msg_save_success}', 'delpart': '{!$Label.APL_btn_del_part}',
+            		'clickwait' : '{!$Label.APL_msg_click_wait}'
+            	};
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+            
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+        
+        
+        <div id="contentallid" class="tc">
+        
+            <apex:variable var="inputVal" value="" />
+            <apex:form id="theForm">
+
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                
+                <apex:outputPanel id="groupingAllOP" layout="block">
+
+                    <c:CompGroupingAMForecastMenu pageCtrl="{!this}"></c:CompGroupingAMForecastMenu>
+                    <c:CompGroupingAMForecastBody pageCtrl="{!this}" inputVal="{!inputVal}"></c:CompGroupingAMForecastBody>
+
+                </apex:outputPanel>
+                
+            </apex:form>
+    
+        </div>
+        
+        <div id="gototopid" class="gototopcls bradiuscls">TOP</div>
+        <c:CompGroupingAddPartPopUP isRelay="false"></c:CompGroupingAddPartPopUP>
+        <c:CompGroupingProgress ></c:CompGroupingProgress>
+
+    </body>
+    
+    <script type="text/javascript">
+
+        ;function searchGPL_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchGPL}';}
+        ;function searchOthersGPL_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchOthersPartFC}';}
+        ;function searchRelayGPL_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchRelayGPLFC}';}
+        ;function searchCBC2_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchCBC2Forecast}';}
+        ;function searchPart_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchPartFC}';}
+        ;function searchRelayPart_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchRelayPartFC}';}
+        
+        ;function searchRefDataTotal_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchAMAcctFCReferenceData}';}
+        ;function searchRefDataCBC_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchAMCBCRefDataQuarterly}';}
+        ;function searchRefDataGPL_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchAMGPLRefDataQuarterly}';}
+        ;function getAddPartRefData_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.getAddedPartRefData}';}
+        
+        ;function searchAllPart_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.searchAllPart}';}
+        ;function saveForecast_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.saveForecast}';}
+        
+        ;function deletePart_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.deletePart}';}
+        ;function addedPart_js(){ return '{!$RemoteAction.CtrlGroupingAMForecast.addedPart}';}
+    </script>
+</html>
+</apex:page>

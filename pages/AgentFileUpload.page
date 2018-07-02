@@ -1,0 +1,29 @@
+<!--
+/**********************************************************************************************************************************************
+Name: AgentFileUpload
+===================================================================================================================================================
+Purpose: This page was part of Central org and moved in C2S for PIC Migration. 
+         The purpose of this is to let an agent upload file using quick text Url's during live chat for Pic 
+=====================================================================================================================================================
+***********************************************************************************************************************************************/
+-->
+
+<apex:page standardController="Live_Agent_Files__c" extensions="AgentFileUploadContExt" action="{!init}" showChat="false" sidebar="false" showHeader="false" standardStylesheets="true" cache="false">
+    <apex:stylesheet value="{!URLFOR($Resource.TE_Site, 'style.css')}"/>
+    <apex:form >
+        <apex:image url="{!URLFOR($Resource.TE_Site, 'img/te_connectivity_logo.png')}" width="190" height="75" styleClass="teLogoImg"/>
+        <apex:pageMessages id="msgs"/>
+        <apex:outputPanel id="fileUpload" rendered="{!renderFileUpload}" >
+            <apex:panelGrid columns="1" id="theGrid" styleClass="theGrid">
+                <apex:outputText value="1.  Select the File" styleClass="lableText"/>
+                <apex:outputText value="Type the path of the file or click the Browse button to find the file." styleClass="descriptionText"/>
+                <apex:inputFile value="{!fileBody}" filename="{!attachment.name}" id="file"/>
+                <apex:outputText value="Note: Max file size for upload is 5MB" styleClass="descriptionText" style="margin-top: 10px; margin-bottom: 25px;"/><br/>
+                <apex:outputText value="2.  Fill description in (if it is necessary)" styleClass="lableText"/>
+                <apex:inputTextarea value="{!attachment.description}" style="width:400px; height: 100px;"/><br/>
+                <apex:outputText value="3.  Click the 'Attach File' button." styleClass="lableText"/>
+                <apex:commandButton action="{!upload}" value="Attach File" styleClass="submitButton"/>
+            </apex:panelGrid>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

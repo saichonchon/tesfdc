@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_68218469</developerName>
+        <masterLabel>Late TAT (quote vs due date)</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>Account.Opportunities$Quote_attached_vs_due_date__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>-20</to>
+            </sourceValues>
+            <value>later than 20 days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-20</from>
+                <to>-15</to>
+            </sourceValues>
+            <value>15 to 19 days late</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-15</from>
+                <to>-10</to>
+            </sourceValues>
+            <value>10 to 14 days late</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-10</from>
+                <to>-5</to>
+            </sourceValues>
+            <value>5 to 9 days late</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-5</from>
+                <to>-1</to>
+            </sourceValues>
+            <value>1 to 4 days late</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-1</from>
+                <to>0</to>
+            </sourceValues>
+            <value>on time</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>0</from>
+            </sourceValues>
+            <value>early</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Quote_attached__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Opportunity.IND_Engineering_project,Opportunity.Opportunity_Engineering_Project</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Final_Approval_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Initial_Approval_Submission_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>11/3/2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$GPL__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>176,J37,JF9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Quote_attached__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Quote required</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Quotes required CCAO GPL 176,J37,JF9</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts_parts_and_forecast__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Account.Opportunities$Quote_attached__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$CloseDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

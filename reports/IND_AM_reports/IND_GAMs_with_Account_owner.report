@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Account$GAMDESC__c</field>
+    </columns>
+    <columns>
+        <field>Account$GAMCD__c</field>
+    </columns>
+    <columns>
+        <field>Account$Industry_Code_Description__c</field>
+    </columns>
+    <columns>
+        <field>Account$Account_Manager_Name__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>this report shows the industrial global accounts per subvertical BU and Account Manager</description>
+    <filter>
+        <criteriaItems>
+            <column>Account$Industry_Code_Description__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C,IB,Rail</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$GAMCD__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>G</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>IND GAMs with Account owner</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Account$GAMCD__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Account$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

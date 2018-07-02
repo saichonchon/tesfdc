@@ -1,0 +1,11 @@
+<messaging:emailTemplate subject="{!relatedTo.RecordType.Name} #{!relatedTo.Story_Id__c} [{!relatedTo.Project_Name__c}] updated: {!relatedTo.Name} [ref:{!relatedTo.Id}]" recipientType="User" relatedToType="AgileVizArt__User_Story__c" replyTo="agilevizart@8-5ckao406j8dwjzs7acn41ypu1.ehkvemac.e.apex.salesforce.com">
+    <messaging:htmlEmailBody >  
+            <p>Hi {!relatedTo.Raised_By__r.FirstName},</p>
+            <p>I&#39;ve changed the following {!relatedTo.RecordType.Name}:<br/></p>
+            <c:CompStoryComments usId="{!relatedTo.Id}" />
+            <p>For further details please check <c:CompVFEmailDetailLink recordId="{!relatedTo.Id}" linkName="here"/> in salesforce.com.</p>
+                        
+            <p>Best regards,</p>
+            <p>{!relatedTo.LastModifiedBy.Name}</p>
+    </messaging:htmlEmailBody>
+</messaging:emailTemplate>

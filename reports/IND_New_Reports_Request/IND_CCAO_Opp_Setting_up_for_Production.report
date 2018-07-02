@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_85386061</developerName>
+        <masterLabel>Phase</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Opportunities$StageName</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>New</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Approved/Active</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>In Approval</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>New Opportunity</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Quotation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sampling</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>On Hold</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Initiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Exploring Needs</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Developing &amp; Differentiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Refining &amp; Resolving</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Contracting</sourceValue>
+            </sourceValues>
+            <value>Pending</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Won - Open</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won - Closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified/G3 Approved</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won</sourceValue>
+            </sourceValues>
+            <value>Won</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Production</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Order Received  or Mass Production</sourceValue>
+            </sourceValues>
+            <value>Production</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>BucketField_85386061</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r$GPL__c</field>
+    </columns>
+    <columns>
+        <field>Account$Account_Combined_Data__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Owner</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Days_since_quote_attached__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Five_Year_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$TE_Content__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND 2 AND 3 AND (4 OR 5)</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Opportunity.Opportunity_Engineering_Project,Opportunity.IND_Engineering_project</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$GPL__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>375,397,K89,K90,K04,Z91,K01,K03,176,A39,JF9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Won - Open,Won - Closed,Won,Production</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Won_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_FISCAL_QUARTER</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Won_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_FISCAL_QUARTER</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>IND CCAO Opp Setting up for Production</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts_parts_and_forecast__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Account.Opportunities$Days_since_quote_attached__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast__r$Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

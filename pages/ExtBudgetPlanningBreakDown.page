@@ -1,0 +1,266 @@
+<apex:page docType="html-5.0" applyBodyTag="true" standardController="Budget__c" extensions="ExtBudgetPlanningBreakDown" sidebar="false">
+<head>
+	<apex:stylesheet value="{!$Resource.BudgetPlanningCss}"/>
+    <script src="/soap/ajax/22.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/22.0/apex.js" type="text/javascript"></script>   
+<!--     <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" /> -->
+    <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+	<script src="{!URLFOR($Resource.jQueryTool, '/json/json2.js')}" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.BudgetPlanningControl_BDLimit)}" />
+    <apex:includeScript value="{!URLFOR($Resource.CommonJS_BD)}" />
+    <style type='text/css'>
+        body{background-color:#fff !important;}
+        .hideTableListButton {
+            background: url({!URLFOR($Resource.iconCollapse)}) no-repeat scroll 0 -0px transparent !important;
+            height:15px !important;
+            width:10px !important;
+        } 
+        .showTableListButton {
+            background: url({!URLFOR($Resource.iconExpand)}) no-repeat scroll 0 -0px transparent !important;    
+            height:15px !important;
+            width:10px !important;
+        }   
+        .inlineTable .inlineTableTd {padding: 0px;} 
+        .inlineTable .inlineTableTd .list tr td,.inlineTable .inlineTableTd .list tr th{height:24px;padding:0px 5px;}   
+        .inlineTable .inlineTableTd .tableNoLeftBorder{min-width:950px;}
+        
+        div.container table#accountTable tbody tr.dataRow td.dataCell span{display:inline;vertical-align:middle;}
+        div.container table#accountTable tbody tr.dataRow td.dataCell span.helpButton img,
+        div.container table#accountTable tbody tr.dataRow td.dataCell span.helpButtonOn img{right:1px;position:relative;}
+    </style>
+    
+    <script type="text/javascript">
+    	var CONFIG = {
+    		'budget_year':"{!budget.year__c}"
+    	}
+    	addListener(window, 'load', initDocumentPage, {});
+    </script>
+    
+</head>
+
+<body>
+    <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:5000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');" title="Please Wait..."></div>
+	<apex:form id="budgetForm">
+		<input type="hidden" value="false" id="isSubmit"	name="isSubmit" />		
+			<apex:actionFunction name="saveBreakDownBudgetMonthly" action="{!saveBreakDownBudgetMonthly}" rerender="budgetForm" oncomplete="saveBreakDownBudgetMonthlyComplete()"/>
+			<apex:actionFunction name="saveBreakDownBudgetDetail" action="{!saveBreakDownBudgetDetail}" rerender="messages" oncomplete="saveBreakDownBudgetDetailComplete()"/>
+		
+			<apex:outputPanel id="opbreakdownid" layout="block" styleClass="display:none;">
+				<!--<apex:inputHidden value="{!sJson}" id="hiddjsonid"/>-->
+                <apex:inputHidden value="{!map_accId_budgetPlanStructuresJson}" id="map_accId_budgetPlanStructuresJson"/>
+                <apex:inputHidden value="{!saveJson}" id="saveJson"/>
+			</apex:outputPanel>
+
+		<apex:pageBlock mode="maindetail" id="budgetPB" tabstyle="Budget__c">
+		<apex:pageMessages id="messages"/>
+			<input type="hidden" value="{!format}" id="localFormat"/>
+			
+			<div style="width:75%;text-align:center;">
+				<!--Start:: Modified by Bin Yuan due to change button name and comment old button -->
+				<!-- 
+                <input type="button" class="btn" value="{!$Label.SaveButton}_new" id="saveBreakDownBtn"/>
+                <input type="button" class="btn" value="{!$Label.Submit_for_Approval}_new" id="saveBreakDownSubmitBtn"/>
+                 -->
+                <input type="button" class="btn" value="{!$Label.SaveButton}" id="saveBreakDownBtn"/>
+                <input type="button" class="btn" value="{!$Label.Submit_for_Approval}" id="saveBreakDownSubmitBtn"/>
+                <!--End:: Modified by Bin Yuan due to change button name and comment old button -->
+                <!--Start:: Modified by Bin Yuan due to change button name and comment old button -->
+                <!-- 
+                <input type="button" class="btn" value="{!$Label.SaveButton}" style="display:{!IF(showEdit, '', 'none')}" onclick="conUnformatNum('accountBDDataTable');saveBreakDown();"/>
+                -->
+                <!--End:: Modified by Bin Yuan due to change button name and comment old button -->
+                <apex:actionFunction name="saveBreakDown" action="{!save}" status="statusLoad" rerender="messages" oncomplete="conFormatNum('accountBDDataTable');"/>
+                <!--Start:: Modified by Bin Yuan due to change button name and comment old button -->
+                <!-- 
+                <input type="button" class="btn" value="{!$Label.Submit_for_Approval}" style="display:{!IF(showEdit, '', 'none')}" onclick="conUnformatNum('accountBDDataTable');saveBreakDownAndSubmit();"/>
+                -->
+                <!--End:: Modified by Bin Yuan due to change button name and comment old button -->
+                <apex:actionFunction name="saveBreakDownAndSubmit" action="{!saveAndSubmit}" status="statusLoad" rerender="messages" oncomplete="conFormatNum('accountBDDataTable');"/>
+                <apex:actionRegion immediate="true">
+                    <input type="button" class="btn" value="{!$Label.Back}" onclick="backAction();"/>              
+                    <apex:actionFunction name="backAction" action="{!back}" status="statusLoad" rerender="budgetForm" oncomplete="conFormatNum('accountTable');"/>
+                </apex:actionRegion>
+                &nbsp;&nbsp;<b>{!$ObjectType.Budget__c.fields.Manager__c.label}&nbsp;:</b>&nbsp;&nbsp; <apex:inputField value="{!budget.Manager__c}" />
+<!--                 &nbsp;&nbsp;<b>{!$Label.Recalculate}</b><apex:inputCheckBox value="{!isRecalculate}" onclick="conUnformatNum('accountBDDataTable');recalculateBBBM(false);"/> -->
+                <apex:actionFunction name="recalculateBBBM" action="{!recalculate}" status="statusLoad" rerender="AccountBDPBSection,messages" oncomplete="conFormatNum('accountBDDataTable');showAllDisplays('allAccountBtn', 'accountBDTable');">
+                    <apex:param assignTo="{!isInitBBBM}" value="" name="isInitBBBMFlag" />
+                </apex:actionFunction>
+ 				<apex:actionStatus startText="" stopText="" id="statusLoad" onstart="$('#loading-curtain-div').show();" onstop="$('#loading-curtain-div').hide();"/>                       
+
+                <br/>
+            </div>
+			<apex:pageBlockSection columns="1" id="AccountBDPBSection">
+				<apex:outputPanel layout="block" styleClass="container" style="text-align:center;">
+                    <table style="width:100%;table-layout:fixed" class="inlineTable" id="accountBDTable"><tr><td class="inlineTableTd" style="border-bottom:none;width:25%;">
+                        <apex:outputPanel layout="block" style="text-align:left;">                          
+                            <div style="width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:20px;">
+                                <table class="list" cellspacing="0" cellpadding="0" border="0" id="accountBDNameTable" style="word-break:break-all;word-wrap:break-word;white-space:nowrap;">
+                                    <thead>
+                                        <tr class="headerRow">
+                                            <th class="headerCenter tdTwo" style="width:20px;text-align:left;"><img class="showTableListButton" title="Show" onclick="showAllDisplays(this.id, 'accountBDTable');" id="allAccountBtn" style="cursor:pointer;"  src="/s.gif"/></th>
+                                            <th class="headerCenter tdTwo" >&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tLeft">                               
+                                        <apex:repeat value="{!BudgetPlanBreakDownStructureList}" var="budgetPlanStructure">                     
+                                            <tr data-order="{!budgetPlanStructure.accountinfo}" class="mainTr dataRow accountBtn_{!budgetPlanStructure.accountId}" onmouseOver="productRowMouseEffect('accountBtn_{!budgetPlanStructure.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountBtn_{!budgetPlanStructure.accountId}', 'out');">
+                                                <td class="dataCell tdOne" ><img class="showTableListButton" title="Show" id="{!budgetPlanStructure.accountId}_accountBtn" onclick="showDisplays('{!budgetPlanStructure.accountId}', this.id, this.title, 'accountBDTable')" style="cursor:pointer;display:{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, '', 'none')}"  src="/s.gif"/></td>
+                                                <td class="dataCell tdOne"><b><apex:outPutText value="{!budgetPlanStructure.accountInfo}"/></b></td>
+                                            </tr>       
+                                            <tr data-order1="{!budgetPlanStructure.accountinfo}" class="dataRow accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p" onmouseOver="productRowMouseEffect('accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p', 'over');" onmouseOut="productRowMouseEffect('accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p', 'out');" style="display:none;">
+                                                <td class="dataCell "></td>
+                                                <td class="dataCell "><apex:outPutText value="{!budgetPlanStructure.parentAccountItem.accountInfo}"/></td>
+                                            </tr>                                                                   
+                                            <apex:repeat value="{!budgetPlanStructure.ChildrenAccountItems}" var="child">
+                                                <tr data-subOrder="{!budgetPlanStructure.accountinfo}" data-sort="{!child.accountInfo}" class="dataRow accountData_{!budgetPlanStructure.accountId} accountData_{!child.accountId}" onmouseOver="productRowMouseEffect('accountData_{!child.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountData_{!child.accountId}', 'out');" style="display:none;">
+                                                    <td class="dataCell"/>
+                                                    <td class="dataCell "><apex:outPutText value="{!child.accountInfo}"/></td>
+                                                </tr>
+                                            </apex:repeat> 
+                                        </apex:repeat>
+                                        
+                                        <tr class="dataRow accountBtn_otherAccounts" onmouseOver="productRowMouseEffect('accountBtn_otherAccounts', 'over');" onmouseOut="productRowMouseEffect('accountBtn_otherAccounts', 'out');">
+                                            <td class="dataCell tdOne"><img class="showTableListButton" title="Show" id="otherAccounts_accountBtn" onclick="showDisplays('otherAccounts', this.id, this.title, 'accountBDTable')" style="cursor:pointer;display:{!IF(otherBudgetPlanStructure.ChildrenAccountItems.size>0, '', 'none')}"  src="/s.gif"/></td>
+                                            <td class="dataCell tdOne"><b><apex:outPutText value="{!$Label.Other_Accounts_in_Territory}"/></b></td>
+                                        </tr>
+                                        <apex:repeat value="{!otherBudgetPlanStructure.ChildrenAccountItems}" var="child">
+                                            <tr class="dataRow accountData_otherAccounts accountData_{!child.accountId}" onmouseOver="productRowMouseEffect('accountData_{!child.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountData_{!child.accountId}', 'out');" style="display:none;">
+                                                <td class="dataCell"/>
+                                                <td class="dataCell "><apex:outPutText value="{!child.accountInfo}"/></td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </apex:outputPanel> </td>
+                        
+                        <td class="inlineTableTd" style="border-bottom:none;width:75%">
+                        <apex:outputPanel layout="block" >
+                            <div style="width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:20px;" >
+                                <table class="list " cellspacing="0" cellpadding="0" border="0"  id="accountBDDataTable" style="word-break:break-all;word-wrap:break-word;white-space:nowrap;">
+                                    <thead>
+                                        <tr class="headerRow" >
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$ObjectType.Budget_Detail__c.fields.Billings_LY__c.label}</th>
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$ObjectType.Budget_Detail__c.fields.Billings_CYTD__c.label}</th>
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$ObjectType.Budget_Detail__c.fields.Billings_CYRR__c.label}</th>
+<!--                                             <th class="headerCenter tdTwo" style="width:12%">{!$ObjectType.Budget_Detail__c.fields.Forecast_CY__c.label}</th> -->
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$Label.Budget_Direct}</th>
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$Label.Budget_POS}</th>
+                                            <th class="headerCenter tdTwo" style="width:12%">{!$Label.Budget_CMA}</th>
+                                            <th class="headerCenter tdTwo">{!$ObjectType.Budget_Detail__c.fields.Total_Budget__c.label}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tRight">
+                                        <apex:repeat value="{!BudgetPlanBreakDownStructureList}" var="budgetPlanStructure">
+                                            <tr data-order="{!budgetPlanStructure.accountinfo}" class="mainTr itbbdreturn dataRow accountBtn_{!budgetPlanStructure.accountId}" onmouseOver="productRowMouseEffect('accountBtn_{!budgetPlanStructure.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountBtn_{!budgetPlanStructure.accountId}', 'out');" >
+                                                <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.BudgetDetail4Total.Billings_LY__c}" id="TBLY"/></b></td>
+                                                <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.BudgetDetail4Total.Billings_CYTD__c}" id="TBCY"/></b></td>
+                                                <td class="dataCell tdTwo"><b><apex:outputText value="{!budgetPlanStructure.BudgetDetail4Total.Billings_CYRR__c}" id="TBCYRR"/></b></td>
+<!--                                                 <td class="dataCell tdTwo"><b><apex:outPutText value="{!budgetPlanStructure.BudgetDetail4Total.Forecast_CY__c}" styleClass="TB{!budgetPlanStructure.accountId}FCY"/></b></td> -->
+                                                <td class="dataCell tdTwo"><b><apex:outPutText value="{!budgetPlanStructure.TotalBudget4Direct}" styleClass="TB{!budgetPlanStructure.accountId}BD"/></b></td>
+                                                <td class="dataCell tdTwo"><b><apex:outPutText value="{!budgetPlanStructure.TotalBudget4POS}" styleClass="TB{!budgetPlanStructure.accountId}BP"/></b></td>
+                                                <td class="dataCell tdTwo"><b><apex:outPutText value="{!budgetPlanStructure.TotalBudget4CMA}" styleClass="TB{!budgetPlanStructure.accountId}BC"/></b></td>  
+                                                <td class="dataCell tdTwo"><b><span><apex:outPutText value="{!budgetPlanStructure.TotalBudget4Total}"/></span></b></td>
+                                            </tr>                                       
+                                            <tr data-order1="{!budgetPlanStructure.accountinfo}" aid="{!budgetPlanStructure.accountId}" class="repeatRoot repeatcls dataRow accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p" onmouseOver="productRowMouseEffect('accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p', 'over');" onmouseOut="productRowMouseEffect('accountData_{!IF(budgetPlanStructure.ChildrenAccountItems.size>0, budgetPlanStructure.accountId, 'noChild')}p', 'out');" style="display:none;">
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.parentAccountItem.BillingsLY}" id="BLY"/></td>
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.parentAccountItem.BillingsCY}" id="BCY"/></td>
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.parentAccountItem.BillingsCYRR}" id="BCYRR"/></td>
+<!--                                                 <td class="dataCell tdTwo"><apex:inputText maxLength="12" value="{!budgetPlanStructure.parentAccountItem.ForecastCY}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!budgetPlanStructure.parentAccountItem.accountId}', 'FCY', this)" styleClass="inputItem {!budgetPlanStructure.parentAccountItem.accountId}{!budgetPlanStructure.accountId}FCY" /></td> -->
+                                                <td class="dataCell tdTwo"><apex:inputText maxLength="12" value="{!budgetPlanStructure.parentAccountItem.TotalBudget4Direct}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!budgetPlanStructure.parentAccountItem.accountId}', 'BD', this)" styleClass="inputItem {!budgetPlanStructure.parentAccountItem.accountId}{!budgetPlanStructure.accountId}BD"/></td>
+                                                <td class="dataCell tdTwo"><apex:inputText maxLength="12" value="{!budgetPlanStructure.parentAccountItem.TotalBudget4POS}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!budgetPlanStructure.parentAccountItem.accountId}', 'BP', this)" styleClass="inputItem {!budgetPlanStructure.parentAccountItem.accountId}{!budgetPlanStructure.accountId}BP"/></td>
+                                                <td class="dataCell tdTwo"><apex:inputText maxLength="12" value="{!budgetPlanStructure.parentAccountItem.TotalBudget4CMA}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!budgetPlanStructure.parentAccountItem.accountId}', 'BC', this)" styleClass="inputItem {!budgetPlanStructure.parentAccountItem.accountId}{!budgetPlanStructure.accountId}BC"/></td>   
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!budgetPlanStructure.parentAccountItem.TotalBudget4Total}" styleClass="{!budgetPlanStructure.parentAccountItem.accountId}{!budgetPlanStructure.accountId}TB"/></td>
+                                            </tr>
+                                            <apex:repeat value="{!budgetPlanStructure.ChildrenAccountItems}" var="child">
+                                                <tr data-subOrder="{!budgetPlanStructure.accountinfo}" data-sort="{!child.accountInfo}" aid="{!child.accountId}" class="repeatChild repeatNewcls repeatcls dataRow accountData_{!budgetPlanStructure.accountId} accountData_{!child.accountId}" onmouseOver="productRowMouseEffect('accountData_{!child.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountData_{!child.accountId}', 'out');" style="display:none;">
+                                                    <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsLY}" id="BLY"/></td>
+                                                    <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsCY}" id="BCY"/></td>
+                                                    <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsCYRR}" id="BCYRR"/></td>
+                                                    
+                                                    <!-- 
+                                                    <td class="dataCell tdTwo">
+                                                        <apex:inputText maxLength="12" value="{!child.ForecastCY}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!child.accountId}', 'FCY', this)" styleClass="inputItem {!child.accountId}{!budgetPlanStructure.accountId}FCY" rendered="{!!child.isLast}"/>
+                                                        <apex:inputHidden value="{!child.ForecastCY}" rendered="{!child.isLast}" id="LastFCYHidden"/>
+                                                        <apex:outputText value="{!child.ForecastCY}" styleClass="Last{!budgetPlanStructure.accountId}FCY" rendered="{!child.isLast}" id="LastFCY"/>                                                     
+                                                    </td>
+                                                     -->
+                                                     
+                                                    <td class="dataCell tdTwo">
+                                                        <apex:inputText maxLength="12" value="{!child.TotalBudget4Direct}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!child.accountId}', 'BD', this)" styleClass="inputItem {!child.accountId}{!budgetPlanStructure.accountId}BD" rendered="{!!child.isLast}"/>
+                                                        <apex:inputHidden value="{!child.TotalBudget4Direct}" rendered="{!child.isLast}" id="LastBDHidden"/>
+                                                        <apex:outputText value="{!child.TotalBudget4Direct}" styleClass="Last{!budgetPlanStructure.accountId}BD" rendered="{!child.isLast}" id="LastBD"/>                                                       
+                                                    </td>
+                                                    <td class="dataCell tdTwo">
+                                                        <apex:inputText maxLength="12" value="{!child.TotalBudget4POS}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!child.accountId}', 'BP', this)" styleClass="inputItem {!child.accountId}{!budgetPlanStructure.accountId}BP" rendered="{!!child.isLast}"/>
+                                                        <apex:inputHidden value="{!child.TotalBudget4POS}" rendered="{!child.isLast}" id="LastBPHidden"/>
+                                                        <apex:outputText value="{!child.TotalBudget4POS}" styleClass="Last{!budgetPlanStructure.accountId}BP" rendered="{!child.isLast}" id="LastBP"/>                                                      
+                                                    </td>
+                                                    <td class="dataCell tdTwo">
+                                                        <apex:inputText maxLength="12" value="{!child.TotalBudget4CMA}" onchange="executeABDCal('{!budgetPlanStructure.accountId}', '{!child.accountId}', 'BC', this)" styleClass="inputItem {!child.accountId}{!budgetPlanStructure.accountId}BC" rendered="{!!child.isLast}"/>
+                                                        <apex:inputHidden value="{!child.TotalBudget4CMA}" rendered="{!child.isLast}" id="LastBCHidden"/>
+                                                        <apex:outputText value="{!child.TotalBudget4CMA}" styleClass="Last{!budgetPlanStructure.accountId}BC" rendered="{!child.isLast}" id="LastBC"/>
+                                                        
+                                                    </td>
+                                                    <td class="dataCell tdTwo">
+                                                        <apex:outputText value="{!child.TotalBudget4Total}" styleClass="{!IF(child.isLast, 'Last', child.AccountId)}{!budgetPlanStructure.accountId}TB" id="TB"/>                              
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </apex:repeat>
+                                        <tr class="itbbdreturn dataRow accountBtn_otherAccounts" onmouseOver="productRowMouseEffect('accountBtn_otherAccounts', 'over');" onmouseOut="productRowMouseEffect('accountBtn_otherAccounts', 'out');">
+                                            <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructure.BudgetDetail4Total.Billings_LY__c}" id="TBLY"/></b></td>
+                                            <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructure.BudgetDetail4Total.Billings_CYTD__c}" id="TBCY"/></b></td>
+                                            <td class="dataCell tdTwo"><b><apex:outputText value="{!otherBudgetPlanStructure.BudgetDetail4Total.Billings_CYRR__c}" id="TBCYRR"/></b></td>
+<!--                                             <td class="dataCell tdTwo"><b><apex:outPutText value="{!otherBudgetPlanStructure.BudgetDetail4Total.Forecast_CY__c}" styleClass="TBOtherAccountsFCY"/></b></td> -->
+                                            <td class="dataCell tdTwo"><b><apex:outPutText value="{!otherBudgetPlanStructure.TotalBudget4Direct}" styleClass="TBOtherAccountsBD"/></b></td>
+                                            <td class="dataCell tdTwo"><b><apex:outPutText value="{!otherBudgetPlanStructure.TotalBudget4POS}" styleClass="TBOtherAccountsBP"/></b></td>
+                                            <td class="dataCell tdTwo"><b><apex:outPutText value="{!otherBudgetPlanStructure.TotalBudget4CMA}" styleClass="TBOtherAccountsBC"/></b></td>    
+                                            <td class="dataCell tdTwo"><b><span><apex:outPutText value="{!otherBudgetPlanStructure.TotalBudget4Total}"/></span></b></td>
+                                        </tr>                                       
+                                        <apex:repeat value="{!otherBudgetPlanStructure.ChildrenAccountItems}" var="child">
+                                            <tr aid="{!child.accountId}" class="repeatcls repeatNewcls repeatOtherchild dataRow accountData_otherAccounts accountData_{!child.accountId}" onmouseOver="productRowMouseEffect('accountData_{!child.accountId}', 'over');" onmouseOut="productRowMouseEffect('accountData_{!child.accountId}', 'out');" style="display:none;">
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsLY}" id="BLY"/></td>
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsCY}" id="BCY"/></td>
+                                                <td class="dataCell tdTwo"><apex:outputText value="{!child.BillingsCYRR}" id="BCYRR"/></td>
+                                                <!-- 
+                                                <td class="dataCell tdTwo">
+                                                    <apex:inputText maxLength="12" value="{!child.ForecastCY}" onchange="executeABDCal('OtherAccounts', '{!child.accountId}', 'FCY', this)" styleClass="inputItem {!child.accountId}OtherAccountsFCY" rendered="{!!child.isLast}"/>
+                                                    <apex:inputHidden value="{!child.ForecastCY}" rendered="{!child.isLast}" id="LastFCYHidden"/>
+                                                    <apex:outputText value="{!child.ForecastCY}" styleClass="LastOtherAccountsFCY" rendered="{!child.isLast}" id="LastFCY"/>                                        
+                                                </td>
+                                                 -->
+                                                <td class="dataCell tdTwo">
+                                                    <apex:inputText maxLength="12" value="{!child.TotalBudget4Direct}" onchange="executeABDCal('OtherAccounts', '{!child.accountId}', 'BD', this)" styleClass="inputItem {!child.accountId}OtherAccountsBD" rendered="{!!child.isLast}"/>
+                                                    <apex:inputHidden value="{!child.TotalBudget4Direct}" rendered="{!child.isLast}" id="LastBDHidden"/>
+                                                    <apex:outputText value="{!child.TotalBudget4Direct}" styleClass="LastOtherAccountsBD" rendered="{!child.isLast}" id="LastBD"/>                                                  
+                                                </td>
+                                                <td class="dataCell tdTwo">
+                                                    <apex:inputText maxLength="12" value="{!child.TotalBudget4POS}" onchange="executeABDCal('OtherAccounts', '{!child.accountId}', 'BP', this)" styleClass="inputItem {!child.accountId}OtherAccountsBP" rendered="{!!child.isLast}"/>
+                                                    <apex:inputHidden value="{!child.TotalBudget4POS}" rendered="{!child.isLast}" id="LastBPHidden"/>
+                                                    <apex:outputText value="{!child.TotalBudget4POS}" styleClass="LastOtherAccountsBP" rendered="{!child.isLast}" id="LastBP"/>
+                                                    
+                                                </td>
+                                                <td class="dataCell tdTwo">
+                                                    <apex:inputText maxLength="12" value="{!child.TotalBudget4CMA}" onchange="executeABDCal('OtherAccounts', '{!child.accountId}', 'BC', this)" styleClass="inputItem {!child.accountId}OtherAccountsBC" rendered="{!!child.isLast}"/>
+                                                    <apex:inputHidden value="{!child.TotalBudget4CMA}" rendered="{!child.isLast}" id="LastBCHidden"/>
+                                                    <apex:outputText value="{!child.TotalBudget4CMA}" styleClass="LastOtherAccountsBC" rendered="{!child.isLast}" id="LastBC"/>
+                                                    
+                                                </td>
+                                                <td class="dataCell tdTwo">
+                                                    <apex:outputText value="{!child.TotalBudget4Total}" styleClass="{!IF(child.isLast, 'Last', child.AccountId)}OtherAccountsTB"/>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>                                
+                                    </tbody>
+                                </table>
+                            </div>
+                        </apex:outputPanel></td></tr>                       
+                    </table>
+                </apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+	
+</body>	
+</apex:page>

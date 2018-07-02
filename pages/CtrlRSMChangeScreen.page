@@ -1,0 +1,109 @@
+<apex:page docType="html-5.0" title="RSM Change Screen" id="thePage" applyBodyTag="true" sidebar="false" controller="CtrlRSMChangeScreen">
+<head>
+	<script type="text/javascript">
+		document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+	<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/css3animate/animate.min.css')}" />
+	<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+	<link type="text/css" rel="stylesheet" href="{!$Resource.CtrlRSMChangeScreenCss}" />
+	<style type="text/css">
+		#bodyTable td.noSidebarCell{padding: 0px !important;}
+		.imgce{
+            float: left; width: 13px; height: 13px;display:inline-block; margin-top:2px;margin-top:8px;
+            background: url({!URLFOR($Resource.jQueryTool, '/img/twisty_sprite.png')}) no-repeat;
+        }
+        .imgce.collapse{
+        		background-position:0px -11px;
+        }
+        .imgce.expand{
+        }
+        
+        .imgce.expandall{
+        }
+        .imgce.collapseall{
+        		background-position:0px -11px;
+        }
+		.cmtimg{background-image: url({!URLFOR($Resource.jQueryTool, '/img/cmt16_16.png')});}
+		.commentimg{background-image: url({!URLFOR($Resource.jQueryTool, '/img/comment_16_16.png')});}
+	</style>
+
+    <script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+    <script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+
+	<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery-1.8.3.min.js')}"/>
+	<script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+	<script src="{!$Resource.CtrlRSMFCChangeJS}"></script>
+	<script type="text/javascript">
+		window.cLabel ={
+			'bbb':'{!$Label.rsm_object_name1}', 'cancel':'{!$Label.rsm_cancel}',
+			'sch':'{!$Label.rsm_object_name2}', 'reload':'{!$Label.rsm_btn_reload}'
+		};
+	</script>
+</head>
+<body>
+    <div id="pageLoading" class=""></div>
+    
+    <div id="contentallid">
+	    <apex:form id="theForm">
+	    
+			<apex:actionFunction name="changeScreen" action="{!changeScreen}" oncomplete="changeScreenComplete()" reRender="theDataOp, themsg" />
+			<apex:actionFunction name="getComments" action="{!getComments}" oncomplete="getCommentsComplete()" reRender="theComment, themsg" />
+				
+			<apex:outputPanel id="theDataOp">
+				<apex:inputHidden id="viewtypeid" value="{!viewType}"/>
+				<input id="colorid" value="{!colorConfig}" type="hidden"/>
+				<div id="querydiv">
+					<input id="accBBBM" value="{!queryStrForBBBM}" type="hidden"/>
+					<input id="othBBBM" value="{!queryStrForOthersBBBM}" type="hidden"/>
+					<input id="accScheduled" value="{!queryStrForScheduled}" type="hidden"/>
+					<input id="othScheduled" value="{!queryStrForOthersScheduled}" type="hidden"/>
+				</div>
+				
+				<div style="position: relative;">
+					<c:CompRSMChangeScreenMenu pageCtrl="{!this}" id="compmenuid"></c:CompRSMChangeScreenMenu>
+					<div id="dmsgid" >
+					    <apex:pageMessages id="themsg"/>
+				    </div>
+				</div>
+				
+				<c:CompRSMChangeScreenBody pageCtrl="{!this}" id="compbodyid"></c:CompRSMChangeScreenBody>
+
+			</apex:outputPanel>
+			
+			<apex:outputPanel id="theComment">
+				<apex:inputHidden id="acId" value="{!acctId4Comment}"/>
+				<apex:inputHidden id="acYear" value="{!year4Comment}"/>
+				<apex:inputHidden id="acMonth" value="{!month4Comment}"/>
+	        	<c:CompRSMChangeScreenPopUP pageCtrl="{!this}" id="comppopup"></c:CompRSMChangeScreenPopUP>
+	        </apex:outputPanel>
+
+	    </apex:form>
+    </div>
+
+    <div id="connStatus_id" class="connstatuscls">
+    		<div class="connbox">
+    			<div class="connboxhead" style="position: relative;">
+    				<div class="connhelp">
+    					<div class="con">■ <b>{!$Label.rsm_connection_status1}</b></div>
+    					<div class="suc">■ <b>{!$Label.rsm_connection_status2}</b></div>
+    					<div class="err">■ <b>{!$Label.rsm_connection_status3}</b></div>
+    				</div>
+			</div>
+	    		<div id="connbox">
+	    			
+	    		</div>
+    		</div>
+    </div>
+	<script type="text/javascript">
+		addListener(window, 'load', initDocumentPage, {'locale':'{!lc.locale}'});
+	</script>
+</body>
+</apex:page>

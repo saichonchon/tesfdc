@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Customer__c</field>
+        <field>Active__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Approval process required for A customers. GAM submits account plan, GSM or VP reviews and approves it.
+
+For each GAM we manually need to maintain a manager who approves account plan. 
+
+For all B customers, account manager can submit and approval process should automatically approve it.</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Account.Customer_Classification__c</field>
+                <operation>equals</operation>
+                <value>A</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>A Customer Approval</label>
+        <name>A_Customer_Approval</name>
+    </approvalStep>
+    <emailTemplate>Approval_Email_Templates/Account_Planning_Approval</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Account_Plan__c.Active__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Account_Plan__c.RecordType</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Account.Customer_Classification__c</field>
+            <operation>equals</operation>
+            <value>A</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Account_Plan__c.Business_Unit__c</field>
+            <operation>notEqual</operation>
+            <value>Appliance</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Account.RecordType</field>
+            <operation>equals</operation>
+            <value>Grouped Accounts</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Define_Approved_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Define_Rejected_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Define_Pending_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>A Account Plan Approval Process</label>
+    <recallActions>
+        <action>
+            <name>Update_Stauts</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

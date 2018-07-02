@@ -1,0 +1,341 @@
+<apex:page title="DND CFT Forecast Import" controller="CtrlCSDImportCFTForecast" id="thePage">
+    
+    <head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+    
+        <style type="text/css">
+            #loading-curtain-div{top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');}
+            #saveProgressCover{display: none; top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:1000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center; }
+            #saveProgressCoverBox{display: none; top:0px;left:0px;text-align:center;width:100%;height:100%; position:fixed;z-index:2000; background-repeat:no-repeat;background-position:center center; }
+            
+            .list thead tr th{
+                background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom white;
+                height: 20px; padding-left: 5px; padding-right: 5px; text-align: right;
+            }
+            .list tbody tr td{ 
+                height: 20px; padding-left: 5px; padding-right: 5px; vertical-align: middle; text-align: right;
+            }
+            .list th.headdark{
+                background: #fff url('/img/alohaSkin/darkerblue_gradient.png') 0 top repeat-x !important;
+                border-left:1px solid #c8cdcf; border-bottom:1px solid #c8cdcf; 
+            }
+            .list.errortablecls thead tr th{ background: #E0E3E5 !important; }
+            .totalcls tbody tr td{ font-weight: bold; }
+            .brsolid{ border-right: 1px solid #f3f3f3; }
+            .tabfix{ border: 1px solid #F3F3F3; width: 60%; }
+            .progressbar{   
+                width:650px;font-size:80%;border:1px #000 solid; margin:20px auto;padding:15px;
+                position:relative;-moz-border-radius: 3px;-webkit-border-radius: 3px; text-align: center; top: 40%;
+            }
+            .progresserror{
+                width: 300px; position: absolute; right: 8%; 
+                border:1px solid #AAA; -moz-border-radius: 3px;-webkit-border-radius: 3px;
+            }
+            .progress_tab{
+                width: 100%; table-layout: fixed; text-align: right;
+            }
+            
+            .progress_td{height: 25px; text-align: right; padding: 0px 5px; font-weight: bold;}
+            .progress_br{border-right: 1px solid #AAA;}
+            .progress_bt{border-bottom: 1px solid #AAA;}
+            .p_scuess{ color: #65B914; }
+            .p_error{ color: #E02E21; }
+            .showerror{
+                width: 600px; position: absolute; background-color: #FFF; right: 8%; z-index: 5000;
+                border: 1px solid #AAA;-moz-border-radius: 3px;-webkit-border-radius: 3px;top: 10%;
+            }
+            .ui-progressbar { position: relative; }
+            .progress-label {
+                position: absolute; left: 50%; top: 19px;
+                font-weight: bold; text-shadow: 1px 1px 0 #fff;
+            }
+            .progressbarbtn_div{ top: 41%; position: relative; padding: 10px; background-color: #0E7CED;}
+            
+            .div-tab-box{
+                position: relative; text-align: center; overflow: hidden; background-color: #f5f5f5;
+                border: 1px solid #e3e3e3;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.05); padding: 5px 0px;
+            }
+            
+            .ul-tabs{ position: relative; margin: 0 auto; padding: 0; width: 210px; }
+            .ul-tabs li{
+                width: 100px; height: 30px; line-height: 30px; text-align: center;
+                list-style: none; float: left; position: relative; top: 0; cursor: pointer;
+                margin: 1px .2em 0 0; border-bottom-width: 0; padding: 0; white-space: nowrap;
+                border-radius: 6px; border: 1px solid #ccc; background: #fff;
+            }
+            .ul-tabs li.active { color: #fff;background-color: #337ab7;border-color: #2e6da4; }
+            .ul-tabs li.active:HOVER { color: #fff;background-color: #286090;border-color: #204d74; }
+            .ul-tabs li:HOVER{ color: #333;background-color: #e6e6e6;border-color: #adadad; }
+            .mgleft{margin-left: 10px !important;}
+            .dispib{display: inline-block;}
+            .pdbtn{padding: 0px 10px !important;}
+            .btnactive {background: #eee !important;}
+            .none {display: none;}
+            
+            .reportbody tr:HOVER{ background-color: #e3f3ff; }
+            .content-tab{ margin-top: 5px; display: none; }
+            .content-tab.active {display: block !important;}
+            .content-head { overflow: hidden; margin-bottom: 5px; }
+            .content-head div{display: inline-block;}
+            .content-head .inputfix {height: 20px;}
+            
+            .filter-date{
+                background-image: url(/EXT/theme/sfdc/images/form/datepicker.png); 
+                width: 20px;height: 24px;border-bottom: 1px solid #d8d8d8;display: inline-block;
+                position: relative;top: 9px;left: -4px;background-position: -40px 0;
+            }
+            .filter-box{ background-color: #fffcce; padding: 5px; border-bottom: 1px solid #E7E7E7; }
+            .filter-box div{ display: inline-block; }
+            .filter-box select,input{outline:none; height: 25px;}
+            .filter-box input.fix{height: 20px;}
+            .filterreport{margin-top: 20px;}
+            .filter-input-w{width: 100%;}
+            .filter-input-box{width: 30%;}
+            .filter-fiscal-box{ border: 1px solid #C5C5C5; padding: 3px 5px; }
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/papacsv/papaparse.min.js')}"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/jquerySorted/JquerySorted.js')}" type="text/javascript" ></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlCSDImportCFTForecastJS}"></script>
+        <script type="text/javascript">
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initDocument, {'locale':'{!lc.locale}'});
+        </script>
+        
+    </head>
+    
+    <body>
+        <div id="loading-curtain-div" ></div>
+        
+        <apex:form id="theForm">
+            <apex:actionFunction name="deleteObject" oncomplete="deleteObjectComplete()" action="{!deleteObject}" rerender="theForm" />
+            <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+            <apex:inputHidden value="{!isStop}" id="isstopid" />
+            <apex:inputHidden value="{!isError}" id="iserrorid" />
+        </apex:form>
+        
+        <div style="display: none;" id="errmsgboxid">
+            <span><span><div class="message warningM3">
+                <table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">
+                    <tbody><tr valign="top">
+                        <td><img alt="WARNING" class="msgIcon" src="/s.gif" title="WARNING" /></td>
+                        <td class="messageCell">
+                            <div id="" class="messageText">
+                                <span><h4>Warning:</h4></span><b id="msgtextid"></b><br />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><td></td><td></td></tr>
+                </tbody></table>
+            </div></span></span>
+        </div>
+        
+        
+        <input id="jsonmapping" value="{!jsonMapping}" type="hidden" />
+        <input id="jsoncsvhead" value="{!jsonCSVHead}" type="hidden" />
+        <input id="jsoncsvnewhead" value="{!jsonNewHead}" type="hidden" />
+        <input id="batchNumber" value="{!batchNumber}" type="hidden" />        
+        <input id="crtfiscaldate" value="{!currentFiscalDate}" type="hidden" />        
+        <div style="margin-top: 10px;">
+            <div class="div-tab-box">
+            <!--
+            
+                <div id="runtabmsg" style="display:none; position: absolute; height: 30px; line-height: 30px; font-weight: bold; color: red; margin-left: 200px;">
+                    Maximum Records Displayed: 1000
+                </div>
+            -->
+                <ul class="ul-tabs" id="ultabid">
+                    <li class="li-tabs active" data-type="import">Import CSV</li>
+                    <li class="li-tabs " data-type="report">View Report</li>
+                </ul>
+            </div>
+            
+            <!-- START Import CSV -->
+            <div class="content-tab tab-import active" id="import">
+                <!-- START BUTTON -->
+                <div style="height: 30px; line-height: 30px; overflow: hidden;">
+                    <div style="text-align: center; padding-top: 5px; float: left; width: 45%; position: relative;">
+                        <iframe id="theIframe" src="/apex/CtrlCSDImPortCSVFile" allowTransparency="true" frameborder="0" scrolling="no" style="width:100%;height:100%; background-color: transparent !important; position: relative;"></iframe>
+                    </div>
+                    <div style="float: right; width: 55%; position: relative; display: inline-table;">
+                        <input style="margin-left: 10px;" id="upsertBtn" value="Upsert Records" type="button" class="btn" />
+                        <input style="margin-left: 10px;" id="downBtn" data-url="{!$Page.CtrlCSDExportCSVFile}" value="Download CSV template" type="button" class="btn" />
+<!--                        <input style="margin-left: 10px;" id="reportBtn" value="View report" type="button" class="btn" /> -->
+<!--                        <a href="/00O" data-date="" data-reportid="" id="reportA" target="_blank" style="display: none;"></a> -->
+                    </div>
+                </div>
+                <!-- END BUTTON -->
+                
+                <!-- START TABLE -->
+                <div style="margin-top: 40px;">
+                    <table class="list tabfix totalcls" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                        <thead>
+                            <tr>
+                                <th class="brsolid">Total Records</th>
+                                <th class="brsolid">Total Success</th>
+                                <th>Total Errors</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="totalrecords" class="brsolid">0</td>
+                                <td id="totalsuccess" class="brsolid" style="color: #16E43F;">0</td>
+                                <td id="totalerror" style="color: rgb(255, 0, 0);">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- END TABLE -->
+            </div>
+            <!-- END Import CSV -->
+            
+            
+            <!-- START Report view -->
+            <div class="content-tab tab-report " id="report">
+                <div class="content-head" >
+                    <div id="exportbox" class="filter-fiscal-box" style="background: rgb(219, 255, 238);">
+                        <input data-type="all" value="Export all" class="btn" type="button" />
+                        <input data-type="result" value="Export filter" class="btn mgleft" type="button" />
+                    </div>
+                    
+                    <div class="mgleft filter-fiscal-box" style="background: rgb(230, 230, 230);">
+                        <input value="Add filter" id="filterbtn" class="btn mgleft" type="button"/>
+                        <input onclick="event_runReport_click(event, this)" class="btn mgleft" value="Run" type="button"/>
+                    </div>
+                    
+                    <div class="mgleft filter-fiscal-box" id="reportdatebox" style="background: #FFFDE2;">
+                        <span id="fiscaldatefilter">
+                        </span>
+                    </div>
+                </div>
+                <div id="filterbox">
+                    
+                </div>
+                <div id="filterreport" class="filterreport">
+                    <table style="width: 100%;" class="list tabfix" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr id="reporthead">
+                                <apex:repeat var="value" value="{!list_head}">
+                                <th data-mapping="{!map_mapping[value]}" class="headdark">{!value}</th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+                            
+                        <tbody id="reportbody" class="reportbody">
+                                
+                        </tbody>
+                        
+                        <tfoot>
+                            <tr style="display: none;" id="reporttmp">
+                                <apex:repeat var="value" value="{!list_head}">
+                                <td data-mapping="{!map_mapping[value]}" class="headdark"> </td>
+                                </apex:repeat>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div style="display: none;" id="filtertemplate">
+            <div class="filter-box">
+                <div class="logic">
+                    <select class="logicselect">
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                    </select>
+                </div>
+                <div>
+                    <select class="fieldselect">
+                        <apex:repeat var="field" value="{!list_field_filter}">
+                        <option value="{!field.field}" data-type="{!field.type}">{!field.filter}</option>
+                        </apex:repeat>
+                    </select>
+                </div>
+                <div>
+                    <apex:repeat var="key" value="{!map_sql_filter}">
+                    <select class="{!key}">
+                        <apex:repeat var="field" value="{!map_sql_filter[key]}">
+                        <option data-filter="{!field.type}">{!field.filter}</option>
+                        </apex:repeat>
+                    </select>
+                    </apex:repeat>
+                </div>
+                <div class="filter-input-box">
+                    <input  type="text" class="fix filtervalue filter-input-w"/>
+                </div>
+                <div class="mgleft btnbox">
+                    <input value="ok" onclick="event_addFilter_click(event, this)" class="btn querycheck new" data-edit="edit" data-ok="ok" type="button"/>
+                    <input value="cancel" class="btn" type="button" onclick="event_cancelFilter_click(event, this)"/>
+                </div>
+            </div>
+        </div>
+         <!-- END Report view -->
+         
+        <!-- START ERROR TABLE -->
+        <div style="display: none; margin-top: 20px;" id="errorboxtable">
+            <table style="width: 100%;" class="list tabfix errortablecls" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr id="errortheadid">
+                    </tr>
+                </thead>
+                <tbody id="errorbodyid">
+                </tbody>
+            </table>
+        </div>
+        <!-- END ERROR TABLE -->
+        
+    <!-- START progress bar -->
+    <div id="saveProgressCover" class="progress_cls"></div>
+    
+    <div id="saveProgressCoverBox" class="progress_cls">
+        <div id="showerror" class="showerror" style="top: -120%;">
+            <div style="max-height:300px; overflow-x: auto; overflow-x: hidden;">
+                <table class="progress_tab" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right; width: 220px;" class="progress_td progress_br progress_bt">Name</th>
+                            <th style="text-align: right;" class="progress_td progress_bt ">Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="errtabbody">
+                    </tbody>
+                    <tfoot style="display: none;" id="tmperrtab">
+                        <tr>
+                            <td style="text-align: right;" class="progress_td progress_br progress_bt"></td>
+                            <td style="text-align: right;" class="progress_td progress_bt"> </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div id="progressbar" class="progressbar">
+            <div class="progress-label">Loading...</div>
+        </div>
+        <div id="progressbarbtn_div" class="progressbarbtn_div" style="display: none;">
+            <input type="button" class="btn" value="close" onclick="closeProgressBox(this)" />
+        </div>
+    </div>
+    <!-- END progress bar -->
+        
+    </body>
+    
+    <script type="text/javascript">
+        ;function upsertListCFTForecast_js(){ return '{!$RemoteAction.CtrlCSDImportCFTForecast.upsertListCFTForecast}';}
+        ;function runReportData_js(){ return '{!$RemoteAction.CtrlCSDImportCFTForecast.runReportData}';}
+        ;function runAllReportData_js(){ return '{!$RemoteAction.CtrlCSDImportCFTForecast.runAllReportData}';}
+        ;function runFilterReportData_js(){ return '{!$RemoteAction.CtrlCSDImportCFTForecast.runFilterReportData}';}
+    </script>
+</apex:page>

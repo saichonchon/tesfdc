@@ -1,0 +1,660 @@
+<apex:page standardcontroller="Opportunity" extensions="ExtOppy_Portfolio" showHeader="false" sidebar="false" docType="html-5.0">
+<head>
+	<link href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.css')}" rel="stylesheet"></link>
+	<apex:includeScript value="{!URLFOR($Resource.jq4matrix)}" />
+	<apex:includeScript value="{!URLFOR($Resource.highchartsSrc)}" />
+	<title>{!$Label.PMV_Portfolio}</title>
+	<style type="text/css">
+		form {
+			width: 960px;
+			height: auto;
+			margin: 0px auto;
+		}
+		#popup-back{
+	        opacity: 0.6;
+	        filter:alpha(opacity=60);
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        z-index: 10;
+	        background-color: #000;
+	        border: none;
+	        display:none;
+	    }
+	    #tabs{
+	    	width: 1010px;
+			margin: 0px auto;
+			border: 0;
+			padding: 0px;
+			position: relative;
+	    }
+	    .floatStyle{
+	    	position: fixed;
+			z-index: 9;
+			padding: 10px 0px 0px !important;
+			margin: 0px;
+			width: 100%;
+			background: #ffffff;
+	    }
+	    #tabs > ul li{
+			list-style: none;
+			float: left;
+			position: relative;
+			top: 0;
+			margin: 1px 14px 0 0;
+			border-bottom-width: 0;
+			padding: 0;
+			white-space: nowrap;
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d8d8d8',GradientType=0 );
+			background: linear-gradient(#fff, #d8d8d8);
+			color: #1b1b1b;
+			border-radius: 4px;
+			border: 1px solid #ccc;
+			width: 168px;
+		}
+		.tab-back{
+			width: 99px !important;
+			height: 62px;
+			cursor: pointer;
+			font-weight: bold;
+		}
+		.backIcon{
+			width: 7px;
+			height: 28px;
+			display: inline-block;
+			margin: 18px 6px 0px 7px;
+			float: left;
+			background-image: url(/resource/1403607243000/jsCss4OrgChart/css/ui-lightness/images/icon.png);
+			background-position: -107px -99px;
+		}
+		.backIcon + label {
+			margin-top: 14px;
+			display: inline-block;
+			color: #6d6d6d;
+			cursor: pointer;
+		}
+		#tabs > ul li.sel {
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e3e3e', endColorstr='#272727',GradientType=0 ); 
+	        background: linear-gradient(#3e3e3e, #272727);
+			color: #cfcfcf;
+			border: 0;
+			border-top: 1px solid #3e3e3e;
+			border-bottom: 1px solid #272727;
+		}
+		#tabs > ul li a {
+			float: left;
+			padding: .5em 0;
+			width: 100%;
+			text-align: center;
+			text-decoration: none;
+			line-height: 24px;
+			font-size: 14px;
+			font-weight: bold;
+		}
+		#tabs > ul li.sel a {
+			color: #fff;
+		}
+		#tabs > ul li a span {
+			display: block;
+			font-size: 12px;
+			font-weight: normal;
+		}
+		#tabs > ul li.sel a > span{
+			font-size: 14px;
+			font-weight: bold;
+		}
+		label {
+			cursor: default;
+		}
+		.inputDiv{
+	    	padding: 75px 0 30px;
+	    }
+		.inputDiv select {
+		    border: 1px solid #CFCFCF;
+		    border-radius: 6px;
+		    height: 28px;
+		    margin: 20px 0 0;
+		    vertical-align: middle;
+		    width: 230px;
+		    font-weight: bold;
+		    font-size: 13px;
+		    padding: 0 0 0 5px;
+		    line-height: 26px;
+		}
+		.inputDiv input {
+		    border: 1px solid #CFCFCF;
+		    border-radius: 6px;
+		    height: 26px;
+		    margin: 20px 0 0 5px;
+		    padding: 0px;
+		    vertical-align: middle;
+		    width: 769px;
+		    line-height: 26px;
+		}
+		.content{
+			position: relative;
+			top: 100px;
+		}
+		.content-picture{
+			width: 380px;
+			float: left;
+		}
+		.example-content{
+			position: relative;
+			width: 420px;
+			heigth: 415px;
+		}
+		.yaxis{
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 25px;
+			height: 270px;
+			background: rgb(50,50,50);
+		}
+		.y-h{
+			display: inline-block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			margin: 6px 0 0 8px;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+		.y-title{
+			display: block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			margin: 0;
+			position: absolute;
+			left: -23px;
+			top: 130px;
+			width: 70px;
+			transform: rotate(-90deg);
+			-o-transform: rotate(-90deg);
+			-ms-transform:rotate(-90deg);
+			-webkit-transform: rotate(-90deg);
+			-moz-transform: rotate(-90deg);
+		}
+		html[data-useragent*='MSIE 8.0'] .y-title{
+			left: 5px;
+			top: 100px;
+			filter: progid:DXImageTransform.Microsoft.BasicImage(Rotation=3);
+		}
+		.y-l{
+			display: inline-block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			margin: 0 0 6px 8px;
+			position: absolute;
+			bottom: 0px;
+			left: 0px;
+		}
+		.xaxis {
+			position: relative;
+			top: -3px;
+			left: 22px;
+			width: 400px;
+			height: 25px;
+			background: rgb(44,44,44);
+		}
+		.x-l{
+			display: inline-block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			line-height: 25px;
+			margin: 0 0 0 6px;
+			position: absolute;
+			left: 0px;
+		}
+		.x-title{
+			display: inline-block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			line-height: 25px;
+			position: absolute;
+			margin: 0 162px;
+			left: 0px;
+		}
+		.x-h{
+			display: inline-block;
+			font-size: 12px;
+			font-weight: normal;
+			color: rgb(255,255,255);
+			line-height: 25px;
+			margin: 0 6px 0 0;
+			position: absolute;
+			right: 0px;
+		}
+		.content-tabs{
+			width: 550px;
+			float: right;
+		}
+		.criteria-ability{
+			width: 550px;
+			margin: 0px;
+			border: 0px;
+		}
+		.content-criteria-ability{
+			width: 550px;
+			height: auto;
+			margin: 0px;
+			border: 0px;
+		}
+		.criteria-attractiveness{
+			width: 550px;
+			margin: 0px;
+			border: 0px;
+		}
+		.content-criteria-attractiveness{
+			display: none;
+			width: 550px;
+			height: auto;
+			margin: 0px;
+			border: 0px;
+		}
+		h1{
+			width: 550px;
+			float: left;
+			font-size: 20px;
+			font-weight: normal;
+			border-bottom-width: 1px;
+			border-bottom-color: rgb(233,233,233);
+			border-bottom-style: solid;	
+		}
+		h1 > span{
+			color: #357e8e;
+		}
+		h1 > span.icon-ability {
+			width: 24px;
+			height: 21px;
+			float: right;
+			margin: 5px 0px 5px 0px;
+			cursor: pointer;
+		}
+		h1 > span.icon-attractiveness{
+			width: 24px;
+			height: 21px;
+			float: right;
+			margin: 10px 0px 5px 0px;
+			cursor: pointer;
+		}
+		.icon-show{
+			width: 24px;
+			height: 21px;
+			display: inline-block;
+			margin: 0;
+			float: left;
+			background-image: url(/resource/image_icon/icon_show.jpg);
+		}
+		.icon-hide{
+			width: 24px;
+			height: 21px;
+			display: inline-block;
+			margin: 0;
+			float: left;
+			background-image: url(/resource/image_icon/icon_hide.jpg);
+		}
+		.content-table{
+			width: 550px;
+			margin: 0px;
+			position: relative;
+			float: left;
+		}
+		.content-table tr.tr1{
+			height: 25px;
+		}
+		.content-table tr th{
+			text-align: left;
+			text-decoration: none;
+			font-size: 16px;
+			font-weight: bold;
+		}
+		.content-table tr th.th1{
+			width: 160px;
+		}
+		.content-table tr th.th2{
+			width: 300px;
+		}
+		.content-table tr th.th3{
+			width: 90px;
+			text-align: right;
+		}	
+		.content-table tr td{
+			text-align: left;
+			text-decoration: none;
+			font-size: 13px;
+			font-weight: normal;
+			vertical-align: top;
+		}
+		.content-table tr td p{
+			margin: 0 0 6px 0;
+		}
+		.content-table tr td span.value-span{
+			background: rgb(0,92,113);
+			width: 75px;
+			line-height: 23px;
+			text-align: center;
+			font-size: 13px;
+			font-weight: bold;
+			color: #fff;
+			border-radius:4px;
+			float: right;
+			vertical-align: top;
+			margin: 0 0 5px 0;
+			border: 0px;
+			display: block;
+		}		
+	</style>
+	<script type="text/javascript">
+    	document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+	<script type="text/javascript"> 
+		var isClickAblility = false;
+		var isClickAttractiveness = true;
+		var chart = {};
+		$(function () {
+			$("body").width($(window).width()>1010?$(window).width()-15:1010);
+			$(".tab-back").click(function(){
+	            location.href='/{!opportunity.Id}';
+	        });
+			$(".icon-ability span").click(function(){
+	            if(isClickAblility){
+	                $(".icon-ability span").eq(0).removeClass().addClass("icon-show");
+	                $(".content-criteria-ability").show();
+	                isClickAblility = false;
+	            }
+	            else if(!isClickAblility){
+	                $(".icon-ability span").eq(0).removeClass().addClass("icon-hide");
+	                $(".content-criteria-ability").hide();
+	                isClickAblility = true;
+	            }
+	        });
+	        $(".icon-attractiveness span").click(function(){
+	            if(isClickAttractiveness){
+	                $(".icon-attractiveness span").eq(0).removeClass().addClass("icon-show");
+	                $(".content-criteria-attractiveness").show();
+	                isClickAttractiveness = false;
+	            }
+	            else if(!isClickAttractiveness){
+	                $(".icon-attractiveness span").eq(0).removeClass().addClass("icon-hide");
+	                $(".content-criteria-attractiveness").hide();
+	                isClickAttractiveness = true;
+	            }
+	        });
+	        
+	        var data1 = [], data2 = [], data3 = [], data4 = [];
+	        var abi = 0;
+	        var att = 0;
+	        
+	        //$("#Summary_Ability__c").parentsUntil(".content-table").html();
+	        var abiHtml = "<tr>" + $("#Summary_Ability__c").parent().html() + "</tr>";
+	        var attHtml = "<tr>" + $("#Summary_Attractiveness__c").parent().html() + "</tr>";
+	        abi = $("#Summary_Ability__c").parent().find("td").eq(2).find("span").html();
+			att = $("#Summary_Attractiveness__c").parent().find("td").eq(2).find("span").html();
+			$("#Summary_Ability__c").parent().remove();
+	        $("#Summary_Attractiveness__c").parent().remove();
+			$(".abiTable").append(abiHtml);
+			$(".attTable").append(attHtml);
+			
+	        abi = Math.round(abi * 100);
+	        att = Math.round(att * 100);
+	        $("#Summary_Ability__c").parent().find("td").eq(3).find("span").html(abi + "%");
+	        $("#Summary_Attractiveness__c").parent().find("td").eq(3).find("span").html(att + "%");
+	        var amount = $("#amountValue").val();
+	        if(amount < 100000 || (!amount && amount != 0)) {
+				data1.push({x:att, y:abi});
+			}
+			if(amount >= 100000 && amount < 500000) {
+				data2.push({x:att, y:abi});
+			}
+			if(amount >= 500000 && amount <= 2500000) {
+				data3.push({x:att, y:abi});
+			}
+			if(amount > 2500000) {
+				data4.push({x:att, y:abi});
+			}
+			/* chart.series[0].update({
+				name: ' ‹ $100k',
+		        color: '#a90302',
+		        marker: {
+		            symbol: 'circle'
+		        },
+		        data: data1
+		    });
+			chart.series[1].update({
+				name: '$100k-$500k',
+		        color: '#f2b100',
+		        marker: {
+		            symbol: 'circle'
+		        },
+		        data: data2
+		    });
+			chart.series[2].update({
+				name: '$500k-$2.5kk',
+		        color: '#d0dd00',
+		        marker: {
+		            symbol: 'circle'
+		        },
+		        data: data3
+		    });
+			chart.series[3].update({
+		        name: '› $2.5kk',
+		        color: '#67be00',
+		        marker: {
+		            symbol: 'circle'
+		        },
+		        data: data4
+		    }); */
+	        
+            var lowName = "< $100k";
+            $('#container').highcharts({
+                chart: {
+                	spacingBottom: 100,
+                    type: 'scatter',
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: null
+                },
+                exporting:{
+                    enabled: false
+                },
+                credits:{
+                    enabled: false
+                },
+                xAxis: {
+                    title: {
+                        text: null
+                    },
+                    labels:{
+                    	enabled: false
+                    },
+                    startOnTick: true,
+                    endOnTick: true,
+                    min: 0,
+                    max: 100,
+                    showFirstLabel: false,
+                    showLastLabel: false,
+                    gridLineWidth: 1,
+                    tickInterval : 50,
+                    tickLength: 0
+                },
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    gridLineWidth: 1,
+                    tickInterval : 50,
+                    labels:{
+                    	enabled: false
+                    },
+                    title: {
+                        text: null
+                    }
+                },
+                legend: {
+                    floating: true,
+                    x: -5,
+                	y: 90,
+                	width: 394,
+                	title: {
+                        text: 'Amount Sizes'
+                    },
+                    layout: 'horizontal',
+                    backgroundColor: '#FFFFFF',
+                    borderWidth: 1,
+                    borderColor: '#efefef',
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x}, {point.y}'
+                        }
+                    },
+	                events :{
+	                    legendItemClick:function(event) { //Turn off the function what clicking the sign can show or hide the data column
+	                        return false;
+	                    }
+	                }
+                },
+                tooltip: {
+                    hideDelay:100
+                },
+                series: [{
+                    name: '› $2.5kk',
+                    color: '#5EBA11',
+                   	marker: {
+                        symbol: 'circle'
+                    },
+                    data: data4
+                }, {
+                    name: '$500k-$2.5kk',
+                    color: '#D0D911',
+                    marker: {
+                        symbol: 'circle'
+                    },
+                    data: data3
+                }, {
+                    name: '$100k-$500k',
+                    color: '#F7AE03',
+                   	marker: {
+                        symbol: 'circle'
+                    },
+                    data: data2
+                }, {
+                    name: ' ‹ $100k',
+                    color: '#C03733',
+                    marker: {
+                        symbol: 'circle'
+                    },
+                    data: data1
+                }]
+            });      
+        });
+	</script>
+</head>
+<body>
+	<apex:form id="theForm" onkeydown="if(event.keyCode==13){return false;}">
+	    <div id="popup-back"></div>
+	    <input value="{!fiveYearRevenue}" id="amountValue" style="display:none;"></input>
+	    <div id="tabs">
+	        <ul class="floatStyle">
+	        	<li class="tab-back"><span class="backIcon"></span><label>{!$Label.PMV_accessment_leb_back_line_1}<br/>{!$Label.PMV_accessment_leb_back_line_2}</label></li>
+	        	<li><a href="/apex/ExtOppy_qualifierAccessment?Id={!opportunity.Id}">{!$Label.PMV_button_assessment}<span><label>{!answerNum}</label>/{!questionNum} Answers</span></a></li>
+	            <li><a href="/apex/ExtOppy_PoliticalMap?Id={!opportunity.Id}">{!$Label.PMV_button_relationships}<span class="political-num">{!countPoliticalMaps} Contacts</span></a></li>
+	            <li><a href="/apex/ExtOppy_DecisionCriteria?Id={!opportunity.Id}">{!$Label.PMV_button_criteria}<span>{!countDecisionCriteria} {!$Label.PMV_button_criteria}</span></a></li>
+	            <li class="sel"><a href="#tabs-4"><apex:outputPanel id="criteriaCount">{!$Label.PMV_Portfolio}<span>&nbsp;</span></apex:outputPanel></a></li>
+	        </ul>
+	        <!-- <div class="inputDiv">
+				<select>
+					<option>DropDrown Content...</option>
+				</select>
+				<input type="text"/>
+			</div> -->
+	        <div class="content">
+	        	<div class="content-picture">
+	        		<div class="example-content">
+			    		<div id="container" style="width: 415px; height: 375px; float: left; margin: 0px 0px 0px 14px; padding:0; position: relative; top: -9px; left: 2px;">
+			    			
+			    		</div>
+			    		<div class="yaxis">
+			    			<span class="y-h">H</span>
+			    			<span class="y-title">{!$Label.PMV_Ability}</span>
+			    			<span class="y-l">L</span>
+			    		</div>
+			    		<div class="xaxis">
+			    			<span class="x-l">L</span>
+			    			<span class="x-title">{!$Label.PMV_Attractiveness}</span>
+			    			<span class="x-h">H</span>
+			    		</div>
+			    	</div>
+	        	</div>
+	        	<div class="content-tabs">
+	        		<div class="criteria-ability">
+		        		<h1 class="ability"><span>{!$Label.PMV_Ability}</span><span class="icon-ability"><span class="icon-show"></span></span></h1>
+		        		<div class="content-criteria-ability">
+		        			<table class="content-table abiTable">
+					        	<tr class="tr1">
+						        	<th class="th1">{!$Label.PMV_portfolio_name}</th>
+						        	<th class="th2">{!$Label.PMV_portfolio_description}</th>
+						        	<th class="th3">{!$Label.PMV_portfolio_rating_value}</th>
+					        	</tr>
+					        	<apex:repeat value="{!list_abilitys}" var="ability">
+						        	<tr>
+						        		<td id="{!ability.apiName}">{!ability.labelName}</td>
+						        		<td><p>{!ability.description}</p></td>
+						        		<td style="display:none"><span class="value-span">{!ability.value}</span></td>
+						        		<td><span class="value-span">{!ability.stringVal}</span></td>
+						        	</tr>
+						        </apex:repeat>
+					    	</table>
+		        		</div>
+		        	</div>
+		        	<div class="criteria-attractiveness">
+		        		<h1 class="attractiveness"><span>{!$Label.PMV_Attractiveness}</span><span class="icon-attractiveness"><span class="icon-hide"></span></span></h1>
+		        		<div class="content-criteria-attractiveness">
+		        			<table class="content-table attTable">
+					        	<tr class="tr1">
+						        	<th class="th1">{!$Label.PMV_portfolio_name}</th>
+						        	<th class="th2">{!$Label.PMV_portfolio_description}</th>
+						        	<th class="th3">{!$Label.PMV_portfolio_rating_value}</th>
+					        	</tr>
+					        	<apex:repeat value="{!list_atts}" var="att">
+						        	<tr>
+						        		<td id="{!att.apiName}">{!att.labelName}</td>
+						        		<td><p>{!att.description}</p></td>
+						        		<td style="display:none"><span class="value-span">{!att.value}</span></td>
+						        		<td><span class="value-span">{!att.stringVal}</span></td>
+						        	</tr>
+						        </apex:repeat>
+					        </table>
+		        		</div>
+		        	</div>
+	        	</div>	       
+        	</div>
+        </div>
+	</apex:form>
+</body>
+</apex:page>

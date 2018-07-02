@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <submitter>All_Users</submitter>
+        <type>group</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Approver__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>SIP Approver Results</label>
+        <name>SIP_Approver_Results</name>
+    </approvalStep>
+    <description>Approval Process for SIP Plans.
+
+This approval process is for the SIP results at the FY close</description>
+    <emailTemplate>SIP_Templates/SIP_Approval</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(Record_Locked__c = FALSE,
+
+OR(
+ISPICKVAL( Status__c, &quot;Completed for Target&quot;),
+ISPICKVAL( Status__c, &quot;Rejected for Results&quot;)
+)
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>SIP_Plan_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>SIP_Results_Completed</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>true</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>SIP_Plan_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>SIP_Results_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>In_Approval_Result</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_initial_submitter_mail</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>SIP Approval Process for SIP Results</label>
+    <recallActions>
+        <action>
+            <name>SIP_Target_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

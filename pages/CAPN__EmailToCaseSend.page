@@ -1,0 +1,88 @@
+<apex:page standardController="EmailMessage" extensions="CAPN.EmailToCaseSendController">
+    <apex:sectionHeader title="Send Email" subtitle="{!CurCase.CaseNumber} {!CurCase.Subject}"/>
+    <apex:pageMessages id="messages"/>
+    <apex:form >
+        <apex:pageBlock mode="edit" >
+            <apex:pageBlockButtons >
+                    <apex:commandButton action="{!send}" value="Send"/>
+                    <input class='btn' type='button' value='Cancel' onclick="window.location.href='{!retUrl}'"></input>
+            </apex:pageBlockButtons>
+            <!--<span class="requiredExample">&nbsp;</span><span class="requiredMark">*</span><span  class="requiredText"> = Required Information</span>-->
+            <!--<apex:pageBlockSection title="Edit Email" id="input_section" columns="1">-->
+            <br></br>
+            <apex:pageBlockSection title="Edit Email" id="input_section" columns="1" collapsible="false">
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="contact">To</apex:outputLabel>
+                    <!--<apex:outputPanel styleClass="requiredInput" layout="block">-->
+                <!--<apex:outputPanel styleClass="requiredBlock" layout="block"/>-->
+                    <apex:inputField value="{!CurCase.ContactId}" id="contact"/>
+                   <!-- </apex:outputPanel>-->
+                </apex:pageBlockSectionItem>
+              
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="addTo">Additional To</apex:outputLabel>
+                    <apex:inputTextArea value="{!EmailMessage.ToAddress}" id="addTo" cols="65" rows="2"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="cc">CC</apex:outputLabel>
+                    <apex:inputTextArea value="{!EmailMessage.CCAddress}" id="cc" cols="65" rows="2"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="bcc">BCC</apex:outputLabel>
+                    <apex:inputTextArea value="{!EmailMessage.BCCAddress}" id="bcc" cols="65" rows="2"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="related_to">Related To</apex:outputLabel>
+                    <apex:inputField value="{!EmailTask.WhatId}" id="related_to"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="template_folder">Template</apex:outputLabel>
+                    <apex:actionRegion immediate="true" >
+                        <apex:outputPanel >
+                            <apex:selectList value="{!selectedFolderId}" id="template_folder" size="1">
+                                <apex:actionSupport event="onchange"
+                                    rerender="templates,subject_cont,body_cont"
+                                    action="{!templateSelected}"
+                                />
+                                <apex:selectOption itemLabel="-None-" itemValue="-None-"></apex:selectOption>
+                                <apex:selectOptions value="{!EmailFolders}"></apex:selectOptions>
+                            </apex:selectList>
+                            <apex:selectList id="templates" value="{!selectedEmTemplateId}" label="Email Template" size="1">
+                                <apex:actionSupport event="onchange"
+                                    rerender="subject,body"
+                                    action="{!templateSelected}"
+                                />
+                                <apex:selectOption itemLabel="-None-" itemValue="-None-"></apex:selectOption>
+                                <apex:selectOptions value="{!EmailTemplates}"></apex:selectOptions>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="subject_cont">
+                
+                    <apex:outputLabel for="subject">Subject</apex:outputLabel>
+                   <apex:outputPanel styleClass="requiredInput" layout="block">
+                <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                    <apex:inputText id="subject" value="{!EmailMessage.Subject}" size="70" disabled="{!AND((selectedEmTemplateId!='-None-'),NOT(ISNULL(selectedEmTemplateId)))}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="body_cont">
+                
+                    <apex:outputLabel for="body">Body</apex:outputLabel>
+                    
+                    <apex:inputTextarea id="body" value="{!EmailMessage.TextBody}" cols="65" rows="10" disabled="{!AND((selectedEmTemplateId!='-None-'),NOT(ISNULL(selectedEmTemplateId)))}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Case Attachment(s)" collapsible="false">
+                <apex:pageBlockTable style="font-weight:bold;" title="Case Attachment(s)" value="{!CaseAttachments}" var="a" >
+                    <apex:column >
+                        <apex:inputCheckbox value="{!selectedAtts[a.Id]}"/>
+                    </apex:column>
+                    <apex:column value="{!a.Name}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

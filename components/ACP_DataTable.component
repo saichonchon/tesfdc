@@ -1,0 +1,370 @@
+<apex:component controller="ACP_DataTable_Ctrl" allowDML="true">
+   <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+   <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+   <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300" />
+   <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff" />
+   <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+   <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+   <apex:attribute name="tableId" description="This is the value for Table ID" type="String" required="true" assignTo="{!tableType}"/>
+   <apex:attribute name="fields" description="This is the value for FieldSet" type="String[]"  />
+   <apex:attribute name="sObjectName" description="This is the value for Object API" type="String" required="true" />
+   <apex:attribute name="category" description="Task Category" type="String"/>
+   <apex:attribute name="actionStatus" description="Task Status" type="String"/>
+   <!--apex:attribute name="strategyList" type="ACP_Strategy__c[]" description="" assignTo="{!strategiesList}" /-->
+   <!--apex:attribute name="supplierEvlList" type="ACP_TE_Supplier_Evaluation__c[]" description="" assignTo="{!supplierEvaluationList}" /-->
+ <apex:attribute name="marketList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!MarkCompList}"/>
+   <apex:attribute name="admList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!ADMData}"/>
+   <apex:attribute name="oppTAMRevList" type="ACP_Opportunity_TAM_Revenue__c[]" description="" assignTo="{!OppTAMList}"/>
+   <apex:attribute name="strategiesList" type="ACP_Strategy__c[]" description="" assignTo="{!strategyList}" />
+   <apex:attribute name="supplierEvalList" type="ACP_TE_Supplier_Evaluation__c[]" description="" assignTo="{!supplierEvaluationList}"/>
+    <apex:attribute name="topOppsList" type="ACP_Top_Open_Opportunity__c[]" description="" assignTo="{!topOpenOpportunityList }"/>
+    <apex:attribute name="supplierRatingList" type="ACP_TE_Suppliers_Rating__c[]" description="" assignTo="{!suppliersRatingList}"/>
+<apex:attribute name="actionsList" type="Task[]" description="" assignTo="{!commonTaskListAll}"/>
+ <apex:attribute name="recordTypeName" type="String" assignTo="{!recordtypenm}" description="Record Type Name" />
+    <apex:attribute name="displayed" type="Schema.FieldSetMember[]" description="Field set name" />
+    <apex:attribute name="recordList" type="ACP_Customer_Overview__c[]" assignTo="{!customerOverviewSource}" description="" />
+    <apex:attribute name="recCount" type="Integer" description="Actions record count" assignTo="{!total_size}"/>
+   <apex:pageBlock mode="maindetail" >
+
+      <!-------------------------------------------------    Customer Overview ---------------------------------------------------------------------------->
+  <!-- <apex:outputPanel rendered="{!IF(customerOverviewSource== null, false, true)}" >
+     <div class ="panel panel-default">
+            <div class = "panel-heading" style="width:100%">
+            <!--{!$Label.ACP_Revenue_Growth}-->
+          <!--     <apex:outputPanel rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}">
+                    {!$Label.ACP_Revenue_Growth}
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(recordTypeName=='End Markets',true,false)}">
+                    {!$Label.ACP_End_Markets}
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(recordTypeName=='Regions',true,false)}">
+                    {!$Label.ACP_Regions}
+                </apex:outputPanel>
+                 <apex:outputPanel rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}">
+                    {!$Label.ACP_Key_Manufacturing_Purchasing_Locations}
+                </apex:outputPanel>
+                 <apex:outputPanel rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}">
+                    {!$Label.ACP_Key_Engineering_Design_Locations}
+                </apex:outputPanel>
+                 <apex:outputPanel rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}">
+                    {!$Label.ACP_Key_Vendors_in_Supply_Chain}
+                </apex:outputPanel>
+                
+                
+                 <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}" styleClass="btn btn-default" id="save1" action="{!actionSave1}" style="float:right; display:none;" />
+                <!--<apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}" styleClass="btn btn-default" id="cancel1" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />-->
+        
+     <!--    <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='End Markets',true,false)}" styleClass="btn btn-default" id="save2" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='End Markets',true,false)}" styleClass="btn btn-default" id="cancel2" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+       
+        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" rendered="{!IF(recordTypeName=='Regions',true,false)}" id="save3" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Regions',true,false)}" styleClass="btn btn-default" id="cancel3" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+        
+        <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}" styleClass="btn btn-default" id="save4" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}" styleClass="btn btn-default" id="cancel4" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+        
+        <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}" styleClass="btn btn-default" id="save5" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}" styleClass="btn btn-default" id="cancel5" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+        
+        <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}" styleClass="btn btn-default" id="save6" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}" styleClass="btn btn-default" id="cancel6" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+               
+        
+        
+         </div>
+            
+             <div class="panel-body" style="width  :100% !important">
+                <apex:outputPanel >
+                    <apex:pageBlockTable value="{!customerOverviewSource}" var="acpPur"  styleClass="table table-bordered" >
+                  
+                    <apex:repeat value="{!displayed}" var="fieldSet">
+                <apex:column headerClass="ColumnHeader" headerValue="{!fieldSet.Label}" styleClass="col" style="width:30px" >
+                  
+                <apex:outputField value="{!acpPur[fieldSet]}">
+                    <apex:inlineEditSupport showOnEdit="{!CASE(recordTypeName, 'Revenue and Growth', 'save1, cancel1', 'End Markets', 'save2, cancel2', 'Regions', 'save3, cancel3', 'Key Manufacturing /Purchasing Locations', 'save4, cancel4', 'Key Engineering /Design locations', 'save5, cancel5', 'save6, cancel6' )}"  event="ondblclick"/>
+                    </apex:outputField>
+                </apex:column>
+            </apex:repeat>
+                </apex:pageBlockTable> 
+                </apex:outputPanel>
+         
+            </div>
+            
+            
+           </div>
+        
+        
+      
+</apex:outputPanel>-->
+
+      <!------------------------------------------------- Account Plan Front Page ------------------------------------------------------------------------->
+
+      <!------------------------------------------------- Customer Overview ------------------------------------------------------------------------------->
+
+
+      <!------------------------------------------------- Business Performance ----------------------------------------------------------------------------->
+
+
+      <!-------------------------------------------------- Supplier Evaluation ----------------------------------------------------------------------------->
+  <!--   <apex:outputPanel rendered="{!IF(suppliersRatingList == null, false, true)}" id="ratingPanel" >
+                <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+                    <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+                        <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addRating" action="{!addSuppliersRatings}" style="float:right" disabled="{!IF(suppliersRatingList.size<5, false, true)}"/>
+                        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" reRender="ratingPanel" id="saveRating" action="{!actionSaveRating}" style="float:right; display:none"/>
+                        <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelRating" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+                        <div class="panel-title">
+                            <h4 style="color:{!headerTextColor};"> {!title}</h4>
+                        </div>
+                    </div>
+                    <apex:pageBlockTable value="{!suppliersRatingList}" var="rating"  styleClass="table table-bordered" >
+                        <apex:repeat value="{!fields}" var="ratingFields">
+                            <apex:column headerValue="{!$ObjectType[sObjectName].fields[ratingFields].Label}" >
+                                <apex:outputField value="{!rating[ratingFields]}" >
+                                    <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveRating, cancelRating" hideOnEdit="addRating" event="ondblclick"/>
+                                </apex:outputField>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!IF(supplierEvaluationList == null, false, true)}" id="evalPanel" >
+                <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+                    <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+                        <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addEval" action="{!addSupplierEvaluation}" style="float:right" disabled="{!IF(supplierEvaluationList.size<5, false, true)}"/>
+                        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveEval" reRender="evalPanel" action="{!actionSaveEval}" style="float:right; display:none"/>
+                        <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelEval" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+                        <div class="panel-title">
+                            <h4 style="color:{!headerTextColor};"> {!title}</h4>
+                        </div>
+                    </div>
+                    <apex:pageBlockTable value="{!supplierEvaluationList}" var="evaluation"  styleClass="table table-bordered" >
+                        <apex:repeat value="{!fields}" var="evalFields">
+                            <apex:column headerValue="{!$ObjectType[sObjectName].fields[evalFields].Label}" >
+                                <apex:outputField value="{!evaluation[evalFields]}" >
+                                    <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveEval, cancelEval" hideOnEdit="addEval" event="ondblclick"/>
+                                </apex:outputField>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </div>
+            </apex:outputPanel> -->
+
+      <!-------------------------------------------------- Executive Relationship ---------------------------------------------------------------------------->
+
+      <!------------------------------------------------- Market and Competition Detail---------------------------------------------------- ------------------>
+      
+  <!--   <apex:outputPanel rendered="{!IF(MarkCompList == null, false, true)}" id="mrkPanel" >
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+           <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonMark" action="{!addMarketComp}" style="float:right" disabled="{!If(MarkCompList.size < 10,false, true)}" />
+           <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonMark" onclick="top.location.reload(true);" action="{!actionSaveMark}" style="float:right; display:none" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonMark" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+            <div class="panel-title">
+                <h4 style="color:{!headerTextColor};"> {!title}</h4>
+            </div>
+        </div>
+           
+            <apex:pageBlockTable value="{!MarkCompList}" var="Market"  styleClass="table table-bordered" > 
+                    <apex:repeat value="{!fields}" var="fieldMark">  
+                        <apex:column headerValue="{!$ObjectType[sObjectName].fields[fieldMark].Label}" >
+                        <apex:outputField value="{!Market[fieldMark]}" > 
+                        <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonMark, cancelButtonMark" hideOnEdit="addButtonMark" event="ondblclick"/>            
+                        </apex:outputField>
+                      </apex:column>
+                    </apex:repeat> 
+                </apex:pageBlockTable> 
+               
+    </div>
+    </apex:outputPanel>-->
+      
+      <!------------------------------------------------- Opportunity TAM Revenue---------------------------------------------------- ------------------>
+
+<!--<apex:outputPanel rendered="{!IF(OppTAMList== null, false, true)}" id="oppPanel">
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+      <!--     <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonOpp" action="{!AddOppTAM}" style="float:right"/>-->
+        <!--  <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonOpp"  action="{!actionSaveOpp}" style="float:right; display:none"/>
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonOpp" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+            <div class="panel-title">
+                <h4 style="color:{!headerTextColor};"> {!title}</h4>
+            </div>
+        </div>
+            
+            <table class="table table-bordered">
+                    <tr class="columnHeader" >
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_Product_CBC}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_TAM}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_LY_Bill}</th>
+                      <th bgcolor="#f4f4f7">
+                      
+                        <apex:outputLink value="{!pipeline.ACP_Report_Id__c}">{!$Label.ACP_Pipeline_4Q_Rolling}</apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!currentConver.ACP_Report_Id__c}"><apex:outputText value="{!$Label.ACP_Conversion_current_YTD}" escape="false" /> </apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!L12MLost.ACP_Report_Id__c}"><apex:outputText value="{!$Label.ACP_L12M_Lost_1Yvalue}" escape="false" /> </apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!L12MWon.ACP_Report_Id__c}"><apex:outputText value="{!$Label.ACP_L12M_Won_1Y_Value}" escape="false" /></apex:outputLink>
+
+                      </th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_CY_Pipeline}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_NY_Pipeline}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_5Y_Pipeline}</th>
+                    </tr>
+                    <apex:repeat value="{!OppTAMList}" var="Opp">
+                      <tr>
+                        <td><apex:outputfield value="{!Opp.ACP_Product__r.name}" >  <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_TAM__c}" > <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_LY_Bill__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_Pipeline_4Q_rolling__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_Conversion_current_YTD__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_L12M_Lost_1Yvalue__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_L12M_Won_1Y_Value__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_CY_Pipeline__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_NY_Pipeline__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                        <td><apex:outputfield value="{!Opp.ACP_X5Y_Pipeline__c}" ><apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp, cancelButtonOpp" event="ondblclick"/></apex:outputField></td>
+                      </tr>
+                      <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButton, cancelButton" hideOnEdit="addButton" event="ondblclick"/>
+                    </apex:repeat>
+                  </table>
+                
+    </div>
+    </apex:outputPanel>-->
+
+      <!-------------------------------------------------  Market and Competition Summary--------------------------------------------------- ------------------>
+
+<!--<apex:outputPanel rendered="{!IF(admData == null, false, true)}" id="admPanel">
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+           <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonADM" action="{!addADMMarketComp}" style="float:right" disabled="{!If(admData.size < 10,false, true)}"/>
+           <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonADM" action="{!actionSaveADM}" style="float:right; display:none" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonADM" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+            <div class="panel-title">
+                <h4 style="color:{!headerTextColor};"> {!title}</h4>
+            </div>
+        </div>
+           
+            <apex:pageBlockTable value="{!admData}" var="ADM"  styleClass="table table-bordered" > 
+                    <apex:repeat value="{!fields}" var="fieldADM">  
+                        <apex:column headerValue="{!$ObjectType[sObjectName].fields[fieldADM].Label}" >
+                        <apex:outputField value="{!ADM[fieldADM]}" > 
+                        <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveButtonADM, cancelButtonADM" hideOnEdit="addButtonADM" event="ondblclick"/>            
+                        </apex:outputField>
+                      </apex:column>
+                    </apex:repeat> 
+                </apex:pageBlockTable> 
+               
+    </div>
+    </apex:outputPanel>
+-->
+      <!------------------------------------------------- Application Breakdown ------------------------------------------------------------------------------->
+
+
+
+      <!-- ----------------------------------------------- Top Open Opportunity ------------------------------------------------------------------------------>
+   <!--     <apex:outputPanel rendered="{!IF(topOpenOpportunityList == null, false, true)}" id="openOppsPanel">
+                <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+                    <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;">
+                        <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addOpenOpp" action="{!addNewTopOpenOpp}" style="float:right" disabled="{!IF(topOpenOpportunityList.size<10, false, true)}"  />
+                        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveOpenOpp" reRender="openOppsPanel" action="{!actionSaveOpenOpps}" style="float:right; display:none"/>
+                        <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelOpenOpp" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" />
+                        <div class="panel-title">
+                            <h4 style="color:{!headerTextColor};"> {!title}</h4>
+                        </div>
+                    </div>
+                    <apex:pageBlockTable value="{!topOpenOpportunityList }" var="topOpenOpps"  styleClass="table table-condensed" >
+                        <apex:repeat value="{!fields}" var="topOppsFields">
+                            <apex:column headerValue="{!$ObjectType[sObjectName].fields[topOppsFields].Label}" >
+                                <apex:outputField value="{!topOpenOpps[topOppsFields]}" >
+                                    <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveOpenOpp, cancelOpenOpp" hideOnEdit="addOpenOpp" event="ondblclick"/>
+                                </apex:outputField>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </div>
+            </apex:outputPanel> -->
+ 
+
+      <!----------------------------------------------------------- Strategy ---------------------------------------------------------------------------------->
+ <!--     <apex:outputPanel rendered="{!IF(strategyList == null, false, true)}">
+            <div class="panel panel-default" style="border-color:{!bordercolor}; background-color:{!bgcolor}; position: relative;overflow: hidden;">
+                <div class="panel-heading" style=" background-color: {!headercolor};border-color:{!bordercolor};position: position: relative;">
+                    <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addStrategy" action="{!addStrategies}" style="float:right" />
+                    <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveStrategy" action="{!actionSave}" style="float:right; display:none" />
+                    <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelStrategy"  onclick="this.form.reset();" immediate="true" style="float:right; display:none" />
+                    <div class="panel-title">
+                        <h4 style="color:{!headertextcolor};"> {!title}</h4>
+                    </div>
+                </div>
+                <apex:pageBlockTable value="{!strategyList}" var="strategy" styleClass="table table-bordered">
+                    <apex:repeat value="{!fields}" var="strategyField">
+                        <!--<th>{!$ObjectType[sObjectName].fields[f].Label}</th>-->
+                 <!--       <apex:column headerValue="{!$ObjectType[sObjectName].fields[strategyField].Label}">
+                            <!--<apex:column headerValue="{!f.Label}">-->
+                   <!--         <apex:outputField value="{!strategy[strategyField]}">
+                                <apex:inlineEditSupport changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" showOnEdit="saveStrategy, cancelStrategy" hideOnEdit="addStrategy" event="ondblclick" /> </apex:outputField>
+                        </apex:column>
+                    </apex:repeat>
+                </apex:pageBlockTable>
+            </div>
+        </apex:outputPanel>-->
+
+
+
+      <!------------------------------------------------- Analytics1 ------------------------------------------------------------------------------------------->
+
+
+
+      <!------------------------------------------------- Analytics2 ------------------------------------------------------------------------------------------->
+<!-------------------------------------------------    Actions Detail - Start---------------------------------------------------------------------------->
+      <apex:outputPanel rendered="{!IF(actionsList == null, false, true)}" id="aPanel">
+      <div align="left">Total Task Count: {!total_size}</div>
+            <div class="panel panel-default" style="border-color:{!bordercolor}; background-color:{!bgcolor}; position: relative;overflow: hidden;">
+                <div class="panel-heading" style=" background-color: {!headercolor};border-color:{!bordercolor};position: position: relative;">
+                    <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveActions" action="{!actionSaveAll}" style="float:right; display:none" reRender="aPanel"/>               
+                    <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelEdit" onclick="this.form.reset();" immediate="true" style="float:right; display:none" reRender="aPanel"/>
+                    <div class="panel-title">
+                        <h4 style="color:{!headertextcolor};"> {!title}</h4>
+                    </div>
+                </div>
+                <table class = "table table-bordered" >
+        <tr class = "TaskHeader">
+               <th></th>
+            <th>{!$Label.ACP_Category}</th>
+            <th>{!$Label.ACP_Action_Subject}</th>
+            <th>{!$Label.ACP_Owner}</th>
+            <th>{!$Label.ACP_Contact}</th>
+            <th>{!$Label.ACP_Due}</th>
+            <th>{!$Label.ACP_Status}</th>
+            <th>{!$Label.ACP_Comments}</th>
+        </tr>
+        <apex:repeat value="{!commonTaskListAll}" var="recordOject">
+            <tr><td>
+            <!--<apex:outputLink value="/{!recordOject.id}/e?retURL=/apex/ACP_Actions_List?acpid={!recordOject.whatId}&actionStatus={!actionStatus}&category={!Category}" target="_blank">Edit</apex:outputLink>-->
+            <apex:outputLink value="/{!recordOject.id}/e?retURL=/apex/ACP_View_Customer_Page?acpId={!recordOject.whatId}" target="_blank">Edit</apex:outputLink>
+            &nbsp;|&nbsp;<a href="javascript:if (window.confirm('Are you sure?')) DeleteAction('{!recordOject.Id}');">Del</a></td>
+            <td><apex:outputField value="{!recordOject.ACP_Category__c}"/></td> 
+                <apex:repeat value="{!fields}" var="FldName">
+                <td><apex:outputField value="{!recordOject[FldName]}">
+                        <apex:inlineEditSupport changedStyleClass="myBoldClass"  
+                resetFunction="resetInlineEdit" showOnEdit="saveActions,cancelEdit" event="ondblclick" />
+                    </apex:outputField>
+                </td>
+                </apex:repeat>
+            </tr>
+        </apex:repeat>
+    </table>   
+            </div>
+   <apex:actionFunction action="{!DeleteActionfromDetail}" name="DeleteAction" reRender="aPanel" >
+        <apex:param name="relid" value="" assignTo="{!SelectedId}"/>
+    </apex:actionFunction>
+    </apex:outputPanel>
+<!-------------------------------------------------    Actions Detail - End---------------------------------------------------------------------------->
+        
+   </apex:pageBlock>
+</apex:component>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_23576638</developerName>
+        <masterLabel>Industry</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Lead$Industry</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <value>Data Communications</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_75422430</developerName>
+        <masterLabel>Status</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Lead$Status</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Assigned - Unaccepted</sourceValue>
+            </sourceValues>
+            <value>Unaccepted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Assigned - Accepted</sourceValue>
+            </sourceValues>
+            <value>Accepted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Converted - New Opportunity</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Converted - Existing Opportunity</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Converted - Without Opportunity</sourceValue>
+            </sourceValues>
+            <value>Converted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Unqualified</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dropped</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dead</sourceValue>
+            </sourceValues>
+            <value>Unqualified/Dropped/Dead</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Rejected</sourceValue>
+            </sourceValues>
+            <value>Rejected</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Unassigned</sourceValue>
+            </sourceValues>
+            <value>Unassigned</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Lead$CreatedDate</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND 2 AND (3 or 4)</booleanFilter>
+        <criteriaItems>
+            <column>Lead$LeadSource</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>PIC  (RightNow)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Lead_Activity_Source__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>PIC  (RightNow)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Industry</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Data Communications</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Lead_Recipient__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>data</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Lead$Status</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Lead$Lead_Recipient__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name># Leads Received in Last 30 Days</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>DataComm_Leads__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Lead$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2013-12-01</startDate>
+    </timeFrameFilter>
+</Report>

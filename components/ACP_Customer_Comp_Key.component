@@ -1,0 +1,113 @@
+<apex:component controller="ACP_DataTable_Ctrl" allowDML="true">
+<script>    
+    // workaround is necessary since inline editing of VF picklist and/or checkboxes won't commit changes before action if the user doesn't "click out" first.  
+    function focusAndSaveKey() {
+    
+        document.getElementById('focusMe').click();
+        saveFieldsKey();
+    }
+    </script>
+    <apex:attribute name="bordercolor" description="This is the value for border color" type="String" default="#ada9a9"/>
+    <apex:attribute name="bgcolor" description="This is the value for Container background color" type="String" default="#fff"/>
+    <apex:attribute name="headercolor" description="This is the value for Header background color" type="String" default="#E98300"/>
+    <apex:attribute name="headertextcolor" description="This is the value for header Text color" type="String" default="#fff"/>
+    <apex:attribute name="bodytextcolor" description="This is the value for body text color" type="String" default="#1C2833"/>
+    <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+    <apex:attribute name="tableId" description="This is the value for Table ID" type="String"/>
+    <!--<apex:attribute name="sObjectData" description="This is the value for List of SObject" type="Sobject[]" required="true"/>-->
+    <apex:attribute name="fields" description="This is the value for FieldSet" type="String[]"/>
+   <apex:attribute name="sObjectName" description="This is the value for Object API" type="String"/>
+   
+   <apex:attribute name="user_BU" type="String" description="curren User's BU" assignTo="{!userBU}"/> 
+   <apex:attribute name="sectionSettingRec" type="ACP_Section_Detail__c" assignTo="{!custrec}" description="ACP Section Detail" />
+    
+       <apex:attribute name="recordTypeName" type="String" assignTo="{!recordtypenm}" description="Record Type Name" />
+    <apex:attribute name="displayed" type="Schema.FieldSetMember[]" description="Field set name" />
+    <apex:attribute name="recordList" type="ACP_Customer_Overview__c[]" assignTo="{!customerOverviewSource}" description="" />
+    <div>
+     <apex:pageBlock mode="maindetail" id="sPanel8"> 
+
+   <apex:outputPanel rendered="{!IF(customerOverviewSource== null, false, true)}" id="sPanel1">
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+    <div class="panel-heading"  style=" background-color: {!headerColor};border-color:{!borderColor};position: position: relative;"> 
+             <!--<apex:outputPanel rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                    {!$Label.ACP_Revenue_Growth}
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(recordTypeName=='End Markets',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                    {!$Label.ACP_End_Markets}
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(recordTypeName=='Regions',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                    {!$Label.ACP_Regions}
+                </apex:outputPanel>-->
+                 <apex:outputPanel rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                  {!$Label.ACP_Key_Manufacturing_Purchasing_Locations}
+                  
+                </apex:outputPanel>
+                 <!--<apex:outputPanel rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                    {!$Label.ACP_Key_Engineering_Design_Locations}
+                </apex:outputPanel>
+                 <apex:outputPanel rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}" style="color:{!custrec.ACP_Header_Font_Color__c};">
+                    {!$Label.ACP_Key_Vendors_in_Supply_Chain}
+                </apex:outputPanel>-->
+                
+                
+              <!--  <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}" styleClass="btn btn-default" id="save1" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Revenue and Growth',true,false)}" styleClass="btn btn-default" id="cancel1"  onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+        
+         <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='End Markets',true,false)}" styleClass="btn btn-default" id="save2" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='End Markets',true,false)}" styleClass="btn btn-default" id="cancel2"  onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+       
+        <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" rendered="{!IF(recordTypeName=='Regions',true,false)}" id="save3" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Regions',true,false)}" styleClass="btn btn-default" id="cancel3"  onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />-->
+        
+        <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}" styleClass="btn btn-default" id="save4" onclick="focusAndSaveKey();" style="float:right; display:none;" reRender="sPanel1"/>
+        <!--<apex:commandButton value="{!$Label.ACP_Save}"  styleClass="btn btn-default" id="save4" action="{!actionSave1}" style="float:right; display:none;" reRender="sPanel1"/>-->
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Manufacturing /Purchasing Locations',true,false)}" styleClass="btn btn-default" id="cancel4"  onclick="this.form.reset();" immediate="true" style="float:right; display:none;"  reRender="sPanel1"/>
+        
+        <!--<apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}" styleClass="btn btn-default" id="save5" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Engineering /Design locations',true,false)}" styleClass="btn btn-default" id="cancel5"  onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />
+        
+        <apex:commandButton value="{!$Label.ACP_Save}" rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}" styleClass="btn btn-default" id="save6" action="{!actionSave1}" style="float:right; display:none;" />
+                <apex:commandButton value="{!$Label.ACP_Cancel}" rendered="{!IF(recordTypeName=='Key Vendors in Supply Chain',true,false)}" styleClass="btn btn-default" id="cancel6" onclick="this.form.reset();" immediate="true" style="float:right; display:none;" />-->
+               
+        <input type="text" id="focusMe" style="display:none" />
+        
+         </div>
+            
+             <div class="panel-body" style="width  :100% !important">
+                <apex:outputPanel >
+                  <!--<apex:pageBlock >-->
+                    <apex:pageBlockTable value="{!customerOverviewSource}" var="acpPur"  styleClass="table table-bordered" >
+                            <apex:column style="width:1px" >
+                                 <a  href="javascript:if (window.confirm('Are you sure?')) DeleteCust3('{!acpPur.Id}');">Del</a>
+                                       <!--<a  href="javascript:void(0);" onclick="DeleteCustomer('{!acpPur.Id}');return false;">Del</a>-->
+                            </apex:column>
+                          
+                         <apex:repeat value="{!fields}" var="fieldSet">
+                           <apex:column headerClass="ColumnHeader" headerValue="{!$ObjectType[sObjectName].fields[fieldSet].Label}" styleClass="col" style="font-size: 11px !important;width:30px" >
+                               <apex:outputField value="{!acpPur[fieldSet]}">
+                               <!--<apex:inlineEditSupport resetFunction="resetInlineEdit" showOnEdit="{!CASE(recordTypeName, 'Revenue and Growth', 'save1, cancel1', 'End Markets', 'save2, cancel2', 'Regions', 'save3, cancel3', 'Key Manufacturing /Purchasing Locations', 'save4, cancel4', 'Key Engineering /Design locations', 'save5, cancel5', 'save6, cancel6' )}"  event="ondblclick"/>-->
+                                <apex:inlineEditSupport showOnEdit="save4, cancel4" event="ondblclick"/>
+                               </apex:outputField>
+                           </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable> 
+                   <!-- </apex:pageBlock>-->
+                   <apex:actionFunction action="{!actionsave1}" name="saveFieldsKey" reRender="errors, fields" />
+                    <apex:actionFunction action="{!DeleteCust}" name="DeleteCust3" reRender="sPanel8">
+                        <apex:param name="custid" value="" assignTo="{!customerId}" />
+                    </apex:actionFunction>
+                </apex:outputPanel>
+         
+            </div>
+           </div>
+        
+        
+      
+</apex:outputPanel>
+    
+  
+    </apex:pageBlock> 
+     
+      </div>
+</apex:component>

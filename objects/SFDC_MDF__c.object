@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Track MDF request details including partner account, requested amount, activity type and date, and approval status.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The partner account making the MDF request</description>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Fund Requests</relationshipLabel>
+        <relationshipName>R00N30000002DjDDEA0</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Date__c</fullName>
+        <description>The date the activity is planned. Optionally incorporate a validation rule to ensure that there is ample lead time to approve the request before the planned activity.</description>
+        <externalId>false</externalId>
+        <label>Activity Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Type__c</fullName>
+        <description>A list of available activity types. Customize as needed.</description>
+        <externalId>false</externalId>
+        <label>Activity Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1 Print &amp; Digital Advertising</fullName>
+                    <default>false</default>
+                    <label>1 Print &amp; Digital Advertising</label>
+                </value>
+                <value>
+                    <fullName>2 Direct Mail / Email campaigns</fullName>
+                    <default>false</default>
+                    <label>2 Direct Mail / Email campaigns</label>
+                </value>
+                <value>
+                    <fullName>3 Advertising Specialties / Promotional Items</fullName>
+                    <default>false</default>
+                    <label>3 Advertising Specialties / Promotional Items</label>
+                </value>
+                <value>
+                    <fullName>4 Website Development</fullName>
+                    <default>false</default>
+                    <label>4 Website Development</label>
+                </value>
+                <value>
+                    <fullName>5 Tradeshow &amp; Special Events</fullName>
+                    <default>false</default>
+                    <label>5 Tradeshow &amp; Special Events</label>
+                </value>
+                <value>
+                    <fullName>6 Product Display Cases</fullName>
+                    <default>false</default>
+                    <label>6 Product Display Cases</label>
+                </value>
+                <value>
+                    <fullName>7 Technical / Training Seminars</fullName>
+                    <default>false</default>
+                    <label>7 Technical / Training Seminars</label>
+                </value>
+                <value>
+                    <fullName>8 Business Related Entertainment</fullName>
+                    <default>false</default>
+                    <label>8 Business Related Entertainment</label>
+                </value>
+                <value>
+                    <fullName>9 Sales Contests</fullName>
+                    <default>false</default>
+                    <label>9 Sales Contests</label>
+                </value>
+                <value>
+                    <fullName>10 Distributor Marketing Programs</fullName>
+                    <default>false</default>
+                    <label>10 Distributor Marketing Programs</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>Training/Trade Events</fullName>
+                    <default>false</default>
+                    <label>Training/Trade Events</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Age_Days__c</fullName>
+        <description>The number of elapsed days since the request was created</description>
+        <externalId>false</externalId>
+        <formula>NOW() - CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age (Days)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <description>The requested amount. Consider activating a validation rule to enforce a certain minimum or maximum amount</description>
+        <externalId>false</externalId>
+        <label>Amount</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Date__c</fullName>
+        <description>The date the fund request was approved. This should be updated through a workflow approval process.</description>
+        <externalId>false</externalId>
+        <label>Approved Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Approved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This is automatically checked by the fund request approval process and in turn recalculates the budget balances</description>
+        <externalId>false</externalId>
+        <label>Approved</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Budget__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Optionally assign the fund request to a budget.</description>
+        <externalId>false</externalId>
+        <label>Budget</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Account__c</field>
+                <operation>equals</operation>
+                <valueField>SFDC_Budget__c.Account__r.Id</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>SFDC_Budget__c</referenceTo>
+        <relationshipLabel>Fund Requests</relationshipLabel>
+        <relationshipName>R00N30000002DjDHEA0</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Claim_Deadline_Date__c</fullName>
+        <description>Set through the approval process this date is the date the submitter has to submit a claim related to this request</description>
+        <externalId>false</externalId>
+        <label>Claim Deadline Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Desired_Outcome__c</fullName>
+        <description>Have the partner state what they want to accomplish from this request/ marketing activity</description>
+        <externalId>false</externalId>
+        <label>Desired Outcome</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Activity_Type__c</fullName>
+        <description>Used when the user chooses &apos;other&apos; as the activity type</description>
+        <externalId>false</externalId>
+        <label>Other Activity Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Partner_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The partner account owner which is derived using an APEX trigger and generally not through the UI</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The partner account owner which is derived using an APEX trigger and generally not through the UI</inlineHelpText>
+        <label>Partner Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>R00N30000002DjDQEA0</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Request_Details__c</fullName>
+        <description>High level information about the fund request</description>
+        <externalId>false</externalId>
+        <label>Request Details</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Request_ID__c</fullName>
+        <description>A unique id assigned to the fund request. Optionally useful for the partner as a means to identify the specific fund request record.</description>
+        <displayFormat>{YY}{MM}{DD}-{0000}</displayFormat>
+        <externalId>false</externalId>
+        <label>Request ID</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Select_Budget_Warning__c</fullName>
+        <description>Used on the approval page to alert the user to select a budget is they have not done so already</description>
+        <externalId>false</externalId>
+        <formula>if( Budget__c = &quot;&quot;,  HYPERLINK(&quot;/&quot; &amp; Id,  &quot;IF APPROVING, PLEASE EDIT THE FUND REQUEST AND SELECT A BUDGET&quot; , &quot;_parent&quot;), &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Select Budget Warning</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>The fund request approval status. This should be updated through an approval process rather than changing through the user interface</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Close</fullName>
+                    <default>false</default>
+                    <label>Close</label>
+                </value>
+                <value>
+                    <fullName>Draft</fullName>
+                    <default>false</default>
+                    <label>Draft</label>
+                </value>
+                <value>
+                    <fullName>Submitted</fullName>
+                    <default>false</default>
+                    <label>Submitted</label>
+                </value>
+                <value>
+                    <fullName>In Process</fullName>
+                    <default>false</default>
+                    <label>In Process</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Target_Audience__c</fullName>
+        <description>The intended target audience for the fund request</description>
+        <externalId>false</externalId>
+        <label>Target Audience</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>account_address__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.Name + &quot; &quot; + Account__r.BillingStreet  + &quot; &quot; + Account__r.BillingCity + &quot; ,&quot; + Account__r.BillingState + &quot; , &quot; +  Account__r.BillingPostalCode + &quot; &quot; +  Account__r.BillingCountry</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>account address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Fund Request</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Approved</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Approved_Date__c</columns>
+        <columns>Amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </filters>
+        <label>Approved</label>
+    </listViews>
+    <listViews>
+        <fullName>CreatedToday</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Budget__c</columns>
+        <columns>Approved_Date__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Created Today</label>
+    </listViews>
+    <listViews>
+        <fullName>Pending</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Status__c</columns>
+        <columns>Budget__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,In Process</value>
+        </filters>
+        <label>Pending</label>
+    </listViews>
+    <listViews>
+        <fullName>Rejected</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Status__c</columns>
+        <columns>Amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Rejected</value>
+        </filters>
+        <label>Rejected</label>
+    </listViews>
+    <nameField>
+        <label>Request Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Fund Requests</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Activity_Date_Days_In_Future</fullName>
+        <active>false</active>
+        <description>Confirm that the marketing activity date is a certain # weeks in the future</description>
+        <errorConditionFormula>AND(   OR (      ISNEW(),       ISCHANGED( Activity_Date__c )),    Activity_Date__c &lt; (TODAY()+14) )</errorConditionFormula>
+        <errorDisplayField>Activity_Date__c</errorDisplayField>
+        <errorMessage>The activity date should be two weeks or more in the future</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Amount_Limits</fullName>
+        <active>false</active>
+        <description>Incorporate limits on the requested amount</description>
+        <errorConditionFormula>OR(     Amount__c &lt; 500,    Amount__c &gt; 20000 )</errorConditionFormula>
+        <errorDisplayField>Amount__c</errorDisplayField>
+        <errorMessage>The amount requested must be between $500 and $20,000</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Other_Activity_Type</fullName>
+        <active>true</active>
+        <description>Used to force the user to choose fill in the &apos;other activity type&apos; when &apos;other&apos; is chosen as the activity type.</description>
+        <errorConditionFormula>AND(ISPICKVAL( Activity_Type__c, &quot;Other&quot;), LEN(Other_Activity_Type__c )=0)</errorConditionFormula>
+        <errorDisplayField>Other_Activity_Type__c</errorDisplayField>
+        <errorMessage>Please provide details on the &apos;Other&apos; activity type.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>New_Fund_Request</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Fund Request</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>/a26/e?CF00NG0000009HNJz={!SFDC_Budget__c.Name}&amp;CF00NG0000009HNJz_lkid={!SFDC_Budget__c.Id}&amp;CF00NG0000009HNJs={!SFDC_Budget__c.Account__c}&amp;CF00NG0000009HNJs_lkid={!SFDC_Budget__c.AccountId__c}&amp;retURL=%2F{!SFDC_Budget__c.Id}</url>
+    </webLinks>
+</CustomObject>

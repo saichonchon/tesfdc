@@ -1,0 +1,247 @@
+<!-- 
+Copyright 2013-2015 Martin Wendt and others (see commiter list on GitHub)  
+https://github.com/mar10/jquery-ui-contextmenu 
+-->
+<apex:page showHeader="false" sidebar="false" standardController="Case">
+   
+    <apex:includeScript value="/xdomain/xdomain.js"/>  
+    <apex:includeScript value="/soap/ajax/26.0/connection.js"/> 
+    <apex:includeScript value="/support/console/30.0/integration.js"/>
+    
+    <link href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet"/>   
+      
+    <apex:includeScript value="{!URLFOR($Resource.ContextMenu, 'contextMenu/js/jquery.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ContextMenu, 'contextMenu/js/jquery.ui.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ContextMenu, 'contextMenu/js/jquery.ui.contextMenu.js')}"/>
+    <style type="text/css">
+        body {
+            font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", "sans-serif";
+            font-size: .8em;
+            
+            /********************************************************************************************
+               Prevent tablets from selecting text on taphold, etc:
+               Note: If only the potential menu trigger elements should be protected, simply
+               use the 'preventSelect: true' option.
+               But we disable it more globally for tablet pc's, because the whole line
+               or paragraph will still be selected otherwise.
+             ***********************************************************************************************/
+               /***  -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none; ***/
+        }
+    
+        /* Optionally define a fixed width for menus */
+        .ui-menu {
+            width: 150px;            
+        }
+            
+        /*** Allow to use <kbd></kbd> elements inside the title to define shortcut hints. ***/
+        .ui-menu kbd{
+            padding-left: 4em;
+            float: right;
+        }   
+    </style> 
+  
+    <div id="container">
+        <!--  <div class="hasmenu">AAA</div>
+        <div class="hasmenu">BBB</div>
+        <div class="hasmenu">CCC</div> -->
+        <div class="hasmenu" > 
+            <font size="4"><h1> <big> <apex:outputField value="{!case.subject}"/> </big></h1> </font> <br/>
+        </div>
+        <div class="hasmenu">
+            <apex:outputField value="{!case.description}" ></apex:outputField>  
+        </div> 
+    </div>
+    
+    <script>
+        $(function () {            
+            $("#container").contextmenu({
+                delegate: ".hasmenu",
+                menu: [
+                    // {title: "Copy", cmd: "copy", uiIcon: "ui-icon-copy"},
+                    {title: "Sales Order Number", children:[
+                        {title: "Change", cmd: "SO_VA02"},
+                        {title: "----"},
+                        {title: "Display", cmd: "SO_VA03"},
+                        {title: "----"},
+                        {title: "Backlog Management", cmd: "SO_ZBMT"},
+                        {title: "----"},
+                        {title: "Escalation Tool", cmd: "SO_ZSDESC"},
+                        {title: "----"},
+                        {title: "Shipment Report", cmd: "SO_ZSD3TR008N"},
+                        {title: "----"},
+                        {title: "Outstanding Deliveries Report", cmd: "SO_ZSD3TR009"}
+                    ]},                                        
+                    {title: "----"},
+                    {
+                        title: "Quote Number", children: [
+                        {title: "Change", cmd: "QN_VA22"},
+                        {title: "----"},
+                        {title: "Display", cmd: "QN_VA23"},
+                        {title: "----"},
+                        {title: "Backlog Management", cmd: "QN_ZBMT"}
+                    ]},
+                    {title: "----"},
+                    {title: "Scheduling Agreement", children:[
+                        {title: "Change", cmd: "SA_VA32"},
+                        {title: "----"},
+                        {title: "Display", cmd: "SA_VA33"},
+                        {title: "----"},
+                        {title: "Backlog Management", cmd: "SA_ZBMT"},
+                        {title: "----"},
+                        {title: "Escalation Tool", cmd: "SA_ZSDESC"},
+                        {title: "----"},
+                        {title: "Shipment Report", cmd: "SA_ZSD3TR008N"},
+                        {title: "----"},
+                        {title: "Outstanding Deliveries Report", cmd: "SA_ZSD3TR009"}
+                    ]},
+                    {title: "----"},
+                    {title: "Purchase Order Number", children:[
+                        {title: "Change", cmd: "PO_change"},
+                        {title: "----"},
+                        {title: "Display", cmd: "PO_display"},
+                        {title: "----"},
+                        {title: "List of Sales Orders", cmd: "PO_VA05"},  
+                        {title: "----"},                      
+                        {title: "Backlog Management", cmd: "PO_ZBMT"}
+                        
+                    ]},
+                    {title: "----"},
+                    {title: "Material Number", children:[
+                        {title: "Backlog Management", cmd: "MN_ZBMT"},
+                        {title: "----"},
+                        {title: "Stock/Requirements", cmd: "MN_MD04"},
+                        {title: "----"},
+                        {title: "Planner Worklist", cmd: "MN_ZPWL"},  
+                        {title: "----"},                      
+                        {title: "List of Sales Orders", cmd: "MN_VA05"},                        
+                        {title: "----"},
+                        {title: "Material Document List", cmd: "MN_MB51"},
+                        {title: "----"},
+                        {title: "Shipment Report", cmd: "MN_ZSD3TR008N"},
+                        {title: "----"},
+                        {title: "Outstanding Deliveries Report", cmd: "MN_ZSD3TR009"}
+                    ]},
+                    {title: "----"},
+                    {title: "Customer Material Number", children:[
+                        {title: "Backlog Management", cmd: "CM_ZBMT"},
+                        {title: "----"},
+                        {title: "SA Change", cmd: "CM_VA32"},
+                        {title: "----"},
+                        {title: "SA Display", cmd: "CM_VA33"}
+                        
+                    ]},
+                    {title: "----"},
+                     {title: "Delivery", children:[
+                        {title: "Display", cmd: "DE_VL03N"},
+                        {title: "----"},
+                        {title: "Shipment Report", cmd: "DE_ZSD3TR008N"},
+                        {title: "----"},
+                        {title: "Outstanding Deliveries Report", cmd: "DE_ZSD3TR009"}
+                    ]},
+                    {title: "----"},
+                     {title: "Shipment", children:[
+                        {title: "Display", cmd: "SH_VT03N"},
+                        {title: "----"},
+                        {title: "Shipment Report", cmd: "SH_ZSD3TR008N"},
+                        {title: "----"},
+                        {title: "Outstanding Deliveries Report", cmd: "SH_ZSD3TR009"}
+                    ]},
+                    {title: "----"},
+                     {title: "Invoice", children:[
+                        {title: "Billing Report", cmd: "IV_ZSD1TR007"},
+                        {title: "----"},
+                        {title: "Display", cmd: "IV_VF03"}
+                    ]},
+                    {title: "----"},
+                    {title: "RTS", cmd: "RT_RTS"}
+                ],
+                select: function (event, ui) {
+                    var cmdSelected ='';
+                    cmdSelected = cmdSelected + ui.cmd;
+                    if(cmdSelected == "RT_RTS"){                        
+                        openRTS();
+                    }else{                        
+                         openSAP(cmdSelected,getSelectionText());
+                    }
+                }
+            });
+        });
+        
+        /*** Function to get the selected value ***/
+        function getSelectionText() {
+            var text = "";
+            if (window.getSelection) {
+                text = window.getSelection().toString();
+            } else if (document.selection && document.selection.type != "Control") {
+                text = document.selection.createRange().text;
+            }
+            return text;
+        }
+        
+        /***  Open RTS link in new tab ***/
+        function openRTS() {
+            var RTSUrl = 'http://rts.us.tycoelectronics.com';
+            window.open(RTSUrl);
+        }
+        /***  Open Sap link as a subtab to case primary tab. ***/
+        function openSAP(p1_trans_val,p2_rcval_val) {
+            var targetSapUrl = sapUrlConstruct(p1_trans_val,p2_rcval_val); 
+            window.open(targetSapUrl,'_blank');   
+        }
+        /*** It will construct the SAP endpoint URL based on highlighted value and the selected option from Right Click Menu ***/
+        function sapUrlConstruct(p1_trans_val,p2_rcval_raw_val){
+            /* space is required before p_trans */
+            var p1_trans = " p_trans=";
+            var p2_rcval = ";p_rcval=";
+            /*** encodeURIComponent helps to pass special characters in query string. 
+                 At receiving end the encoded query string should decode using decodeURIComponent. ***/
+            var p2_rcval_encoded_val = encodeURIComponent(p2_rcval_raw_val);
+            var p3_acc =";p_acc=";
+            var p3_acc_val = "{!case.Account.AccountNumber}";           
+            var p4_dchnl = ";p_dchnl=";
+            var p4_dchnl_val ="{!case.Account.Distribution_Channel_Cde__c}";            
+            /*** Possible values for Distributon Channel code  in SAP are 01, 02, 03
+                 SFDC values are 1, 2, 3. Adding leading zeros and pass to SAP in case of leading zero is missed ***/
+            if(p4_dchnl_val !=""){            
+                if(p4_dchnl_val.length == 1){                    
+                    p4_dchnl_val = "0"+p4_dchnl_val;
+                }
+            }  
+            var p5_caseno = ";p_caseno=";
+            var p5_caseno_val ="{!case.CaseNumber}";
+            var p6_caseid = ";p_caseid=";
+            var p6_caseid_val = "{!case.id}";
+            var p7_datet = ";p_datet=";
+            var SF_CreatedDate = new Date("{!case.CreatedDate}");            
+            var p7_datet_val = formatDate(SF_CreatedDate); 
+            var p8_OKCODE = ";DYNP_OKCODE=";
+            var p8_OKCODE_val = "ONLI"        
+            console.log('Formatted date:'+  p7_datet_val );         
+            var paramString = p1_trans + p1_trans_val + p2_rcval + p2_rcval_encoded_val + p3_acc + p3_acc_val + p4_dchnl + p4_dchnl_val + p5_caseno + p5_caseno_val 
+                              + p6_caseid + p6_caseid_val + p7_datet + p7_datet_val + p8_OKCODE + p8_OKCODE_val;            
+            var sapBaseUrl ="{!$Setup.Right_Click_Menu__c.SAP_Base_Url__c}";
+            var targetSapUrl  = sapBaseUrl + paramString ;
+            return targetSapUrl;
+            
+        }
+        /*** It will format date in MM/DD/YYYY HH:MM 24 hour format  - 05/13/2015 13:55  ***/
+        function formatDate(date) {
+          var hours = date.getHours();
+          var minutes = date.getMinutes();
+          var seconds = date.getSeconds();
+          var month = date.getMonth() + 1;
+          var dateOfDay = date.getDate();                   
+          hours = hours < 10 ? '0'+hours : hours;
+          minutes = minutes < 10 ? '0'+minutes : minutes;
+          seconds = minutes < 10 ? '0'+seconds : seconds;
+          month = month < 10 ? '0'+month : month ;
+          dateOfDay = dateOfDay < 10 ? '0'+dateOfDay : dateOfDay ;
+          var strTime = ''+hours +''+ minutes + ''+seconds;
+          return ''+date.getFullYear() +''+ month  +''+ dateOfDay +  " " + strTime;
+        }
+    </script>  
+</apex:page>

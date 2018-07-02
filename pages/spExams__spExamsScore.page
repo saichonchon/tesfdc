@@ -1,0 +1,190 @@
+<apex:page controller="spExams.SPExamsCtrl" sidebar="false" showheader="false" standardStylesheets="false" >
+
+    <!-- JS Resources  -->
+    <apex:includeScript value="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'js/jquery-1.8.0.min.js')}" />   
+    <apex:includeScript value="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'js/jquery-ui-1.9.0.custom.min.js')}" /> 
+    <apex:includeScript value="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'js/bootstrap.js')}" />  
+     
+    <!-- CSS Resources  -->
+    <apex:stylesheet value="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'css/bootstrap.css')}" />
+    <style> 
+        
+        .container{
+            width: 940px;
+        }
+        
+        .container-form{
+            display: none;
+        }
+        
+        .hero-unit, .form-container {
+            box-shadow: 1px 1px 11px 1px rgb(228, 223, 223);
+            background-color: white;
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            border-radius: 6px;
+            border: 1px solid rgb(192, 192, 192);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+        
+        .hero-unit.header-title {
+            padding: 30px 30px 30px 38px;
+            box-shadow: 1px 1px 11px 1px rgb(228, 223, 223);
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .header-title h3 {
+            font-size: 18px;
+            line-height: 20px;
+            color: rgb(136, 141, 145);
+            margin-right: 15px;
+            display: inline;
+        }
+        
+        .score.alert-success, .score.alert-error{
+            background-color: transparent;
+        }
+        
+        .logo {
+            width: 50px;
+            margin-top: -14px;
+        }
+        
+        div.footer{
+            text-align: right;
+        }
+    </style>
+    
+    <apex:form styleClass="container-form">
+        <div class="container">
+            <div class="hero-unit header-title">
+                <h3>{!ExamSettings.spExams__Company_Name__c}</h3>
+                <img class="pull-right logo" src="{!UserExam.spExams__Company_Logo__c}"/>
+            </div>
+        </div>
+        <div class="container">
+            <div class="hero-unit header-title">
+                
+                <div style="margin-right: auto; margin-left: auto; border: 3px double rgb(185, 175, 175); width: 60%; font-family: Verdana,Arial,Helvetica,sans-serif;">
+                    <div style="overflow-x: hidden; word-wrap: break-word;">
+                        <h4 class="alert alert-info" style="margin: 0; padding: 7px; border-bottom: 3px double rgb(185, 175, 175); font-weight: normal; font-size: 15px;">{!Exam.spExams__Title__c}</h4>
+                        
+                        <table style="margin-left: 30%; width: 70%; border-spacing: 4px; font-size: 12px;">
+                            <tr>
+                                <td><b>Name: </b></td>
+                                <td>{!UserExam.spExams__First_Name__c} {!UserExam.spExams__Last_Name__c}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Date: </b></td>
+                                <td>
+                                	<!-- 
+	                                <apex:outputText value="{0,date, MM/dd/yyyy hh:mm ss}">
+									    <apex:param value="{!UserExam.spExams__Submittion_Date__c}" />
+									</apex:outputText>
+									 -->
+									<apex:outputField value="{!UserExam.spExams__Submittion_Date__c}" />
+								</td>
+                            </tr>
+                            <tr>
+                                <td><b>Score: </b></td>
+                                <td>{!FLOOR(UserExam.Score__c)}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Duration: </b></td>
+                                <td>{!IF(10 > UserExam.Elapsed_Minutes__c, '0' + TEXT(UserExam.Elapsed_Minutes__c), UserExam.Elapsed_Minutes__c)}:{!IF(10 > UserExam.Elapsed_Seconds__c, '0' + TEXT(UserExam.Elapsed_Seconds__c), UserExam.Elapsed_Seconds__c)}</td>
+                            </tr>
+                        </table>
+                        <h4 style="margin: 0; padding: 7px; text-align: center; border-top: 3px double rgb(185, 175, 175);"><b style="font-size: 17px; color: {!IF(UserExam.Show_Result__c == TRUE, IF(UserExam.Passed__c == 'PASS', 'green', 'red'), 'green')};" >{!IF(UserExam.Show_Result__c == TRUE, UserExam.Passed__c, 'SUBMITTED')}</b></h4>
+                   </div>
+                </div>
+                <!-- 
+                <div class="footer">
+                    <b><a class="btn" id="btn-exit" onclick="$('#confirm-action').modal('show');"><i class="icon-remove"></i> Exit</a></b>
+                </div>
+                 -->                
+        	</div>
+        </div>
+        
+        <!-- *************************************************** CONFIRM ACTION MODAL *************************************************** -->
+                
+        <div class="modal fade" id="confirm-action" data-backdrop="static" action="">
+            <div class="modal-header">
+               <button class="close" data-dismiss="modal" type="button">&times;</button>
+               <div class="confirm-action-header"><h4>Confirm Close</h4></div>
+            </div>
+            
+            <div class="modal-body">
+                <p id="action-modal-message">
+                    Are you sure you want to close this window?
+                </p>
+            </div>
+            
+            <div class="modal-footer">
+                <a id="btn-modal-action-cancel" class="btn" data-dismiss="modal">
+                    <i class="icon-remove"></i> <b>Cancel</b> 
+                </a>
+                <a id="btn-modal-action-execute" class="btn" onclick="closeWindow();">
+                    <i class="icon-remove-circle"></i> <b>Close</b>
+                </a>
+            </div>
+        </div>
+
+	</apex:form>         
+    
+    <script>
+        
+        $(document).ready(function()
+        {
+            setupSetings();
+            centerBodyContainer($('.container-form'));
+            $('.container-form').fadeIn(300);
+        });
+        
+        function setupSetings()
+        {
+            var sitePrefix = '{!$Site.Prefix}';
+            var backgroundImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+            var logoImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            selectorSource = $('body');
+            
+            if(sitePrefix == '' || sitePrefix == null)
+            {
+                backgroundImageurl = '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+                logoImageurl = '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            }
+            
+            
+            //Set Background Image
+            if({!ISNULL(ExamSettings.Background_Image__c)} || {!ISBLANK(ExamSettings.Background_Image__c)})
+            {
+                if({!NOT(ISNULL(ExamSettings.Background_Color__c))} && {!NOT(ISBLANK(ExamSettings.Background_Color__c))} && 
+                   '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != '#ffffff' && '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != 'rgb(255, 255, 255)')
+                    selectorSource.css('background-color', '{!HTMLENCODE(ExamSettings.Background_Color__c)}');
+                else
+                    selectorSource.css('background-image', "url({!URLFOR($Resource.Bootstrap_Newer, 'img/pattern.png')})").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');                  
+            }
+            else
+                selectorSource.css('background-image', "url(" + "'" + backgroundImageurl + "'" + ")").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');
+        }
+        
+        $(window).resize(function() {
+            centerBodyContainer($('.container-form'));
+        });
+        
+        function centerBodyContainer(containerSelector)
+        {   
+            containerSelector.css('position', 'absolute');
+            containerSelector.css('top', Math.max(0, (($(window).height() - $(containerSelector).outerHeight()) / 2) + $(window).scrollTop()) + 'px');
+            containerSelector.css('left', Math.max(0, (($(window).width() - $(containerSelector).outerWidth()) / 2) + $(window).scrollLeft()) + 'px');
+        }
+        
+        function closeWindow()
+        {
+            var win=window.open("about:blank","_self");
+			win.close(); 
+        }
+        
+    </script>        
+</apex:page>

@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object is used for logging tenders and is the basis for marketing-based reports</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>A_Customer__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(BEGINS(Name, &apos;ALS&apos;), &apos;Alstom&apos;,
+IF(BEGINS(Name, &apos;SIE&apos;), &apos;Siemens&apos;,
+IF(BEGINS(Name, &apos;BT&apos;), &apos;Bombardier&apos;,
+&apos;B Customer&apos;
+)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>A Customer</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The name of the train operator</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the train operator</inlineHelpText>
+        <label>Operator Name</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Tenders</relationshipLabel>
+        <relationshipName>Tenders</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Application_Platform__c</fullName>
+        <externalId>false</externalId>
+        <label>Application / Platform</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Freight</fullName>
+                    <default>false</default>
+                    <label>Freight</label>
+                </value>
+                <value>
+                    <fullName>High Speed</fullName>
+                    <default>false</default>
+                    <label>High Speed</label>
+                </value>
+                <value>
+                    <fullName>Locomotive</fullName>
+                    <default>false</default>
+                    <label>Locomotive</label>
+                </value>
+                <value>
+                    <fullName>LRV</fullName>
+                    <default>false</default>
+                    <label>LRV</label>
+                </value>
+                <value>
+                    <fullName>Metro</fullName>
+                    <default>false</default>
+                    <label>Metro</label>
+                </value>
+                <value>
+                    <fullName>Multiple Unit/Carriage</fullName>
+                    <default>false</default>
+                    <label>Multiple Unit/Carriage</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Average_Cars_per_year__c</fullName>
+        <externalId>false</externalId>
+        <formula>ROUND(Total_Cars__c  /  Lifetime_in_Months__c ,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Average Cars per month (rounded)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bidding_status_changed__c</fullName>
+        <externalId>false</externalId>
+        <label>Bidding status changed</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Close_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Government announcement due for Tender winner</inlineHelpText>
+        <label>Close Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Count_linked_Opps__c</fullName>
+        <description>rollup summary for the junction object</description>
+        <externalId>false</externalId>
+        <label>Count linked Opps</label>
+        <summaryForeignKey>Tenders_with_Opportunities__c.Tender__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Count_of_Bidding_Companies__c</fullName>
+        <externalId>false</externalId>
+        <label>Count of Bidding Companies</label>
+        <summaryForeignKey>Tender_Bidding_Companies__c.Tender__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Count_of_Tender_Competitors__c</fullName>
+        <description>Counts the linked competitors to this Tender</description>
+        <externalId>false</externalId>
+        <label>Count of Tender Competitors</label>
+        <summaryForeignKey>Tender_Competitor__c.Tender__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Count_of_linked_opportunities__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>this counts the opps linked to the Tenders via LK</description>
+        <externalId>false</externalId>
+        <label>Count of linked opportunities LK</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Count_of_winning_companies__c</fullName>
+        <externalId>false</externalId>
+        <label>Count of winning companies</label>
+        <summaryFilterItems>
+            <field>Tender_Bidding_Companies__c.Bidding_Status__c</field>
+            <operation>equals</operation>
+            <value>won</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Tender_Bidding_Companies__c.Tender__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Country_of_Service__c</fullName>
+        <description>A field for the two-digit code for country</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the 2-digit country code (e.g. CN for China)</inlineHelpText>
+        <label>Country of Service</label>
+        <length>2</length>
+        <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>End of supply contract</inlineHelpText>
+        <label>End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Month_Start_Date_Time_Period__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( MONTH (Start_Date_for_time_period__c) &lt; 10, MONTH ( Start_Date_for_time_period__c )+3, MONTH ( Start_Date_for_time_period__c )-9)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Month Start Date Time Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lifetime_in_Months__c</fullName>
+        <externalId>false</externalId>
+        <formula>(YEAR( End_Date__c )-YEAR( Start_Date_for_time_period__c ))*12+MONTH(End_Date__c)-MONTH(Start_Date_for_time_period__c)+1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lifetime in Months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Maintenance_and_Repair__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Maintenance and Repair</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Manufacturing_Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Start date for serial production</inlineHelpText>
+        <label>Manufacturing Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Must_Win__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>checkbox to flag &apos;must win&apos; Tenders</description>
+        <externalId>false</externalId>
+        <label>Must Win</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Trains for Prototype</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Train_Carriages__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Cars</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Trains__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Trains</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Operator_Region__c</fullName>
+        <description>operator region</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please choose the operator region</inlineHelpText>
+        <label>Operator Region</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Americas</fullName>
+                    <default>false</default>
+                    <label>Americas</label>
+                </value>
+                <value>
+                    <fullName>EMEA (excl. India)</fullName>
+                    <default>false</default>
+                    <label>EMEA (excl. India)</label>
+                </value>
+                <value>
+                    <fullName>India</fullName>
+                    <default>false</default>
+                    <label>India</label>
+                </value>
+                <value>
+                    <fullName>China</fullName>
+                    <default>false</default>
+                    <label>China</label>
+                </value>
+                <value>
+                    <fullName>Japan</fullName>
+                    <default>false</default>
+                    <label>Japan</label>
+                </value>
+                <value>
+                    <fullName>Asia (excl. China and Japan)</fullName>
+                    <default>false</default>
+                    <label>Asia (excl. China and Japan)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Overhaul__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Overhaul</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PAM_TAM_ratio__c</fullName>
+        <description>Calculates the PAM/TAM ratio per Tender</description>
+        <externalId>false</externalId>
+        <formula>PAM_Total__c /  TAM_Total__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculates the PAM/TAM ratio per Tender</inlineHelpText>
+        <label>PAM/TAM ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>PAM_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>PAM Total</label>
+        <summarizedField>Tender_Details__c.PAM_Total__c</summarizedField>
+        <summaryForeignKey>Tender_Details__c.Tender__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Propulsion_System__c</fullName>
+        <externalId>false</externalId>
+        <label>Propulsion System</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>None</fullName>
+                    <default>false</default>
+                    <label>None</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc</label>
+                </value>
+                <value>
+                    <fullName>3kV dc</fullName>
+                    <default>false</default>
+                    <label>3kV dc</label>
+                </value>
+                <value>
+                    <fullName>15kV ac</fullName>
+                    <default>false</default>
+                    <label>15kV ac</label>
+                </value>
+                <value>
+                    <fullName>20kV ac</fullName>
+                    <default>false</default>
+                    <label>20kV ac</label>
+                </value>
+                <value>
+                    <fullName>25kV ac</fullName>
+                    <default>false</default>
+                    <label>25kV ac</label>
+                </value>
+                <value>
+                    <fullName>Diesel</fullName>
+                    <default>false</default>
+                    <label>Diesel</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 1.5kV dc</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 1.5kV dc</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 3kV dc</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 3kV dc</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 20kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 20kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 20kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 20kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; 20kV ac</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; 20kV ac</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>15kV ac &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>15kV ac &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>15kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>15kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>20kV ac &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>20kV ac &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>20kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>20kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 3kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 3kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 3kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 3kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 3kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 3kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 15kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 15kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; 25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>15kV ac &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>15kV ac &amp; 25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; 15kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; 15kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>&lt;1.5kV dc &amp; 1.5kV dc &amp; 3kV dc &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; 25kV ac</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; 25kV ac</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>3kV dc &amp; 15kV ac &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>3kV dc &amp; 15kV ac &amp; 25kV ac &amp; Diesel</label>
+                </value>
+                <value>
+                    <fullName>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; 25kV ac &amp; Diesel</fullName>
+                    <default>false</default>
+                    <label>1.5kV dc &amp; 3kV dc &amp; 15kV ac &amp; 25kV ac &amp; Diesel</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>First confirmed date of known Tender opportunity</inlineHelpText>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date_for_time_period__c</fullName>
+        <externalId>false</externalId>
+        <formula>Manufacturing_Start_Date__c  + 270</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Date for time period</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Year__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (MONTH (  Start_Date_for_time_period__c  ) &gt;9, YEAR( Start_Date_for_time_period__c )+1, YEAR( Start_Date_for_time_period__c ))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Fiscal Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_of_Prototype_Production__c</fullName>
+        <externalId>false</externalId>
+        <label>Start of Prototype Production</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Submission_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Date when OEM needs to submit Tender</inlineHelpText>
+        <label>Submission Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>TAM_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>TAM Total</label>
+        <summarizedField>Tender_Details__c.TAM_Total__c</summarizedField>
+        <summaryForeignKey>Tender_Details__c.Tender__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Tender_Age_in_Months__c</fullName>
+        <description>Calculates the age of a Tender in months (TODAY - Created Date)</description>
+        <externalId>false</externalId>
+        <formula>(YEAR( TODAY())*12+MONTH(TODAY())) - (YEAR( DATEVALUE(CreatedDate ))*12+MONTH(DATEVALUE( CreatedDate) ))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Tender Age in Months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tender_Counter__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Tender Counter</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tender_Number__c</fullName>
+        <displayFormat>{000000}</displayFormat>
+        <externalId>false</externalId>
+        <inlineHelpText>The unique number for a given Tender record</inlineHelpText>
+        <label>Tender Number</label>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Total_Cars__c</fullName>
+        <externalId>false</externalId>
+        <formula>Number_of_Train_Carriages__c *  Number_of_Trains__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Cars</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Tender</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Close_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Country_of_Service__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Tender__c.Tender</value>
+        </filters>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Tender Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Tenders</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypes>
+        <fullName>Tender</fullName>
+        <active>true</active>
+        <label>Tender</label>
+        <picklistValues>
+            <picklist>Application_Platform__c</picklist>
+            <values>
+                <fullName>Freight</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>High Speed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LRV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Locomotive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Metro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multiple Unit%2FCarriage</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Operator_Region__c</picklist>
+            <values>
+                <fullName>Americas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Asia %28excl%2E China and Japan%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>China</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMEA %28excl%2E India%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>India</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Japan</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Propulsion_System__c</picklist>
+            <values>
+                <fullName>%3C1%2E5kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 1%2E5kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 1%2E5kV dc %26 3kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 1%2E5kV dc %26 3kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 1%2E5kV dc %26 3kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 15kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 20kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 3kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 3kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 3kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 3kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3C1%2E5kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 20kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 15kV ac %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 15kV ac %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 15kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 3kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1%2E5kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>15kV ac %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>15kV ac %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>15kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20kV ac %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 15kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 15kV ac %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 20kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 25kV ac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 25kV ac %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3kV dc %26 Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Diesel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>None</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Coumtry_code_for_country_of_service</fullName>
+        <active>true</active>
+        <description>This validation rule ensures that the user has to enter a 2-digit country code for the country of service.</description>
+        <errorConditionFormula>LEN(  Country_of_Service__c  ) &lt;&gt; 2</errorConditionFormula>
+        <errorDisplayField>Country_of_Service__c</errorDisplayField>
+        <errorMessage>Only a 2-letter country code (E.g. CN = China, US = United States) is possible.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_Greater_Than_Manufacturing_Date</fullName>
+        <active>true</active>
+        <errorConditionFormula>End_Date__c &lt; ( Manufacturing_Start_Date__c  + 270 )</errorConditionFormula>
+        <errorMessage>The End Date must be minimum 9 months later than the manufacturing start date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Number_of_Train_Carriages_validation</fullName>
+        <active>true</active>
+        <description>Validates the data enetered in No.Of Carriages Field, i.e should be morethan &quot;Zero&quot;.</description>
+        <errorConditionFormula>Number_of_Train_Carriages__c  &lt;= 0</errorConditionFormula>
+        <errorDisplayField>Number_of_Train_Carriages__c</errorDisplayField>
+        <errorMessage>Train Carriage value should be Greater Than &quot;Zero&quot;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Number_of_Trains_validation</fullName>
+        <active>true</active>
+        <description>Validates the data enetered in No.Of Trains Field i.e should be morethan &quot;Zero&quot;.</description>
+        <errorConditionFormula>Number_of_Trains__c &lt;= 0</errorConditionFormula>
+        <errorDisplayField>Number_of_Trains__c</errorDisplayField>
+        <errorMessage>No . Of Trains value should be Greater Than &quot;Zero&quot;</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,71 @@
+<apex:page standardController="EmailMessage" standardStylesheets="false" cache="false">            
+    <apex:form >
+        <style>
+            body .bPageTitle .ptBody h1.noSecondHeader {
+            margin-top: 9px;
+            margin-bottom: 0;
+            color: #FFF;
+            font-size: 2em;
+            font-weight: normal;
+            }
+            
+            .Outbound{
+            margin-top: 9px !important;
+            margin-bottom: 0 !important;
+            color: #000 !important;
+            font-size: 2em !important;
+            font-weight: normal !important;
+            }
+            
+            .btnNone {
+                font-family: 'Verdana','Geneva',sans-serif;
+                background-image: url("/img/bgButton.gif");
+                background-repeat: repeat-x;
+                background-position: left top;
+                border-right: 1px solid #5c5d61;
+                border-bottom: 1px solid #5c5d61;
+                border-top: none;
+                border-left: none;
+                font-size: 80%;
+                color: #fff;
+                padding: 1px 3px;
+                cursor: pointer;
+                font-weight: bold;
+                display: none;
+                }
+                .linknone{
+                display: none;
+                
+                }
+        </style>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+var $j = $.noConflict();
+$j( document ).ready(function() {
+    var ret = $j( ".btn" );
+    var ret1 = $j("a[title*='Delete']");
+    ret1.removeClass('actionLink');
+    ret1.addClass('linknone');
+  
+     ret = $j("input[value='Delete']");
+    ret.removeClass('btn');
+    ret.addClass('btnNone');
+});
+</script>    
+        <table style="width:100%;">
+            <tr>
+                <td style="align:left;width:90%;"><apex:outputText styleClass="Outbound" value="Outbound Email Message"/></td>
+                <td >
+                    <!--<apex:image id="PrintImage" value="{!$Resource.Print_Image}" width="20" height="20" onclick="window.print();"/>-->
+                    <apex:image id="PdfImage" value="{!$Resource.Pdf_Image}" width="20" height="20" onclick="openpdfPage('{!EmailMessage.id}');"/>                    
+                </td>
+            </tr>
+        </table>
+        <script type="text/javascript">
+            function openpdfPage(recid) {
+                window.open('/apex/Print_Email_VF?id='+recid, '_self');  
+            }
+        </script>        
+        <apex:detail />
+    </apex:form>
+</apex:page>

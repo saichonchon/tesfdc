@@ -1,0 +1,87 @@
+<apex:page standardController="Opportunity" extensions="ContactRoleMQLController" id="page" showHeader="true" sidebar="true" standardStylesheets="true">
+   
+    <script type="text/javascript" src="{!URLFOR($Resource.jquery)}"></script>
+    <script src="/soap/ajax/31.0/connection.js" type="text/javascript"> </script>
+    <script>
+    function changeValue(con,checked){
+        var selradio=getValue(con,checked);
+        var sel=document.getElementById('false');
+        if(checked=="on"){
+            document.getElementById('true').checked =true;
+            document.getElementById('false').checked =false;
+            location.reload();
+        }
+        if(checked=="false"){
+            var radiobtn = document.getElementById("true");
+            document.getElementById('page:form:selctdcon').value=con; 
+            radiobtn.checked =false;
+        }
+        if(sel!=null){
+            document.getElementById('true').checked =false;
+        }
+        document.getElementById('page:form:selctdcon').value=con; 
+        //alert('==checked==>'+document.getElementById('page:form:selctdcon').value);
+    }
+    </script>
+    <apex:sectionHeader title="Contact Roles for {!opp.Name}"/>
+    <apex:form id="form">
+    <apex:inputText value="{!selectedcon}" id="selctdcon" style="display:none"/>
+    <apex:pageBlock >
+    <apex:pageBlockButtons location="both">
+    <apex:commandButton value="Save" action="{!SaveOppCon}"/>
+    <apex:commandButton value="Cancel" action="{!CancelOppCon}"/>
+    </apex:pageBlockButtons>
+    <table cellspacing="10">
+    <tr>
+    <th>Primary</th>
+    <th>Contact</th>
+    <th>Role</th>
+    <th>MQL Flag</th>
+    <th>MQL Name</th>
+    <th>MQL Age</th>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <apex:repeat value="{!mqlWrap}" var="mr">
+    <tr>
+    <td>
+    <apex:outputPanel rendered="{!mr.oc.IsPrimary}" id="pnl">
+    <input type="radio" name="chosen" id="true"  checked="{!mr.oc.IsPrimary}" onclick= "changeValue('{!mr.oc.ContactId}',this.value);"/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!!(mr.oc.IsPrimary)}">
+    <input type="radio" id="false" name="primary" Value="{!mr.oc.IsPrimary}" onclick= "changeValue('{!mr.oc.ContactId}',this.value);"/>
+    </apex:outputPanel>
+    </td>
+    <td> <apex:inputField value="{!mr.oc.ContactId}" required="false" onchange="this.form.submit();"/> 
+	</td>
+    <td> <apex:inputField value="{!mr.oc.Role}"/>
+	</td> 
+    <td>
+    <apex:outputPanel id="out" rendered="{!mr.tMQL!=null}">
+    </apex:outputPanel>
+    <apex:outputText value="{!mr.oc.Contact.MQL_Flag_Contact__c}"  escape="false" />
+    </td>
+    <td>
+    <apex:commandLink action="{!MqlNav}" value="{!mr.tMQL.Name}" rendered="{!mr.oc.ContactId == mr.tMQL.TEMarketing__Contact__c}"> 
+    <apex:param name="mqlrecId" assignto="{!Mqlrecord}" value="{!mr.tMQL.id}"/>
+    </apex:commandLink> 
+    </td>
+    <td>
+    <apex:outputText value="{!mr.tMQL.TEMarketing__Contact__r.MQL_age__c}" rendered="{!mr.oc.ContactId == mr.tMQL.TEMarketing__Contact__c}" /> 
+    </td>
+    </tr>
+    </apex:repeat> 
+    </table>  
+    </apex:pageBlock>
+    <apex:actionFunction name="getValue"  action="{!contactValue}" reRender="out">   
+    <apex:param id="aname" name="contact" assignTo="{!enteredText1}" value="" />
+    <apex:param id="aname1" name="checked"  assignTo="{!enteredText2}" value="" /> 
+    </apex:actionFunction> 
+    </apex:form>
+    
+    
+</apex:page>

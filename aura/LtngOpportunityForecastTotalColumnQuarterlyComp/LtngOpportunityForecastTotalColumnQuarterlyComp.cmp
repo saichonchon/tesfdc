@@ -1,0 +1,23 @@
+<aura:component extends="c:LtngOpportunityForecastUtil">
+	
+    <aura:attribute name="opp" 							type="Object" />
+    
+	<aura:attribute name="uniqueId" 				type="String" />
+    <aura:attribute name="year" 					type="Integer" />
+    <aura:attribute name="number" 					type="Integer" />
+    <aura:attribute name="isBom" 					type="Boolean" />
+    <aura:attribute name="list_part" 				type="List" />
+	<aura:attribute name="map_forecast" 			type="Map" />
+	<aura:attribute name="map_totalForecast" 		type="Map" />
+    <aura:attribute name="value" 					type="String" />
+    
+    <aura:attribute name="map_change"				type="Map" />
+
+    <td class="custom-border-rb ">&nbsp;
+        <div class="slds-form-element">
+            <div class="slds-form-element__control" title="{!v.isBom ? '' : v.value}">
+                <input onkeydown="{!c.event_nextInput_keydown}" onchange="{!c.event_totalQty_change}" readonly="{!v.isBom ? false : true}" value="{!v.isBom ? v.value : (v.opp.CurrencyIsoCode+v.value)}" type="text" class="slds-input custom-input_style" />
+            </div>
+        </div>    
+    </td>
+</aura:component>

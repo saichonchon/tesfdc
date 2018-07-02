@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <acrossGroupingContext>GRAND_SUMMARY</acrossGroupingContext>
+        <calculatedFormula>Opportunity.Quote_Creation__c:AVG</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>Account.Opportunities.Parts__r$GPL__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>AVG TAT</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_48547705</developerName>
+        <masterLabel>TAT quote creation</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>Account.Opportunities$Quote_Creation__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>-1</to>
+            </sourceValues>
+            <value>no quote attached or old record</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>-1</from>
+                <to>5</to>
+            </sourceValues>
+            <value>0 to 5 days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>5</from>
+                <to>10</to>
+            </sourceValues>
+            <value>6 to 10 days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>10</from>
+                <to>15</to>
+            </sourceValues>
+            <value>11 to 15 days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>15</from>
+                <to>20</to>
+            </sourceValues>
+            <value>16 to 20 days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>20</from>
+            </sourceValues>
+            <value>greater 20 days</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Opportunity_Counter__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>for mail send-out</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Opportunities$Opportunity_Group__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Engineering</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Final_Approval_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Initial_Approval_Submission_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_FISCAL_YEAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$GPL__c.My_product_ownership__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>true</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Quote_attached__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Quote attached</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_48547705</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Parts__r$GPL__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Opportunity_Number__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Quote creation time overview(click link)</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts_parts_and_forecast__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$Quote_attached_date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

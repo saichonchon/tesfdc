@@ -1,0 +1,9 @@
+<apex:page id="thePage" standardController="MobileVizArt__Mobile_Configuration__c"
+    extensions="MobileVizArt.ExtMobileConfiguration"
+    title="{!$ObjectType.MobileVizArt__Mobile_Configuration__c.label} {!$Label.MobileVizArt__EditButton}: {!IF(ISBLANK(MobileVizArt__Mobile_Configuration__c.Id), $Label.MobileVizArt__NewButton + ' ' + $ObjectType.MobileVizArt__Mobile_Configuration__c.label, MobileVizArt__Mobile_Configuration__c.Name)}">
+
+    <apex:sectionHeader title="{!$ObjectType.MobileVizArt__Mobile_Configuration__c.label} {!IF(isClone,$Label.MobileVizArt__CloneButton ,$Label.MobileVizArt__EditButton)}"
+        subtitle="{!IF(ISBLANK(MobileVizArt__Mobile_Configuration__c.Id), $Label.MobileVizArt__NewButton + ' ' + $ObjectType.MobileVizArt__Mobile_Configuration__c.label, MobileVizArt__Mobile_Configuration__c.Name)}" />
+    <c:CompMobileConfiguration mobileConfiguration="{!extMobileConfiguration}"
+        standardCtrl="{!standardController}" />
+</apex:page>

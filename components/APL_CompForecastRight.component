@@ -1,0 +1,37 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	<apex:attribute name="listData" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listColumns" type="List" required="false" description="the root page controller reference" />
+	<apex:attribute name="listDate" type="List" required="false" description="the root page controller reference" />
+	
+	<apex:variable value="{!0}" var="rowNums"/>
+	<apex:repeat var="total" value="{!pageCtrl['list_TotalColumns']}" >
+		<tr class="{!if(rowNums = 0, ' v0 ', ' dn ')} rlevel0 {!total['fieldName']}  {!total['matchName']}" data-fc="{!total['json_ForecastData']}">
+			<apex:repeat var="fd" value="{!listDate}">
+	        <td class=" "></td>
+	        </apex:repeat>
+		</tr>
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="subtotal" value="{!total['list_ChildColumn']}">
+			<tr class="dn rlevel0" >
+				<apex:repeat var="fd" value="{!listDate}">
+		        <td class=" "></td>
+		        </apex:repeat>
+			</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+		<apex:variable var="rowNums" value="{!rowNums + 1}"/>
+	</apex:repeat>
+
+	<apex:repeat var="level" value="{!listData}">
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!listColumns}">
+		<tr class="{!if(rowNum = 0, ' v1', ' dn ')} rlevel1" data-id="{!level['id']}" data-fc="{!if(rowNum=0, level['json_FCData'], '')}">
+			<apex:repeat var="fd" value="{!listDate}">
+	        <td class=" "></td>
+	        </apex:repeat>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+</apex:component>

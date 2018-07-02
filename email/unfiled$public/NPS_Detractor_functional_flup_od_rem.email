@@ -1,0 +1,33 @@
+<messaging:emailTemplate subject="REMINDER – Detractor follow up from NPS Survey is Overdue for Completion" recipientType="User" relatedToType="Task">
+<messaging:plainTextEmailBody >
+.               
+</messaging:plainTextEmailBody>
+<messaging:htmlEmailBody >
+<apex:image Url="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3)}/servlet/servlet.ImageServer?id=015E0000006Oo9d&oid={!$Organization.Id}"/>
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900; height:5; width:600px;"/></tr></table>
+
+<br/>
+<br/>
+Dear {!relatedto.Owner.name},
+<br/>
+<br/>
+The task relates to a survey taken by {!relatedto.Who.name} which resulted in a detractor task being created. 
+<br/>
+Access to the survey response and task can be found in the SFDC link below. 
+<br/>
+<br/>
+<a href="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3) + '/' +relatedto.Id}">{!relatedto.subject}</a>
+<br/>
+
+
+<br/>
+Please endeavour to make contact with the customer, summarize your discussions in the task comments and move to complete status as soon as possible. 
+<br/><br/>
+Thank you,
+<br/>
+Industrial Surveys Team
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900; bEditID:r2st1; bLabel:accent1; height:5; width:600px;"/></tr></table>
+<apex:image Url="{!LEFT($Api.Partner_Server_URL_140, FIND('.com',$Api.Partner_Server_URL_140)+3)}/servlet/servlet.ImageServer?id=015E0000001hKDe&oid={!$Organization.Id}"/>
+<table width="100%" border="0" bordercolor="#FF9900" cellspacing="0" cellpadding="0"><tr><td style=" background-color:#FF9900;  height:5; width:600px;"/></tr></table>
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

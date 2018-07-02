@@ -1,0 +1,593 @@
+<apex:component controller="ADMNPForecastSummary_Controller" id="nonPortfolio_thePage"  allowDML="true" >
+    <apex:attribute name="value" description="load this component on true"
+        type="Boolean" required="false" />
+    <apex:form >
+        <apex:includeScript value="{!$Resource.jquery_min}"/>
+        <apex:actionFunction action="{!NonPortfolioForecast}" name="getData" reRender="nonPortfolio_myTable" oncomplete="futureDateColoring();"/>
+        <apex:outputPanel id="nonPortfolio_panelid">
+            <div class="container slds-p-around--small">
+                <div class="slds-align_absolute-center slds-m-bottom--xx-small">
+                    <a href="javascript:void(0);" class="slds-button slds-button--neutral" onclick="nonportfolioexpandRow();">Expand Row</a>
+                    <a href="javascript:void(0);" class="slds-button slds-button--neutral" onclick="nonportfolioexpandColumn();">Expand Column</a>
+                    <a href="javascript:void(0);" class="slds-button slds-button--neutral" onclick="nonportfoliocollapseAll();">Collapse All</a>
+                    <apex:outputPanel >
+                            <apex:commandButton action="{!Back}"  value="Back" immediate="true" styleClass="slds-button  slds-button--neutral slds-m-left--xx-small" onclick="setSessionNull();" />
+                            <apex:commandButton action="{!Exit}"  value="Exit" immediate="true" styleClass="slds-button  slds-button--neutral" onclick="setSessionNull();" />
+                    </apex:outputPanel>
+                    <div class="paging-container np-tablePaging slds-m-left--large"> </div>
+                    <apex:outputPanel id="myButtons">
+                          <apex:commandButton action="{!Beginning}" onclick="jQuery('.loader-wrapper').show();addColumnExpandedNP();" title="Beginning" value="First" styleClass="slds-button  slds-button--neutral slds-m-left--xx-small"  disabled="{!disablePrevious}" reRender="nonPortfolio_myTable,myButtons" oncomplete="futureDateColoring();"/>
+        				  <apex:commandButton action="{!Previous}" onclick="jQuery('.loader-wrapper').show();addColumnExpandedNP();" title="Previous" value="Previous" styleClass="slds-button  slds-button--neutral" disabled="{!disablePrevious}" reRender="nonPortfolio_myTable,myButtons" oncomplete="futureDateColoring();"/>        
+        				  <apex:commandButton action="{!Next}" onclick="jQuery('.loader-wrapper').show();addColumnExpandedNP();" title="Next" value="Next" styleClass="slds-button  slds-button--neutral" disabled="{!disableNext}" reRender="nonPortfolio_myTable,myButtons" oncomplete="futureDateColoring();"/>
+       					  <apex:commandButton action="{!End}" onclick="jQuery('.loader-wrapper').show();addColumnExpandedNP();" title="End" value="Last" styleClass="slds-button  slds-button--neutral" disabled="{!disableNext}" reRender="nonPortfolio_myTable,myButtons" oncomplete="futureDateColoring();"/>  
+                    </apex:outputPanel>
+                </div>
+                
+                <div class="overflow-horizontal slds-p-top--large">
+                    <apex:outputPanel id="nonPortfolio_myTable">
+                        <table class="adm nonportfolio slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-text-title_caps">                            
+                                    <th>WWCustName</th>
+                                    <th><span class="right-column-toggler">+</span>Sold-To-Customer</th>
+                                    <th class="child-right hide-right">Account No.</th>
+                                    <th class="child-right hide-right">OEM/Distribution</th>
+                                    <th class="child-right hide-right">Region</th>
+                                    <th class="child-right hide-right">District</th>
+                                    <th class="child-right hide-right">Country</th>
+                                    <th class="child-right hide-right">State</th>
+                                    <th class="child-right hide-right">City</th>
+                                    <th class="child-right hide-right">Regional Sales Manager</th>
+                                    <th class="child-right hide-right">District Sales Manager</th>
+                                    <th class="child-right hide-right">Sales Engineer</th>
+                                    <th class="child-right hide-right">Distribution Manager</th>
+                                    <th class="child-right hide-right">TE User ID</th>
+                                    <th class="child-right hide-right">Profit Center</th>
+                                    <th class="child hide">CBC2</th>
+                                    <th class="child hide">CBC3</th>
+                                    <th class="child hide">CBC4</th>
+                                    <th><span class="column-toggler">+</span>GPL</th>
+                                    <th>GPL Description</th>
+                                    <th class="slds-float--left wid150">Type</th>
+                                    <th>{!'FY'+RIGHT(pPastYear,2)}</th>
+                                    <th>{!'FY'+RIGHT(pastYear,2)}</th>
+                                    <th data-getdate="{!cM1}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M1'}</th>
+                                    <th data-getdate="{!cM2}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M2'}</th>
+                                    <th data-getdate="{!cM3}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M3'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(currentYear,2)+'.Q1'}</th>
+                                    <th data-getdate="{!cM4}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M4'}</th>
+                                    <th data-getdate="{!cM5}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M5'}</th>
+                                    <th data-getdate="{!cM6}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M6'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(currentYear,2)+'.Q2'}</th>
+                                    <th data-getdate="{!cM7}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M7'}</th>
+                                    <th data-getdate="{!cM8}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M8'}</th>
+                                    <th data-getdate="{!cM9}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M9'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(currentYear,2)+'.Q3'}</th>
+                                    <th class="mtd-column child hide">MTD Actuals</th>
+                                    <th class="mtd-column child hide">MTD Variance</th>
+                                    <th data-getdate="{!cM10}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M10'}</th>
+                                    <th data-getdate="{!cM11}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M11'}</th>
+                                    <th data-getdate="{!cM12}" class="child hide month-iterator">{!'FY'+RIGHT(currentYear,2)+'.M12'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(currentYear,2)+'.Q4'}</th>
+                                    <th class="child hide">{!'FY'+RIGHT(currentYear,2)+'.Y-on-Y(%)'}</th>
+                                    <th class="child hide">{!'FY'+RIGHT(currentYear,2)+'.Y-on-Y ($,000)'}</th>
+                                    <th><span class="column-toggler">+</span>{!'FY'+RIGHT(currentYear,2)+'.Total'}</th>
+                                    <th data-getdate="{!nM1}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M1'}</th>
+                                    <th data-getdate="{!nM2}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M2'}</th>
+                                    <th data-getdate="{!nM3}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M3'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(nextYear,2)+'.Q1'}</th>
+                                    <th data-getdate="{!nM4}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M4'}</th>
+                                    <th data-getdate="{!nM5}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M5'}</th>
+                                    <th data-getdate="{!nM6}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M6'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(nextYear,2)+'.Q2'}</th>
+                                    <th data-getdate="{!nM7}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M7'}</th>
+                                    <th data-getdate="{!nM8}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M8'}</th>
+                                    <th data-getdate="{!nM9}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M9'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(nextYear,2)+'.Q3'}</th>
+                                    <th data-getdate="{!nM10}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M10'}</th>
+                                    <th data-getdate="{!nM11}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M11'}</th>
+                                    <th data-getdate="{!nM12}" class="child hide month-iterator">{!'FY'+RIGHT(nextYear,2)+'.M12'}</th>
+                                    <th class="quarterhead"><span class="column-toggler">+</span>{!'FY'+RIGHT(nextYear,2)+'.Q4'}</th>
+                                    <th class="child hide">{!'FY'+RIGHT(nextYear,2)+'.Y-on-Y(%)'}</th>
+                                    <th class="child hide">{!'FY'+RIGHT(nextYear,2)+'.Y-on-Y ($,000)'}</th>
+                                    <th><span class="column-toggler">+</span>{!'FY'+RIGHT(nextYear,2)+'.Total'}</th>
+                                    <th class="latest-comment-wid">Latest Comment</th>
+                                    <th class="last-column">Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!forecastLineItems}" var="fLine">
+                                    
+                                    <tr class="row-parent np-forcast-row">                                
+                                        <td class="p-left20 v-wwcustname"><span class="row-toggler">+</span><span class="name-field">{!fLine.WorldWideAccountName}</span></td>
+                                        <td class="v-sold-to-customer">{!fLine.SoldToCustomerName}</td>
+                                        <td class="child-right hide-right">{!fLine.AccountNum}</td>
+                                        <td class="child-right hide-right v-oem-disty">{!typeofaccount}</td>
+                                        <td class="child-right hide-right">{!fLine.Region}</td>
+                                        <td class="child-right hide-right">{!fLine.District}</td>
+                                        <td class="child-right hide-right">{!fLine.BCountry}</td>
+                                        <td class="child-right hide-right">{!fLine.BState}</td>
+                                        <td class="child-right hide-right">{!fLine.BCity}</td>
+                                        <td class="child-right hide-right">{!fLine.RegSalesMngr}</td>
+                                        <td class="child-right hide-right">{!fLine.DistSalesMngr}</td>
+                                        <td class="child-right hide-right">{!fLine.SalesEng}</td>
+                                        <td class="child-right hide-right">{!fLine.DistMngr}</td>
+                                        <td class="child-right hide-right">{!fLine.TEUserID}</td>
+                                        <td class="child-right hide-right">{!fLine.forecast.Profit_Center__c}</td>
+                                        <td class="child hide">{!fLine.CBC2}</td>
+                                        <td class="child hide v-cbc3">{!fLine.CBC3}</td>
+                                        <td class="child hide">{!fLine.CBC4}</td>
+                                        <td class="v-gpl">{!fLine.forecast.GPL__r.name}</td>
+                                        <td class="v-gpldesc">{!fLine.forecast.GPL__r.GPL_Description__c}</td>
+                                        <td>{!fLine.forecastType}</td>
+                                        <td>{!round(fLine.MTDNewWrapper.PPYActuals / 1000, 1)}</td>
+                                        <td>{!round(fLine.MTDNewWrapper.PYActuals / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M1__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M2__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M3__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FCurrObj.Q1__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M4__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M5__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M6__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FCurrObj.Q2__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M7__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M8__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M9__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FCurrObj.Q3__c / 1000, 1)}</td>
+                                        <td class="mtd-column child hide">{!round(fLine.MTDNewWrapper.MTDActual / 1000, 1)}</td>
+                                        <td class="mtd-column child hide">{!round(fLine.MTDNewWrapper.MTDVariance / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M10__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M11__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FCurrObj.M12__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FCurrObj.Q4__c / 1000, 1)}</td>
+                                        <td class="child hide"></td>
+                                        <td class="child hide"></td>
+                                        <td class="total-column">{!round(fLine.FCurrObj.Total__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M1__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M2__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M3__c, 1)}</td>
+                                        <td  class="quarter-column">{!round(fLine.FNextObj.Q1__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M4__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M5__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M6__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FNextObj.Q2__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M7__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M8__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M9__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FNextObj.Q3__c / 1000, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M10__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M11__c, 1)}</td>
+                                        <td class="child hide month-column">{!round(fLine.FNextObj.M12__c, 1)}</td>
+                                        <td class="quarter-column">{!round(fLine.FNextObj.Q4__c / 1000, 1)}</td>
+                                        <td class="child hide"></td>
+                                        <td class="child hide"></td>
+                                        <td class="total-column">{!round(fLine.FNextObj.Total__c / 1000, 1)}</td>
+                                        <td>
+                                            <div class="latest-comment-wid slds-float--left pos-rel">
+                                                <div class="slds-truncate" onmouseover="showTooltip(this);" onmouseout="hideTooltip(this);">
+                                                    <apex:outputText value=" {!LEFT(fLine.LatestComment,100)}" rendered="{!NOT(ISNULL(fLine.LatestComment))}" id="nonPortfolio_latestcomment"/>
+                                                </div>
+                                                <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right" role="tooltip">
+                                                    <div class="slds-popover__body">{!LEFT(fLine.LatestComment,100)}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="pos-rel">
+                                                <apex:commandButton image="{!URLFOR($Resource.customimages,'custom-images/utility/new_direct_message_60.png')}" styleClass="set-icon slds-m-right--x-small" onmouseover="showTooltip(this);" onmouseout="hideTooltip(this);" onclick="jQuery('.nonPortfolio_popup').show();addLatestComment('{!fLine.ForecastCrecId}','{!fLine.ForecastCrecName}');return false;">                                                   
+                                                    <!--apex:param name="editParamid" assignTo="{!editforecastId}" value="{!fLine.ForecastCrecId}" />
+                                                    <apex:param name="editParamname" assignTo="{!forecastName}" value="{!fLine.ForecastCrecName}" /-->
+                                                </apex:commandButton>
+                                                <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right" role="tooltip">
+                                                    <div class="slds-popover__body">New Comment</div>
+                                                </div>
+                                            </span>
+                                            <span class="pos-rel">
+                                                <apex:facet name="header">View All Comments</apex:facet>
+                                                <apex:commandButton image="{!URLFOR($Resource.customimages,'custom-images/utility/comments_60.png')}" styleClass="set-icon" onmouseover="showTooltip(this);" onmouseout="hideTooltip(this);" oncomplete="removeExtraTimeline();" onclick="showComment(event);" >
+                                                    <!--apex:param name="viewParamid" assignTo="{!viewforecastId}" value="{!fLine.ForecastCrecId}" /-->
+                                                </apex:commandButton>
+                                                <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right" role="tooltip">
+                                                    <div class="slds-popover__body">View Comments</div>
+                                                </div>
+                                            </span>
+                                            <apex:outputPanel styleClass="nonPortfolio_popupview" id="nonPortfolio_popupview" style="display:none;">
+                                                <apex:outputPanel >
+                                                    <div role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                                                        <div class="slds-modal__container">
+                                                            <div class="slds-modal__header">
+                                                                <h2 class="slds-text-heading_medium slds-hyphenate">View Comment</h2>
+                                                            </div>
+                                                            <div class="slds-modal__content slds-p-around_medium">
+                                                                <ul class="slds-timeline">
+                                                                    <apex:repeat value="{!fLine.viewAllCommentsLit}" var="commentList">
+                                                                        <li>
+                                                                            <div class="slds-timeline__item">
+                                                                                <span class="slds-assistive-text">Comments</span>
+                                                                                <div class="slds-media">
+                                                                                    <div class="slds-media__body">
+                                                                                        <div class="slds-media slds-timeline__media slds-timeline__media_call timeline-helper">
+                                                                                            <div class="slds-media__figure slds-timeline__icon">
+                                                                                                <div class="slds-icon_container slds-icon-standard-log-a-call" title="comment">
+                                                                                                    <div class="slds-icon slds-icon_medium">
+                                                                                                        <img src="{!URLFOR($Resource.customimages,'custom-images/standard/feedback_60.png')}" alt="comments"/>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="slds-media__body">
+                                                                                                <div class="slds-media">
+                                                                                                    <div class="slds-media__body">
+                                                                                                        <h3 style="white-space:normal;">{!commentList.commentsByUser}</h3>
+                                                                                                        <ul class="slds-list_horizontal slds-wrap">
+                                                                                                            <li class="slds-m-right_large bold">
+                                                                                                                <span class="slds-text-title">Created By</span>
+                                                                                                                <span class="slds-text-body_small">{!commentList.createdBy}</span>
+                                                                                                            </li>
+                                                                                                        </ul>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="slds-media__figure slds-media__figure_reverse bold">
+                                                                                        <div class="slds-timeline__actions">
+                                                                                            <p class="slds-timeline__date">{!commentList.dateOfComment}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </apex:repeat>
+                                                                </ul>                                                               
+                                                            </div>
+                                                            <div class="slds-modal__footer">
+                                                                <apex:commandButton styleClass="slds-button slds-button--brand" value="Close" onclick="jQuery('.nonPortfolio_popupview').hide();return false;"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-backdrop slds-backdrop_open"></div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                    <apex:repeat value="{!fLine.relatedFDetailRecords}" var="actualFDLines">
+                                        <tr class="child hide actuals-row">                                    
+                                            <td class="p-left20">{!actualFDLines.WorldWideAccountName}</td>
+                                            <td class="v-sold-to-customer">{!actualFDLines.SoldToCustomerName}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.AccountNum}</td>
+                                            <td class="child-right hide-right">{!typeofaccount}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.Region}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.District}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.BCountry}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.BState}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.BCity}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.RegSalesMngr}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.DistSalesMngr}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.SalesEng}</td>
+                                            <td class="child-right hide-right">{!fLine.DistMngr}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.TEUserID}</td>
+                                            <td class="child-right hide-right">{!actualFDLines.forecast.Profit_Center__c}</td>
+                                            <td class="child hide">{!actualFDLines.CBC2}</td>
+                                            <td class="child hide">{!actualFDLines.CBC3}</td>
+                                            <td class="child hide">{!actualFDLines.CBC4}</td>
+                                            <td>{!actualFDLines.forecast.GPL__r.name}</td>
+                                            <td>{!actualFDLines.forecast.GPL__r.GPL_Description__c}</td>
+                                            <td class="actual-highlight"><!--{!actualFDLines.forecastType}-->Last Year Actuals</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="child hide actual-highlight np-cactualm1">{!round(actualFDLines.ACurrObj.M1__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm2">{!round(actualFDLines.ACurrObj.M2__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm3">{!round(actualFDLines.ACurrObj.M3__c, 1)}</td>
+                                            <td class="np-cactualq1 actual-highlight">{!round(actualFDLines.ACurrObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm4">{!round(actualFDLines.ACurrObj.M4__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm5">{!round(actualFDLines.ACurrObj.M5__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm6">{!round(actualFDLines.ACurrObj.M6__c, 1)}</td>
+                                            <td class="np-cactualq2 actual-highlight">{!round(actualFDLines.ACurrObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm7">{!round(actualFDLines.ACurrObj.M7__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm8">{!round(actualFDLines.ACurrObj.M8__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm9">{!round(actualFDLines.ACurrObj.M9__c, 1)}</td>
+                                            <td class="np-cactualq3 actual-highlight">{!round(actualFDLines.ACurrObj.Q3__c / 1000, 1)}</td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="child hide actual-highlight np-cactualm10">{!round(actualFDLines.ACurrObj.M10__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm11">{!round(actualFDLines.ACurrObj.M11__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-cactualm12">{!round(actualFDLines.ACurrObj.M12__c, 1)}</td>
+                                            <td class="np-cactualq4 actual-highlight">{!round(actualFDLines.ACurrObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide"></td>
+                                            <td class="child hide"></td>
+                                            <td class="np-cactualtotal actual-highlight">{!round(actualFDLines.ACurrObj.Total__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm1">{!round(actualFDLines.ANextObj.M1__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm2">{!round(actualFDLines.ANextObj.M2__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm3">{!round(actualFDLines.ANextObj.M3__c, 1)}</td>
+                                            <td class="np-factualq1 actual-highlight">{!round(actualFDLines.ANextObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm4">{!round(actualFDLines.ANextObj.M4__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm5">{!round(actualFDLines.ANextObj.M5__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm6">{!round(actualFDLines.ANextObj.M6__c, 1)}</td>
+                                            <td class="np-factualq2 actual-highlight">{!round(actualFDLines.ANextObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm7">{!round(actualFDLines.ANextObj.M7__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm8">{!round(actualFDLines.ANextObj.M8__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm9">{!round(actualFDLines.ANextObj.M9__c, 1)}</td>
+                                            <td class="np-factualq3 actual-highlight">{!round(actualFDLines.ANextObj.Q3__c / 1000, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm10">{!round(actualFDLines.ANextObj.M10__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm11">{!round(actualFDLines.ANextObj.M11__c, 1)}</td>
+                                            <td class="child hide actual-highlight np-factualm12">{!round(actualFDLines.ANextObj.M12__c, 1)}</td>
+                                            <td class="np-factualq4 actual-highlight">{!round(actualFDLines.ANextObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide"></td>
+                                            <td class="child hide"></td>
+                                            <td class="np-factualtotal">{!round(actualFDLines.ANextObj.Total__c / 1000, 1)}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </apex:repeat> 
+                                    <apex:repeat value="{!fLine.relatedFDetailRecords1}" var="guidenceFDLines">
+                                        <tr class="child hide">                                    
+                                            <td class="p-left20">{!guidenceFDLines.WorldWideAccountName}</td>
+                                            <td class="v-sold-to-customer">{!guidenceFDLines.SoldToCustomerName}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.AccountNum}</td>
+                                            <td class="child-right hide-right">{!typeofaccount}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.Region}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.District}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.BCountry}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.BState}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.BCity}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.RegSalesMngr}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.DistSalesMngr}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.SalesEng}</td>
+                                            <td class="child-right hide-right">{!fLine.DistMngr}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.TEUserID}</td>
+                                            <td class="child-right hide-right">{!guidenceFDLines.forecast.Profit_Center__c}</td>
+                                            <td class="child hide">{!guidenceFDLines.CBC2}</td>
+                                            <td class="child hide">{!guidenceFDLines.CBC3}</td>
+                                            <td class="child hide">{!guidenceFDLines.CBC4}</td>
+                                            <td>{!guidenceFDLines.forecast.GPL__r.name}</td>
+                                            <td>{!guidenceFDLines.forecast.GPL__r.GPL_Description__c}</td>
+                                            <td class="guidance-highlight">{!guidenceFDLines.forecastType}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M1__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M2__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M3__c, 1)}</td> 
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GCurrObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M4__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M5__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M6__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GCurrObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M7__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M8__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M9__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GCurrObj.Q3__c / 1000, 1)}</td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M10__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M11__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GCurrObj.M12__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GCurrObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide"></td>
+                                            <td class="child hide"></td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GCurrObj.Total__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M1__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M2__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M3__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GNextObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M4__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M5__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M6__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GNextObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M7__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M8__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M9__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GNextObj.Q3__c / 1000, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M10__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M11__c, 1)}</td>
+                                            <td class="child hide guidance-highlight">{!round(guidenceFDLines.GNextObj.M12__c, 1)}</td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GNextObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide"></td>
+                                            <td class="child hide"></td>
+                                            <td class="guidance-highlight">{!round(guidenceFDLines.GNextObj.Total__c / 1000, 1)}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </apex:repeat>
+                                    <apex:repeat value="{!fLine.relatedFDetailRecords2}" var="yoyFDLines">
+                                        <tr class="child hide yoy-row">                                    
+                                            <td class="p-left20">{!yoyFDLines.WorldWideAccountName}</td>
+                                            <td class="v-sold-to-customer">{!yoyFDLines.SoldToCustomerName}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.AccountNum}</td>
+                                            <td class="child-right hide-right">{!typeofaccount}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.Region}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.District}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.BCountry}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.BState}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.BCity}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.RegSalesMngr}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.DistSalesMngr}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.SalesEng}</td>
+                                            <td class="child-right hide-right">{!fLine.DistMngr}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.TEUserID}</td>
+                                            <td class="child-right hide-right">{!yoyFDLines.forecast.Profit_Center__c}</td>
+                                            <td class="child hide">{!yoyFDLines.CBC2}</td>
+                                            <td class="child hide">{!yoyFDLines.CBC3}</td>
+                                            <td class="child hide">{!yoyFDLines.CBC4}</td>
+                                            <td>{!yoyFDLines.forecast.GPL__r.name}</td>
+                                            <td>{!yoyFDLines.forecast.GPL__r.GPL_Description__c}</td>
+                                            <td class="yoy-highlight">{!yoyFDLines.forecastType}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="child hide yoy-highlight np-cyoym1">{!round(yoyFDLines.YoYCurrObj.M1__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym2">{!round(yoyFDLines.YoYCurrObj.M2__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym3">{!round(yoyFDLines.YoYCurrObj.M3__c, 1)}</td> 
+                                            <td class="np-cyoyq1 yoy-highlight">{!round(yoyFDLines.YoYCurrObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym4">{!round(yoyFDLines.YoYCurrObj.M4__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym5">{!round(yoyFDLines.YoYCurrObj.M5__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym6">{!round(yoyFDLines.YoYCurrObj.M6__c, 1)}</td>
+                                            <td class="np-cyoyq2 yoy-highlight">{!round(yoyFDLines.YoYCurrObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym7">{!round(yoyFDLines.YoYCurrObj.M7__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym8">{!round(yoyFDLines.YoYCurrObj.M8__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym9">{!round(yoyFDLines.YoYCurrObj.M9__c, 1)}</td>
+                                            <td class="np-cyoyq3 yoy-highlight">{!round(yoyFDLines.YoYCurrObj.Q3__c / 1000, 1)}</td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="mtd-column child hide"></td>
+                                            <td class="child hide yoy-highlight np-cyoym10">{!round(yoyFDLines.YoYCurrObj.M10__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym11">{!round(yoyFDLines.YoYCurrObj.M11__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-cyoym12">{!round(yoyFDLines.YoYCurrObj.M12__c, 1)}</td>
+                                            <td class="np-cyoyq4 yoy-highlight">{!round(yoyFDLines.YoYCurrObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide">{!round(yoyFDLines.CurrentyrYoYPercentage, 2)}&#37;</td>
+                                            <td class="child hide">{!round(yoyFDLines.CurrentyrYoYAmount / 1000, 1)}</td>
+                                            <td class="np-cyoytotal yoy-highlight">{!round(yoyFDLines.YoYCurrObj.Total__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym1">{!round(yoyFDLines.YoYNextObj.M1__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym2">{!round(yoyFDLines.YoYNextObj.M2__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym3">{!round(yoyFDLines.YoYNextObj.M3__c, 1)}</td>
+                                            <td class="np-fyoyq1 yoy-highlight">{!round(yoyFDLines.YoYNextObj.Q1__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym4">{!round(yoyFDLines.YoYNextObj.M4__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym5">{!round(yoyFDLines.YoYNextObj.M5__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym6">{!round(yoyFDLines.YoYNextObj.M6__c, 1)}</td>
+                                            <td class="np-fyoyq2 yoy-highlight">{!round(yoyFDLines.YoYNextObj.Q2__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym7">{!round(yoyFDLines.YoYNextObj.M7__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym8">{!round(yoyFDLines.YoYNextObj.M8__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym9">{!round(yoyFDLines.YoYNextObj.M9__c, 1)}</td>                                    
+                                            <td class="np-fyoyq3 yoy-highlight">{!round(yoyFDLines.YoYNextObj.Q3__c / 1000, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym10">{!round(yoyFDLines.YoYNextObj.M10__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym11">{!round(yoyFDLines.YoYNextObj.M11__c, 1)}</td>
+                                            <td class="child hide yoy-highlight np-fyoym12">{!round(yoyFDLines.YoYNextObj.M12__c, 1)}</td>
+                                            <td class="np-fyoyq4 yoy-highlight">{!round(yoyFDLines.YoYNextObj.Q4__c / 1000, 1)}</td>
+                                            <td class="child hide">{!round(yoyFDLines.NextyrYoYPercentage, 2)}&#37;</td>
+                                            <td class="child hide">{!round(yoyFDLines.NextyrYoYAmount / 1000, 1)}</td>
+                                            <td class="np-fyoytotal yoy-highlight">{!round(yoyFDLines.YoYNextObj.Total__c / 1000, 1)}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                        <div class="loader-wrapper">
+                            <img src="{!URLFOR($Resource.customimages,'custom-images/loader.gif')}" alt="loading"/>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="nonPortfolio_popup" styleClass="nonPortfolio_popup" style="display:none;">
+                        <apex:outputPanel >
+                            <div role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container">
+                                    <div class="slds-modal__header">
+                                        <h2 class="slds-text-heading_medium slds-hyphenate">New Comment</h2>
+                                    </div>
+                                    <div class="slds-modal__content slds-p-around_medium">
+                                        <apex:inputTextarea styleClass="slds-input new-comment-text" id="nonPortfolio_inputTextF" value="{!Comment}" />
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                        <apex:commandButton styleClass="slds-button slds-button--brand" value="Save" onclick="jQuery(this).attr('disabled',true);jQuery('.save-loader').show();addColumnExpandedNP();" action="{!NonPortfolioForecast}" oncomplete="jQuery('.save-loader').hide();jQuery('.nonPortfolio_popup').hide();futureDateColoring();setTimeout(function(){jQuery('.overflow-horizontal').scrollLeft(10000);},1);" reRender="nonPortfolio_myTable,nonPortfolio_popup"/>
+                                        <apex:commandButton styleClass="slds-button slds-button--neutral" value="Cancel" onclick="jQuery('.new-comment-text').val('');jQuery('.nonPortfolio_popup').hide();" rerender="dummy"/>
+                                    </div>
+                                    <div class="save-loader">
+                                        <img src="{!URLFOR($Resource.customimages,'custom-images/loader.gif')}" alt="loading"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                </div>
+            </div>
+        </apex:outputPanel>
+        <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left np-disty-acc-details-tooltip" role="tooltip">
+             <div class="slds-popover__body">
+                 <div class="slds-wrap slds-grid">
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">WW Customer Name:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-wwcustname"></div>
+                     </div>
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">CBC3 Description:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-cbcdesc"></div>
+                     </div>
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">Column Header:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-colhead"></div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left np-oem-acc-details-tooltip" role="tooltip">
+             <div class="slds-popover__body">
+                 <div class="slds-wrap slds-grid">
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">Sold-to-Customer Name:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-soldtocustomer"></div>
+                     </div>
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">GPL Code:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-gpl"></div>
+                     </div>
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">GPL Description:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-gpldesc"></div>
+                     </div>
+                     <div class="slds-size--1-of-1 slds-p-horizontal_medium slds-m-bottom--xx-small">
+                         <div class="slds-size--1-of-2 slds-float--left align-right slds-p-right--small bold">Column Header:</div>
+                         <div class="slds-size--1-of-2 slds-float--left acc-colhead"></div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+        <apex:actionFunction id="addNewCmnt" name="addLatestComment"  reRender="">
+            <apex:param assignTo="{!editforecastId}" id="getforecastID" name="getId" value=""/>
+            <apex:param assignTo="{!forecastName}" id="getforecastName" name="getName" value=""/>
+        </apex:actionFunction>
+        <script>        
+        function nonPortfoliomtdPlacement(){
+            var daysToMtdMovement = {!monthmove};
+            if(isNaN(daysToMtdMovement) || daysToMtdMovement < 0){
+                daysToMtdMovement = 7;
+            }
+            if(jQuery(".adm.nonportfolio th.prev-month").length > 0){
+                var getDate =jQuery(".adm.nonportfolio thead th.prev-month").data("getdate");
+                getDate = new Date(Date.parse(getDate.replace(/-/g,' ')));
+                getDate.setDate(getDate.getDate() + daysToMtdMovement)
+                var curDate = new Date();
+                curDate.setHours(0,0,0,0);
+                if(curDate > getDate){
+                    jQuery(".adm.nonportfolio tr").each(function(){
+                        var detachMTD = jQuery(this).children(".mtd-column").detach();
+                        jQuery(this).children(".curr-month").after(detachMTD);
+                    });
+                    if(jQuery(".adm.nonportfolio th.curr-month").nextAll(".quarterhead").first().children(".column-toggler").text() == "+"){
+                    	jQuery(".adm.nonportfolio th.curr-month").nextAll(".quarterhead").first().children(".column-toggler").trigger("click");
+                    }
+                }
+                else
+                {
+                    jQuery(".adm.nonportfolio tr").each(function(){
+                        var detachMTD = jQuery(this).children(".mtd-column").detach();
+                        jQuery(this).children(".prev-month").after(detachMTD);
+                    });
+                    if(jQuery(".adm.nonportfolio th.prev-month").nextAll(".quarterhead").first().children(".column-toggler").text() == "+"){
+                    	jQuery(".adm.nonportfolio th.prev-month").nextAll(".quarterhead").first().children(".column-toggler").trigger("click");
+                    }
+                }
+            }
+            else{
+                jQuery(".adm.nonportfolio tr").each(function(){
+                    var detachMTD = jQuery(this).children(".mtd-column").detach();
+                    jQuery(this).children(".curr-month").after(detachMTD);
+                });
+                if(jQuery(".adm.nonportfolio th.curr-month").nextAll(".quarterhead").first().children(".column-toggler").text() == "+"){
+                    	jQuery(".adm.nonportfolio th.curr-month").nextAll(".quarterhead").first().children(".column-toggler").trigger("click");
+                    }
+            }
+        }
+        
+        jQuery(document).ready(function(){
+            var componentVal = {!value};
+            if(componentVal){                
+                jQuery(".loader-wrapper").show();
+                getData();
+            }
+        });
+        </script>
+        <apex:includeScript value="{!URLFOR($Resource.ADM_Resources, '/ADM_Resources/script_nonportfoliotab.js')}"/>
+    </apex:form>      
+</apex:component>

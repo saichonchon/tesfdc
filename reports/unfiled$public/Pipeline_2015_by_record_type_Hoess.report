@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_70810839</developerName>
+        <masterLabel>Sales Channel</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities$Owner.Profile</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Channel Standard User</sourceValue>
+            </sourceValues>
+            <value>Channel</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Industrial Engineering User w/Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial User w/ Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay User w/ Cost</sourceValue>
+            </sourceValues>
+            <value>Industrial Direct</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Amount__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND 9 AND 2 AND 8) AND (((3 or (4 AND 5)) AND 7) or (4 AND 6 ))</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Snapshot_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>FY15 Final</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Type</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Transfer existing business,Defend Existing Business</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Part_Confidence__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Weak,50/50,Likely,Commit</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Part_Confidence__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Process_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Pre-Prod</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Won_Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_FISCAL_YEAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Days_since_last_user_update__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>60</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$BU_profit_center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Opportunity_Group__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Engineering,Sales,NDR</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$RecordType</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Pipeline 2015 by record type Hoess</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Opportunity_snapshot__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Forecast_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

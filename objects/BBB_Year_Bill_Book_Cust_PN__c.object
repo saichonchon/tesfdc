@@ -1,0 +1,1546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Yearly bookings and billings by customer (Account) and part, includes direct and POS (indirect)</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>APL_need_to_capture_billing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>APL need to capture billing</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Account_Name_Account_Number__c</fullName>
+        <description>combination of account name and account number</description>
+        <externalId>false</externalId>
+        <formula>Customer__r.Name   &amp; &quot; (´&quot;  &amp;  Customer__r.AccountNumber  &amp; &quot;)&quot;</formula>
+        <label>Account Name (Account Number)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BBB_Yearly_External_Key__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>BBB Yearly External Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>BU_Profit_Center__c</fullName>
+        <externalId>false</externalId>
+        <label>BU Profit Center</label>
+        <length>3</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Amount_current_prior__c</fullName>
+        <externalId>false</externalId>
+        <formula>Bill_Prior_Year_Amount_USD__c + Bill_Year_to_Date_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bill Amount current prior</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Amount_on_YBB__c</fullName>
+        <description>This field calculates the amount on YBB records.</description>
+        <externalId>false</externalId>
+        <formula>Bill_Prior_Year_Amount_USD__c + Bill_Year_to_Date_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Amount on YBB records.</inlineHelpText>
+        <label>Bill Amount on YBB</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Cost_on_YBB__c</fullName>
+        <description>This field calculates the Cost on the YBB record.</description>
+        <externalId>false</externalId>
+        <formula>Bill_Prior_Year_Cost_Amount__c + Bill_Year_To_Date_Cost_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Cost of the YBB record.</inlineHelpText>
+        <label>Bill Cost on YBB</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 Amount -Document</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_Qty__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 Qty</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_to_Date_Amount_Docu__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 to Date Amount - Docu</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_to_Date_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 to Date Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_to_Date_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 to Date Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_1_to_Date_Qty__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Prior Year -1 to Date Qty</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Prior Year Billings in Documented Currency</inlineHelpText>
+        <label>Bill Prior Year Amount - Document</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Previous Year Total Sales</inlineHelpText>
+        <label>Bill Prior Year Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Previous Year Total Sales</inlineHelpText>
+        <label>Bill Prior Year Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_Qty__c</fullName>
+        <description>Prior year billed qantities</description>
+        <externalId>false</externalId>
+        <label>Bill Prior Year Qty</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_Rest_Cost_Amount__c</fullName>
+        <description>calculate the prio year billings cost value based on current year cost price if the current year cost price is populated.If not used the prior year cost value.  Is used for Industrial SIP to  define prior year standard margin based on current year cost.</description>
+        <externalId>false</externalId>
+        <formula>IF(
+AND(Bill_Year_To_Date_Cost_Amount__c &lt;&gt; 0,Bill_Year_To_Date_Qty__c &lt;&gt; 0), 
+Bill_Year_To_Date_Cost_Amount__c / Bill_Year_To_Date_Qty__c * Bill_Prior_Year_Qty__c,
+IF(Bill_Prior_Year_Amount_USD__c &lt;&gt; 0,
+IF(Current_Year_Cost_Price_USD__c &gt; 0, 
+Bill_Prior_Year_Qty__c * Current_Year_Cost_Price_USD__c ,
+Bill_Prior_Year_Cost_Amount__c), 
+0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bill Prior Year Restated Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_To_Date_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Previous Year Sales for the time period of the current year.</inlineHelpText>
+        <label>Bill Prior Year To Date Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_To_Date_Qty__c</fullName>
+        <description>Billed quantities up til todays date last year</description>
+        <externalId>false</externalId>
+        <label>Bill Prior Year To Date Qty</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_to_Date_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Billings Prior Year to Current Fiscal Period in Documented Currency</inlineHelpText>
+        <label>Bill Prior Year to Date Amount - Doc</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Prior_Year_to_Date_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Previous Year Sales for the time period of the current year.</inlineHelpText>
+        <label>Bill Prior Year to Date Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Quantity_on_YBB__c</fullName>
+        <description>This field calculates the quantity on the YBB record.</description>
+        <externalId>false</externalId>
+        <formula>Bill_Prior_Year_Qty__c + Bill_Year_To_Date_Qty__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Quantity of YBB record.</inlineHelpText>
+        <label>Bill Quantity on YBB</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Type_Filter__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Bill Type Filter</label>
+        <referenceTo>Cross_Dashboard_Filter__c</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts (Bill Type Filter)</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts4</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Direct Sales / Distribution POS / CMA (Contract Manufacturer&apos;s Allocation)</inlineHelpText>
+        <label>Bill Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Direct</fullName>
+                    <default>false</default>
+                    <label>Direct</label>
+                </value>
+                <value>
+                    <fullName>POS</fullName>
+                    <default>false</default>
+                    <label>POS</label>
+                </value>
+                <value>
+                    <fullName>CMA</fullName>
+                    <default>false</default>
+                    <label>CMA</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Bill_Year_To_Date_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Year To Date Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Year_To_Date_Qty__c</fullName>
+        <description>Billed quantities til today of this fisical year</description>
+        <externalId>false</externalId>
+        <label>Bill Year To Date Qty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Year_to_Date_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Billings Year to date in Documented Currency</inlineHelpText>
+        <label>Bill Year to Date Amount - Document</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Year_to_Date_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Year to Date Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_10__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 10</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_11__c</fullName>
+        <externalId>false</externalId>
+        <label>Billings Month 11</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_12__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 12</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_1__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 1</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_2__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 2</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_3__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 3</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_4__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 4</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_5__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 5</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_6__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 6</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_7__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 7</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_8__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 8</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_Month_9__c</fullName>
+        <description>Contains the billings for this month.</description>
+        <externalId>false</externalId>
+        <label>Billings Month 9</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billings_YTD_vs_Month_1__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+ Bill_Year_to_Date_Amount_Document__c =   Billings_Month_1__c + Billings_Month_2__c + Billings_Month_3__c + Billings_Month_4__c + Billings_Month_5__c + Billings_Month_6__c + Billings_Month_7__c + Billings_Month_8__c + Billings_Month_9__c + Billings_Month_10__c + Billings_Month_11__c + Billings_Month_12__c, true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billings YTD vs Monthly buckets</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Prior Year Bookings in Documented Currency</inlineHelpText>
+        <label>Book Prior Year Amount - Document</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_Amount_USD__c</fullName>
+        <description>Booking ammounts last year</description>
+        <externalId>false</externalId>
+        <label>Book Prior Year Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Bookings Prior Year - GCS Frozen True Cost</inlineHelpText>
+        <label>Book Prior Year Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_Qty__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Prior Year Qty</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_To_Date_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Bookings Prior Year to the current fiscal period in Documented currency</inlineHelpText>
+        <label>Book Prior Year To Date Amount - Doc</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_To_Date_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Prior Year To Date Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_To_Date_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Bookings Prior Year for Current Fiscal Period - GCS Frozen True Cost</inlineHelpText>
+        <label>Book Prior Year To Date Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Prior_Year_To_Date_Qty__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Prior Year To Date Qty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Year_To_Date_Amount_Document__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Bookings Year to Date in Documented Currency</inlineHelpText>
+        <label>Book Year To Date Amount - Document</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Book_Year_To_Date_Amount_USD__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Year To Date Amount - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Year_To_Date_Cost_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Year To Date Cost Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Year_To_Date_Qty__c</fullName>
+        <externalId>false</externalId>
+        <label>Book Year To Date Qty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC1_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC1__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC1 Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC1_Description__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC1_Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC 1 Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC2_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC2__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC2 Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC2_Description__c</fullName>
+        <description>This field contains the CBC2 Description.</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC2_Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC2 Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC3_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC3__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC3 Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CBC3_Description__c</fullName>
+        <description>This field contains the CBC3 Description.</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.CBC3_Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CBC3 Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CYTD_Book_Bill_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISNULL(Bill_Year_to_Date_Amount_USD__c),Bill_Year_to_Date_Amount_USD__c==0),0,(Book_Year_To_Date_Amount_USD__c  /  Bill_Year_to_Date_Amount_USD__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CYTD Book Bill Ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Company_Reporting_Org__c</fullName>
+        <externalId>false</externalId>
+        <formula>Customer__r.Company_Reporting_Org__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Company Reporting Org</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Year_Cost_Price_USD__c</fullName>
+        <description>cost price of the current year per peace of the Part Number in the billing record. Manually populated with Dataloader for selected records. Used for Standard Margin restatement.</description>
+        <externalId>false</externalId>
+        <label>Current Year Cost Price USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>11</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Part__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Identified customer part number when available.</inlineHelpText>
+        <label>Customer Part</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts (Customer)</relationshipLabel>
+        <relationshipName>Yearly_BBB_by_Part_and_Customers</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>DGI__c</fullName>
+        <description>DGI from part hierarchy</description>
+        <externalId>false</externalId>
+        <formula>TEXT (Part__r.Product_Hierarchy__r.GDI_Classification__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DGI</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Diff_Book_Qty__c</fullName>
+        <description>calculates the difference in book qty YTD versus LYTD</description>
+        <externalId>false</externalId>
+        <formula>Book_Year_To_Date_Qty__c -  Book_Prior_Year_To_Date_Qty__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Diff. Book Qty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Difference_QTY__c</fullName>
+        <description>Differnece between CY YTD qty -  LY YTD qty</description>
+        <externalId>false</externalId>
+        <formula>Bill_Year_To_Date_Qty__c  -  Bill_Prior_Year_To_Date_Qty__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Diff. Bill QTY</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Difference_Value_Document_Currency__c</fullName>
+        <externalId>false</externalId>
+        <formula>Bill_Year_to_Date_Amount_Document__c  -  Bill_Prior_Year_to_Date_Amount_Document__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Difference Value Document Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Difference__c</fullName>
+        <description>Formula field for reporting, difference between Billings CYTD to LYTD</description>
+        <externalId>false</externalId>
+        <formula>Bill_Year_to_Date_Amount_USD__c  -  Bill_Prior_Year_to_Date_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Difference Bill Value USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Diffrence_Book_value_USD__c</fullName>
+        <externalId>false</externalId>
+        <formula>Book_Year_To_Date_Amount_USD__c - Book_Prior_Year_To_Date_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Difference Book value USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Discontinued_Business_Reason__c</fullName>
+        <description>a picklist to define the reason for discontinued business</description>
+        <externalId>false</externalId>
+        <label>Discontinued Business Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>transfer to other account</fullName>
+                    <default>false</default>
+                    <label>transfer to other account</label>
+                </value>
+                <value>
+                    <fullName>lost to competition</fullName>
+                    <default>false</default>
+                    <label>lost to competition</label>
+                </value>
+                <value>
+                    <fullName>customer EOL</fullName>
+                    <default>false</default>
+                    <label>customer EOL</label>
+                </value>
+                <value>
+                    <fullName>TE EOL (obsolete)</fullName>
+                    <default>false</default>
+                    <label>TE EOL (obsolete)</label>
+                </value>
+                <value>
+                    <fullName>transfer to Distributor (POS)</fullName>
+                    <default>false</default>
+                    <label>transfer to Distributor (POS)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>GPL__c</fullName>
+        <description>This field contains the related GPL.</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Product_Hierarchy__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GPL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Growth_Bill__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISNULL(Bill_Prior_Year_to_Date_Amount_USD__c),Bill_Prior_Year_to_Date_Amount_USD__c ==0),0,((Bill_Year_to_Date_Amount_USD__c  / Bill_Prior_Year_to_Date_Amount_USD__c)-1))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>% Growth Bill</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Growth_Book__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISNULL(Book_Prior_Year_To_Date_Amount_USD__c),Book_Prior_Year_To_Date_Amount_USD__c==0),0,((Book_Year_To_Date_Amount_USD__c /Book_Prior_Year_To_Date_Amount_USD__c)-1))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>% Growth Book</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>IND_Profit_Centre_Groups__c</fullName>
+        <description>combines  individual profit centers for Industrial into the Industriel sub vertical groups</description>
+        <externalId>false</externalId>
+        <formula>CASE(SAP_Profit_Center_Code__c,
+&apos;0000000268&apos;, &apos;A&amp;C&apos;,
+&apos;0000000292&apos;, &apos;A&amp;C&apos;,
+&apos;0000000266&apos;, &apos;IB&apos;,
+&apos;0000000291&apos;, &apos;IB&apos;,
+&apos;0000000294&apos;, &apos;IB&apos;,
+&apos;0000000254&apos;, &apos;IB&apos;,
+&apos;0000000412&apos;, &apos;Systems&apos;,
+&apos;0000000419&apos;, &apos;Devices&apos;,
+&apos;0000000418&apos;, &apos;Systems&apos;,
+&apos;0000000265&apos;, &apos;Rail&apos;,
+&apos;0000000293&apos;, &apos;Rail&apos;,
+&apos;0000000290&apos;, &apos;Rail&apos;, &apos;&apos;)</formula>
+        <label>IND Profit Centre Groups</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IND_SIP_Profit_Center__c</fullName>
+        <description>used for IND SIP</description>
+        <externalId>false</externalId>
+        <formula>CASE( SAP_Profit_Center_Short_Description__c , &quot;IND Systems&quot;, &quot;Systems&quot;, &quot;IND Devices&quot;, &quot;Devices&quot;,&quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>IND SIP Profit Center</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Initial_12_months__c</fullName>
+        <externalId>false</externalId>
+        <label>Initial 12 months</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LYTD_Book_Bill_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISNULL( Bill_Prior_Year_to_Date_Amount_USD__c ),Bill_Prior_Year_to_Date_Amount_USD__c==0),0,(Book_Prior_Year_To_Date_Amount_USD__c /Bill_Prior_Year_to_Date_Amount_USD__c ))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>LYTD Book Bill Ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Load_Status__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Load Status</label>
+        <referenceTo>Load_Status__c</referenceTo>
+        <relationshipLabel>Yearly Booking/Billings By Parts</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Obsolete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Field to mark a record to be deleted. Any record marked true should not be used anywhere</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked the record will be deleted from the system</inlineHelpText>
+        <label>Obsolete</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PLM_ID__c</fullName>
+        <description>PLM ID from part master</description>
+        <externalId>false</externalId>
+        <formula>Part__r.PLM_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PLM ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Description__c</fullName>
+        <description>This field contains the part description.</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part_Number_Text__c</fullName>
+        <description>This field contains part number</description>
+        <externalId>false</externalId>
+        <formula>Part__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Part Number Text</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part__c</fullName>
+        <externalId>false</externalId>
+        <label>TCPN</label>
+        <referenceTo>Part__c</referenceTo>
+        <relationshipName>Yearly_BBB</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Price_Error__c</fullName>
+        <description>check box to identify records with a pricing error e.g. a billing record without cost. Required to exclude erroneous record from IND SIP margin calculations</description>
+        <externalId>false</externalId>
+        <formula>IF(AND( Bill_Prior_Year_Amount_USD__c &lt;&gt; 0, Bill_Prior_Year_Cost_Amount__c = 0),TRUE,
+IF(AND( Bill_Prior_Year_Amount_USD__c = 0, Bill_Prior_Year_Cost_Amount__c &lt;&gt; 0),TRUE,
+IF(AND( Bill_Year_to_Date_Amount_USD__c &lt;&gt; 0,  Bill_Year_To_Date_Cost_Amount__c = 0),TRUE,
+IF(AND( Bill_Year_to_Date_Amount_USD__c = 0,  Bill_Year_To_Date_Cost_Amount__c &lt;&gt; 0),TRUE,
+FALSE))))</formula>
+        <label>Price Error</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Prior_Year_Billings_Cost_Price__c</fullName>
+        <externalId>false</externalId>
+        <formula>Bill_Prior_Year_Cost_Amount__c / Bill_Prior_Year_Qty__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Prior Year Billings Cost Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Prior_Year_Bookings_Margin__c</fullName>
+        <description>This formula calculates the &quot;prior year&quot; bookings margin.</description>
+        <externalId>false</externalId>
+        <formula>IF(Book_Prior_Year_Amount_USD__c &gt; 0, (Book_Prior_Year_Amount_USD__c - Book_Prior_Year_Cost_Amount__c) / Book_Prior_Year_Amount_USD__c, null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Prior Year Bookings Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Prior_Year_to_Date_Billings_Margin__c</fullName>
+        <description>This formula calculates the &quot;prior year to date&quot; billings margin.</description>
+        <externalId>false</externalId>
+        <formula>IF(Bill_Prior_Year_to_Date_Amount_USD__c &gt; 0, (Bill_Prior_Year_to_Date_Amount_USD__c - Bill_Prior_Year_To_Date_Cost_Amount__c) / Bill_Prior_Year_to_Date_Amount_USD__c, null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Prior Year to Date Billings Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Prior_Year_to_Date_Bookings_Margin__c</fullName>
+        <description>This formula calculates the &quot;prior year to date&quot; bookings margin.</description>
+        <externalId>false</externalId>
+        <formula>(Book_Prior_Year_To_Date_Amount_USD__c - Book_Prior_Year_To_Date_Cost_Amount__c) / Book_Prior_Year_To_Date_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Prior Year to Date Bookings Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Regain_Business_Action_Year__c</fullName>
+        <description>shows the year of the &quot;Regain Business&quot; activity as we lost the business the year before</description>
+        <externalId>false</externalId>
+        <label>Regain Business Action Year</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reseller_Account_Name_Account_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Reseller_Customer__r.Account_Combined_Data__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reseller Account Name (Account Number)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reseller_Customer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup to the Reseller Customer Account for each sales Record. There can be multiple Resellers per OEM customer</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Lookup to the Reseller Customer Account for each sales record.</inlineHelpText>
+        <label>Reseller Customer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Yearly_BBB1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Code_Filter__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Code Filter</label>
+        <referenceTo>Cross_Dashboard_Filter__c</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts (SAP Profit Center Code Filter)</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Group_Code_Filter__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Group Code Filter</label>
+        <referenceTo>Cross_Dashboard_Filter__c</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts (SAP Profit Center Group Code Filter)</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts3</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Group_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Group Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Group_Short_Desc_Filte__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>SAP Profit Center Group Short Description Filter</description>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Group Short Desc Filte</label>
+        <referenceTo>Cross_Dashboard_Filter__c</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts (SAP Profit Center Group Short Desc Filte)</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Group_Short_Desc__c</fullName>
+        <description>SAP Profit Center Group Short Description</description>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Group Short Desc</label>
+        <length>25</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Short_Desc_Filter__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>SAP Profit Center Short Description Filter</description>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Short Desc Filter</label>
+        <referenceTo>Cross_Dashboard_Filter__c</referenceTo>
+        <relationshipLabel>Booking/Billings By Parts</relationshipLabel>
+        <relationshipName>Booking_Billings_By_Parts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Short_Description__c</fullName>
+        <externalId>false</externalId>
+        <label>SAP Profit Center Short Description</label>
+        <length>25</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Office_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Customer__r.DD1_SALES_OFFICE_CDE__c = &apos;S001&apos; , &apos; Americas&apos;, 
+IF(Customer__r.DD1_SALES_OFFICE_CDE__c = &apos;S003&apos;, &apos;EMEA&apos;, 
+IF(Customer__r.DD2_SALES_OFFICE_CDE__c = &apos;S025&apos;, &apos;Japan&apos;, 
+IF(Customer__r.DD2_SALES_OFFICE_CDE__c = &apos;S026&apos;, &apos;Korea&apos;, 
+IF(Customer__r.DD2_SALES_OFFICE_CDE__c = &apos;S018&apos;, &apos;South Asia(Pacific)&apos;, 
+IF(Customer__r.DD3_SALES_OFFICE_CDE__c = &apos;S029&apos;, &apos;Taiwan&apos;, 
+IF(AND (Customer__r.DD1_SALES_OFFICE_CDE__c = &apos;S002&apos;,NOT(CONTAINS(&apos;S025,S026,S018&apos;, Customer__r.DD2_SALES_OFFICE_CDE__c)),NOT(Customer__r.DD3_SALES_OFFICE_CDE__c = &apos;S029&apos;), SAP_Profit_Center_Code__c = &apos;0000000259&apos;),&apos;Taiwan&apos;, 
+IF(AND (Customer__r.DD1_SALES_OFFICE_CDE__c = &apos;S002&apos;,NOT(CONTAINS(&apos;S025,S026,S018&apos;, Customer__r.DD2_SALES_OFFICE_CDE__c)),NOT(Customer__r.DD3_SALES_OFFICE_CDE__c = &apos;S029&apos;), SAP_Profit_Center_Code__c &lt;&gt; &apos;0000000259&apos;), &apos;China&apos;,&apos;Others&apos;) 
+) 
+) 
+) 
+) 
+) 
+) 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sales Office Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TCPN_Description_comb__c</fullName>
+        <externalId>false</externalId>
+        <formula>Part_Number_Text__c  &amp; &quot; (&quot; &amp; Part_Description__c &amp; &quot;) &quot;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>TCPN (Description)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Territory_L1_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Customer__r.Territory_L1_Code__c</formula>
+        <label>Territory L1 Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>YTD_Billings_Growth__c</fullName>
+        <description>Calculates the Growth Percent from VLY to CLY</description>
+        <externalId>false</externalId>
+        <formula>IF(   Bill_Prior_Year_to_Date_Amount_USD__c  &gt;0,(Bill_Year_to_Date_Amount_USD__c - Bill_Prior_Year_to_Date_Amount_USD__c )/ Bill_Prior_Year_to_Date_Amount_USD__c,null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>YTD Billings Growth</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Year_to_Date_Billings_Margin__c</fullName>
+        <description>This formula calculates the &quot;year to date&quot; billings margin.</description>
+        <externalId>false</externalId>
+        <formula>IF(Bill_Year_to_Date_Amount_USD__c &gt; 0, (Bill_Year_to_Date_Amount_USD__c - Bill_Year_To_Date_Cost_Amount__c) / Bill_Year_to_Date_Amount_USD__c, null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Year to Date Billings Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Year_to_Date_Bookings_Margin__c</fullName>
+        <description>This formula calculates the &quot;year to date&quot; bookings margin.</description>
+        <externalId>false</externalId>
+        <formula>IF(Book_Year_To_Date_Amount_USD__c &gt; 0, (Book_Year_To_Date_Amount_USD__c - Book_Year_To_Date_Cost_Amount__c) / Book_Year_To_Date_Amount_USD__c, null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Year to Date Bookings Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>tmp__c</fullName>
+        <externalId>false</externalId>
+        <formula>Customer__r.Territory_L1_Code__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>tmp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Yearly Booking/Billings By Part</label>
+    <nameField>
+        <displayFormat>YBBB-{0}</displayFormat>
+        <label>Yearly BBB</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Booking/Billings By Parts</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,152 @@
+<aura:component controller="LtngOpportunityForecastCtrl">
+	
+    <aura:attribute name="popupOptions"				type="Map" />
+    <aura:attribute name="searchString" 			type="String" />
+    <aura:attribute name="partLostReasons" 			type="String" />
+    <aura:attribute name="list_picklist" 			type="List" />
+    <aura:attribute name="list_result" 				type="List" />
+    <aura:attribute name="map_LostReasons" 		 	type="Map" />
+    <aura:attribute name="isAPL" 		 	type="Boolean" />
+    <aura:attribute name="isDND" 		 	type="Boolean" />
+    
+    <aura:handler name="change" value="{!v.partLostReasons}" action="{!c.handlerPartLostReasonsChange}"/>
+    
+    <aura:registerEvent name="popupEvent" type="c:LtngOpportunityForecastPopupEvt"/> 
+    
+    <aura:if isTrue="{!v.popupOptions.isPartOpen}">
+    <div id="partPopup" data-value="" class="slds-modal slds-fade-in-open slds-docked-composer-modal " style="z-index:200;" aria-hidden="false" role="dialog"  >
+      
+        <div class="slds-modal__container" style="width:50%;height: 75%;">
+        <div class="slds-modal__content">
+          <div class="slds-docked-composer slds-grid slds-grid--vertical" role="dialog" aria-labelledby="panel-heading-01">
+            <div class="slds-docked-composer__header slds-grid slds-shrink-none">
+              <div class="slds-media slds-media--center">
+                <div class="slds-media__figure slds-m-right--x-small">
+                    <div class="slds-grid">
+                        <div>
+                            <h2 id="panel-heading-01">Please input your reason here:</h2>
+                        </div>
+                    </div>
+                </div>
+                
+              </div>
+              <div class="slds-col--bump-left">
+                <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--icon slds-icon--small" title="Close">
+                    <lightning:icon iconName="utility:close" size="xx-small" class="slds-button__icon"/>
+                    <span class="slds-assistive-text">Close Panel</span>
+                </button>
+              </div>
+            </div>
+            <div class="slds-docked-composer__body" style="display: inline-table; display:ruby-base-container; width:100%;">
+              <div class="slds-align--absolute-center" style="padding:1rem 2rem; margin: 0;">
+                  <div style="width:100%;">
+                      
+                      <div class="slds-form--horizontal">
+                          <div class="slds-form-element" >
+                              <label style="width:20%;" class="slds-form-element__label" for="lostReason">
+                                    Lost Reason<abbr class="slds-required" title="required">*</abbr>
+                              </label>
+                              <div style="width:78%;" class="slds-form-element__control">
+                                  <div class="slds-select_container">
+                                      <select onchange="{!c.event_lostReason_change}" class="slds-select" id="lostReason">
+                                          <aura:iteration items="{!v.list_picklist}" var="p" indexVar="idx"> 
+                                          <option selected="{!idx == 0 ? true : false}" value="{!p}">{!p}</option>
+                                          </aura:iteration>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                          <div id="lostReasonTextBox" class="slds-form-element slds-hide">
+                              <label style="width:20%;" class="slds-form-element__label" for="lostReasonText">
+                                  Lost Reason Text<abbr class="slds-required" title="required">*</abbr>
+                              </label>
+                              <div style="width:78%;" class="slds-form-element__control">
+                                  <div class="slds-select_container custom-select_container">
+                                      <textarea id="lostReasonText" class="slds-textarea"></textarea>
+                                  </div>
+                              </div>
+                          </div>
+                          <div id="competitorBox" class="{!v.popupOptions.value == 'Lost' ? 'slds-form-element' : 'slds-form-element slds-hide'}">
+                              <label style="width:20%;" class="slds-form-element__label" for="competitor">
+                                  Competitor
+                                  <aura:if isTrue="{!!v.isAPL}"><abbr class="slds-required" title="required">*</abbr></aura:if>
+                              </label>
+                              <div style="width:78%;" class="slds-form-element__control">
+                                  <div class="slds-input-has-icon slds-input-has-icon--right">
+                                      <div aura:id="lookup-pill" style="position: absolute; width: 100%; z-index: 10;" class="slds-pill-container custom-slds-pill-contailner slds-hide">
+                                            <span style="display: flex;" class="slds-pill slds-pill--bare" title="{!v.searchString}">
+                                                <span style="padding-left: .2rem;" class="slds-pill__label">
+                                                    {!v.searchString}
+                                                </span>
+                                                <button aura:id="removeValueBtn" class="slds-button slds-button--icon-bare" onclick="{!c.event_competitorClear_click}">
+                                                    <lightning:icon iconName="utility:close" size="xx-small" class="slds-button__icon"/>
+                                                    <span class="slds-assistive-text">Remove</span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                      <lightning:icon iconName="utility:search" size="xx-small" class="slds-input__icon"/>
+                                      <input onkeyup="{!c.event_competitorSearch_keyup}" aura:id="competitor" type="text" id="competitor" value="{!v.searchString}" class="slds-lookup__search-input slds-input" placeholder="If no competitor involved, type 'None' in the search field!" />
+                                  </div>
+                                  <div aura:id="lookuplist" class="slds-lookup__menu " role="listbox" style="margin-bottom:10px; position: relative;">
+                                    <div class="slds-lookup__item">
+                                        <button class="slds-button">
+                                            <lightning:icon iconName="utility:search" size="x-small" class="slds-icon slds-icon-text-default slds-icon--x-small"/>
+                                            &quot;{!v.searchString}&quot; in <span aura:id="pluralLabel">Account</span>
+                                            <div aura:id="spinnerStatus" class="" style="height: 35px; width: 35px; position: absolute; top: 2px; right: 1px;">
+                                              <div class="slds-spinner_container">
+                                                <div class="slds-spinner--brand slds-spinner slds-spinner--small" style="position: relative;left: 50%;top: 50%;" aria-hidden="true" role="alert">
+                                                  <div class="slds-spinner__dot-a"></div>
+                                                  <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                    <ul aura:id="lookuplist-items" class="slds-lookup__list" role="presentation">
+                                        <aura:iteration items="{!v.list_result}" var="result">
+                                            <li class="slds-lookup__item">
+                                                <a id="{!'_id_' + result.Id}" role="option" href="javascript:void(0)" onclick="{!c.event_competitorSelect_click}" data-json="{!result.Name}">
+                                                    {!result.Name}
+                                                </a>
+                                            </li>
+                                        </aura:iteration>
+                                    </ul>
+                                </div>
+                                  
+                              </div>
+                          </div>
+                          
+                          	<aura:if isTrue="{!v.isDND}">
+                          <div id="AvailableforTAM" class="slds-form-element">
+                              <label style="width:20%;" class="slds-form-element__label" for="AvailableforTAMckBox">
+                                  Available for TAM?
+                              </label>
+                              <div style="width:78%;" class="slds-form-element__control">
+                                  <div class="slds-checkbox ">
+                                      <input id="AvailableforTAMckBox"  type="checkbox" />
+                                      <label class="slds-checkbox--faux" for="AvailableforTAMckBox"></label>
+                                  </div>
+                              </div>
+                          </div>
+                          </aura:if>
+                      </div>
+                      
+                  </div>
+
+              </div>
+            </div>
+            <footer class="slds-docked-composer__footer slds-shrink-none">
+                <div class="slds-col--bump-left slds-text-align--right">
+                    <div class="slds-button-group" role="group">
+                        <button onclick="{!c.event_save_click}" class="slds-button slds-button--brand">Save</button>
+                        <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--neutral">Cancel</button>
+                    </div>
+                </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+        
+    </div>
+    </aura:if>
+</aura:component>

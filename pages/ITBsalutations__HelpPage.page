@@ -1,0 +1,159 @@
+<apex:page title="SalutationVizArt Help">	
+<style type="text/css">
+#allITB
+{
+  display: block; 
+  height:auto;
+  position: relative; 
+  overflow: hidden; 
+  width: 670px;
+}
+
+.contentBox
+{
+width:670px;
+height:auto;
+margin-top:10px;
+font-family:"Adobe Garamond Pro Bold", Georgia, "Times New Roman", Times, serif;
+}
+
+.contentBox .innerBox
+{
+position:relative;
+width:650px;
+height:auto;
+top:10px;
+margin-left:10px;
+padding-bottom:35px;
+}
+
+.contentTitle
+{
+font-size:19px;
+margin-bottom:0px;
+padding-top:18px;
+margin-left:15px;
+margin-top:15px;
+}
+
+.contentText
+{
+font-size:13px;
+line-height:24px;
+margin-left:13px;
+margin-right:13px;
+}
+
+#headerTitleITB
+{
+text-align:center;
+width: 670px;
+font-size:25px;
+font-family:"Adobe Garamond Pro Bold", Georgia, "Times New Roman", Times, serif;
+}
+
+#footerITB {
+width: 670px;
+height:16px;
+text-align:center;
+font-size:9px;
+font-family:Arial, Helvetica, sans-serif;
+color:#386172;
+padding-top:5px;
+}
+
+#footerITB a
+{
+text-decoration:none;
+font-size:9px;
+color:#386172;
+}
+</style>
+
+<div id="allITB">
+    <div id="headerTitleITB">SalutationVizArt Help</div>
+    
+    <div class="contentBox">
+    
+    	<div class="innerBox">
+            <div class="contentText">
+                SalutationVizArt is used to dynamically define salutation fields (text fields) on Contact, Lead and also Person Account for individual business requirements. 
+                Common usage is e.g. customers want to define an address line field based on the values of three fields: language, salutation and gender. For example:<br /><br />
+                German + Dr. + Male --&gt; Sehr geehrter Dr. <e>&#123;!FirstName&#125; &#123;!LastName&#125;</e><br /><br />
+                As you see, one can use merge fields in the definition. These definitions can be entered on the "Definitions" tab in Salutation App.
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Apply on Contact / Lead</div>
+            <div class="contentText">
+                Checkboxes determine weather the logic applies on Contact(also Person Account if available) or Lead. To be consistent, one should ensure that the same controlling 
+                keys(fields) and mapping keys(fields) as these on Contact exist on Lead.
+                <br/><br/>
+                Default Language PickList determines the language to generate Default Address Salutation and Default Letter Salutation on Contact(also Person Account if available) 
+                and Lead If the above checkboxes is checked.  Default Address Salutation and Default Letter Salutation value base on Dafault Laguage, Salutation and Gender using 
+                merge fields in the definition. For example: if Default Language is German, Salutation is Dr. and gender is Male, the value of Default Letter Salutation will be <br/><br/> 
+                Sehr geehrter Dr. <e>&#123;!FirstName&#125; &#123;!LastName&#125;</e>
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Controlling Keys</div>
+            <div class="contentText">
+                Controlling keys are picklist fields, that determine which salutation definition is applied. In our previous example, "German + Dr. + Male" forms up a key kombination. 
+                If the key kombination is not found, the default definition will be used. At least two controlling keys must exist.
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Mapping Fields</div>
+            <div class="contentText">
+                This part of the tool makes it possible to dynamically map the salutation fields for use. The salutation fields mentioned here are result fields, which 
+                are determined by key kombinations. e.g.<br /><br />
+                German + Dr. + Male --&gt; Sehr geehrter Dr. <e>&#123;!FirstName&#125; &#123;!LastName&#125;</e><br />
+                The result looks like: Sehr geehrter Dr. Max Mustermann<br /><br />
+                Mapping fields (salutation fields) are updatable text fields. At most seven mapping fields can be mapped. On Insert / Update of a Contact / Person Account / Lead these mapping 
+                fields will be calculated, unless the user modifies the fields. The modification will remain and internally marked as "custom".
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Definitions</div>
+            <div class="contentText">
+                After entering the controlling keys and Mapping fields, one can now manage the salutation definitions. The definitions are displayed in seperate sections based on values 
+                of the first controlling key. e.g. language. Language values are these defined in the language picklist and will be here automatically populated. Other controlling keys 
+                are displayed on each row except the default value in first row of each section. This is more like a table of possible kombinations, on save the redundant keys will be 
+                omitted.
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Generate Defaults</div>
+            <div class="contentText">
+                Button to delete all existing definitions and generate default definition provided by the tool itself. It can be done by clicking:<br/>
+                <apex:image url="{!$Resource.ITBsalutations__Help_GenerateDefault}"/><br/>
+                And confirm:
+                <apex:image url="{!$Resource.ITBsalutations__Help_GenerateDefaultConfirm}"/>
+            </div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Recalculate</div>
+            <div class="contentText">
+                Button to recalculate the mapped salutation fields filtering by first controlling key (e.g. language) and "custom". With the "Apply on Custom" checkbox checked, recalculation will 
+                be excecuted also on these records, which are modified by users and marked as "custom". Leaving first controlling key, in our example language, all languages will be recalculated.
+        	</div>
+        </div>
+        
+    	<div class="innerBox">
+            <div class="contentTitle">Mark All as Custom</div>
+            <div class="contentText">
+                Button to mark all records as "custom". Typically it is used after installation to avoid losing of user modifications.
+            </div>
+        </div>
+        
+    </div>
+    <div id="footerITB">Powered by <a href="http://www.itbconsult.com">ITBConsult</a></div>
+</div>
+
+</apex:page>

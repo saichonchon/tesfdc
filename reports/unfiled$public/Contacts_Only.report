@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Contact$Name</field>
+    </columns>
+    <columns>
+        <field>Contact$Account</field>
+    </columns>
+    <columns>
+        <field>Contact$CreatedDate</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Contacts with or without Accounts</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>TEIS Admin</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Contact$Email</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notContain</operator>
+            <value>@te.com</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Contacts Only</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Contacts_Only__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Contact$CreatedDate</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Contact$Birthdate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

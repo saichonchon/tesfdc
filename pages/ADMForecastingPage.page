@@ -1,0 +1,73 @@
+<apex:page controller="ADMForecastingLoad_Controller" id="thePage" showHeader="false" sidebar="false" docType="html">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:slds />
+        <apex:includeScript value="{!$Resource.jquery_min}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ADM_Resources, '/ADM_Resources/style.css')}"/>
+        <style>
+            .redfont,.redfont input {
+            color: {!FrstColorCoding} !important;
+            font-weight:bold;
+            }
+            .latest-comment-wid {
+            float: left;
+            width: {!LatestCommentWidth}px;
+            }
+            .forecast-data-legend {
+            background-color: {!FrstColorCoding}
+            }
+        </style>
+    </head>
+    
+    <div class="slds-page-header">
+        <div class="slds-media">
+            <div class="slds-media__body">
+                <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-float--left" title="Forecast Summary Details">Forecast Summary Details</h1>
+                <div class="slds-float--right legends-wrapper">
+                    <h3 class="slds-float--left slds-m-right--large" style="line-height:28px">Booking $ USD '000</h3>
+                    <div class="slds-float--left slds-m-right--small">
+                        <span class="legend forecast-data-legend slds-m-right--xx-small"></span><span><span class="medium-font">&rarr;</span> Forecast Data</span>
+                    </div>
+                    <div class="slds-float--left slds-m-right--small">
+                        <span class="legend current-actual-data-legend slds-m-right--xx-small"></span><span><span class="medium-font">&rarr;</span> Current Year Actuals Data</span>
+                    </div>
+                    <div class="slds-float--left slds-m-right--small">
+                        <span class="legend actual-data-legend slds-m-right--xx-small"></span><span><span class="medium-font">&rarr;</span> Last Year Actuals Data</span>
+                    </div>
+                    <div class="slds-float--left slds-m-right--small">
+                        <span class="legend guidance-data-legend slds-m-right--xx-small"></span><span><span class="medium-font">&rarr;</span> Guidance Forecast Data</span>
+                    </div>
+                    <div class="slds-float--left slds-m-right--small">
+                        <span class="legend yoy-data-legend slds-m-right--xx-small"></span><span><span class="medium-font">&rarr;</span> YOY Variance Data</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-tabs_default" id="tabs">
+        <ul class="slds-tabs_default__nav tablist" role="tablist">
+            <li class="slds-tabs_default__item" title="Portfolio Accounts" role="presentation">
+                <a class="slds-tabs_default__link" data-tabname="portfolioAccountsTabs" href="javascript:void(0);"> Portfolio Accounts</a>
+            </li>
+            <li class="slds-tabs_default__item" title="Non-Portfolio Accounts" role="presentation">
+                <a class="slds-tabs_default__link" data-tabname="nonPortfolioAccountsTab" href="javascript:void(0);" >Non-Portfolio Accounts</a>
+            </li>            
+        </ul> 
+        
+        <div id="portfolioAccountsTabs" class="slds-tabs_default__content">
+            <c:ADMMainForcastComponent ></c:ADMMainForcastComponent>
+        </div>  
+        
+        <div id="nonPortfolioAccountsTab" class="slds-tabs_default__content">
+            <!--apex:outputPanel id="loadNonPortfolio"-->
+                <c:ADMNonPortfolioComponent value="true"></c:ADMNonPortfolioComponent>				              
+            <!--/apex:outputPanel-->            
+        </div>
+        <apex:form >
+            <apex:actionFunction action="{!nonPortfolioTab}" name="getNonPortfolio" reRender="loadNonPortfolio" />        
+        </apex:form>
+    </div>
+    <apex:includeScript value="{!URLFOR($Resource.ADM_Resources, '/ADM_Resources/script_forecastingpage.js')}"/>
+</apex:page>

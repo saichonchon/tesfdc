@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <acrossGroupingContext>BucketField_24205261</acrossGroupingContext>
+        <calculatedFormula>RowCount / PARENTGROUPVAL(RowCount, ROW_GRAND_SUMMARY, COLUMN_GRAND_SUMMARY)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>GRAND_SUMMARY</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>% of Days Bucket</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_24205261</developerName>
+        <masterLabel>Days To Opportunity</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>TEMarketing__MQLRecord__c.TEMarketing__Days_To_Opportunity_Creation__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>1</to>
+            </sourceValues>
+            <value>&lt; 1 Day</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>1</from>
+                <to>3</to>
+            </sourceValues>
+            <value>1-3 Days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>3</from>
+                <to>7</to>
+            </sourceValues>
+            <value>4-7 Days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>7</from>
+                <to>14</to>
+            </sourceValues>
+            <value>8-14 Days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>14</from>
+                <to>30</to>
+            </sourceValues>
+            <value>15-30 Days</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>30</from>
+            </sourceValues>
+            <value>30+ Days</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>TEMarketing__MQLRecord__c.TEMarketing__Has_Opportunity__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>What % of opportunities are created within a day of the MQL, 1-3 days of the MQL, 4-7 days of the MQL, etc?</description>
+    <filter>
+        <criteriaItems>
+            <column>TEMarketing__MQLRecord__c.TEMarketing__Has_Opportunity__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_24205261</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>TEMarketing__MQLRecord__c.TEMarketing__Sales_Rep__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>MQL - Days to Opportunity Buckets</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$TEMarketing__MQLRecord__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>TEMarketing__MQLRecord__c.TEMarketing__MQL_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

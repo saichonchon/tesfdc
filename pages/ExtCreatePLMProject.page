@@ -1,0 +1,263 @@
+<apex:page standardcontroller="Opportunity" extensions="ExtCreatePLMProject" title="{!$Label.Create_PLM_Project}" sidebar="false" showHeader="false">
+
+    <apex:form id="pageForm" >
+<!-- ***********************************************************************  Message *************************************************************************-->
+<!-- ***********************************************************************  Message *************************************************************************-->    
+         <apex:pageMessages id="pagemessages"  /> 
+<!-- ***********************************************************************  Message *************************************************************************-->
+<!-- ***********************************************************************  Message *************************************************************************--> 
+
+<!-- ***********************************************************************  Section Header *************************************************************************-->
+<!-- ***********************************************************************  Section Header *************************************************************************-->                 
+         <apex:sectionHeader title="{!$ObjectType.Opportunity.label} : {!OppyName}" subtitle="{!$Label.Create_PLM_Project}" rendered="{!isPLMUser}"/>
+<!-- ***********************************************************************  Section Header *************************************************************************-->
+<!-- ***********************************************************************  Section Header *************************************************************************--> 
+        <!-- 
+        <apex:PageBlock mode="maindetail">
+            <apex:PageBlockButtons location="top"> 
+                <apex:commandButton action="{!CreatePLMProject}" value="Save PLM Project Data" status="status"/>
+                                 <apex:actionStatus startText=" Loading... " stopText="" id="status">
+                    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+                </apex:actionStatus> 
+            </apex:PageBlockButtons> 
+            <apex:repeat value="{!list_index}" var="i">
+                <apex:pageBlockSection columns="1" collapsible="false">
+                    <apex:facet name="header">{!list_fieldName[i]}</apex:facet>
+                    <apex:selectList value="{!list_fieldValue[i]}" size="1">
+                        <apex:selectOptions value="{!map_name_picklist[list_fieldName[i]]}"/>
+                    </apex:selectList>
+                </apex:pageBlockSection>
+            </apex:repeat>
+            <apex:repeat value="{!list_fieldName}" var="f"> 
+                <apex:pageBlockSection columns="1" collapsible="false">
+                    <apex:facet name="header">{!f}</apex:facet>
+                    <apex:selectList value="{!mode}" size="1">
+                        <apex:selectOptions value="{!map_name_picklist[f]}"/>
+                    </apex:selectList>
+                </apex:pageBlockSection>
+            </apex:repeat>
+        </apex:PageBlock>
+        -->
+       <!-- show a cancel button on an error to close the page -->
+     <apex:PageBlock mode="maindetail" rendered="{!IF(isPLMUser == False,True,False)}">       
+            <apex:PageBlockButtons location="top"> 
+                <apex:commandButton onclick="window.close()" value="{!$Label.Cancel}" />
+            </apex:PageBlockButtons> 
+      </apex:PageBlock>
+
+     <!-- show page on non errors -->
+        <apex:PageBlock mode="maindetail" rendered="{!isPLMUser}" >
+        
+            <apex:PageBlockButtons location="top"> 
+                <apex:commandButton action="{!Save2Opportunity}" value="{!$Label.Save}" status="status" rendered="{!!saved2Opportunity}"/>
+                <apex:commandButton action="{!doCallout}" value="{!$Label.Create_PLM_Project}" status="status" rendered="{!saved2Opportunity}"/>
+
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}" status="status"/>
+                <apex:actionStatus startText=" Loading... " stopText="" id="status">
+                    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+                </apex:actionStatus> 
+            </apex:PageBlockButtons> 
+            
+            <apex:pageBlockSection title="" columns="1" collapsible="false">
+                <apex:outputField value="{!opportunity.Name}"></apex:outputField>
+                <apex:outputField value="{!opportunity.AccountId}"></apex:outputField>
+                <apex:outputField value="{!opportunity.Amount}"></apex:outputField>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="" columns="2" collapsible="false">
+                <apex:inputField label="{!$ObjectType.Opportunity.fields.Do_you_know_the_Product_Market_Size__c.label}" value="{!opportunity.Do_you_know_the_Product_Market_Size__c}"  required="true"></apex:inputField>
+                <apex:inputField label="{!$ObjectType.Opportunity.fields.Product_Market_Size__c.label}" value="{!opportunity.Product_Market_Size__c}" > USD</apex:inputField>
+                
+                <apex:selectList label="{!$ObjectType.Opportunity.fields.PLM_Project_Template__c.label}" value="{!projectTemplate}" size="1" rendered="{!projectTemplateRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[projectTemplateLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Project_Template__c.label}" value="{!$Label.No_value_found}"  rendered="{!!projectTemplateRendered}" ></apex:outputText>
+                
+                
+                <apex:selectList label="{!$ObjectType.Opportunity.fields.PLM_Responsible_Design_Group__c.label}" value="{!responsibleDesignGroup}" size="1" rendered="{!responsibleDesignGroupRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[responsibleDesignGroupLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Responsible_Design_Group__c.label}" value="{!$Label.No_value_found}"  rendered="{!!responsibleDesignGroupRendered}" ></apex:outputText>
+                
+                <apex:selectList label="{!$ObjectType.Opportunity.fields.PLM_Project_Leverage__c.label}" value="{!leverage}" size="1"  rendered="{!leverageRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[leverageLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Project_Leverage__c.label}" value="{!$Label.No_value_found}"  rendered="{!!leverageRendered}" ></apex:outputText>
+                
+                
+                <apex:selectList label="{!$ObjectType.Opportunity.fields.PLM_Project_Category__c.label}" value="{!projectCategory}" size="1" rendered="{!projectCategoryRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[projectCategoryLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Project_Category__c.label}" value="{!$Label.No_value_found}" rendered="{!!projectCategoryRendered}" ></apex:outputText>
+                
+                <apex:selectList required="true" label="{!$ObjectType.Opportunity.fields.PLM_Project_Complexity__c.label}" value="{!projectComplexity}" size="1" rendered="{!projectComplexityRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[projectComplexityLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Project_Complexity__c.label}" value="{!$Label.No_value_found}" rendered="{!!projectComplexityRendered}" ></apex:outputText>
+                
+                <apex:selectList label="{!$ObjectType.Opportunity.fields.PLM_Project_Approval_Committee__c.label}" value="{!projectApprovalCommittee}" size="1" rendered="{!projectApprovalCommitteeRendered}">
+                    <apex:selectOptions value="{!map_name_picklist[projectApprovalCommitteeLabel]}"/>
+                </apex:selectList>
+                <apex:outputText label="{!$ObjectType.Opportunity.fields.PLM_Project_Approval_Committee__c.label}" value="{!$Label.No_value_found}" rendered="{!!projectApprovalCommitteeRendered}" ></apex:outputText>
+                
+            </apex:pageBlockSection>
+            
+            
+            <!--  
+            <apex:pageBlockSection title="Opportunity Name" columns="1" collapsible="false">
+                <apex:outputText value="{!OppyName}"></apex:outputText>
+            </apex:pageBlockSection>
+            -->
+            <!--  
+            <apex:pageBlockSection title="{!$ObjectType.Opportunity.fields.Do_you_know_the_Product_Market_Size__c.label}" columns="1" collapsible="false">
+                <apex:inputField label="" value="{!opportunity.Do_you_know_the_Product_Market_Size__c}"  required="true"></apex:inputField>
+                <apex:actionStatus startText=" Loading... " stopText="" id="sizestatus">
+                    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+                </apex:actionStatus> 
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="{!$ObjectType.Opportunity.fields.Product_Market_Size__c.label}" columns="1" collapsible="false">
+                <apex:inputField label="" value="{!opportunity.Product_Market_Size__c}" ></apex:inputField>
+            </apex:pageBlockSection>
+            
+                        
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!projectTemplateRendered}">
+                <apex:facet name="header">Project Template</apex:facet>
+                <apex:selectList value="{!projectTemplate}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Project Template']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!projectTemplateRendered}" >
+                <apex:facet name="header">Project Template</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!responsibleDesignGroupRendered}">
+                <apex:facet name="header">Responsible Design Group</apex:facet>
+                <apex:selectList value="{!responsibleDesignGroup}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Responsible Design Group']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!responsibleDesignGroupRendered}" >
+                <apex:facet name="header">Responsible Design Group</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            
+            
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!leverageRendered}">
+                <apex:facet name="header">Project Leverage</apex:facet>
+                <apex:selectList value="{!leverage}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Project Leverage']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!leverageRendered}" >
+                <apex:facet name="header">Project Leverage</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!projectCategoryRendered}">
+                <apex:facet name="header">Project Category</apex:facet>
+                <apex:selectList value="{!projectCategory}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Project Category']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!projectCategoryRendered}" >
+                <apex:facet name="header">Project Category</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!projectComplexityRendered}">
+                <apex:facet name="header">Project Complexity</apex:facet>
+                <apex:selectList value="{!projectComplexity}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Project Complexity']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!projectComplexityRendered}" >
+                <apex:facet name="header">Project Complexity</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!projectApprovalCommitteeRendered}" >
+                <apex:facet name="header">Product Approval Committee</apex:facet>
+                <apex:selectList value="{!projectApprovalCommittee}" size="1" >
+                    <apex:selectOptions value="{!map_name_picklist['Product Approval Committee']}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!!projectApprovalCommitteeRendered}" >
+                <apex:facet name="header">Product Approval Committee</apex:facet>
+                {!$Label.No_value_found}
+            </apex:pageBlockSection>
+            -->
+               
+            <apex:pageBlockSection title="PLM Call Parameter" columns="1" collapsible="true"  rendered="false">
+            
+                <p><b>Service End Point (serviceEndpoint)</b><br />
+                <apex:inputText value="{!serviceEndpoint}" size="100"/>
+                </p>
+                
+                <p><b>Certification Name (certName)</b><br />
+                <apex:inputText value="{!certName}" size="100"/>
+                </p>
+                
+                <p><b>Organization Name (orgName)</b><br />
+                <apex:inputText value="{!orgName}" size="100"/>
+                </p>
+                
+                <p><b>User Name (sfdcUsername)</b><br />
+                <apex:inputText value="{!sfdcUsername}" size="100"/>
+                </p>
+                
+                <p><b>End Point Name</b><br />
+                <apex:inputText value="{!endPointAppPlm}" id="theTextendPointApp" size="100"/>
+                </p>
+                
+                <p><b>Input data</b><br />
+                <apex:inputTextarea value="{!plm}" id="theTextsfdcData" cols="100"/>
+                </p>
+                    
+                <p>Web Service PLM Response Value:</p>
+                <apex:inputTextarea id="theTextResponsePLM" value="{!WSResponsePLM}" cols="100" rows="20"/><p/>
+                            
+            </apex:pageBlockSection>
+
+
+            <apex:pageBlockSection title="MaterData Call Parameter" columns="1" collapsible="true"  rendered="false">
+            
+                <p><b>Service End Point (serviceEndpoint)</b><br />
+                <apex:inputText value="{!serviceEndpoint}" size="100"/>
+                </p>
+                
+                <p><b>Certification Name (certName)</b><br />
+                <apex:inputText value="{!certName}" size="100"/>
+                </p>
+                
+                <p><b>Organization Name (orgName)</b><br />
+                <apex:inputText value="{!orgName}" size="100"/>
+                </p>
+                
+                <p><b>User Name (sfdcUsername)</b><br />
+                <apex:inputText value="{!sfdcUsername}" size="100"/>
+                </p>
+                
+                <p><b>End Point Name</b><br />
+                <apex:inputText value="{!endPointAppMasterData}" id="theTextendPointApp" size="100"/>
+                </p>
+                
+                <p><b>Input data</b><br />
+                <apex:inputTextarea value="{!masterData}" id="theTextsfdcData" cols="100"/>
+                </p>    
+                
+                <p>Web Service MASTERDATA Response Value:</p>
+                <apex:inputTextarea id="theTextResponseMASTERDATA" value="{!WSResponseMASTERDATA}" cols="100" rows="20"/><p/>
+                                
+            </apex:pageBlockSection>
+                                
+        </apex:PageBlock>
+            
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,248 @@
+<apex:component layout="block">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+<!-- 
+<div id="menu_id">
+    <div class="top">
+        <input type="button" value="{!$Label.PMV_team_btn_new}" class="designedBtn"/>
+        <input type="button" value="{!$Label.PMV_team_btn_edit}" class="designedBtn" style="margin-left: 10px;"/>
+        
+        <span class="designedSelect" >
+            <select class="textSelect" id="teamSelect" onchange="teamSelect_eve(this)">
+                <option value="none">{!$Label.PMV_team_option}</option>
+                <apex:repeat var="lt" value="{!pageCtrl.ListTeams}">
+                    <option value="{!lt.Id}">{!lt.Name}</option>
+                </apex:repeat>
+            </select>
+        </span>
+        
+    </div>
+</div>
+ -->
+<div class="topSearch">
+        <input onclick="addTeamPopUP(this)" type="button" value="{!$Label.PMV_team_btn_new}" class="designedBtn"/>
+            <input onclick="editTeamPopUP(this)" type="button" value="{!$Label.PMV_team_btn_edit}" class="designedBtn"/>
+            <select class="topSelect oppSelect" id="teamSelect">
+<!--                                <option value="none">{!$Label.PMV_team_option}</option> -->
+                <apex:repeat var="lt" value="{!pageCtrl.ListTeams}">
+                    <option data-description=" {!lt.Description__c} " value="{!lt.Id}">{!lt.Team_Name__c}</option>
+                </apex:repeat>
+            </select>
+    </div>
+<div id="menu_oppy_id" style="margin-top: 10px;">    
+    <div class="title">
+        <table border="0" cellspacing="0" cellpadding="0" class="menuoppycls">
+            <tbody id="menuoppytbodyid">
+                <tr>
+                    <td id="tdmenudateopid" class="title_left title_right dateonlycls" style="min-width: 550px; width: 550px;">
+                        <div class="provhide dateonlycls"  id="dateselectdivid" style="padding: 5px 0px;">
+                            <fieldset class="fieldsetcls tl opdatecls">
+                                <legend class="legendcls">{!$Label.PMV_team_op_close_date}</legend>
+                                <div class="datefixcls oppickselect dateonlycls">
+                                    <span class="inputDate tl dateonlycls">
+                                        <input id="opstartid" type="text" dtype="oppystart_date" class="dateonlycls oppycls opstart"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                    <span class="allimg title-Arrow dateonlycls"></span>
+                                    <span class="inputDate tl fix dateonlycls">
+                                        <input id="opendid" type="text" dtype="oppyend_date" class="dateonlycls oppycls opend"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                </div>
+                                
+                                <div class="dateonlycls1">
+                                    <select class="textSelect oppSelect dateonlycls" id="oppickselect" style="width: 99%;">
+                                    <apex:repeat var="dr" value="{!pageCtrl.list_dateRangeType}">
+                                        <optgroup label="{!dr.typeName}">
+                                        <apex:repeat var="op" value="{!dr.list_dateRange}">
+                                            <option value="{!op.rangeValue}">{!op.rangeLabel}</option>
+                                        </apex:repeat>
+                                        </optgroup>
+                                    </apex:repeat>
+                                    </select>
+                                </div>
+                            </fieldset>
+                            
+                            <fieldset class="fieldsetcls tl fcdatecls">
+                                <legend class="legendcls">{!$Label.PMV_team_forecast_date}</legend>
+                                <div class="datefixcls fcpickselect dateonlycls">
+                                    <span class="inputDate tl dateonlycls">
+                                        <input id="fcstartid" type="text" dtype="fcstart_date" class="dateonlycls fccls fcstart"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                    <span class="allimg title-Arrow dateonlycls"></span>
+                                    <span class="inputDate tl fix dateonlycls">
+                                        <input id="fcendid" type="text" dtype="fcend_date" class="dateonlycls fccls fcend"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                </div>
+                                
+                                <div class="dateonlycls1">
+                                    <select class="textSelect oppSelect dateonlycls" id="fcpickselect" style="width: 99%;">
+                                    <apex:repeat var="dr" value="{!pageCtrl.list_dateRangeType}">
+                                        <optgroup label="{!dr.typeName}">
+                                        <apex:repeat var="op" value="{!dr.list_dateRange}">
+                                            <option value="{!op.rangeValue}">{!op.rangeLabel}</option>
+                                        </apex:repeat>
+                                        </optgroup>
+                                    </apex:repeat>
+                                    </select>
+                                </div>
+                            </fieldset>
+                            
+                        </div>
+                        <div class="provhide codecls"  id="codeInput" style="padding: 5px 0px;">
+                            <div class="gamcodeDiv">
+                                <label>{!$Label.PMV_team_gam_code}</label>
+                                <input type="text" id="gamcode" />
+                            </div>
+                            <div class="kamcodeDiv">
+                                <label>{!$Label.PMV_team_kam_code}</label>
+                                <input type="text" id="kamcode" />
+                            </div>
+                            <div class="amcodeDiv">
+                                <label>{!$Label.PMV_team_am_code}</label>
+                                <input type="text" id="amcode" />
+                            </div>
+                            <input type="button" value="Search" class="designedBtn searchButton" onclick="teamSearch(this, 'teamSelect')"/>
+                        </div>
+                    </td>
+                        <!-- 
+                        
+                        <div class="provhide dateonlycls"  style="display: none;" id="selecteddivopid">
+                            <div class="provhide dateonlycls">
+                                <div class="datefixcls oppickselect dateonlycls">
+                                    <span class="inputDate tl dateonlycls">
+                                        <input id="opstartid" type="text" dtype="oppystart_date" class="dateonlycls oppycls opstart"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                    <span class="allimg title-Arrow dateonlycls"></span>
+                                    <span class="inputDate tl fix dateonlycls">
+                                        <input id="opendid" type="text" dtype="oppyend_date" class="dateonlycls oppycls opend"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                </div>
+                                <div class="datefixcls fcpickselect dateonlycls">
+                                    <span class="inputDate tl dateonlycls">
+                                        <input id="fcstartid" type="text" dtype="fcstart_date" class="dateonlycls fccls fcstart"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                    <span class="allimg title-Arrow dateonlycls"></span>
+                                    <span class="inputDate tl fix dateonlycls">
+                                        <input id="fcendid" type="text" dtype="fcend_date" class="dateonlycls fccls fcend"/>
+                                        <span class="allimg dateonlycls"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                         -->
+                        
+                    <td class="title_left title_right tc dateonlycls" style="min-width: 360px; width:360px">
+                        <div class="chartDiv">
+                            <div id="container" style="width: 316px; height: 133px; float:left; margin-left: 24px;"></div>
+                            <div class="yAxis">
+                                <span>H</span>
+                                <div class="yTitle">Ability</div>
+                                <span class="ylow">L</span>
+                            </div>
+                            <div class="xAxis">
+                                <span>L</span>
+                                <span class="xTitle">Attractiveness</span>
+                                <span class="xlow">H</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="title_left title_right tc dateonlycls" style="">
+                        <div class="title_dollar">
+                            <div style="min-width: 200px;">
+                                <span id="spanalltotalid" data-value="  "></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+ 
+<!--  
+<div id="menu_oppy_id" style="height: 100%; margin-top: 20px;"> 
+    <div class="title">
+        <table border="0" cellspacing="0" cellpadding="0" class="menuoppycls">
+            <tbody id="menuoppytbodyid">
+                <tr>
+                    <td class="tr">
+                        <div class="provhide">
+                            <span class="inputSelect">
+                                <span>
+                                    <select class="textSelect oppSelect" id="oppickselect" style="width: 170px;">
+                                        <option value="Custom">{!$Label.PMV_team_op_close_date}</option>
+                                    <apex:repeat var="dr" value="{!pageCtrl.list_dateRangeType}">
+                                        <optgroup label="{!dr.typeName}">
+                                        <apex:repeat var="op" value="{!dr.list_dateRange}">
+                                            <option value="{!op.rangeValue}">{!op.rangeLabel}</option>
+                                        </apex:repeat>
+                                        </optgroup>
+                                    </apex:repeat>
+                                    </select>
+                                </span>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="title_right" style="min-width: 285px;">
+                        <div class="provhide">
+                            <span class="inputDate tl">
+                                <input id="opstartid" type="text" dtype="oppystart_date" class="oppycls opstart"/>
+                                <span class="allimg"></span>
+                            </span>
+                            <span class="allimg title-Arrow"></span>
+                            <span class="inputDate tl fix">
+                                <input id="opendid" type="text" dtype="oppyend_date" class="oppycls opend"/>
+                                <span class="allimg"></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="title_left tr">
+                        <div class="provhide">
+                            <span class="inputSelect">
+                                <span>
+                                    <select class="textSelect oppSelect" id="fcpickselect" style="width: 170px;">
+                                        <option value="Custom">{!$Label.PMV_team_forecast_date}</option>
+                                    <apex:repeat var="dr" value="{!pageCtrl.list_dateRangeType}">
+                                        <optgroup label="{!dr.typeName}">
+                                        <apex:repeat var="op" value="{!dr.list_dateRange}">
+                                            <option value="{!op.rangeValue}">{!op.rangeLabel}</option>
+                                        </apex:repeat>
+                                        </optgroup>
+                                    </apex:repeat>
+                                    </select>
+                                </span>
+                            </span>
+                        </div>
+                    </td>
+                    <td style="min-width: 285px;">
+                        <div class="provhide">
+                            <span class="inputDate tl">
+                                <input id="fcstartid" type="text" dtype="fcstart_date" class="fccls fcstart"/>
+                                <span class="allimg"></span>
+                            </span>
+                            <span class="allimg title-Arrow"></span>
+                            <span class="inputDate tl fix">
+                                <input id="fcendid" type="text" dtype="fcend_date" class="fccls fcend"/>
+                                <span class="allimg"></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="title_dollar">
+                        <div style="min-width: 200px;">
+                            <span id="spanalltotalid" data-value="  "></span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+-->
+</apex:component>

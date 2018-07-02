@@ -1,0 +1,74 @@
+<apex:page standardController="AgileVizArt__User_Story__c" sidebar="false" showHeader="false" extensions="AgileVizArt.ExtUserStoryComment">
+
+<script>
+    hideLoading();
+    function hideLoading(){    	
+        parent.document.getElementById('loading').style.display = "none";
+    }
+    
+    function bgColorChange(did, color){
+        document.getElementById(did).style.bgColor = color;
+        
+    }
+
+</script>
+<style>
+    .pbBody .list .dataRow .dataCell .htmlDetailElementTable tr td{border : 0px;}
+</style>
+    <apex:sectionHeader title="{!AgileVizArt__User_Story__c.AgileVizArt__Story_Id__c}  {!AgileVizArt__User_Story__c.Name}"/>
+        
+        <apex:pageBlock mode="mainDetail">   
+            <chatter:feedWithFollowers entityId="{!AgileVizArt__User_Story__c.Id}" ></chatter:feedWithFollowers> 
+            <br/>
+            <apex:pageBlockSection columns="2">
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Sprint_Name__c}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Assigned_To__c}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Status__c}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Override_Priority__c}" rendered="{!UsType=='Requirement'}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Urgency__c}" rendered="{!UsType=='Issue'}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Severity__c}" rendered="{!UsType=='Defect'}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Raised_By__c}"/>  
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Epic_Story__c}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Effort_Points__c}"/>
+                <apex:outputField value="{!AgileVizArt__User_Story__c.RecordTypeId}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Description" columns="1" collapsible="false">
+                <apex:outputField value="{!AgileVizArt__User_Story__c.AgileVizArt__Description__c}"/>
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+        <!--<apex:relatedList list="Comments__r" />-->
+               
+        <apex:pageBlock title="Comment Information" mode="detail">  
+        <apex:form >                    
+            <table class="list" cellspacing="0" cellpadding="0" border="0">
+                <thead>
+                    <tr class="headerRow">
+                        <th>{!$ObjectType.Story_Comment__c.fields.Insert_by_Email__c.label}</th>
+                        <th>{!$ObjectType.Story_Comment__c.fields.Subject__c.label}</th>
+                        <th>{!$ObjectType.Story_Comment__c.fields.Comment_by__c.label}</th>
+                        <th>{!$ObjectType.Story_Comment__c.fields.LastModifiedDate.label}</th>
+                        <th>{!$ObjectType.Story_Comment__c.fields.Comment__c.label}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!list_sc}" var="sc">
+                        <tr class="dataRow" onmouseOver="this.style.backgroundColor='#E3F3FF';" onmouseOut="this.style.backgroundColor='#ffffff';">
+                            <td class="dataCell"><apex:outputField value="{!sc.AgileVizArt__Insert_by_Email__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!sc.AgileVizArt__Subject__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!sc.AgileVizArt__Comment_by__c}"/></td>
+                            <td class="dataCell"><apex:outputField value="{!sc.LastModifiedDate}"/></td>
+                            <td class="dataCell">
+                            	<apex:outputField value="{!sc.AgileVizArt__Comment_With_HTML__c}"/>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>        
+            </apex:form>    
+            <apex:outputPanel rendered="{!list_sc.size == 0}">
+                No records to display
+            </apex:outputPanel>
+        </apex:pageBlock>          
+</apex:page>

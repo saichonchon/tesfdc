@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Amount_USD__c:SUM - BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Cost_Amount__c:SUM) / BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>calculates the Standard Margin from prior year records</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Prior Year Standard Margin</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_to_Date_Amount_USD__c:SUM - BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_To_Date_Cost_Amount__c:SUM) / BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_to_Date_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>calculates the Standard Margin from Current YTD records</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Plan Year Standard Margin</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Amount_USD__c:SUM - BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Rest_Cost_Amount__c:SUM) / BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>calculates the prio year margin based on current year cost</description>
+        <developerName>FORMULA3</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Prio Year Restated Margin</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_60044474</developerName>
+        <masterLabel>Profit Center Group</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Yearly_BBB_by_Part_and_Customers__r$SAP_Profit_Center_Short_Description__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>A&amp;C</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>IB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - A&amp;C</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - IB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - Rail</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - Solar</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rail</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Solar</sourceValue>
+            </sourceValues>
+            <value>Industrial</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Cost_Amount__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Rest_Cost_Amount__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Year_To_Date_Cost_Amount__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$Obsolete__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Type_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$CBC1_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>13281</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$CBC3_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>30206</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$SAP_Profit_Center_Short_Description__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Application Tooling</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Future_A_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$Account_Combined_Data__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>FY16 Future AM Margin Data</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Yearly_BB_direct_and_Indirect_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Yearly_BBB_by_Part_and_Customers__r$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

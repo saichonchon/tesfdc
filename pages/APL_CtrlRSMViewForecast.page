@@ -1,0 +1,105 @@
+<apex:page title="Grouping RSM Forecast" sidebar="false" controller="APL_CtrlGroupingRSMForecast" id="thePage" applyBodyTag="true" docType="html-5.0">
+    <head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/multiselect/css/jquery.uix.multiselect.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CtrlGroupingRSMForecastCSS}" />
+        <style type="text/css">
+            .part_d{ background-image:url('{!URLFOR($Resource.jQueryTool, '/img/deleteImage.png')}'); }
+            .other_d, .gpl_d{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/lockover16.png')}');
+                background-position: 1px 1px;
+            }
+            .reload_img{ background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}'); }
+            .mark_img{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/ACGP_new1.png')}'); }
+            .mark_new{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/PC.png')}') !important; }
+            .mark_b{ background-image:url('{!URLFOR($Resource.jQueryTool, '/APL_img/B.png')}') !important; }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+                background-position:-145px -146px;
+            }
+            .pin.spin{ background-position: -129px -146px; }
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/jquery.uix.multiselect.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/multiselect/locales/jquery.uix.multiselect_en.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/color-animation/jquery1.8.animate-colors.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/base64/base64.min.js')}"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore-min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+        <script type="text/javascript" src="{!$Resource.APL_CtrlRSMViewForecastJS}"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingRSM_AMForecastJS}"></script>
+        <script type="text/javascript" src="{!$Resource.CtrlGroupingRSM_RelayForecastJS}"></script>
+
+        <script type="text/javascript">
+            var CUSTOM_LABEL = {
+                    'savemsg': '{!$Label.APL_save_msg}', 'savemsgsuccess' : '{!$Label.APL_msg_save_success}', 
+                    'clickwait' : '{!$Label.APL_msg_click_wait}', 
+                    'AM': '{!$Label.APL_RSM_AM}', 'Relay': '{!$Label.APL_RSM_Relay}'
+                };
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+        
+        <div id="contentallid" class="tc">
+        
+            <apex:variable var="inputVal" value="" />
+            <apex:form id="theForm">
+                <apex:actionFunction name="setTerritory" action="{!setTerritory}" oncomplete="setTerritoryComplete()" reRender="groupingAllOP, themsg" />
+                <apex:actionFunction name="initPage" action="{!initPage}" oncomplete="initPageComplete()" reRender="groupingAllOP, themsg" />
+                
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                
+                <input value="{!json_managerUserList}" id="managerUsersid" type="hidden" />
+                <apex:outputPanel id="groupingAllOP" layout="block">
+                    <!-- 
+                    <input value="{!chartURL}" id="charturlid" type="hidden" />
+                     -->
+                    <apex:inputHidden id="managerid" value="{!pageConf.managerId}"/>
+                    <apex:inputHidden id="rsmtypeid" value="{!json_rsmTypeMap}"/>
+                    <apex:inputHidden id="selectedtypeid" value="{!selectedType}"/>
+                    <c:APL_CompGroupingRSM_AMForecastMenu rendered="{!if(selectedType='', false, if(selectedType='AM', true, false))}" pageCtrl="{!this}"></c:APL_CompGroupingRSM_AMForecastMenu>
+                    <c:APL_CompGroupingRSM_RelayForecastMenu rendered="{!if(selectedType='', false, if(selectedType!='AM', true, false))}" pageCtrl="{!this}"></c:APL_CompGroupingRSM_RelayForecastMenu>
+
+                    <c:APL_CompGroupingRSM_AMForecastBody rendered="{!if(selectedType='', false, if(selectedType='AM', true, false))}" pageCtrl="{!this}"></c:APL_CompGroupingRSM_AMForecastBody>
+                    <c:APL_CompGroupingRSM_RelayForecastBody rendered="{!if(selectedType='', false, if(selectedType!='AM', true, false))}" pageCtrl="{!this}"></c:APL_CompGroupingRSM_RelayForecastBody>
+
+                </apex:outputPanel>
+                
+            </apex:form>
+    
+        </div>
+        
+        <div id="gototopid" class="gototopcls bradiuscls">TOP</div>
+
+        <span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+            <span id="innerData" class="innerdata"></span>
+        </span>
+        
+    </body>
+    
+    <script type="text/javascript">
+        ;function getAPLsRefData_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.getAPLsRefData}';}
+        ;function getBacklogRefData_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.getBacklogRefData}';}
+        ;function existAPLsObject_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.existAPLsObject}';}
+        ;function saveAPLsObject_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.saveAPLsObject}';}
+        ;function saveUnFreezeAM_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.unfreezeAM}';}
+        ;function saveForecast_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.saveGAMFC}';}
+        ;function getAcct_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.getGAMFC}';}
+        ;function getRefData_js(){ return '{!$RemoteAction.APL_CtrlGroupingRSMForecast.getRefData}';}
+    </script>
+</apex:page>

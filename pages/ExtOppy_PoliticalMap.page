@@ -1,0 +1,1705 @@
+<apex:page standardcontroller="Opportunity" extensions="ExtOppy_PoliticalMap" showHeader="false" sidebar="false" docType="html-5.0">
+<head>
+    <link href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.css')}" rel="stylesheet"></link>
+    <link type="text/css" rel="stylesheet" href="{!$Resource.PoliticalMapCss}" />
+    
+    <script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.9.0-min.js')}"></script>
+    <script src="{!URLFOR($Resource.jQueryTool, '/underscore/underscore.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.9.2-min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery.ui.touch-punch.min.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery.jsPlumb-1.5.5-min.js')}"></script>
+    <style type="text/css">
+        .accIconsDiv div span, .centerDiv div span, .tag span:first-child, .windowIcon{
+            display:inline-block;
+            line-height:28px;
+            background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/mapIcons.png')}) no-repeat;
+        }
+        .keyIcon{
+            width:25px;
+            height:10px;
+            display:inline-block;
+            float:left;
+            background-position:-53px -86px !important;
+            margin-top: 6px;
+            background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/mapIcons.png')}) no-repeat;
+        }
+        .backIcon{
+            width:7px;
+            height:28px;
+            display:inline-block;
+            margin: 18px 6px 0px 7px;
+            float: left;
+            background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png')}) no-repeat; 
+            background-position: -107px -99px;
+        }
+        
+        .itemBtn{
+            position: absolute;
+            display: inline-block;
+            width: 14px;
+            height: 12px;
+            right: 3px;
+            top: 2px;
+            cursor: pointer;
+            background: url({!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/icon.png.bak.png')}) no-repeat;
+            /* border: 1px solid #cfcfcf;
+            font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+            border-radius: 4px;
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#d9d9d9',GradientType=0 );
+            background: linear-gradient(#fefefe, #d9d9d9); */
+        }
+        ._jsPlumb_connector { z-index:1; }
+        ._jsPlumb_endpoint { z-index:1; }
+        ._jsPlumb_overlay { z-index:1; }
+        ._jsPlumb_connector._jsPlumb_hover {
+            z-index:2 !important;
+        }
+        ._jsPlumb_endpoint._jsPlumb_hover {
+            z-index:2 !important;
+        }
+        ._jsPlumb_overlay._jsPlumb_hover {
+            z-index:2 !important;
+        }
+        .endPointCss {
+            background: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div id="popup-back"></div>
+    <div id="mask"></div>
+    <div class="floatLoading">
+        <span>{!$Label.PMV_decision_lab_saving_data}</span>
+        <img src="{!URLFOR($Resource.jsCss4OrgChart,'css/ui-lightness/images/floatLoading.gif')}"/>
+    </div>
+    <div class="error-popup">
+        <div class="popup-title">
+            <span>{!$Label.PMV_lab_error_title}</span>
+        </div>
+        <p></p>
+        <input type="button" class="popup-buttonYellow" value="{!$Label.PMV_accessment_btn_refresh}"/>
+    </div>
+    <div id="tabs">
+        <ul class="floatStyle">
+            <li class="tab-back"><span class="backIcon"></span><label>{!$Label.PMV_accessment_leb_back_line_1}<br/>{!$Label.PMV_accessment_leb_back_line_2}</label></li>
+            <li><a href="/apex/ExtOppy_qualifierAccessment?Id={!opportunity.Id}">{!$Label.PMV_button_assessment}<span><label>{!answerNum}</label>/{!questionNum} Answers</span></a></li>
+            <li class="sel"><a href="#">{!$Label.PMV_button_relationships}<span class="political-num">{!countPoliticalMaps} Contacts</span></a></li>
+            <li><a href="/apex/ExtOppy_DecisionCriteria?Id={!Id}">{!$Label.PMV_button_criteria}<span>{!countDecisionCriteria} {!$Label.PMV_button_criteria}</span></a></li>
+            <li><a href="/apex/ExtOppy_Portfolio?Id={!Id}">{!$Label.PMV_Portfolio}<span>&nbsp;</span></a></li>
+        </ul> 
+    </div>
+    <div class="pageTitle">
+        <span><!-- <label for="isShowAll">Show All</label><input type="checkbox" id="isShowAll" value="Show All"/>{!$Label.PMV_political_relationship_title}--></span>
+         <!-- <select id="addAccPicklist"></select>
+        <input id="addAccButton" type="button" value="Add Contact"/>
+        <span id="picklistEmpty" class="isHide">Sorry,get empty data for the picklist.</span> -->
+    </div>
+    <div class="pageContent" onselectstart="return false">
+        <div class="checkboxDiv">
+            
+        </div>
+       <div class="demo chart-demo" id="chart-demo"></div>
+    </div>
+    
+    <div class="windowIconPopup">
+        <div class="hiddenBorder"></div>
+        <div class="npsStatus">
+            <div class="popupTitle">
+                <span>{!$Label.PMV_political_nps_status}</span>
+            </div>
+            <div class="popupContent">
+                
+                <div>
+                </div>
+            </div>
+        </div>
+        <div class="focusOf">
+            <div class="popupTitle">
+                <span>{!$Label.PMV_political_political_status}</span>
+            </div>
+            <div class="popupContent">
+                <div class="tag for">
+                    <span class="questionIcon-Y"></span><span>{!$Label.PMV_political_nnknown}</span>
+                </div>
+                <div class="tag fod">
+                    <span class="twoSquareIcon-Y"></span><span>{!$Label.PMV_political_outside_political_structure}</span>
+                </div>
+                <div class="tag fop">
+                    <span class="squareIcon-Y"></span><span>{!$Label.PMV_political_political_structure}</span>
+                </div>
+                <div>
+                </div>
+            </div>
+        </div>
+        <div class="rating">
+            <div class="popupTitle">
+                <span>{!$Label.PMV_political_rating}</span>
+            </div>
+            <div class="popupContent">
+                
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="convas" style="display:none;"></div>
+    <c:CompPoliticalMapAddPopUP pageCtrl="{!this}" id="PoliticalMapAddPopUP"></c:CompPoliticalMapAddPopUP>
+    
+    <div class="pageFoot">
+        <div class="centerDiv">
+            <div class="footContent">
+                <!-- <input type="button" class="addBtn" value="{!$Label.PMV_political_btn_new}"/> -->
+                <!-- <input type="button" class="placeholderBtn" value="{!$Label.PMV_political_btn_new_placeholder}"/> -->
+                <input type="button" class="collapseBtn" id="collapse" value="{!$Label.PMV_political_btn_collapse_all}"/>
+                <div id="zoomM"><span class="minusIcon"></span></div>
+                <div id="zoomD"><span class="revertIcon"></span></div>
+                <div id="zoomB"><span class="addIcon"></span></div>
+                <input type="button" class="expandBtn" id="expand" value="{!$Label.PMV_political_btn_expand_all}"/>
+            </div>
+        </div>
+    </div>
+</body>
+    <script type="text/javascript">
+    var bindBeforeunload = function(){
+        $(window).bind("beforeunload", function(){
+            return "{!$Label.PMV_accessment_error}";
+        });
+    };
+    var unBindBeforeunload = function(){
+                $(window).unbind("beforeunload");
+    };
+    /*var entityMap = {
+    unescape: {
+       '&amp;':'&',
+       '&lt;':'<',
+       '&gt;':'>',
+       '&quot;':'"',
+       '&#x27;':"'"
+    }
+  };
+    var myUnescape = function(){
+        
+    }*/
+    /* 
+    Native FullScreen JavaScript API
+    -------------
+    Assumes Mozilla naming conventions instead of W3C for now
+    */
+
+    (function() {
+        var 
+            fullScreenApi = { 
+                supportsFullScreen: false,
+                isFullScreen: function() { return false; }, 
+                requestFullScreen: function() {}, 
+                cancelFullScreen: function() {},
+                fullScreenEventName: '',
+                prefix: ''
+            },
+            browserPrefixes = 'webkit moz o ms khtml'.split(' ');
+        if (typeof document.cancelFullScreen != 'undefined') {
+            fullScreenApi.supportsFullScreen = true;
+        } else {     
+            for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
+                fullScreenApi.prefix = browserPrefixes[i];
+                if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
+                    fullScreenApi.supportsFullScreen = true;
+                    break;
+                }
+            }
+        }
+        if (fullScreenApi.supportsFullScreen) {
+            fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
+            fullScreenApi.isFullScreen = function() {
+                switch (this.prefix) {  
+                    case '':
+                        return document.fullScreen;
+                    case 'webkit':
+                        return document.webkitIsFullScreen;
+                    default:
+                        return document[this.prefix + 'FullScreen'];
+                }
+            }
+            fullScreenApi.requestFullScreen = function(el) {
+                return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
+            }
+            fullScreenApi.cancelFullScreen = function(el) {
+                return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
+            }       
+        }
+        if (typeof jQuery != 'undefined') {
+            jQuery.fn.requestFullScreen = function() { 
+                return this.each(function() {
+                    var el = jQuery(this);
+                    if (fullScreenApi.supportsFullScreen) {
+                        fullScreenApi.requestFullScreen(el);
+                    }
+                });
+            };
+        }
+        window.fullScreenApi = fullScreenApi;   
+    })();
+ 
+        var list_cons = $.parseJSON("{!JSENCODE(list_consToString)}"), 
+            list_infs = $.parseJSON("{!JSENCODE(list_infsToString)}"),
+            list_keyPlayers = $.parseJSON("{!JSENCODE(list_keyPlayersToString)}"),
+            list_acc = $.parseJSON("{!JSENCODE(list_accsString)}");
+            accountId = '{!acc.Id}',
+            oppyId = '{!Id}',
+            oppyObj = $.parseJSON('{"isOppyRole":true,"isOppy":true,"isAccount":true,"conId":"{!Id}"}'),
+            
+            orgAndContact = {
+                    parsonsData: [],
+                    infsData: [],
+                    dragWindows: [],
+                    jsonContacts: [], 
+                    jsonInfs:[],
+                    contactAcc:[],
+                    accountId: '{!acc.Id}',
+                    zoom: 1,
+                    isDblclick : false,
+                    oppAndAcc : "",
+                    container : "",
+                    POSW: 50,
+                    POSH: 50,
+                    contactOptions: {
+                        connector:[ "Bezier", { curviness:20 } ],
+                        //paintStyle:{lineWidth:4,strokeStyle:"#404040"},
+                        hoverPaintStyle:{strokeStyle:"#dbe300"},
+                        endpoint:"Blank",
+                        paintStyle:{lineWidth:4,strokeStyle:"#404040" },
+                        anchor:[[ 0.2, 0, 0, -1 ], [ 0.8, 0, 0, -1 ],  [ 1, 0.5, 1, 0 ], [ 0.2, 1, 0, 1 ], [ 0.8, 1, 0, 1 ], [ 0, 0.5, -1, 0 ] ],
+                        overlays:[ ["Arrow", {location:1, width:13, length:15} ]],
+                        connectorStyle:{ strokeStyle:"#404040", lineWidth:4},
+                        connectorHoverStyle: {strokeStyle:"#dbe300" },
+                        connectorOverlays:[[ "Arrow", { width:13, length:15, location:1, id:"arrow" } ]]
+                    },
+                    importDefaults: {
+                        DragOptions : { cursor: "pointer", zIndex:200 },
+                        PaintStyle : { strokeStyle:"#046682", lineWidth:4 },
+                        EndpointStyle : { radius:5, fillStyle:'transparent', lineWidth: 5 },
+                        HoverPaintStyle : {strokeStyle:"#ef8d02" },
+                        EndpointHoverStyle : {fillStyle:"transparent" },
+                        Anchors:[ "TopCenter", "BottomCenter" ],
+                        Connector : "Flowchart",
+                        Container : "chart-demo"
+                    },
+                    instance: function(instance) {
+                        if(instance)
+                            this.instance = instance;
+                        else
+                            instance = jsPlumb.getInstance();
+                        return instance;
+                    },
+                    create: function($container, contacts, infs, oppAndAcc, contactAcc) {
+                        $container.append(this._drawParsons(contacts));
+                        this.container = $container;
+                        this.jsonContacts = contacts;
+                        this.contactAcc = contactAcc;
+                        this.oppAndAcc = oppAndAcc;
+                        this.jsonInfs = infs;
+                        //this.accountId = contacts[contacts.length - 1].conId;
+                        this._getContactData();
+                        this._setContactRuleData('');
+                        this._getInfsData();
+                        this._initWindowPosition();
+                        this._getWindows();
+                        this._init($container);
+                        var getHeight = 0;
+                        $(".window").each(function() {
+                            if(getHeight < parseInt($(this).css("top"))) {
+                                getHeight = parseInt($(this).css("top"));
+                            }
+                        });
+                        $(".pageContent").height(getHeight + 133 + 300);
+                    },
+                    _getWindows: function() {
+                        this.dragWindows = jsPlumb.getSelector(".window");
+                    },
+                    _init: function($container) {
+                        var that = this,
+                        instance = that.instance();
+                        instance.importDefaults(this.importDefaults);
+                        $("#addUser").click(function(){
+                            that.jsonContacts.push(newParson);
+                            that._getContactData();
+                            $container.append(that._drawParson(newParson));
+                            that.dragWindows = jsPlumb.getSelector(".window");
+                            that._resetJsClumb(instance); 
+                        });
+                        $("#collapse").click(function() {
+                            that._showOrHideParsons(that._getSelParsons(), instance, "hide");
+                        });
+                        $("#expand").click(function() {
+                            that._showOrHideParsons(that._getSelParsons(), instance, "show");
+                        });
+                        $("#contactStringId").find("input").change(function(){
+                            alert("test");  
+                        });
+                        $(".window input").click(function(){
+                            if(that.zoom !== 1) {
+                                that.zoom = 1;
+                                that._setZoom(instance, $container);
+                            }
+                            $(".itemContent").show();
+                            $(".changeBtn").find("div span").html("－");
+                            that._showOrHideParsons(that._getSelParsons(), instance, "show");
+                            var accountId = $(this).parentsUntil(".window").parent().attr("id");
+                            if(!$(this).context.checked) {
+                                that._getContactRule(instance, accountId);
+                            } else {
+                                that._getAllContacts(accountId); 
+                                that._getContactData(accountId); 
+                                that._getInfsData();
+                                that.dragWindows = jsPlumb.getSelector(".window");
+                                that._resetJsClumb(instance); 
+                                
+                            }
+                            var getHeight = 0;
+                            $(".window").each(function() {
+                                if(getHeight < parseInt($(this).css("top"))) {
+                                    getHeight = parseInt($(this).css("top"));
+                                }
+                            });
+                            $(".pageContent").height(getHeight + 133 + 300);
+                            //alert($(this).parentsUntil(".window").parent().attr("id"));
+                        });
+                        $(".error-popup .popup-buttonYellow").click(function(){
+                            location.reload();
+                        });
+                        $container.on("click", ".changeBtn", function(){
+                            if($(this).find("div").find("span").html() == "－"){
+                                $(this).parent().find(".itemContent").hide();
+                                $(this).find("div").find("span").html("＋");
+                                that._showOrHideParsons(that._getSelParsons([this.parentElement.id]), instance, "hide");
+                            }
+                            else{
+                                $(this).parent().find(".itemContent").show();
+                                $(this).find("div").find("span").html("－");
+                                that._showOrHideParsons(that._getSelParsons([this.parentElement.id]), instance, "show");
+                            }
+                        });
+                        $("#zoomM").click(function() {
+                            that.zoom = 0.9 * that.zoom;
+                            that._setZoom(instance, $container);
+                        });
+                        $("#zoomB").click(function() {
+                            that.zoom = 1.1 * that.zoom;
+                            that._setZoom(instance, $container);
+                        });
+                        $("#zoomD").click(function() {
+                            that.zoom = 1;
+                            that._setZoom(instance, $container);
+                            window.fullScreenApi.requestFullScreen(document.body);
+                        });
+                        $(".popup-Add .popup-buttonYellow").click(function() {
+                            showLoading();
+                            bindBeforeunload();
+                            function creatNewContact(){
+                                var createContactStr = $("#contactStringId").find("input").val();
+                                if((!$("#contactStringId").data("oldData") && createContactStr.length <= 0)  || $("#contactStringId").data("oldData") == createContactStr) {
+                                    setTimeout(creatNewContact,100);
+                                }else{
+                                    $("#contactStringId").data("oldData", createContactStr)
+                                    that._excuteCreateContact(that.container, createContactStr, instance);
+                                }
+                                
+                            }
+                            creatNewContact();
+                        });
+                        $(".addBtn").click(function(){
+                            if(that.dragWindows.is(":hidden")) {
+                                alert("{!$Label.PMV_political_expand_all_contact}");
+                                return false;
+                            } 
+                            backShow();
+                            $(".popup-Add").show();
+                        });
+                        $(".tab-back").click(function(){
+                            location.href='/{!opportunity.Id}';
+                        });
+                        $container.on("click", ".itemBtn", function() {
+                            if(that.dragWindows.is(":hidden")) {
+                                alert("{!$Label.PMV_political_expand_all_contact}");
+                                return false;
+                            }
+                            var remote = "";
+                            var conId = "";
+                            var type = "add";
+                            var contacts = that.jsonContacts;
+                            if($(this).attr("title") == "{!$Label.PMV_political_btn_add}"){
+                                $(this).attr("title","{!$Label.PMV_political_btn_cancel}");
+                                $(this).removeClass("addStyle").addClass("cancelStyle");
+                                $(this).parent().parent().addClass("focus");
+                                conId = $(this).parent().parent().attr("id");
+                                for(var i = 0; i < contacts.length; i++) {
+                                    if(conId === contacts[i].conId) {
+                                        contacts[i]["isOppyRole"] = true;
+                                    }
+                                }
+                                remote = "{!$RemoteAction.ExtOppy_PoliticalMap.createContactRole}";
+                                type = "add";
+                            }else{
+                                $(this).attr("title","{!$Label.PMV_political_btn_add}");
+                                $(this).removeClass("cancelStyle").addClass("addStyle");
+                                $(this).parent().parent().removeClass("focus");
+                                conId = $(this).parent().parent().attr("id"); 
+                                for(var i = 0; i < contacts.length; i++) {
+                                    if(conId === contacts[i].conId) {
+                                        contacts[i]["isOppyRole"] = false;
+                                    }
+                                }
+                                remote = "{!$RemoteAction.ExtOppy_PoliticalMap.deleteContactRole}";
+                                
+                                type = "del";
+                            }
+                            that._excuteContactRoleRemote(remote,conId, type, instance);
+                        });
+                        that._bindCreate(instance);   
+                    },
+                    _getContactRule: function(instance, accountId){
+                        if(!$("#"+accountId).find("input").prop("checked")){
+                            var that = this;
+                            that.container.find("svg").remove();
+                            that._setContactRuleData(accountId);
+                            that._getInfsData();
+                            that.dragWindows = jsPlumb.getSelector(".window");
+                            that._resetJsClumb(instance);
+                        }
+                    },
+                    _getAccountId: function(contact){
+                        var contactAcc = this.contactAcc;
+                        var len = contactAcc.length;
+                        for(var i = 0; i < len; i++) {
+                            if(contactAcc[i][0] == contact) {
+                                return contactAcc[i][1];
+                            }
+                        }
+                    },
+                    _checkHaveLink: function(instance, source, target, type) {
+                        var conns = instance.getAllConnections();
+                        for(var i = 0; i < conns.length; i++) {
+                            if(conns[i].connector && type === conns[i].connector.type && source === conns[i].sourceId && target === conns[i].targetId) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    },
+                    _resetJsClumb: function(instance) {
+                        instance.unmakeEveryTarget();
+                        instance.unmakeEverySource();
+                        instance.reset();
+                        this._initWindowPosition();
+                        this._bindCreate(instance);
+                    },
+                    _bindCreate: function(instance) {
+                        this._bindDraggable(instance);
+                        
+                        this._bindBeforeDrop(instance);
+                        
+                        this._initCreate(instance);
+
+                        this._connectNewContact(instance);
+
+                        this._deleteOrgAndConnect(instance);
+
+                        this._addOrgAndContactSuccess(instance);
+
+                        this._deleteOrgAndConnectSuccess(instance);
+
+                        
+                    },
+                    _bindBeforeDrop: function(instance){
+                        var that = this;
+                        instance.bind("beforeDrop", function(params) {
+                            if(!that._findInfsTarget(params.targetId)) {
+                                return false;
+                            }
+                            if(params.sourceId === params.targetId) {
+                                alert("{!$Label.PMV_political_error_not_point}");
+                            } else {
+                                if(that._checkHaveLink(instance, params.sourceId, params.targetId, params.connection.connector.type)){
+                                    if(that.dragWindows.is(":hidden")) {
+                                        alert("{!$Label.PMV_political_error_not_connect}");
+                                        return false;
+                                    } 
+                                    if(that.oppAndAcc.indexOf(params.targetId) >= 0) {
+                                       alert("{!$Label.PMV_political_error_contact_influence_root}");
+                                        return false;
+                                    }
+                                    else if(that.oppAndAcc.indexOf(params.sourceId) >= 0){
+                                        alert("{!$Label.PMV_political_error_root_influence_contact}");
+                                        return false;
+                                    }
+                                    //if(that._getAccountId(params.sourceId) != that._getAccountId(params.targetId)) {
+                                    //  alert("{!$Label.PMV_political_error_parent_report_child}");
+                                    //    return false;
+                                    //}
+                                    //return confirm("{!$Label.PMV_political_lab_connect} " + this._getParsonName(source) + " {!$Label.PMV_political_lab_to} " + this._getParsonName(target) + "{!$Label.PMV_political_lab_question_mark}");
+                                    return true;
+                                } else {
+                                    alert("{!$Label.PMV_political_error_not_influencers}");
+                                }
+                            } 
+                        });
+                    },
+                    _findInfsTarget: function(targetId) {
+                        if(this.zoom == 1) {
+                            return true;
+                        }
+                        var getEvent = function (){
+                           if(document.all) return window.event;
+                           func=getEvent.caller;
+                           while(func!=null){
+                             var arg0=func.arguments[0];
+                             if(arg0){
+                               if((arg0.constructor==Event || arg0.constructor ==MouseEvent) || (typeof(arg0)=="object" && arg0.preventDefault && arg0.stopPropagation)){
+                                 return arg0;
+                               }
+                             }
+                             func=func.caller;
+                           }
+                           return null;
+                        }
+                        var py = getEvent().clientY + $(document).scrollTop(),
+                            px = getEvent().clientX + $(document).scrollLeft(),
+                            targets = this.dragWindows;
+                        for(var i = 0; i < targets.length; i++) {
+                            var tp = $("#" + targets[i].id).offset();
+                            if((py - tp.top) < (135 * this.zoom) && (py - tp.top) > 0 && (px - tp.left) > 0 && (px - tp.left) < (212 * this.zoom)) {
+                                return (targetId == targets[i].id);
+                            }
+                        }
+                    },
+                    _initCreate: function(instance) {
+                        var parsonsData = this.parsonsData;
+                        var infsData = this.infsData;
+                        for(var a = 1; a < parsonsData.length; a++) {
+                            var parson = parsonsData[a];
+                            for(var i = 1; i < parson.length; i++) {
+                                this._connectInitOrg(instance, parson[i], parson[0]);
+                            }
+                        }  
+                        for(var j = 0; j < infsData.length; j++) {
+                            var infs = infsData[j];
+                            this._connectInitContact(instance, infs[0], infs[1]);
+                        }
+                    },
+                    _connectInitOrg: function(instance, orgSource, orgTarget, addOrg) {
+                        instance.connect({
+                            source: orgSource,
+                            target: orgTarget
+                        });
+                    },
+                    _setZoom: function(instance, el) {
+                        var p = [ "-webkit-", "-moz-", "-ms-", "-o-", "" ],
+                            z = this.zoom,
+                            s = "scale(" + z + ")";
+                        for (var i = 0; i < p.length; i++){
+                            el.css(p[i] + "transform", s);
+                        }
+                        
+                        if(!$.support.leadingWhitespace) {
+                            el.css("filter", " progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11="+z+", M12=0, M21=0, M22="+z+")"); 
+                        }
+                        
+                        instance.setZoom(z);    
+                    },
+                    _bindDraggable: function(instance) {
+                        var that = this;
+                        instance.draggable(that.dragWindows, {
+                            zIndex: 100,
+                            //stack: '.window',
+                            handle:'.itemHeader',
+                            start: function() {
+                                if(that.dragWindows.is(":hidden")) {
+                                    alert("{!$Label.PMV_political_not_drag}");
+                                    return false;
+                                } 
+                            },
+                            stop: function(event, ui) { 
+                                if(that.dragWindows.is(":hidden")) {
+                                    alert("{!$Label.PMV_political_error_drog_error}");
+                                    that._resetJsClumb(instance);
+                                    return false;
+                                } else {
+                                    if(that._findOrgTarget(instance, ui)) {
+                                        that._resetJsClumb(instance);
+                                    }
+                                }
+                            },
+                            drag: function(event, ui) {
+                                $("#"+ui.helper.context.id).zIndex(201);
+                            }
+                        }); 
+                    },
+                    _connectInitContact: function(instance, contactSource, contactTarget) {
+                        var that = this;
+                        instance.connect({
+                            source: contactSource,
+                            target: contactTarget
+                        }, that.contactOptions);
+                    },
+                    _findOrgTarget: function(instance, obj) {
+                        var isRoot = false, 
+                            isSourceSingle = true, 
+                            isSingle = true, 
+                            parsonsData = this.parsonsData,
+                            source = obj.helper.attr("id"),
+                            targets = this.dragWindows;
+                            target = "",
+                            py = obj.offset.top,
+                            px = obj.offset.left;
+                        for(var i = 0; i < targets.length; i++) {
+                            var tp = $("#" + targets[i].id).offset();
+                            //alert(this.zoom);
+                            if(targets[i].id !== source && Math.abs(py - tp.top) < this.POSH && Math.abs(px - tp.left) < this.POSW) {
+                                target = targets[i].id;
+                                if($("#" + target).hasClass("isAccount")) {
+                                    alert("{!$Label.PMV_political_error_contact_report_to_root}");
+                                } else {
+                                    if(this._checkHaveLink(instance, source, target, "Flowchart")) {
+                                        for(var j = 1; j < parsonsData.length; j++) {
+                                            for(var k = 0; k < parsonsData[j].length; k++) {
+                                                if(target === parsonsData[j][k]) {
+                                                    isSingle = false;
+                                                }
+                                                if(source === parsonsData[j][k]) {
+                                                    isSourceSingle = false;
+                                                }
+                                            }
+                                        }
+                                        if(parsonsData.length === 0) {
+                                            this._connectNewOrg(instance, source, target, true);
+                                            return false;
+                                        }
+                                        if(source === parsonsData[0][0]) {
+                                            isRoot = true;
+                                        }
+                                        
+                                        if(((!isSingle && !isRoot) || (isSingle && isRoot) || (isSourceSingle && !isSingle)) && this._checkParents(source, target)) {
+                                            if(this._getAccountId(source) != this._getAccountId(target)) {
+                                                alert("{!$Label.PMV_political_error_parent_report_child}");
+                                            }else {
+                                                this._connectNewOrg(instance, source, target, true);
+                                            }
+                                            //}
+                                        } else {
+                                            alert("{!$Label.PMV_political_error_parent_report_child}");
+                                        }
+                                    } else {
+                                        alert("{!$Label.PMV_political_error_not_contact}");
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    },
+                    _connectNewOrg: function(instance, orgSource, orgTarget, options) {
+                        instance.makeSource(orgSource, options);
+                        this._connectInitOrg(instance, orgSource, orgTarget, true);
+                    },
+                    _connectNewContact: function(instance) {
+                        var that = this;
+                        instance.makeSource(
+                            that.dragWindows, 
+                            that.contactOptions
+                        );         
+                        instance.makeTarget(that.dragWindows); 
+                    },
+                    _deleteOrgAndConnect: function(instance) {
+                        var that = this;
+                        instance.bind("dblclick", function(conn, originalEvent) {
+                            if(conn.targetId == that._getAccountId(conn.sourceId)) {
+                                alert("{!$Label.PMV_political_error_parent_report_child}");
+                                return false;
+                            }
+                            if(that.dragWindows.is(":hidden")) {
+                                alert("Please Expand all Contacts!");
+                                return false;
+                            } 
+                            that.isDblclick = true;
+                                if(conn.connector.type === "Flowchart") {
+                                    that.isDblclick = true;
+                                }
+                                showSmallLoading();
+                                bindBeforeunload();
+                                instance.detach(conn);     
+                            //}
+                        }); 
+                    },
+                    _deleteOrgAndConnectSuccess: function(instance) {
+                        var that = this;
+                        instance.bind("connectionDetached", function(info) {
+                            if(that.isDblclick) {
+                                that.isDblclick = false;  
+                                if(info.connection.connector.type === "Bezier") {
+                                    that._remoteDeleteContact(instance, info.sourceId, info.targetId);
+                                } else {
+                                    that._remoteDeleteOrg(instance, info.sourceId, info.targetId);
+                                }  
+                            } 
+                        });
+                    }, 
+                    _addOrgAndContactSuccess: function(instance) {
+                        var that = this;
+                        instance.bind("connection", function(info){
+                            if(info.connection.connector.type === "Flowchart") {
+                                that._remoteAddOrg(instance, info.sourceId, info.targetId);
+                            } else {
+                                that._remoteAddContact(instance, info.sourceId, info.targetId);
+                            }
+                        });
+                    },
+                    _remoteAddOrg: function(instance, sourceId, targetId) {
+                        var allCon = instance.getAllConnections(), isRoot = true, isChild = false;
+                        for(var i = 0; i < allCon.length; i++) {
+                            if(sourceId == allCon[i].sourceId && targetId != allCon[i].targetId && allCon[i].connector.type !== "Bezier") {
+                                this._changeZList(sourceId, allCon[i].targetId, "delete");
+                                this._changeContacts(sourceId, allCon[i].targetId, "delete");
+                                break;
+                            }
+                        }
+                        this._changeZList(sourceId, targetId, "add");
+                        this._changeContacts(sourceId, targetId, "add");
+                        this._getContactRule(instance, this._getAccountId(sourceId));
+                        this._resetJsClumb(instance); 
+                        this._excuteContactRemote("create", sourceId, targetId);
+                    },
+                    _remoteDeleteOrg: function(instance, sourceId, targetId) {
+                            this._changeZList(sourceId, targetId, "delete");
+                            this._changeContacts(sourceId, targetId, "delete");
+                            this._getContactRule(instance, this._getAccountId(sourceId));
+                            this._resetJsClumb(instance); 
+                            this._excuteContactRemote("delete", sourceId, targetId);                        
+                    },
+                    _excuteContactRemote: function(type, sourceId, targetId) {
+                        showSmallLoading();
+                        bindBeforeunload();
+                        var remote = "{!$RemoteAction.ExtOppy_PoliticalMap.deleteContactReportTo}";
+                        if(type === "create")
+                            remote = "{!$RemoteAction.ExtOppy_PoliticalMap.createContactReportTo}";
+                        Visualforce.remoting.Manager.invokeAction(remote, targetId, sourceId, function(result, event) {
+                            unBindBeforeunload();
+                            hideSmallLoading();
+                            if (event.status) {
+                                if (result != "success") {
+                                    if(result.indexOf("first error:") != -1)
+                                        result = (result.substring(result.indexOf(",", result.lastIndexOf("first error:")) + 2, result.indexOf(": [")));
+                                    
+                                    result = _.unescape(result);
+                                    $(".error-popup p").html(result);
+                                    showError();
+                                    return false; 
+                                } 
+                            } else {
+                                $(".error-popup p").html(event.message);
+                                //$(".error-popup p").html("{!$Label.PMV_assessment_communication_error}");
+                                showError();
+                                return false;
+                                        }
+                        });
+                    },
+                    _excuteCreateContact: function($container, result, instance) { 
+                        
+                        var that = this;
+                        $(".tmpteamcls input").val("");
+                        $(".tmpteamcls select").val("");
+                            hideLoading();
+                            unBindBeforeunload();
+                        if(result && result.indexOf("{") > -1) {
+                            $("#convas").html(result);
+                            result = $.parseJSON(result);
+                        };
+                            if (typeof result == 'object') {
+                                result["reportsToId"] = that.accountId;
+                                that.jsonContacts.push(result);
+                                $container.append(that._drawParson(result));
+                                that._changeZList(result.conId, that.accountId, "add");
+                                that.dragWindows = jsPlumb.getSelector(".window");
+                                that._resetJsClumb(instance); 
+                                this.tempInstance = instance;
+                                that.contactAcc.push([result.conId, that.accountId]);
+                            } else {
+                                $(".error-popup p").html(result);
+                                showError();
+                                return false;
+                            }
+                        
+                    },
+                    _remoteAddContact: function(instance, sourceId, targetId) {
+                        var arr = [sourceId, targetId];
+                        this._changeInfsData(arr, "add");
+                        this.jsonInfs.push({"Contact_Influencing__c":sourceId,"Contact_influenced__c":targetId})
+                        this._resetJsClumb(instance); 
+                        this._excuteInfsRemote("create", sourceId, targetId);
+                    },
+                    _remoteDeleteContact: function(instance, sourceId, targetId) {
+                        var arr = [sourceId, targetId];
+                        this._changeInfsData(arr, "delete");
+                        var infs = this.jsonInfs;
+                        for(var i = 0; i < infs.length; i++) {
+                            if(infs[i]["Contact_Influencing__c"] == sourceId && infs[i]["Contact_influenced__c"] == targetId) {
+                                infs.splice(i, 1);
+                                break;
+                            } 
+                        }
+                        this.jsonInfs = infs;
+                        this._resetJsClumb(instance); 
+                        this._excuteInfsRemote("delete", sourceId, targetId);
+                    },
+                    _excuteInfsRemote: function(type, sourceId, targetId) {
+                        showSmallLoading();
+                        bindBeforeunload();
+                        var remote = "{!$RemoteAction.ExtOppy_PoliticalMap.deleteInf}";
+                        if(type === "create")
+                            remote = "{!$RemoteAction.ExtOppy_PoliticalMap.createInf}";
+                        Visualforce.remoting.Manager.invokeAction(remote, "{!Id}", targetId, sourceId, function(result, event) {
+                            hideSmallLoading();
+                            unBindBeforeunload();
+                            if (event.status) {
+                                if (result != "success") {
+                                    if(result.indexOf("first error:") != -1)
+                                        result = (result.substring(result.indexOf(",", result.lastIndexOf("first error:")) + 2, result.indexOf(": [")));
+                                    $(".error-popup p").html(result);
+                                    showError();
+                                    return false;
+                                } 
+                            } else {
+                                $(".error-popup p").html(event.message);
+                                //$(".error-popup p").html("{!$Label.PMV_assessment_communication_error}");
+                                showError();
+                                return false;
+                            }
+                        });
+                    },
+                    _excuteContactRoleRemote: function(remote, conId, type, instance) {
+                        var that = this;
+                        showSmallLoading();
+                        bindBeforeunload();
+                        if(type === "add") {
+                            Visualforce.remoting.Manager.invokeAction(remote, "{!Id}", conId, null, function(result, event) {
+                                hideSmallLoading();
+                                unBindBeforeunload();
+                                if (event.status) {
+                                    if (result != "success") {
+                                        if(result.indexOf("first error:") != -1)
+                                            result = (result.substring(result.indexOf(",", result.lastIndexOf("first error:")) + 2, result.indexOf(": [")));
+                                        $(".error-popup p").html(result);
+                                        showError();
+                                        return false;
+                                    } 
+                                } else {
+                                    $(".error-popup p").html(event.message);
+                                    //$(".error-popup p").html("{!$Label.PMV_assessment_communication_error}");
+                                    showError();
+                                    return false;
+                                }
+                            });
+                        }
+                        if(type === "del") {
+                        setTimeout(function(){that._getContactRule(instance);}, 50);
+                            
+                            Visualforce.remoting.Manager.invokeAction(remote, "{!Id}", conId, function(result, event) {
+                                hideSmallLoading();
+                                unBindBeforeunload();
+                                if (event.status) {
+                                    if (result != "success") {
+                                        if(result.indexOf("first error:") != -1)
+                                            result = (result.substring(result.indexOf(",", result.lastIndexOf("first error:")) + 2, result.indexOf(": [")));
+                                        $(".error-popup p").html(result);
+                                        showError();
+                                        return false;
+                                    } 
+                                } else {
+                                    $(".error-popup p").html(event.message);
+                                    //$(".error-popup p").html("{!$Label.PMV_assessment_communication_error}");
+                                    showError();
+                                    return false;
+                                }
+                            });
+                        }
+                    },
+                    _drawParsons: function(testData) {
+                        var str = "";
+                        for (var j = 0; j<testData.length; j++) {
+                            str += this._drawParson (testData[j]);
+                        }
+                        return str;
+                    },
+                    _drawParson: function(parsonData) {
+                        var str = "", focusCss = "", buttonValue = "", isAccount = "";
+                        var point = parsonData.focusPoint == null ? "" : parsonData.focusPoint;
+                        //var npsStatus = parsonData.NPSStatus == null ? "Neutral" : parsonData.NPSStatus;
+                        
+                        //var obj = {"Detractor":"DE", "Passive":"PA","Promoter":"PR","Non-Participant":"NP","No-Response":"NR"};
+                        var npsStatus = parsonData.NPSStatus || "Non-Participant"; 
+                        //npsStatus = obj[npsStatus];
+                        if(parsonData.isOppyRole){
+                            focusCss = "focus";
+                            buttonValue = "{!$Label.PMV_political_btn_cancel}";
+                        }
+                        else{
+                            focusCss = " ";
+                            buttonValue = "{!$Label.PMV_political_btn_add}";
+                        }
+                        if(parsonData.isAccount){
+                            isAccount = " isAccount";
+                        }
+                        str = ['<div class="window '+ focusCss + isAccount +'" id="'+ parsonData.conId +'" focus="' + point + '" npsStatus="' + npsStatus + '">'];
+                        var showKey = false;
+                        if(point.indexOf("FOD") >=0 || point.indexOf("FOP") >=0){
+                            showKey = true;
+                        }
+                        this._drawParsonHead(str,parsonData);
+                        this._drawParsonBody(str,parsonData, showKey);
+                        str.push ('</div>');
+                        str = str.join('');
+                        
+                        return str;
+                    },
+                    _drawParsonHead: function(str,parsonData) {
+                        var buttonValue = "";
+                        var className = "";
+                        var itemBtnStr = "";
+                        var name = parsonData.firstName == null? "" : parsonData.firstName;
+                        if(name == "") {
+                            name = parsonData.lastName == null? "" : parsonData.lastName;
+                        }else {
+                            name += parsonData.lastName == null? "" : " " + parsonData.lastName;
+                        }
+                        if(parsonData.isOppyRole){
+                            buttonValue = "{!$Label.PMV_political_btn_cancel}";
+                            className = "cancelStyle";
+                        }
+                        else{
+                            buttonValue = "{!$Label.PMV_political_btn_add}";
+                            className = "addStyle";
+                        }
+                        if(!parsonData.isAccount){
+                            itemBtnStr = '<span class="itemBtn '+ className +'" title="'+ buttonValue +'"></span>';
+                        } else {
+                            name = parsonData.Account_Combined_Data__c;
+                        }
+                        
+                        var position = parsonData.positionType == null? "" : parsonData.positionType;
+                        if(!parsonData.isAccount)
+                            str.push ('<span class="windowIcon"></span><div class="pad5 itemHeader">',
+                            '<span class="ctcName textSpan" title="' + name + '">' + name + '</span><br/><span class="textSpan" title="{!$Label.PMV_political_lab_position} ' + position + '">{!$Label.PMV_political_lab_position} ' + position + '</span>'+ itemBtnStr +'', 
+                            '</div><div class="changeBtn"><div><span class="changeValue">－</span></div></div>');
+                        else
+                            str.push ('<span class="windowIcon"></span><div class="pad5 itemHeader">',
+                            '<span class="ctcName textSpan" title="' + name + '">' + name + '</span>', 
+                            '</div><div class="changeBtn"><div><span class="changeValue">－</span></div></div>');
+                        return str;
+                    },
+                    _drawParsonBody: function(str,parsonData, showKey) {
+                        var accountStr = '';
+                        var department = parsonData.departmentType == null? "" : parsonData.departmentType;
+                        var reportToName = parsonData.reportToName || "";
+                        if(parsonData.reportToName) {
+                            reportToName = "{!$Label.PMV_political_report_to} " + reportToName;
+                        }
+                        var keyDoc = '<span class="keyIcon" style="display:none;"></span>';
+                        if(showKey) {
+                            keyDoc = '<span class="keyIcon"></span>';
+                        }
+                        
+                        if(!parsonData.isAccount){                        
+                            str.push ('<div class="itemContent"><div class="itemWrapper"><div class="pad4"><span>',
+                                '' + department + '</span></div><div class="pad4"><span>' + reportToName + '</span></div></div><div class="itemIcon">' + keyDoc + '</div><div class="accIconsDiv">',
+                                '<div class="npsStatus"><span class="rightIcon"></span></div>',
+                                '<div class="focusPoint"><span class="lampIcon"></span></div>',
+                                '<div class="rating"><span class="dotIcon"></span></div>',
+                                '<div style="display: none;"><span class="threeIcon"></span></div>',
+                                '<div style="display: none;"><span class="sureIcon"></span></div></div></div>'); 
+                        } else {
+                            if(!parsonData.isOppy) {
+                                str.push('<div class="itemContent"><div class="itemWrapper"><input type="checkbox" /> Show All</div><div class="itemIcon"></div><div class="accIconsDiv"></div></div>');
+                            } else {
+                                str.push('<div class="itemContent"><div class="itemWrapper"></div><div class="itemIcon"></div><div class="accIconsDiv"></div></div>');
+                            }
+                            
+                        }
+                        return str; 
+                    },
+                    _initWindowPosition: function() { 
+                        var orgChart = this;
+                        var list = this.parsonsData;
+                        for(var i = 0; i < list.length; i++) {
+                            var str = "";
+                            if (i === 0) {
+                                str = '<table border="0" cellspacing="0" cellpadding="0" valign="top" align="center"><tr><td valign="top" align="center">'+list[i][0]+'</td></tr><tr><td><table border="0" cellspacing="0" cellpadding="0"><tr>';
+                                if(list[i + 1]) {
+                                    for(var j = 1; j < list[i + 1].length; j++) {
+                                        str += '<td id="con-'+list[i + 1][j]+'" valign="top" align="center"></td>';
+                                    }
+                                    str += '</tr></table></td></tr></table>';
+                                }
+                                $("#chart-demo").append(str);
+                            } else {
+                                for(var j = 1; j < list[i].length; j++){
+                                    str = '<table border="0" cellspacing="0" cellpadding="0" inner="'+list[i][j]+'"><tr><td valign="top" align="center">'+list[i][j]+'</td></tr><tr><td><table border="0" cellspacing="0" cellpadding="0"><tr>';
+                                    for(var k = 1; k < list.length; k++) {
+                                        if(list[k][0] === list[i][j]) {
+                                            for(var l = 1; l < list[k].length; l++) {
+                                                str += '<td id="con-'+list[k][l]+'" valign="top" align="center"></td>';
+                                            }
+                                        }
+                                    }
+                                    str += '</tr></table></td></tr></table>';
+                                    $("#chart-demo").append(str);
+                                }
+                            }
+                        }
+                        $("#chart-demo > table").each(function(){
+                            if($(this).attr("inner")) {
+                                $("#con-"+$(this).attr("inner")).append($(this));
+                            }
+                        });
+                        $("#chart-demo tr").each(function(){
+                            if(!$(this).text()) {
+                                $(this).remove();
+                            }
+                        });
+                        $("#chart-demo > table td").each(function() {
+                            var that = this;
+                            if($(that).children().size() === 0){
+                                var $child = $("#"+$(that).text());
+                                var left = ($(that).width() - $child.width()) * orgChart.zoom/2 + $(that).offset().left - $("#chart-demo").offset().left;
+                                var top = $(that).offset().top + 20 - $("#chart-demo").offset().top;//$(that).offset().top - $("#chart-demo").offset().top + 20
+                                $child.css({"left": left/orgChart.zoom, "top": top/orgChart.zoom});
+                                //if($child.hasClass("isAccount")) {
+                                    //$child.css({"left": left, "top": top/orgChart.zoom});
+                                //}
+                            }
+                        });
+                        $("#chart-demo > table").remove();
+                        var z = 0;
+                        $("#chart-demo > div").each(function() {
+                            var flag = true;
+                            for(var i = 0; i < list.length; i++) {
+                                for(var j = 0; j < list[i].length; j++) {
+                                    if(this.id === list[i][j]) {
+                                        flag = false;
+                                    }
+                                }
+                            }
+                            if(flag) {
+                                $(this).css({"left": 30, "top": z * 140});
+                                z++;
+                            }
+                        });
+                    },
+                    _changeZList: function(sourceId, targetId, type) {
+                        var zlist = this.parsonsData;
+                        var accountId = this._getAccountId(sourceId);
+                        if (type == "add"){
+                            var arr = [];
+                            var zArr = [];
+                            if(zlist.length === 1) {
+                                zlist.push([targetId, sourceId]);
+                            } else {
+                                if (sourceId == zlist[0][0]) {
+                                    var oldParent = zlist[0][0];
+                                    arr.push([targetId]);
+                                    zArr.push(targetId);
+                                    zArr.push(oldParent);
+                                    arr.push(zArr);
+                                    zlist.splice(0, 1);
+                                    zlist = arr.concat(zlist);
+                                }
+                                else {
+                                    var flag = true;
+                                    for(var k = 2; k < zlist.length; k++) {
+                                        if(accountId == zlist[k][0]) {
+                                            for(var z = 1; z < zlist[k].length; z++) {
+                                                if(sourceId === zlist[k][z]) {
+                                                    zlist[k].splice(z, 1);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    /*for(var k = 0; k < zlist[1].length; k++) {
+                                    
+                                        if(zlistsourceId === zlist[1][k]) {
+                                            zlist[1].splice(k, 1);
+                                            break;
+                                        }
+                                    }*/
+                                    for (var i = 1; i < zlist.length; i++) {
+                                        if (zlist[i][0] == targetId){
+                                            zlist[i].splice(zlist[i].length, 0, sourceId);
+                                            flag = false;
+                                        }
+                                    }
+                                    if(flag) {
+                                        var newReport = [targetId, sourceId];
+                                        //get add array index 
+                                        var zlistIndex = zlist.length;
+                                        for (var i = 1; i < zlistIndex; i++) {
+                                            if (zlist[i][0] == sourceId){
+                                                zlist.splice(i, 0, newReport);
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                        if(flag) {
+                                            zlist.push(newReport);
+                                        } 
+                                        //zlist.push(newReport);
+                                    }
+                                }
+                                for(var j = 1; j < zlist.length; j++) {
+                                    if(zlist[j].length === 1) {
+                                        zlist.splice(j, 1);
+                                    }
+                                }
+                            }
+                            this.parsonsData = zlist;
+                        }
+                        else if (type == "delete"){
+                            
+                            var flag = false;
+                            for (var i = 2; i < zlist.length; i++) {
+                                for (var j = 1; j < zlist[i].length; j++) {
+                                    
+                                    if (zlist[i][j] == sourceId) {
+                                        zlist[i].splice(j, 1);
+                                        if(zlist[i].length === 1) {
+                                            zlist.splice(i, 1);
+                                        }
+                                        if(zlist.length === 1)
+                                            zlist = []
+                                        //zlist[1].push(sourceId);
+                                        flag = true;
+                                        break;
+                                        
+                                        //this.parsonsData = zlist;
+                                        //return;
+                                    }
+                                }
+                                if(flag)
+                                    break;
+                            }
+                            for(var i = 2; i < zlist.length; i++) {
+                                if(zlist[i][0] == accountId) {
+                                            zlist[i].push(sourceId);
+                                            this.parsonsData = zlist;
+                                            return;
+                                        }
+                            }
+                        }
+                    },
+                    _getContactData: function(accountId) {
+                        data = this.jsonContacts;
+                        var parsonD = this.parsonsData;
+                        var arrs = [];
+                        if(accountId) {
+                            var parsonDL = parsonD.length;
+                            for(var i = parsonDL - 1; i >= 2; i--) {
+                                if(parsonD[i][0] == accountId || this._getAccountId(parsonD[i][0]) == accountId){
+                                    parsonD.splice(i, 1);
+                                }
+                            }
+                            arrs = parsonD;
+                        }
+                        var temp = [];
+                        for(var i = 0; i < data.length; i++) {
+                            var rid = data[i].reportsToId;
+                            var id = data[i].conId;
+                            if(!accountId || data[i].accId == accountId){
+                                if(!data[i].reportsToId && arrs.length === 0) {
+                                    for(var j = 0; j < data.length; j++) {
+                                        if(data[i].conId === data[j].reportsToId && (data[j].accId == accountId)) {
+                                            var arr = [data[i].conId];
+                                            arrs.push(arr);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    if(rid) {
+                                        temp.push([rid, id]);
+                                    }
+                                }
+                            }
+                        }
+                        var tempL = arrs.length;
+                        for(var j = arrs.length - 1; j < arrs.length; j++) {
+                            var arr = [];
+                            /*if(accountId) {
+                            if(j == tempL - 1) {
+                                arr.push(accountId);
+                                for(var i = 0; i <temp.length; i++) {
+                                    if(arrs[j][0] === temp[i][0]) {
+                                        arr.push(temp[i][1]);
+                                    }  
+                                }
+                                arrs.push(arr);
+                            }
+                                
+                                
+                            } else {*/
+                                if(j == tempL - 1) {
+                                    
+                                    if(!accountId)
+                                        accountId = arrs[j][0];
+                                    arr.push(accountId);
+                                    for(var i = 0; i <temp.length; i++) {
+                                        if(accountId === temp[i][0]) {
+                                            arr.push(temp[i][1]);
+                                        }  
+                                    }
+                                    arrs.push(arr);
+                                }
+                                else {
+                                    if(arrs.length > 0) {
+                                        for(var i = 1; i < arrs[j].length; i++) {
+                                            arr = []
+                                            arr.push(arrs[j][i]);
+                                            for(var k = 0; k <temp.length; k++) {
+                                                if(arrs[j][i] === temp[k][0]) {
+                                                    arr.push(temp[k][1]);
+                                                }
+                                            }
+                                            if(arr.length > 1)
+                                                arrs.push(arr);
+                                        }
+                                    }
+                                }
+                            //}
+                        }
+                        if(arrs.length === 0) {
+                            var arr = [data[0].conId];
+                            arrs.push(arr);
+                        }
+                        this.parsonsData = arrs;
+                    },
+                    _getInfsData: function() {
+                        var datas = this.jsonInfs;
+                        var infsDatas = [];
+                        var arrs = this.parsonsData;
+                        var z = 0;
+                        for(var i = 0; i < datas.length; i++) {
+                            var arr = [datas[i].Contact_Influencing__c, datas[i].Contact_influenced__c];
+                            z = 0;
+                            if(datas[i].Contact_Influencing__c === arrs[0][0] || datas[i].Contact_influenced__c === arrs[0][0])
+                                z++;
+                            for(var j = 1; j < arrs.length; j++) {
+                                for(var k = 1; k < arrs[j].length; k++) {
+                                    if(datas[i].Contact_Influencing__c === arrs[j][k] || datas[i].Contact_influenced__c === arrs[j][k]) {
+                                        z++;
+                                    }
+                                }
+                            }
+                            if(z == 2) {
+                                infsDatas.push(arr);
+                            }
+                        }
+                        this.infsData = infsDatas;
+                    },
+                    _changeInfsData: function(arr, type) {
+                        var infsData = this.infsData;
+                        if(type === "add") {
+                            infsData.push(arr);
+                        }
+                        if(type === "delete") {
+                            for(var i = 0; i < infsData.length; i++) {
+                                if(infsData[i][0] == arr[0] && infsData[i][1] == arr[1]) {
+                                    infsData.splice(i, 1);
+                                }
+                            }
+                        }
+                        this.infsData = infsData;
+                    },
+                    _changeContacts: function(sourceId, targetId, type) {
+                        var contacts = this.jsonContacts;
+                        if(type === "add") {
+                            for(var i = 0; i < contacts.length; i++) {
+                                if(sourceId === contacts[i].conId) {
+                                    contacts[i]["reportsToId"] = targetId;
+                                    break;
+                                }
+                            }
+                        } else {
+                            for(var i = 0; i < contacts.length; i++) {
+                                if(sourceId === contacts[i].conId) {
+                                    contacts[i]["reportsToId"] = contacts[i]["accId"];;
+                                    break;
+                                }
+                            }
+                        }
+                        this.jsonContacts = contacts;
+                    },
+                    _checkParents: function(parent, child) {
+                        var arrs = this._getSelParsons([parent]);
+                        for(var i = 0; i < arrs.length; i++) {
+                            for(var j = 0; j < arrs[i].length; j++) {
+                                if(child === arrs[i][j]){
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    },
+                    _getSelParsons: function(arr) {
+                        if(!arr) {
+                            arr = this.parsonsData[0];
+                        }
+                        var arrs = [];
+                        while (arr.length > 0){
+                            arrs.push(arr);
+                            arr = this._getChildrens(arr);
+                        }
+                        return arrs;
+                    },
+                    _getChildrens: function(obj) {
+                        var arr = [], parsonsData = this.parsonsData;
+                        for(var i = 1; i < parsonsData.length; i++) {
+                            for(var j = 0; j < obj.length; j++) {
+                                if(parsonsData[i][0] === obj[j]) {
+                                    for(var k = 1; k < parsonsData[i].length; k++) {
+                                        arr.push(parsonsData[i][k]);
+                                    }
+                                }
+                            }
+                        }
+                        return arr;
+                    },
+                    _showOrHideParsons: function(arrs, instance, type) {
+                        for(var i = 1; i < arrs.length; i++) {
+                            for(var j = 0; j < arrs[i].length; j++) {
+                                if(type === "show") {
+                                    instance.show(arrs[i][j], true);
+                                    var $sel = $("#"+arrs[i][j]);
+                                    $sel.show();
+                                    $sel.children(".itemContent").show();
+                                    $sel.children(".changeBtn").find("div").find("span").html("－");
+                                } else {
+                                    instance.hide(arrs[i][j], true);
+                                    $("#"+arrs[i][j]).hide();
+                                }
+                            }
+                        }
+                    },
+                    _getParsonName: function(id) {
+                        var contacts = this.jsonContacts;
+                        for(var i = 0; i < contacts.length; i++) {
+                            if(contacts[i].conId === id) {
+                                var name = contacts[i].firstName == null? "" : contacts[i].firstName;
+                                if(name == "") {
+                                    name = contacts[i].lastName == null? "" : contacts[i].lastName;
+                                }else {
+                                    name += " " + contacts[i].lastName == null? "" : contacts[i].lastName;
+                                }
+                                return name;
+                            }
+                        }
+                    }, 
+                    _showContactRole: function(instance) {
+                        var arrs = this._getSelParsons();
+                        var contacts = this.jsonContacts;
+                        var conns = instance.getAllConnections();
+                        var flag = true;
+                        for(var i = arrs.length - 1; i > 0; i--) {
+                            for(var j = 0; j < arrs[i].length; j++) {
+                                for(var k = 0; k < contacts.length; k++) {
+                                    if(arrs[i][j] === contacts[k].conId) {
+                                        if(!contacts[k].isOppyRole) {
+                                            flag = true;
+                                            for(var l = 0; l < conns.length; l++) {
+                                                if(conns[l].targetId === arrs[i][j] && conns[l].connector.type === "Flowchart" && conns[l].isVisible()) {
+                                                    flag = false;
+                                                }
+                                            }
+                                            if(flag) {
+                                                $("#" + arrs[i][j]).hide();
+                                                instance.hide(arrs[i][j], true);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                        
+                                }
+                            }
+                            
+                        }
+                    },
+                    _setContactRuleData: function(accountId) {
+                        var arrs = this.parsonsData;
+                        var contacts = this.jsonContacts;
+                        var flag = false;
+                        for(var i = arrs.length - 1; i > 0; i--) {
+                            for(var j = arrs[i].length - 1; j > 0; j--) {
+                                for(var k = contacts.length -1; k >= 0; k--) {
+                                    if(arrs[i][j] === contacts[k].conId && !contacts[k].isOppyRole && (accountId === '' || contacts[k].accId === accountId)) {
+                                        flag = true;
+                                        for(var l = arrs.length - 1; l > 0; l--) {
+                                            if(arrs[i][j] === arrs[l][0]) {
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                        if(flag) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(flag) {
+                                    flag = false;
+                                    $("#" + arrs[i][j]).remove();
+                                    arrs[i].splice(j, 1);
+                                    if(i !== 0 && arrs[i].length === 1) {
+                                        arrs.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                            
+                        }
+                        this.parsonsData = arrs;
+                    },
+                    _getAllContacts: function(accountId) {
+                        var arrs = this.parsonsData;
+                        var contacts = this.jsonContacts;
+                        var newContact = [];
+                        var flag = true;
+                        for(var i = 0; i < contacts.length; i++) {
+                            if(accountId == contacts[i].accId) {
+                                flag = true;
+                            }else{
+                                flag = false;
+                            }
+                            for(var j = 0; j < arrs.length; j++) {
+                                for(var k = 0; k < arrs[j].length; k++) {
+                                    if(contacts[i].conId === arrs[j][k]) {
+                                        flag = false;
+                                        break;
+                                    }
+                                }
+                                if(!flag)
+                                    break;
+                            }
+                            if(flag) {
+                                newContact.push(contacts[i]);
+                            }
+                        }
+                        this.container.append(this._drawParsons(newContact));
+                    }
+                }
+        var iconIndex, className1,className2;
+        var iconHover;
+        function backHide(){
+            $("#popup-back").hide();
+       }
+       function backShow(){
+            $("#popup-back").show();
+       }
+       function showError(){
+            backShow();
+            $(".error-popup").show();
+       }
+       function hideError(){
+            $(".error-popup").hide();
+            backHide();
+       }
+       function showLoading(){
+            $("#mask").show();
+       }
+       function hideLoading(){
+            $("#mask").hide();
+       }
+       function showSmallLoading(){
+            $(".floatLoading").show();
+       }
+       function hideSmallLoading(){
+            $(".floatLoading").hide();
+       }
+       var testOrg = null;
+       function newContact(){
+            testOrg.getContact();
+        }
+        $(function(){
+            $("head").prepend('<title>Political Map</title>');
+            var contactAcc = [];
+            for(var i = 0; i < list_cons.length; i++) {
+                contactAcc.push([list_cons[i].conId, list_cons[i].accId]);
+                if(!list_cons[i].reportsToId) {
+                    list_cons[i]["reportsToId"] = list_cons[i].accId;
+                }
+            }
+            var list_acc_length = list_acc.length;
+            var oppAndAccount = "{!Id}";
+            for(var i = 0; i < list_acc_length; i++) {
+                list_cons.push($.parseJSON('{"isOppyRole":true, "isAccount":true, "Account_Combined_Data__c":"'+list_acc[i].Account_Combined_Data__c+'","conId":"'+list_acc[i].Id+'","reportsToId":"{!Id}"}'));
+                oppAndAccount += "," + list_acc[i].Id;
+            }
+            //accountParson = $.parseJSON('{"isOppyRole":true, "isAccount":true, "firstName":"{!acc.Name}", "lastName":"", "positionType":"","departmentType":"","conId":"{!acc.Id}"}'),
+            oppyObj.Account_Combined_Data__c = "{!JSENCODE(opportunity.Name)}";
+            function sortNumber(a, b) {
+                if(!a.firstName) {
+                    a.firstName = '';
+                }
+                if(!a.lastName) {
+                    a.lastName = '';
+                }
+                if(!b.firstName) {
+                    b.firstName = '';
+                }
+                if(!b.lastName) {
+                    b.lastName = '';
+                }
+                return a.firstName.toLowerCase() + a.lastName.toLowerCase() > b.firstName.toLowerCase() + b.lastName.toLowerCase() ? 1 : -1;
+            }
+            list_cons.sort(sortNumber);
+            list_cons.push(oppyObj);
+            testOrg = orgAndContact;
+            testOrg.create($('#chart-demo'), list_cons, list_infs, oppAndAccount, contactAcc);
+            
+            $(".centerDiv input").eq(0).css({"margin-right":"6px","width":"123px"});
+            $(".centerDiv input").eq(1).css({"margin":"7px 6px;"});
+            $("#chart-demo").on("mouseover", ".accIconsDiv div", function(){
+                    if(!$(this).parentsUntil(".window").parent().hasClass("focus")) {
+                        return;
+                    } 
+                    var $showCon = $(".windowIconPopup").children();
+                    $showCon.hide();
+                    $showCon.eq(0).show();
+                    if($(this).hasClass("npsStatus")) {
+                        $showCon.eq(1).show();
+                    }
+                    if($(this).hasClass("focusPoint")) {
+                        $showCon.eq(2).show();
+                    }
+                    if($(this).hasClass("rating")) {
+                        if(!$(this).parentsUntil(".window").parent().find(".keyIcon").is(":hidden")) {
+                            $showCon.eq(3).show();
+                        } else {
+                            $showCon.eq(0).hide();
+                            return;
+                        }
+                    }
+                    var contact = $(this).parentsUntil(".window").parent().attr("id");
+                    var pArr = $(this).parentsUntil(".window").parent().attr("focus").split(";");
+                    $(".npsStatus .popupContent div").html("<span>"+$(this).parentsUntil(".window").parent().attr("npsStatus")+"</span>");
+                    var keyPlayers = "";
+                    var mirrorPri = ["{!$Label.PMV_political_priority_1}", "{!$Label.PMV_political_priority_2}", "{!$Label.PMV_political_priority_3}", "{!$Label.PMV_political_priority_4}", "{!$Label.PMV_political_priority_5}"];
+                    for(var j = 0; j < list_keyPlayers.length; j++) {
+                        if(list_keyPlayers[j].conId === contact) {
+                            keyPlayers += "<div><span>"+list_keyPlayers[j].decisionCriteriaName+" - "+mirrorPri[parseInt(list_keyPlayers[j].priority) - 1]+"</span></div>";
+                        }
+                    }
+                    if(keyPlayers.length <= 0 && list_keyPlayers.length > 0) {
+                        var tempContact = list_keyPlayers[0].conId;
+                        for(var j = 0; j < list_keyPlayers.length; j++) {
+                            if(list_keyPlayers[j].conId === tempContact) {
+                                keyPlayers += "<div><span>"+list_keyPlayers[j].decisionCriteriaName+" - "+mirrorPri[0]+"</span></div>";
+                            }
+                        }
+                    }
+                    $(".rating .popupContent").html(keyPlayers);
+                    $(".tag").removeClass("tagSelect");
+                    for(var i = 0; i < pArr.length; i++) {
+                        if(pArr[i].indexOf("FOR") >= 0) {
+                            $(".for").addClass("tagSelect");
+                        }
+                        if(pArr[i].indexOf("FOD") >= 0) {
+                            $(".fod").addClass("tagSelect");
+                        }
+                        if(pArr[i].indexOf("FOP") >= 0) {
+                            $(".fop").addClass("tagSelect");    
+                        }
+                    }
+                    $(".windowIconPopup").attr("selContact", contact);
+                    $(this).addClass("accIconsHover");
+                    iconHover = $(this);
+                    $(".windowIconPopup").show();
+                    iconIndex = $(this).index();
+                    var popupPosition = $(this).offset();
+                    $(".windowIconPopup").css({"top":popupPosition.top + $(this).height(),"left":popupPosition.left});
+                }
+            );
+            $("#chart-demo").on("mouseout", ".accIconsDiv div", function(){
+                    $(this).removeClass("accIconsHover");
+                    $(".windowIconPopup").hide();
+                }
+            );
+            $(".windowIconPopup").hover(
+                function(){
+                    $(".windowIconPopup").show();
+                    $(iconHover).addClass("accIconsHover");
+                },
+                function(){
+                    $(".windowIconPopup").hide();
+                    $(iconHover).removeClass("accIconsHover");
+                }
+            );
+            $(".tag").hover(
+                function(){
+                    $(iconHover).addClass("accIconsHover");
+                    $(this).addClass("tagHover");
+                    className1 = $(this).find("span").eq(0).attr("class");
+                    className2 = className1.substring(0, className1.length - 1) + "B";
+                    $(this).find("span").eq(0).removeClass(className1).addClass(className2);
+                },
+                function(){ 
+                    $(this).removeClass("tagHover");
+                    $(this).find("span").eq(0).removeClass(className2).addClass(className1);
+                }
+            );
+            $(".tag").click(function(){
+                    var conId = $(this).parentsUntil(".windowIconPopup").parent().attr("selcontact");
+                    if($(this).hasClass("tagSelect")) {
+                        $(this).removeClass("tagSelect");
+                    } else {
+                        $(this).addClass("tagSelect");
+                    }
+                    var str = "";
+                    $(".tag").each(function(){
+                        if($(this).hasClass("tagSelect")) {
+                            str += $(this).children("span").eq(1).html()+";"; 
+                        }
+                    });
+                    $("#"+conId).attr("focus", str.substring(0, str.length - 2));
+                    remote = "{!$RemoteAction.ExtOppy_PoliticalMap.createContactRole}";
+                    showSmallLoading();
+                    bindBeforeunload();
+                    if(str.indexOf("FOD") >=0 || str.indexOf("FOP") >=0){
+                        $("#"+conId).find(".keyIcon").show();
+                    } else {
+                        $("#"+conId).find(".keyIcon").hide();
+                    }
+                    Visualforce.remoting.Manager.invokeAction(remote, "{!Id}", conId, str, function(result, event) {
+                        hideSmallLoading();
+                        unBindBeforeunload();
+                        if (event.status) {
+                            if (result != "success") {
+                                if(result.indexOf("first error:") != -1)
+                                    result = (result.substring(result.indexOf(",", result.lastIndexOf("first error:")) + 2, result.indexOf(": [")));
+                                $(".error-popup p").html(result);
+                                showError();
+                                return false;
+                            } 
+                        } else {
+                            $(".error-popup p").html(event.message);
+                            //$(".error-popup p").html("{!$Label.PMV_assessment_communication_error}");
+                            showError();
+                            return false;
+                        }
+                    });
+                    
+                });
+            $(".error-popup input").click(function(){
+                hideError();
+            });
+            $(".popup-button input").click(function(){
+                $(".popup-Add").hide();
+                backHide();
+            });
+        });
+        
+       
+    </script>
+</apex:page>

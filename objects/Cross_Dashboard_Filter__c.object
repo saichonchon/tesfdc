@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A common custom object referenced to by dashboard filter fields on each reporting object,  linked via a lookup field.   For each dashboard filter field we need a lookup field.  Types are separated with a type picklist field.  Use the name field of the reference object, have a type picklist with Bill Type, Profit Center etc. Then have multiple lookup fields on BBB objects that reference to the same custom object</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Filter_Type_and_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Type__c)  &amp; &apos;: &apos; &amp; Filter_Value__c</formula>
+        <label>Filter Type and Value</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Filter_Value__c</fullName>
+        <description>The individual value that the dashboard filter row is a reference to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>i.e. for Bill Type: Direct, POS, or CMA</inlineHelpText>
+        <label>Filter Value</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <description>The type of data the filter value is a member of.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Group like filter values together under one type.  Picklist value should match exactly with SFI.SF_FIELDS.SF_FIELD_DESC in oracle</inlineHelpText>
+        <label>Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Bill Type</fullName>
+                    <default>false</default>
+                    <label>Bill Type</label>
+                </value>
+                <value>
+                    <fullName>Region</fullName>
+                    <default>false</default>
+                    <label>Region</label>
+                </value>
+                <value>
+                    <fullName>SAP Profit Center Code</fullName>
+                    <default>false</default>
+                    <label>SAP Profit Center Code</label>
+                </value>
+                <value>
+                    <fullName>SAP Profit Center Short Description</fullName>
+                    <default>false</default>
+                    <label>SAP Profit Center Short Description</label>
+                </value>
+                <value>
+                    <fullName>SAP Profit Center Group Code</fullName>
+                    <default>false</default>
+                    <label>SAP Profit Center Group Code</label>
+                </value>
+                <value>
+                    <fullName>SAP Profit Center Group Short Description</fullName>
+                    <default>false</default>
+                    <label>SAP Profit Center Group Short Description</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Cross Dashboard Filter</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Filter_Type_and_Value__c</columns>
+        <columns>Filter_Value__c</columns>
+        <columns>Type__c</columns>
+        <columns>CONNECTION_RECEIVED.NAME</columns>
+        <columns>NAME</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Cross Dashboard Filter Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Cross Dashboard Filters</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

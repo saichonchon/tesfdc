@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Activities in this object are typically created by Eloqua and represent activities that need to get to the activity repository and activity dashboard in an expedited manner and/or activities that require special processing or mapping that Eloqua can&apos;t provide in its standard activity object.
+
+These activities are picked up many times per day by a BODS job that writes them to the HANA activity repository and master, thereby making them visible in the activity dashboard.
+
+The intention is to delete these records after they are a month old (could change), as this is just a staging area to get them to HANA.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Activity_Class_Code__c</fullName>
+        <description>Describes the general classification of activity: Web vs Marketing vs Sales vs Service. Eloqua will provide.</description>
+        <externalId>false</externalId>
+        <label>Activity Class Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Web</fullName>
+                    <default>false</default>
+                    <label>Web</label>
+                </value>
+                <value>
+                    <fullName>Marketing</fullName>
+                    <default>false</default>
+                    <label>Marketing</label>
+                </value>
+                <value>
+                    <fullName>Sales</fullName>
+                    <default>false</default>
+                    <label>Sales</label>
+                </value>
+                <value>
+                    <fullName>Service</fullName>
+                    <default>false</default>
+                    <label>Service</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Activity_Date_Time__c</fullName>
+        <description>Date, including time component, that this activity took place.</description>
+        <externalId>false</externalId>
+        <label>Activity Date/Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Date__c</fullName>
+        <description>Date the activity was done.  Date portion only.</description>
+        <externalId>false</externalId>
+        <label>Activity Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Description__c</fullName>
+        <description>Category of activity, as supplied by Eloqua. Ex: Trade Show Attendance</description>
+        <externalId>false</externalId>
+        <label>Activity Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Email__c</fullName>
+        <description>Email address of the person associated to the activity</description>
+        <externalId>false</externalId>
+        <label>Activity Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Notes__c</fullName>
+        <description>Notes pertaining to the activity. For Trade Shows, would contain Trade Fair Visit Notes.</description>
+        <externalId>false</externalId>
+        <label>Activity Notes</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Activity_Source_Code__c</fullName>
+        <description>Describes the process that caused the activity. Ex: Trade Show, TE.Com, Campaign</description>
+        <externalId>false</externalId>
+        <label>Activity Source Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Source_System__c</fullName>
+        <defaultValue>&quot;C2S_SFDC_KEY&quot;</defaultValue>
+        <description>System that recognized the activity. C2S_SFDC will be the typical value if the activity was picked up from C2S</description>
+        <externalId>false</externalId>
+        <label>Activity Source System</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Subject__c</fullName>
+        <description>Subject assigned to the activity. May or may not be provided, depending on the kind of activity.</description>
+        <externalId>false</externalId>
+        <label>Activity Subject</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Activity_Type__c</fullName>
+        <description>This represents the type of activity, and is used for prioritizing. Hot is critical, and needs attention as soon as possible</description>
+        <externalId>false</externalId>
+        <label>Activity Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Hot</fullName>
+                    <default>false</default>
+                    <label>Hot</label>
+                </value>
+                <value>
+                    <fullName>Warm</fullName>
+                    <default>false</default>
+                    <label>Warm</label>
+                </value>
+                <value>
+                    <fullName>Cold</fullName>
+                    <default>false</default>
+                    <label>Cold</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Application_Interest__c</fullName>
+        <description>Describes the application area of interest of the lead. Represents the output of a multi-select picklist and a text field.</description>
+        <externalId>false</externalId>
+        <label>Application Interest</label>
+        <length>400</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Area_of_Interest__c</fullName>
+        <description>Area of interest, as expressed by the customer</description>
+        <externalId>false</externalId>
+        <label>Area of Interest</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign_Name__c</fullName>
+        <description>Campaign identifying info, as supplied by Eloqua</description>
+        <externalId>false</externalId>
+        <label>Campaign Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Case_Identifier__c</fullName>
+        <description>SF identifier of the related Case.</description>
+        <externalId>false</externalId>
+        <label>Case Identifier</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Company_Name__c</fullName>
+        <description>Name of the company/account associated to this activity</description>
+        <externalId>false</externalId>
+        <label>Company Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Segment__c</fullName>
+        <description>Describes the type of customer. Represents the output of a multi-select pick list and possibly some free form text entry.</description>
+        <externalId>false</externalId>
+        <label>Customer Segment</label>
+        <length>400</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Event_Name__c</fullName>
+        <description>Name of trade show or other event</description>
+        <externalId>false</externalId>
+        <label>Event Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Follow_Up_Activity__c</fullName>
+        <description>Describes the desired type of follow up. Shows the results of a multi-select picklist and a free-form &quot;Other &quot; field.</description>
+        <externalId>false</externalId>
+        <label>Follow Up Activity</label>
+        <length>400</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Lead_Industry__c</fullName>
+        <description>Industry of the lead person, at the time the activity was captured</description>
+        <externalId>false</externalId>
+        <label>Lead Industry</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Originator__c</fullName>
+        <description>Person who originated the lead.  For Trade Shows, this is the person at the booth who spoke to the lead. First and last name.</description>
+        <externalId>false</externalId>
+        <label>Lead Originator</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Interest__c</fullName>
+        <description>Describes the customer&apos;s interest in TE products</description>
+        <externalId>false</externalId>
+        <label>Product Interest</label>
+        <length>2000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>RFQ_Order_Number__c</fullName>
+        <description>Field that could hold the RFQ number generated when someone uses the automated Request for Quote System. The generated number can be used to reference information on the quote located in the Quote System.  May not be mapped depending on the kind of activity</description>
+        <externalId>false</externalId>
+        <label>RFQ Order Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Related_Part_Numbers__c</fullName>
+        <description>Any part numbers search on or reviewed during a user&apos;s session as captured.  May not be provided; depends on the kind of activity</description>
+        <externalId>false</externalId>
+        <label>Related Part Numbers</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Sample_Order_Identifier__c</fullName>
+        <description>Identifier of a sample order</description>
+        <externalId>false</externalId>
+        <label>Sample Order Identifier</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sample_Ship_Date__c</fullName>
+        <description>Date Samples actually shipped to requestor</description>
+        <externalId>false</externalId>
+        <label>Sample Ship Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Service_Agent_Email__c</fullName>
+        <description>Email address of the service agent that may be associated to this activity.</description>
+        <externalId>false</externalId>
+        <label>Service Agent Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service_Agent_Name__c</fullName>
+        <description>First and last name of the service agent that may be associated to this activity</description>
+        <externalId>false</externalId>
+        <label>Service Agent Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status_Code__c</fullName>
+        <description>Status code of the particular activity. May or may  not be applicable; depends on the kind of activity</description>
+        <externalId>false</externalId>
+        <label>Status Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TECEWT5_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>TECEWT5 Id</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TECEWT7_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>TECEWT7 Id</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Key Activity Staging</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Activity_Class_Code__c</columns>
+        <columns>Activity_Date_Time__c</columns>
+        <columns>Activity_Description__c</columns>
+        <columns>Activity_Email__c</columns>
+        <columns>Activity_Source_Code__c</columns>
+        <columns>Activity_Source_System__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Case_Activities</fullName>
+        <columns>NAME</columns>
+        <columns>Case_Identifier__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Case_Identifier__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Case Activities</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Tradeshows</fullName>
+        <columns>NAME</columns>
+        <columns>Activity_Class_Code__c</columns>
+        <columns>Activity_Date_Time__c</columns>
+        <columns>Activity_Description__c</columns>
+        <columns>Activity_Email__c</columns>
+        <columns>Activity_Source_Code__c</columns>
+        <columns>Activity_Source_System__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Activity_Description__c</field>
+            <operation>equals</operation>
+            <value>Tradeshow Attendance</value>
+        </filters>
+        <label>Tradeshows</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Key Activity Staging Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Key Activity Staging</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

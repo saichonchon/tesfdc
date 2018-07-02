@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Object to store Part Forecast data that needs to be published to JDA Bridge. Data in this object will be populated by BU Forecasting Tool. This object will be part of the INFRA framework</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>INFRA__BU_Forecast_Source_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Field that keeps the reference to BU Forecast Tool SFDC object record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Forecast leaf level SFDC Id. Example - Opportunity Id or Opp Line Item Id or Forecast Id</inlineHelpText>
+        <label>BU Forecast Source Id</label>
+        <length>60</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Business_Unit__c</fullName>
+        <deprecated>false</deprecated>
+        <description>BU identifier for which the forecast data is created. The value in this field should have the corresponding configuration in custom settings &quot;JDA Connector Config&quot;.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Business Unit Abbreviation that is required by JDA bridge.</inlineHelpText>
+        <label>Business Unit</label>
+        <length>10</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Customer_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Field to store Customer Indicator(Type)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Valid values can be - 
+200	Sold-To</inlineHelpText>
+        <label>Customer Indicator</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Customer__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Field to store TED Customer #</description>
+        <externalId>false</externalId>
+        <inlineHelpText>TED Customer #, recognized by JDA</inlineHelpText>
+        <label>Customer #</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Data_Stream__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Field to indicate if the forecast data is for opportunity or sales forecast</description>
+        <externalId>false</externalId>
+        <inlineHelpText>500 - Sales Opportunity 
+501 - Engineering Opportunity 
+506 - Sales Booking Forecast 
+507 - Sales Demand Forecast</inlineHelpText>
+        <label>Data Stream</label>
+        <length>10</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Forecast_Key__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <deprecated>false</deprecated>
+        <description>Unique External Id Field. This key will be generated by the Framework</description>
+        <externalId>true</externalId>
+        <label>Forecast Key</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Marked_For_Delete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Field to indicate if data needs to be deleted from bridge</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Flag to indicate if record needs to be deleted.</inlineHelpText>
+        <label>Marked For Delete</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>INFRA__Product_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Forecast product/part code.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Valid values are Part # or GPL Code</inlineHelpText>
+        <label>Product Code</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Product_Hierarchy_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The level of the TE product hierarchy</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Valid values are - 
+300	- GPL
+301 - Product
+302	- Part
+303	- Proposed
+304 - Proposed/Similar-To</inlineHelpText>
+        <label>Product Hierarchy Indicator</label>
+        <length>10</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Published__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Field indicating if the forecast data is published to JDA Bridge</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Flag to indicate that forecast was published in the bridge by integration</inlineHelpText>
+        <label>Published?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>INFRA__Re_Published__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>A flag field to indicate that the record was republished by API and needs to be pushed to Bridge</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A flag field to indicate that the record was republished by API and needs to be pushed to Bridge</inlineHelpText>
+        <label>Re-Published?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>INFRA__Region__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If BU has multiple region, then those value needs to be passed or the BU level Default Region will be used from BU Configurations.
+Examples are EMEA (0401), NA, SA, ANZ, AP</description>
+        <externalId>false</externalId>
+        <inlineHelpText>EMEA (0401), NA, SA, ANZ, AP</inlineHelpText>
+        <label>Region</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Site_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Site Indicator for the Site. Values are - 
+100	Building
+101	Plant
+102	Legal Org
+103	Others</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Site Indicator for the Site. Values are - 
+100	Building 
+101	Plant 
+102	Legal Org 
+103	Others</inlineHelpText>
+        <label>Site Indicator</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Site__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The plant or the building that the data is being sent for. For e.g. 0492, D71 etc. If value is not set then default global value will be used</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The plant or the building that the data is being sent for. For e.g. 0492, D71 etc.</inlineHelpText>
+        <label>Site</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Territory_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Forecast Territory, such as GAM code or Sales territory code</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Sales territory code</inlineHelpText>
+        <label>Territory Code</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>INFRA__Territory_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Sales territory indicator. DD1 to DD7</description>
+        <externalId>false</externalId>
+        <inlineHelpText>DD1 to DD7</inlineHelpText>
+        <label>Territory Indicator</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Part Forecast</label>
+    <listViews>
+        <fullName>INFRA__All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>INFRA__Customer__c</columns>
+        <columns>INFRA__Business_Unit__c</columns>
+        <columns>INFRA__Marked_For_Delete__c</columns>
+        <columns>INFRA__Data_Stream__c</columns>
+        <columns>INFRA__Forecast_Key__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>INFRA__Published__c</columns>
+        <columns>INFRA__Re_Published__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>{0}</displayFormat>
+        <label>Forecast #</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Part Forecasts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>INFRA__BU_Forecast_Source_Id__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>INFRA__Business_Unit__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>INFRA__Customer__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>INFRA__Customer_Indicator__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>INFRA__Product_Code__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>INFRA__Product_Hierarchy_Indicator__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

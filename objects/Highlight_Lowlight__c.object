@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>is used for structured highlight / lowlight reporting on accounts, opportunities  contacts and other objects</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account_Name__r.Account_Manager_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>shows the account name</description>
+        <externalId>false</externalId>
+        <label>Account Name</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.RecordType.Id</field>
+                <operation>notEqual</operation>
+                <value>012E0000000e2DnIAI</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Highlights / Lowlights</relationshipLabel>
+        <relationshipName>Highlights_Lowlights</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Competitor_Name__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>look up to the accounts object to reference accounts of record type competitor</description>
+        <externalId>false</externalId>
+        <label>Competitor Name</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Competitor</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Highlights / Lowlights (Competitor Name)</relationshipLabel>
+        <relationshipName>Highlights_Lowlights1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Created_by_BU__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( CreatedBy.Sub_Vertical__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Created by BU</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_by_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( CreatedBy.Region__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Created by Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GAM_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account_Name__r.GAMCD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GAM Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GAM_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account_Name__r.GAMDESC__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GAM Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Important_for__c</fullName>
+        <description>to select the audience this Higlight / Lowlight is important for</description>
+        <externalId>false</externalId>
+        <inlineHelpText>select the audience this Higlight / Lowlight is esspecially important for</inlineHelpText>
+        <label>Important for</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Next Level Manager</fullName>
+                    <default>true</default>
+                    <label>Next Level Manager</label>
+                </value>
+                <value>
+                    <fullName>Sub Vertical Management</fullName>
+                    <default>false</default>
+                    <label>Sub Vertical Management</label>
+                </value>
+                <value>
+                    <fullName>Industrial Executive Management</fullName>
+                    <default>false</default>
+                    <label>Industrial Executive Management</label>
+                </value>
+                <value>
+                    <fullName>Global Sales Management</fullName>
+                    <default>false</default>
+                    <label>Global Sales Management</label>
+                </value>
+                <value>
+                    <fullName>Engineering Management</fullName>
+                    <default>false</default>
+                    <label>Engineering Management</label>
+                </value>
+                <value>
+                    <fullName>Product Management</fullName>
+                    <default>false</default>
+                    <label>Product Management</label>
+                </value>
+                <value>
+                    <fullName>Industry Marketing</fullName>
+                    <default>false</default>
+                    <label>Industry Marketing</label>
+                </value>
+                <value>
+                    <fullName>Channel Management</fullName>
+                    <default>false</default>
+                    <label>Channel Management</label>
+                </value>
+                <value>
+                    <fullName>Global Account Management</fullName>
+                    <default>false</default>
+                    <label>Global Account Management</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>News_Number_1__c</fullName>
+        <description>creates an auto number with date and number to be converted in  a Number field by fomula.</description>
+        <displayFormat>{YYYY}-{MM}-{DD}-#{0}</displayFormat>
+        <externalId>false</externalId>
+        <label>Auto Number</label>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>News_Number_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>Value( News_Number_1__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>News #</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>News_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>News Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Market / Competitor news</fullName>
+                    <default>false</default>
+                    <label>Market / Competitor news</label>
+                </value>
+                <value>
+                    <fullName>Great Place to Work</fullName>
+                    <default>false</default>
+                    <label>Great Place to Work</label>
+                </value>
+                <value>
+                    <fullName>Employee of the week</fullName>
+                    <default>false</default>
+                    <label>Employee of the week</label>
+                </value>
+                <value>
+                    <fullName>Customer Experience</fullName>
+                    <default>false</default>
+                    <label>Customer Experience</label>
+                </value>
+                <value>
+                    <fullName>Growth</fullName>
+                    <default>false</default>
+                    <label>Growth</label>
+                </value>
+                <value>
+                    <fullName>SPIN success</fullName>
+                    <default>false</default>
+                    <label>SPIN success</label>
+                </value>
+                <value>
+                    <fullName>Lead Management Success</fullName>
+                    <default>false</default>
+                    <label>Lead Management Success</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Five_Year_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Five_Year_Revenue__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Five Year Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Opportunity_Number__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Amount</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Shows the opportunity name</description>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Highlights / Lowlights</relationshipLabel>
+        <relationshipName>Highlights_Lowlights</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Text_and_Pictures__c</fullName>
+        <description>to enter text and add pictures</description>
+        <externalId>false</externalId>
+        <inlineHelpText>enter your higlight / lowlight detail  and add pictures if you want</inlineHelpText>
+        <label>Text and Pictures</label>
+        <length>3000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Highlight</fullName>
+                    <default>false</default>
+                    <label>Highlight</label>
+                </value>
+                <value>
+                    <fullName>Lowlight</fullName>
+                    <default>false</default>
+                    <label>Lowlight</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>age_in_days__c</fullName>
+        <externalId>false</externalId>
+        <formula>TODAY() - DATEVALUE( CreatedDate )</formula>
+        <label>age in days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Highlight / Lowlight</label>
+    <listViews>
+        <fullName>A_C_Executive_records</fullName>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>Text_and_Pictures__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Account_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Important_for__c</field>
+            <operation>includes</operation>
+            <value>Industrial Executive Management</value>
+        </filters>
+        <filters>
+            <field>Created_by_BU__c</field>
+            <operation>equals</operation>
+            <value>A&amp;C</value>
+        </filters>
+        <label>A&amp;C Executive records</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Account_Name__c</columns>
+        <columns>Account_Manager__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Opportunity_Value__c</columns>
+        <columns>Opportunity_Number__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>IB_Executive_records</fullName>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>Text_and_Pictures__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Account_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Important_for__c</field>
+            <operation>includes</operation>
+            <value>Industrial Executive Management</value>
+        </filters>
+        <filters>
+            <field>Created_by_BU__c</field>
+            <operation>equals</operation>
+            <value>IB</value>
+        </filters>
+        <label>IB Executive records</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>IND_Executive_records</fullName>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>Text_and_Pictures__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Account_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Important_for__c</field>
+            <operation>includes</operation>
+            <value>Industrial Executive Management</value>
+        </filters>
+        <label>IND Executive records</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_HL_LL</fullName>
+        <columns>NAME</columns>
+        <columns>age_in_days__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>My HL/LL</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Highlight / Lowlight Headline</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Highlights / Lowlights</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Account_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>News_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Text_and_Pictures__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Important_for__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opportunity__c</customTabListAdditionalFields>
+        <searchFilterFields>Account_Name__c</searchFilterFields>
+        <searchFilterFields>Important_for__c</searchFilterFields>
+        <searchFilterFields>News_Type__c</searchFilterFields>
+        <searchFilterFields>CREATEDBY_USER</searchFilterFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>News_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Text_and_Pictures__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Important_for__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Account_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opportunity__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

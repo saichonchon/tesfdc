@@ -1,0 +1,199 @@
+<apex:page controller="ACP_OpportunitySearchController" sidebar="false" tabStyle="opportunity" showHeader="false">
+    <apex:form >
+        <apex:pageMessages id="errors" />
+        <table width="100%" border="0">
+            <tr>
+                <td width="300" valign="top">
+                    <apex:pageBlock title="{!$Label.ACP_Filtered_by}" mode="edit" id="criteria">
+     
+                        <table cellpadding="2" cellspacing="2" >
+                            <tr>
+                                <th>{!$Label.ACP_Field}</th>
+                                <th>{!$Label.ACP_Operator}</th>
+                                <th>{!$Label.ACP_Value}</th>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1" value="{!fieldname1}" id="fieldName1"  style="width: 125px !important;"  >
+                                        <apex:selectOptions value="{!fieldNames}"   />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator1}"  id="operator1" style="width: 105px !important;">
+                                        <apex:selectOptions value="{!operator}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:inputText value="{!value1}"  style="width: 157px !important;"    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1" value="{!fieldName2}" id="fieldName2" style="width: 125px !important;"  >
+                                        <apex:selectOptions value="{!fieldNames}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator2}" id="operator2" style="width: 105px !important;" >
+                                        <apex:selectOptions value="{!operator}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:inputText value="{!value2}"  style="width: 157px !important;"    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1" value="{!fieldName3}" id="fieldName3" style="width: 125px !important;"  >
+                                        <apex:selectOptions value="{!fieldNames}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator3}" id="operator3" style="width: 105px !important;">
+                                        <apex:selectOptions value="{!operator}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:inputText value="{!value3}"  style="width: 157px !important;"    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1" value="{!fieldName4}" id="fieldName4" style="width: 125px !important;"  >
+                                        <apex:selectOptions value="{!fieldNames}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator4}"  id="operator4" style="width: 105px !important;">
+                                        <apex:selectOptions value="{!operator}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:inputText value="{!value4}"  style="width: 157px !important;"    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1"  id="fieldName6" readonly="true"  style="width: 125px !important;"  >
+                                        <apex:selectoption itemLabel="Current Phase" itemValue="Current_Phase__c"></apex:selectoption>
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator5}" id="operator6" style="width: 105px !important;"   >
+                                        <apex:selectoption itemLabel="  --None--  " itemValue=""></apex:selectoption>
+                                        <apex:selectoption itemLabel="equals" itemValue="="></apex:selectoption>
+                                        <apex:selectoption itemLabel="not equals" itemValue="!="></apex:selectoption>
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!value5}" id="value6" style="width: 160px !important;"   >
+                                        <apex:selectOptions value="{!CurrentPhaseValues}" />
+                                    </apex:selectList>
+                                </td>
+                            </tr >
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1"  id="fieldName8" readonly="true" style="width: 125px !important;"   >
+                                        <apex:selectoption itemLabel="Record Type" itemValue="RecordType.Name"></apex:selectoption>
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator6}" id="operator8" style="width: 105px !important;" >
+                                        <apex:selectoption itemLabel="  --None--  " itemValue=""></apex:selectoption>
+                                        <apex:selectoption itemLabel="equals" itemValue="="></apex:selectoption>
+                                        <apex:selectoption itemLabel="not equals" itemValue="!="></apex:selectoption>
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!value6}" id="value8" style="width: 160px !important;"  >
+                                        <apex:selectOptions value="{!RecordTypeValues}" />
+                                    </apex:selectList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1"  id="fieldName5" readonly="true" style="width: 125px !important;"   >
+                                        <apex:selectoption itemLabel="{!$Label.ACP_Close_Date}" itemValue="CloseDate"></apex:selectoption>
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:selectList size="1" value="{!operator7}" id="operator5" style="width: 105px !important;" >
+                                        <apex:selectOptions value="{!operatorCloseDate}" />
+                                    </apex:selectList>
+                                </td>
+                                <td>
+                                    <apex:inputfield value="{!opp.CloseDate}"  id="value5" required="false"  style="width: 90px !important;"    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">
+                                    <apex:selectList size="1" id="fieldName7" readonly="true" style="width: 125px !important;"   >
+                                        <apex:selectoption itemLabel="{!$Label.ACP_Close_Date}" itemValue="CloseDate"/>
+                                    </apex:selectList>
+                                    </td>
+                                    <td>
+                                        <apex:selectList size="1" value="{!operator8}" id="operator7" style="width: 105px !important;" >
+                                            <apex:selectOptions value="{!operatorCloseDate}" />
+                                        </apex:selectList>
+                                    </td>
+                                    <td>
+                                        <apex:inputfield value="{!opp2.CloseDate}"   id="value7" required="false" style="width: 90px !important;"    />
+                                    </td>
+                                </tr>
+                            </table>
+                            <center>
+                                <apex:commandButton value="{!$Label.ACP_Search}" action="{!runSearch}"/>&nbsp;
+       
+                                <apex:commandButton value="{!$Label.ACP_Reset}"  action="{!resetFilters}"/>&nbsp;
+      
+                                <apex:commandButton value="{!$Label.ACP_Cancel}" onclick="javascript:top.window.close(); return false;" />
+                            </center>
+                        </apex:pageBlock>
+                    </td>
+                    <td valign="top">
+                        <apex:pageBlock title="{!$Label.ACP_Results}" mode="edit" id="results">
+&nbsp;
+                            <apex:outputText rendered="{!IF(progOpp == 'yes', true, false)}">
+      {! $Label.ACP_Program_Opps}
+      </apex:outputText>
+ &nbsp;
+                            <apex:outputText rendered="{!IF(progOpp == 'yes', false, true)}">
+      {! $Label.ACP_Opportunity_search_note}
+      </apex:outputText>
+                            <apex:pageBlockTable value="{!opportunities}" var="opps" rendered="{!IF(opportunities.size >0, true, false)}">
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Opportunity Name" action="{!toggleSort}" rerender="results,debug">
+                                            <apex:param name="sortField" value="name" assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+                                    <apex:outputLink value="javascript:top.window.opener.lookupPick2('','{!TextBox}_lkid','{!TextBox}','{!opps.Id}','{!opps.Name}', false)" rendered="{!NOT(ISNULL(opps.Id))}">{!opps.name}</apex:outputLink>
+                                </apex:column>
+                                <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.ACP_Opportunity_Search}" var="field">
+                                    <apex:column rendered="{!IF(field.label != 'Name', true, false)}" >
+                                        <apex:facet name="header" >
+                                            <apex:commandLink value="{!field.label}" action="{!toggleSort}" rerender="results,debug">
+                                                <apex:param name="sortField" value="{!field}" assignTo="{!sortField}"/>
+                                            </apex:commandLink>
+                                        </apex:facet>
+                                        <apex:outputField value="{!opps[field]}"/>
+                                    </apex:column>
+                                </apex:repeat>
+                                <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.ACP_Opportunity_Search}" var="field">
+                                    <apex:column rendered="{!IF(field.label != 'Name', false, true)}" >
+                                        <apex:facet name="header">
+                                            <apex:commandLink value="{!field.label}" action="{!toggleSort}" rerender="results,debug">
+                                                <apex:param name="sortField" value="{!field}" assignTo="{!sortField}"/>
+                                            </apex:commandLink>
+                                        </apex:facet>
+                                        <apex:outputField value="{!opps[field]}"/>
+                                    </apex:column>
+                                </apex:repeat>
+                            </apex:pageBlockTable>
+                            <br/>
+                        </apex:pageBlock>
+                    </td>
+                </tr>
+            </table>
+        </apex:form>
+    </apex:page>

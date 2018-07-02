@@ -1,0 +1,1525 @@
+<apex:page controller="IND_MyToDos_AppControllerMain" showHeader="false"  sidebar="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">    
+  <Style type="text/css">
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  
+  overflow:auto; 
+  overflow-x:hidden; 
+  
+  
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+ 
+}
+#table-wrapper thead th .text {
+  position:absolute;   
+  
+.tbody{
+  overflow-x:hidden;
+  overflow-y:auto;
+} 
+ 
+ 
+}
+</Style >
+
+ <script type="text/javscript">
+            $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();   
+             });
+       
+             </script>
+<apex:form >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">    
+
+<head>
+  <title>Salesforce My To DOs App</title>
+  <apex:stylesheet value="{!URLFOR($Resource.IndustrialAppAdminCss, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>  
+   
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+<body> 
+<apex:outputPanel layout="block" style="width:100%">
+<apex:pageBlock >   
+<div class="slds" >
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Header &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+<div class="slds-page-header" role="banner">
+
+  <!-- PAGE HEADER TOP ROW -->
+  <div class="slds-grid font-weight-bold">
+
+   <!-- <div class="slds-col slds-size--1-of-12">
+
+      
+   <p >
+     <div class="slds-media__body">
+          <h1 class="slds-text-heading--label">Status</h1>
+          <h1 class="slds-text-heading--medium"><span style="Color:{!if(Daystatus=='Normal Day','#0C8EFF',if(Daystatus=='Hot Day','#F88962',if(Daystatus=='Cool Day','#4BC076','#7F8DE1')))}">{!Daystatus} for You</span></h1>
+      </div>     
+     
+    </p>
+     
+    </div>-->
+   
+    <div class="slds-col" Style="max-width:85%;display:inline-block; background-color:{!if(Daystatus=='Normal Day','#7F8DE1',if(Daystatus=='Hot Day','#F88962',if(Daystatus=='Cool Day','#4BC076','#7F8DE1')))}">
+    
+     <h2 id="badges" class="slds-text-heading--medium " Style="Text-Align:Center;"> Welcome {!LoginUser.name} to My To Dos App, Today is {!Daystatus} for You</h2>
+      
+    </div>
+    <div class="slds-col"  Style="max-width:15%;display:inline-block;">
+        
+    <apex:commandButton onClick="window.open('/069E00000032M1B');" value="Help Document" id="theButton32" styleclass="slds-button slds-button--brand"/>            
+                                   
+    </div> 
+ 
+
+ 
+ 
+ 
+ 
+  </div>
+     
+
+</div>
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Header &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Main Body &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<div class="myapp">
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->     
+<div class="slds-grid slds-grid--pull-padded {!If(MyMql.size==0 && MySal.size==0 ,HideAll,ShowAll)}"> 
+    
+    
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(MyMql.size==0,HideAll,ShowAll)}" Style="{!If(MyMql.size==0,ShowAll,if(MySal.size==0,"max-width:70%;display:inline-block;","max-width:40%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+      
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                   <svg aria-hidden="true" class="slds-icon slds-icon-standard-contact slds-icon--small">
+                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+                                   </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">My MQLs </h2>
+                                </div>
+                                
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Open MQL’s, please verify the status with the lead/contact and change the status to Sales Accepted or Rejected. Target: within 14 days.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+                                 
+                  <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+          
+                                
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MyMql.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label slds-has-flexi-truncate" scope="col">Full Name</th>
+                                    <th class="slds-text-heading--label" scope="col">Type</th>
+                                    <th class="slds-text-heading--label" scope="col">MQL Date</th>
+                                    <th class="slds-text-heading--label" scope="col">Age</th>
+                                    <th class="slds-text-heading--label slds-has-flexi-truncate" scope="col">Account/Company</th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody >
+                             <apex:repeat value="{!MyMql}" var="Mql">
+                                  <tr class="slds-hint-parent">
+                                     <td class="slds-truncate" data-label="Name"><apex:outputLink target="_blank" value="/{!If(Mql.Related_to__c=='Lead',Mql.TEMarketing__Lead__r.id,Mql.TEMarketing__Contact__r.id)}" id="theLink">{!Mql.TEMarketing__Full_Name__c}</apex:outputLink></td>
+                                    <td data-label="Company"><apex:outputField value="{!Mql.Related_to__c}"  /></td>
+                                    <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                                                            <apex:param value="{!Mql.TEMarketing__MQL_Date__c}" /> 
+                                                                                     </apex:outputText>  </td>
+                                    <td data-label="Company"><apex:outputField value="{!Mql.TEMarketing__Age__c}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!Mql.TEMarketing__Account__c}"  /></td>
+                                    
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->    
+    
+    
+    
+    
+   
+   <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(MySal.size==0,HideAll,ShowAll)}" Style="{!If(MySal.size==0,ShowAll,if(MyMql.size==0,"max-width:70%;display:inline-block;","max-width:60%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                  <svg aria-hidden="true" class="slds-icon slds-icon-standard-lead slds-icon--small">
+                                     <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead"></use>
+                                  </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                   <h2 class="slds-text-heading--small slds-truncate">My SALs</h2>
+                                </div>
+                         
+                   
+                    <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Lead on Sales Accepted Status.  Please verify the status and either finally reject or convert.  Target. within 60 days.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+                                 
+                  <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+          
+                   </div>
+                </div>
+                   
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MySal.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label" scope="col">Full Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Type</th>
+                                    <th class="slds-text-heading--label " scope="col">MQL Date</th>
+                                    <th class="slds-text-heading--label " scope="col">SAL Date</th>
+                                    <th class="slds-text-heading--label " scope="col">SAL Age</th>
+                                    <th class="slds-text-heading--label " scope="col">Account/Company</th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody >
+                              <apex:repeat value="{!MySal}" var="Sal">
+                                  <tr class="slds-hint-parent">
+                                    
+                                    <td class="slds-truncate" data-label="Name"><apex:outputLink target="_blank" value="/{!If(Sal.Related_to__c=='Lead',Sal.TEMarketing__Lead__r.id,Sal.TEMarketing__Contact__r.id)}" id="theLink">{!Sal.TEMarketing__Full_Name__c}</apex:outputLink></td>
+                                    <td data-label="Company"><apex:outputField value="{!Sal.Related_to__c}"  /></td>
+                                    <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                                                        <apex:param value="{!Sal.TEMarketing__MQL_Date__c}" /> 
+                                                                                     </apex:outputText>  </td>
+                                    <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                                                        <apex:param value="{!Sal.TEMarketing__SAL_Date__c}" /> 
+                                                                                     </apex:outputText>  </td>        
+                                  
+                                    <td data-label="Company"><apex:outputField value="{!Sal.TEMarketing__Days_from_MQL_to_SAL__c}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!Sal.TEMarketing__Account__c}"  /></td>
+            
+                                    
+                                       
+                                    
+            
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+     
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+</div>   
+
+
+
+
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of Second Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+<div class="slds-grid slds-grid--pull-padded {!If(IMSOpp.size==0 && prosIns.size==0 ,HideAll,ShowAll)}">
+
+    
+   <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(IMSOpp.size==0,HideAll,ShowAll)}" Style="{!If(IMSOpp.size==0,ShowAll,if(prosIns.size==0,"max-width:70%;display:inline-block;","max-width:40%;display:inline-block;"))}">
+     
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-opportunity slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                     <h2 class="slds-text-heading--small slds-has-flexi-truncate">My Incomplete Marketing Sourced Opp </h2>
+                                </div>
+                                
+                                <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Opportunities converted from a lead but without parts and/or forecast.Please update the opportunity with parts and forecast.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+                                 
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                
+                                
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(IMSOpp.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label" scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label" scope="col">Account Name</th>
+                                    <th class="slds-text-heading--label" scope="col">Age</th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody>
+                              <apex:repeat value="{!IMSOpp}" var="IMSOp">
+                                  <tr class="slds-hint-parent">
+           
+                                    <td class="slds-truncate" data-label="Name"><apex:outputLink target="_blank" value="/{!IMSOp.id}" >{!IMSOp.Name}</apex:outputLink></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!IMSOp.Account.Name}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!IMSOp.Days_since_opportunity_creation__c}"  /></td>
+
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(prosIns.size==0,HideAll,ShowAll)}" Style="{!If(prosIns.size==0,ShowAll,if(IMSOpp.size==0,"max-width:70%;display:inline-block;","max-width:60%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+      
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                   <svg aria-hidden="true" class="slds-icon slds-icon-standard-approval slds-icon--small">
+                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#approval"></use>
+                                   </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">My Pending Approval</h2>
+                                </div>
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(prosIns.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label" scope="col">Related To</th>
+                                    <th class="slds-text-heading--label" scope="col">Type</th>
+                                    <th class="slds-text-heading--label" scope="col">Last Approver</th>
+                                    <th class="slds-text-heading--label" scope="col">Submitted Date</th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody >
+                             <apex:repeat value="{!prosIns}" var="approval">
+                                  <tr class="slds-hint-parent">
+                                     <td class="slds-truncate" data-label="Name"><apex:outputLink target="_blank" value="/{!approval.TargetObject.Id}" id="theLink">{!approval.TargetObject.Name}</apex:outputLink></td>
+                                    <td data-label="Name"><apex:outputField value="{!approval.TargetObject.Type}"  /></td>
+                                    <td data-label="Name"><apex:outputField value="{!approval.LastActor.name}"  /></td>
+                                    <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!approval.CreatedDate}" /> 
+                                            </apex:outputText>  </td>
+                                  
+                                                            
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->    
+    
+
+  </div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of Second row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->   
+
+
+
+
+
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fourth Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+   <div class="slds-grid slds-grid--pull-padded {!If(MyInvData.size==0,HideAll,ShowAll)}">
+   
+    <div class="slds-col--padded" Style="max-width:100%;display:inline-block;">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+      
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                   <svg aria-hidden="true" class="slds-icon slds-icon-standard-coaching slds-icon--small">
+                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#coaching "></use>
+                                   </svg>
+                                 </div>
+                                
+                                   <div class="slds-media__body slds-col slds-size--4-of-6">
+                                      <h2 class="slds-text-heading--small ">My Opportunities with Invalid Data </h2> 
+                                  </div> 
+                                
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--9-of-12"> 
+                                        
+                                         <a href="#" data-toggle="tooltip" title="The invalid values are coloured in Orange.The last colum is giving you the forecast value in the past.">
+                                         
+                                         Help Text!                
+                                                         
+                                         </a>
+                                   </div>
+                        
+                                 
+                         <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->       
+                                  
+          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MyInvData.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered slds-no-row-hover">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Opportunity Name">OPP Name</a></div></th>
+            
+                                    <th class="slds-text-heading--label " scope="col">Created Date</th>
+                                    <th class="slds-text-heading--label " scope="col">Total Value</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Account Name">Acc Name</a></div></th>
+                                    <th class="slds-text-heading--label " scope="col">Account number</th>
+                                    <th class="slds-text-heading--label " scope="col">Phase</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Days Since Last updated">DSLU</a></div></th>
+                                    <th class="slds-text-heading--label " scope="col">Close Date</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Manufacturing Start Date">MSD</a></div></th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Forecast value in Past">FVIP</a></div></th>
+            
+                                  </tr>
+                            </thead>
+        
+                            <tbody >
+                             <apex:repeat value="{!MyInvData}" var="myivd">
+                                  <tr class="slds-hint-parent">
+                                     <td class="slds-truncate " data-label="Name"><apex:outputLink target="_blank" value="/{!myivd.Mainopp.id}" >{!myivd.Mainopp.name}</apex:outputLink></td>
+            
+                                        <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!myivd.Mainopp.CreatedDate}" /> 
+                                                </apex:outputText>  </td>
+                                        <td class="slds-truncate " data-label="Company"><apex:outputField value="{!myivd.Mainopp.Total_Opportunity_Value__c}"  /></td>
+                                        <td class="slds-truncate " data-label="Company"><apex:outputField value="{!myivd.Mainopp.Account.name}"  /></td>
+                                        <td data-label="Company"><apex:outputField value="{!myivd.Mainopp.Account_Number__c}"  /></td>
+                                        <td data-label="Company"><apex:outputField value="{!myivd.Mainopp.StageName}"  /></td>
+                                        <td bgcolor="{!if(myivd.Mainopp.Days_since_last_user_update__c!=Null && myivd.Mainopp.Days_since_last_user_update__c > 60,'#F88962','#EEF1F6')}" data-label="Company"><apex:outputField value="{!myivd.Mainopp.Days_since_last_user_update__c}"  /></td>
+                                        <td bgcolor="{!if(myivd.Mainopp.CloseDate!=Null && myivd.Mainopp.CloseDate<=myDate,'#F88962','#EEF1F6')}" data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!myivd.Mainopp.CloseDate}" /> 
+                                                </apex:outputText>  </td>
+                                        <td bgcolor="{!if(myivd.Mainopp.Manufacturing_Start_Date__c!=Null && myivd.Mainopp.Manufacturing_Start_Date__c<=myDate,'#F88962','#EEF1F6')}" data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!myivd.Mainopp.Manufacturing_Start_Date__c}" /> 
+                                                </apex:outputText>  </td>
+                                        <td bgcolor="{!if(myivd.PastValue!=Null && myivd.PastValue>0,'#F88962','#EEF1F6')}" class="slds-truncate" data-label="Company"><apex:outputtext value="{!myivd.PastValue}"  /></td>
+                                      
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Fourth Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->    
+    
+
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of fifth Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+<div class="slds-grid slds-grid--pull-padded {!If(OnHoldOpp.size==0 && MyContactEmail.size==0 ,HideAll,ShowAll)}">
+
+    
+   <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(OnHoldOpp.size==0,HideAll,ShowAll)}" Style="{!If(OnHoldOpp.size==0,ShowAll,if(MyContactEmail.size==0,"max-width:70%;display:inline-block;","max-width:45%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+      
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                   <svg aria-hidden="true" class="slds-icon slds-icon-standard-sossession slds-icon--small">
+                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#sossession "></use>
+                                   </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">My OnHold Opportunities</h2>
+                                </div>
+                                
+                                <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                      <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                                            
+                                             <a href="#" data-toggle="tooltip" title="On Hold opportunities with reactivation date in the past or within next 30 days, reactivate the opportunity and update status.">
+                                             
+                                             Help Text!                
+                                                             
+                                             </a>
+                                       </div>
+                            
+                                     
+                             <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->       
+                                      
+        
+                                
+                                
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(OnHoldOpp.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered slds-no-row-hover">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label" scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label" scope="col">Acc Name</th>
+                                    <th class="slds-text-heading--label"  scope="col"><div><a href="#" data-toggle="tooltip" title="Pause Reactivation Date">PRD</a></div></th>
+                                    <th class="slds-text-heading--label"  scope="col"><div><a href="#" data-toggle="tooltip" title="Total Opportunity Value">TOV</a></div></th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody >
+                            <apex:repeat value="{!OnHoldOpp}" var="OHopp">
+                                  <tr class="slds-hint-parent">
+                                        <td class="slds-truncate " data-label="Company"><apex:outputLink target="_blank" value="/{!OHopp.id}" >{!OHopp.Name}</apex:outputLink></td>
+                                        <td class="slds-truncate " data-label="Company"><apex:outputField value="{!OHopp.Account.Name}"  /></td>
+                                        <td class="slds-truncate " bgcolor="{!if(OHopp.Pause_Reactivation_Date__c!=Null && OHopp.Pause_Reactivation_Date__c<=TODAY(),'#F88962','#FFFF00')}" data-label="Company"><apex:outputField value="{!OHopp.Pause_Reactivation_Date__c}"  /></td>
+                                        <td class="slds-truncate " data-label="Company"><apex:outputField value="{!OHopp.Total_Opportunity_Value__c}"  /></td>
+                                                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->    
+    
+    
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+   
+    <div class="slds-col--padded {!If(MyContactEmail.size==0,HideAll,ShowAll)}" Style="{!If(MyContactEmail.size==0,ShowAll,if(OnHoldOpp.size==0,"max-width:70%;display:inline-block;","max-width:55%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card" >
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-dashboard slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#dashboard"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">My Contacts</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="The Email address of the contact seems to be invalid, please correct and confirm.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MyContactEmail.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Last Name</th>
+                                    <th class="slds-text-heading--label " scope="col">First Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Email</th>
+                                    <th class="slds-text-heading--label " scope="col">Account Name</th>
+                                    
+                                    <th class="slds-text-heading--label"  scope="col"><div><a href="#" data-toggle="tooltip" title="Email Bounce Date">EBD</a></div></th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!MyContactEmail}" var="BouncedEmail">
+                                  <tr class="slds-hint-parent">
+           
+                                    
+                                    
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!BouncedEmail.id}" >{!BouncedEmail.lastname}</apex:outputLink></td>
+                                    <td data-label="Company"><apex:outputField value="{!BouncedEmail.firstname}"  /></td>        
+                                    <td data-label="Company"><apex:outputField value="{!BouncedEmail.Email}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!BouncedEmail.Account_Name__c}"  /></td>
+                                   <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!BouncedEmail.EmailBouncedDate}" /> 
+                                            </apex:outputText>  </td>
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+
+ </div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of Fifth row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->   
+ 
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of 6th Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+<div class="slds-grid slds-grid--pull-padded {!If(AccPlan.size==0 && MySIP.size==0 ,HideAll,ShowAll)}">
+
+    
+  
+    
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(AccPlan.size==0,HideAll,ShowAll)}" Style="{!If(AccPlan.size==0,ShowAll,if(MySIP.size==0,"max-width:70%;display:inline-block;","max-width:55%;display:inline-block;"))}">
+     
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card" >
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-article slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#article"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">My Account Plan</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="This Account has not been updated for more than 180 days. Please check the Account Plan and confirm / save the data.  If the plan is not active anymore uncheck the “active” flag to remove it from the list.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(AccPlan.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Account Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Record type</th>
+                                    <th class="slds-text-heading--label " scope="col">plan Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Plan Year</th>
+                                    <th class="slds-text-heading--label " scope="col">Active</th>
+                                    <th class="slds-text-heading--label"  scope="col"><div><a href="#" data-toggle="tooltip" title="Last Modified Date">LMD</a></div></th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!AccPlan}" var="Acpl">
+                                  <tr class="slds-hint-parent">
+           
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!Acpl.Customer__r.name}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!Acpl.Customer__r.RecordType.DeveloperName}"  /></td> 
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!Acpl.id}" >{!Acpl.name}</apex:outputLink></td>
+                                           
+                                    <td data-label="Company"><apex:outputField value="{!Acpl.Plan_Year__c}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!Acpl.Active__c}"  /></td>
+                                   <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!Acpl.LastModifiedDate}" /> 
+                                            </apex:outputText>  </td>
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(MySIP.size==0,HideAll,ShowAll)}" Style="{!If(MySIP.size==0,ShowAll,if(AccPlan.size==0,"max-width:70%;display:inline-block;","max-width:45%;display:inline-block;"))}">
+     
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card" >
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-call slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#call"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">My SIP Plan</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="My SIP Plan.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MySIP.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Participant Name</th>
+                                    <th class="slds-text-heading--label " scope="col">SIP Plan</th>
+                                    <th class="slds-text-heading--label " scope="col">Participants Manager</th>
+                                    <th class="slds-text-heading--label " scope="col">Status</th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!MySIP}" var="SIP">
+                                  <tr class="slds-hint-parent">
+           
+                                    
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!SIP.id}" >{!SIP.Plan_Participant__r.name}</apex:outputLink></td>
+                                           
+                                    <td data-label="Company"><apex:outputField value="{!SIP.name}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!SIP.Participants_Manager__c}"  /></td>
+                                   <td data-label="Company"><apex:outputField value="{!SIP.Status__c}"  /></td>
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+  </div>
+ 
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of 6th row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->   
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of 7th Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+
+ <div class="slds-grid slds-grid--pull-padded {!If(MissMatchOppTEpro.size==0 && MissMatchTEproOpp.size==0 ,HideAll,ShowAll)}">
+
+    
+  
+    
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(MissMatchOppTEpro.size==0,HideAll,ShowAll)}" Style="{!If(MissMatchOppTEpro.size==0,ShowAll,if(MissMatchTEproOpp.size==0,"max-width:70%;display:inline-block;","max-width:50%;display:inline-block;"))}">
+     
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card" >
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-hierarchy slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#hierarchy"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">Eng. Opp open in SFDC => closed in TE project </h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Engineering Opportunity active in SFDC but canceled in TE Project. Verify if Opportunity needs to be closed. If Opportunity is still active verify with the Project Manager  and define next actions, e.g. re-open TE project, link to different TE project or link to bucket project. ">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MissMatchOppTEpro.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label " scope="col">PLM Id</th>
+                                    <th class="slds-text-heading--label " scope="col">Phase</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Project Status Level">PSL</a></div></th>
+                                                                        
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!MissMatchOppTEpro}" var="MisMopppr">
+                                  <tr class="slds-hint-parent">
+           
+                                     <td data-label="Name"><apex:outputLink target="_blank" value="/{!MisMopppr.id}" >{!MisMopppr.name}</apex:outputLink></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!MisMopppr.PLM_Id__c}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!MisMopppr.StageName}"  /></td> 
+                                                                             
+                                    <td data-label="Company"><apex:outputField value="{!MisMopppr.Project_Status_Level__c}"  /></td>
+                                   
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+
+
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded {!If(MissMatchTEproOpp.size==0,HideAll,ShowAll)}" Style="{!If(MissMatchTEproOpp.size==0,ShowAll,if(MissMatchOppTEpro.size==0,"max-width:70%;display:inline-block;","max-width:50%;display:inline-block;"))}">
+     
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card" >
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-hierarchy slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#hierarchy"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">Eng. Opp closed in SFDC => Open in TE project</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->      
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Opportunity is Dead or Lost but related TE project is still open. Contact the Project manager to stop and close the related TE project.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&--> 
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(MissMatchTEproOpp.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                 <tr>
+                                    <th class="slds-text-heading--label " scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label " scope="col">PLM Id</th>
+                                    <th class="slds-text-heading--label " scope="col">Phase</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Project Status Level">PSL</a></div></th>
+                                                                        
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!MissMatchTEproOpp}" var="MisMpaTE">
+                                  <tr class="slds-hint-parent">
+           
+                                    
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!MisMpaTE.id}" >{!MisMpaTE.name}</apex:outputLink></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!MisMpaTE.PLM_Id__c}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!MisMpaTE.StageName}"  /></td> 
+                                                                             
+                                    <td data-label="Company"><apex:outputField value="{!MisMpaTE.Project_Status_Level__c}"  /></td>
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+  </div>
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END of 7th Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of 8th Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+<div class="slds-grid slds-grid--pull-padded {!If(Contract.size==0 && (MYMissMatch.size==0 || MYMissMatch==null),HideAll,ShowAll)}">
+
+ <div class="slds-col--padded {!If((MYMissMatch.size==0 || MYMissMatch==null),HideAll,ShowAll)}" Style="{!If((MYMissMatch.size==0 || MYMissMatch==null),ShowAll,if(Contract.size==0,"max-width:70%;display:inline-block;","max-width:55%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+       
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-photo slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#photo"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">My Eng Opp Mismatch with TE Project Stage Gate Level</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->    
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="The TE project with which your opportunity is linked to has passed the devlopment stage gate G3 or G6, but your opportunity is not yet in phase won or production. Latest at stage gate G3 TE makes the decision to invest in tooling and we should have customer commitment for the project. Please set your opportunity to won or production or get in touch with the Project Manager to discuss the next steps if we have not received any commitment from the customer.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+                   
+                <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel id="counter59">
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if((MYMissMatch!=null && MYMissMatch.size>5),"height:200px",null)}"> 
+                          <table class="slds-table slds-table--bordered slds-no-row-hover">
+        
+                            <thead>
+                                  <tr>
+                                   
+                                    <th class="slds-text-heading--label " scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Phase</th>
+                                    <th class="slds-text-heading--label " scope="col">G3-Actual</th>
+                                     <th class="slds-text-heading--label" scope="col">G6-Actual</th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!MYMissMatch}" var="Oppproj">
+                                  <tr class="slds-hint-parent">
+           
+                                    
+                                    <td class="slds-truncate" data-label="Company"><apex:outputLink target="_blank" value="/{!Oppproj.Mainopp.Opportunity__r.id}" >{!Oppproj.Mainopp.Opportunity__r.Name}</apex:outputLink></td>
+                                    <td bgcolor="#F88962" data-label="Company"><apex:outputtext value="{!Oppproj.Mainopp.Opportunity__r.StageName}"  /></td>
+                                   
+                                    <td bgcolor="#F88962" data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!Oppproj.G3Value}" /> 
+                                            </apex:outputText>  </td>
+                                     <td bgcolor="#F88962" data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!Oppproj.G6Value}" /> 
+                                            </apex:outputText>  </td>
+            
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+
+
+    
+   <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+  
+    <div class="slds-col--padded {!If(Contract.size==0,HideAll,ShowAll)}" Style="{!If(Contract.size==0,ShowAll,if((MYMissMatch.size==0 || MYMissMatch==null),"max-width:70%;display:inline-block;","max-width:55%;display:inline-block;"))}">
+   
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+     
+     
+     
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-client slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#client"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                     <h2 class="slds-text-heading--small ">My Contract </h2> 
+                                </div>
+                                                        
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel id="counter56">
+                     <div id="table-wrapper">
+                      <div id="table-scroll" Style="{!if(Contract.size>5,"height:200px",null)}">
+                         <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Account Name</th>
+            
+                                    <th class="slds-text-heading--label " scope="col">Account Number</th>
+                                    <th class="slds-text-heading--label " scope="col">Contract Number</th>
+                                    <th class="slds-text-heading--label " scope="col">Contract Status</th>
+                                    <th class="slds-text-heading--label " scope="col">Action Status</th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result56">
+                             <apex:repeat value="{!Contract}" var="Contr">
+                                  <tr class="slds-hint-parent">
+                                     
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!Contr.Account__r.name}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!Contr.Account__r.AccountNumber}"  /></td>
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!Contr.id}" >{!Contr.name}</apex:outputLink></td>
+                                    
+                                    <td data-label="Company"><apex:outputtext value="{!Contr.Contract_Status__c}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!Contr.Action_Status__c}"  /></td>
+                                    
+                                    
+
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+     
+     
+     
+     
+     
+     
+
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+  </div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of 8th row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->   
+
+ 
+ <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Start of 9th Row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+<div class="slds-grid slds-grid--pull-padded">
+
+    
+   <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Fist Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->      
+    <div class="slds-col--padded" Style="max-width:100%;display:inline-block;">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+     
+     
+     
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-solution slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#solution"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                     <h2 class="slds-text-heading--small ">My Pending Task </h2> 
+                                </div>
+                                
+                                <div class="slds-col slds-no-flex slds-align-middle slds-size--3-of-6">
+           
+                                   <apex:actionRegion >
+                                    <apex:selectList value="{!selectedtraining}" size="1" required="False">
+                                        <apex:selectOption itemValue="None" itemLabel="Overdue + 7 Days"/ >
+                                        <apex:selectOption itemValue="Overdue" itemLabel="Overdue" />
+                                        <apex:selectOption itemValue="Today" itemLabel="Today"/>
+                                        <apex:selectOption itemValue="Todayoverdue" itemLabel="Today + Overdue"/>
+                                        <apex:selectOption itemValue="Tomorrow" itemLabel="Tomorrow"/>
+                                        <apex:selectOption itemValue="Next7Days" itemLabel="Next 7 Days"/>
+                                        <apex:selectOption itemValue="ThisMonth" itemLabel="This Month"/>
+                                        <apex:selectOption itemValue="AllOpen" itemLabel="All Open"/>
+                                        <apex:actionSupport event="onchange" action="{!ThisTasknewlist}" reRender="counter" rerender="counter"/>
+                                        
+                                    </apex:selectList>
+                                </apex:actionRegion>
+       
+                              </div>
+         
+        
+         
+         
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                                   <apex:commandButton onClick="window.open('/setup/ui/recordtypeselect.jsp?ent=Task&retURL=%2Fhome%2Fhome.jsp&save_new_url=%2F00T%2Fe%3FretURL%3D%252Fhome%252Fhome.jsp');" value="New Task" id="theButton3" styleclass="slds-button slds-button--neutral"/>            
+                                   
+                                </div>
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel id="counter">
+                     <div id="table-wrapper">
+                     <div id="table-scroll" >
+                         <table class="slds-table slds-table--bordered">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Go to Task</th>
+            
+                                    <th class="slds-text-heading--label " scope="col">Date</th>
+                                    <th class="slds-text-heading--label " scope="col">Status</th>
+                                    <th class="slds-text-heading--label " scope="col">Subject</th>
+                                    <th class="slds-text-heading--label " scope="col">Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Related To</th>
+                                    <th class="slds-text-heading--label " scope="col">Account</th>
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                             <apex:repeat value="{!MyNewTask}" var="task">
+                                  <tr class="slds-hint-parent">
+           
+                                    <td data-label="Name"><apex:outputLink target="_blank" value="/{!task.id}" >Click Here!</apex:outputLink></td>
+                                    <td data-label="Title"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                                    <apex:param value="{!task.ActivityDate}" /> 
+                                                           </apex:outputText>  </td>
+                                    <td data-label="Company"><apex:outputtext value="{!task.status}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!task.Subject}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!task.Who.name}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!task.What.name}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputField value="{!task.Account.Name}"  /></td>
+
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+     
+     
+     
+     
+     
+     
+
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of first Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$--> 
+  </div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of 9th row Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->   
+
+
+</div>
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Main Body &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+<footer role="contentinfo" class="slds-p-around--large">
+      <!-- LAYOUT GRID -->
+      <div class="slds-grid slds-grid--align-spread">
+        <p class="slds-col">MyToDos App Designed and Controlled By </p>
+        <p class="slds-col">© Industrial BU Admin</p>
+      </div>
+      <!-- / LAYOUT GRID -->
+    </footer>
+    <!-- / FOOTER --> 
+
+  </div>
+  <!-- / REQUIRED SLDS WRAPPER --> 
+
+</apex:pageBlock>
+</apex:outputPanel>
+
+<!-- #################################################################################################################################################################################################-->
+
+
+    <!-- FOOTER -->
+    
+</body>    
+<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+
+   
+</html>
+</apex:form>
+
+<!-- ******************************************************** Comented Code for Future Use Commented By Deepak kumar on 3rd june 2016  ************************************************************************************************************************************************
+  We have card in My to Do's App called "My Engineering opportunities mismatch with TE Project status".The logic which we have written to get the data in this card is not correct and we need time to think on that so we decided to go live without that card.-->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     
+    <div class="slds-col--padded {!If(OppEnggMileS.size==0,HideAll,ShowAll)}" Style="{!If(OppEnggMileS.size==0,ShowAll,if(OnHoldOpp.size==0,"max-width:70%;display:inline-block;","max-width:55%;display:inline-block;"))}">
+     
+     <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+       
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                          <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                 <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-photo slds-icon--small">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#photo"></use>
+                                    </svg>
+                                 </div>
+                                
+                                <div class="slds-media__body">
+                                      <h2 class="slds-text-heading--small slds-truncate">My Engineering Opp Mismatch with TE Project Status</h2>
+                                </div>
+                                 <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&     
+          
+          
+                                  <div class="slds-col slds-no-flex slds-align-middle slds-size--1-of-6"> 
+                
+                                         <a href="#" data-toggle="tooltip" title="Projects that have passed stage gate G3, but the opportunity phase is not at G3, but the opportunity phase is not at ‘won’ or ‘production’. Projects that have been cancelled, but the opportunity phase is not ‘lost’ or ‘dead’.">
+                 
+                                         Help Text!                
+                                 
+                                         </a>
+                                  </div>
+
+         
+                              <!----&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Help Text &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+                                  
+         
+         
+                                
+                          
+                         </div>
+                   </div>
+          
+                   <div class="slds-card__body slds-text-body--small" >
+                     <apex:outputpanel >
+                     <div id="table-wrapper">
+                     <div id="table-scroll" Style="{!if(OppEnggMileS.size>5,"height:200px",null)}">
+                          <table class="slds-table slds-table--bordered slds-no-row-hover">
+        
+                            <thead>
+                                  <tr>
+                                    <th class="slds-text-heading--label " scope="col">Opp Number</th>
+                                    <th class="slds-text-heading--label " scope="col">Opp Name</th>
+                                    <th class="slds-text-heading--label " scope="col">Phase</th>
+                                    <th class="slds-text-heading--label " scope="col"><div><a href="#" data-toggle="tooltip" title="Project Status Level">PSL</a></div></th>
+                                     <th class="slds-text-heading--label" scope="col">G3-Actuals</th>
+                                    
+                                  </tr>
+                            </thead>
+        
+                            <tbody id="result">
+                              <apex:repeat value="{!OppEnggMileS}" var="Oppproj">
+                                  <tr class="slds-hint-parent">
+           
+                                    <td  data-label="Company"><apex:outputField value="{!Oppproj.Opportunity__r.Opportunity_Number__c}"  /></td>
+                                    <td class="slds-truncate" data-label="Company"><apex:outputLink target="_blank" value="/{!Oppproj.Opportunity__r.id}" >{!Oppproj.Opportunity__r.Name}</apex:outputLink></td>
+                                    <td bgcolor="#F88962" data-label="Company"><apex:outputField value="{!Oppproj.Opportunity__r.StageName}"  /></td>
+                                    <td data-label="Company"><apex:outputField value="{!Oppproj.Opportunity__r.Project_Status_Level__c}"  /></td>
+                                    <td bgcolor="#F88962" data-label="Company"><apex:outputField value="{!Oppproj.Actual__c}"  /></td>
+            
+                        
+                                  </tr>
+                             </apex:repeat>
+                            </tbody>
+           
+                         </table>
+                    </div>
+                 </div></apex:outputpanel>
+              </div>
+                <div class="slds-card__footer">
+                  
+                </div>
+         </div>
+      
+ 
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End Of MAIN CARD $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ 
+</div>
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ End of Second Column Grid $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+  </div>
+--> 
+
+
+
+       
+</apex:page>

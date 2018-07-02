@@ -1,0 +1,161 @@
+<apex:page standardcontroller="Account_Forecast__c" extensions="ManageAccountsforGAMEntry" title="{!$Label.Manage_Accounts}" sidebar="false">
+    <apex:sectionHeader title="{!$Label.Manage_Accounts_for} {!gamCode}" />
+   	<apex:stylesheet value="{!$Resource.ManageAccountsforGAMCss}"/>
+   	<apex:includeScript value="{!URLFOR($Resource.teisJQueryIE9)}" />
+	<apex:includeScript value="{!URLFOR($Resource.ManageAccountsforGAM)}" />
+
+	
+    <apex:form id="partnerform"> 
+      	
+        <apex:PageMessages id="message"/>   
+        
+        <apex:pageBlock title="{!$Label.Select_Up_to_x_Accounts}" id="TheBlock"> 
+        
+        	<apex:pageBlockButtons location="top">
+        		<apex:selectList value="{!addAmount}" size="1">
+		            <apex:selectOptions value="{!Amounts}"/>
+		        </apex:selectList>
+		        
+		        <apex:commandButton value="Add" action="{!AddPartners}" status="toStatus" rerender="partnerform"/>
+                <apex:commandButton value="Save to Forecast" status="toStatus" rerender="partnerform" action="{!SaveAndReturn}" />
+                <apex:actionFunction name="action"  />
+                <apex:commandButton value="{!$Label.c2_Quick_save}" action="{!QuickSave}" status="toStatus" rerender="partnerform" />  
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+                <apex:actionFunction name="checkDuplicatePartner" action="{!checkDuplicatePartner}" rerender="partnerform" status="toStatus">
+                	<apex:param name="selectedIndex" assignTo="{!selectedIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionStatus stopText="" id="toStatus">
+                    <apex:facet name="start">&nbsp;<img src="/img/loading.gif"/></apex:facet>
+                </apex:actionStatus> 
+            </apex:pageBlockButtons>
+            
+            
+            <apex:pageBlockTable value="{!list_accountForecasts}" var="accountForecast">
+            
+            	<apex:column headerValue="{!$Label.Delete}" >
+					<apex:commandLink style="border:0px" action="{!DeleteOpportunityPartner}" rerender="partnerform" status="toStatus">
+						 <apex:param name="deletePartnerIndex" value="{!accountForecast.index}" assignTo="{!deleteParterIndex}" />
+						 <apex:image url="{!$Resource.teisIconDelete}" />						
+					</apex:commandLink>
+												
+				</apex:column>
+				
+            	<apex:column headerValue="{!$ObjectType.Account.fields.Name.label}" >
+					
+		   			<apex:inputText disabled="true" id="lookup_Name" value="{!accountForecast.accountName}" />
+		   			<apex:inputText id="lookup_Id" value="{!accountForecast.afc.Account__c}" style="display:none;" /> 
+										   			
+					<apex:image url="/s.gif" 
+			   			id="lookup"
+			   			styleClass="lookupIcon"  
+			   			onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+			   			onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+			   			title="Search" 
+			   			onclick="OpenAccountLookupPopup('{!accountForecast.afc.Id}', this.id, '{!accountForecast.index}')"
+			   			rendered="{!accountForecast.afc.Account__c == null}"
+			   		/>
+				</apex:column>
+					 
+				<apex:column headerValue="{!$ObjectType.Account.fields.Name.label}" >
+					<apex:outputField value="{!accountForecast.afc.Account__r.Name}"></apex:outputField>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Account.fields.SALES_TERRITORY_NM__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account__r.SALES_TERRITORY_NM__c}"></apex:outputText>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Account.fields.BillingCity.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account__r.BillingCity}"></apex:outputText>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Account.fields.BillingState.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account__r.BillingState}"></apex:outputText>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Account.fields.BillingCountry.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account__r.BillingCountry}"></apex:outputText>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Account.fields.AccountNumber.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account_Number__c}"></apex:outputText>
+					<!--  Need to add an output panel and possibly update with Javascript -->
+				</apex:column>
+				
+				
+				
+				<!-- 
+				<apex:column headerValue="{!$ObjectType.Account.fields.BillingAddress.label}" >
+					<apex:outputText value="{!accountForecast.afc.BillingAddress}"></apex:outputText>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.Account.fields.BillingCountry.label}" >
+					<apex:outputText value="{!accountForecast.afc.BillingCountry}"></apex:outputText>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.Account.fields.Account_Manager_Name__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.Account_Manager_Name__c}"></apex:outputText>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.Account.fields.SALES_TERRITORY_NM__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.SALES_TERRITORY_NM__c}"></apex:outputText>
+				</apex:column>
+				-->
+				<!-- <apex:column headerValue="{!$ObjectType.Account.fields.afMGRNM__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.Allocation__c}"></apex:outputText>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.Account.fields.Global_Account_Manager__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.Allocation__c}"></apex:outputText>
+				</apex:column>
+				<apex:column headerValue="{!$ObjectType.Account.fields.Industry_Code_Comb__c.label}" >
+					<apex:outputText value="{!accountForecast.afc.Allocation__c}"></apex:outputText>
+				</apex:column> 
+				-->
+				
+				<!-- 
+				 <apex:pageBlockTable value="{!$ObjectType.Account.FieldSets.C2_Account_Search_Field_Set}" var="f">
+		            <apex:column value="{!f}">
+		                <apex:facet name="header">Name</apex:facet>
+		            </apex:column> 
+		            <apex:column value="{!f.Label}">
+		                <apex:facet name="header">Label</apex:facet>
+		            </apex:column>  
+		            <apex:column value="{!f.Type}" >
+		                <apex:facet name="header">Data Type</apex:facet>
+		            </apex:column> 
+		        </apex:pageBlockTable> 
+		        -->
+				
+				
+			</apex:pageBlockTable>
+			
+			<br/>
+			<apex:outputLabel >{!$Label.Account_Fine_Print}</apex:outputLabel> 
+			
+			<input type="hidden" id="selectedAccountId" value=""></input>
+        	<input type="hidden" id="selectedAccountName" value=""></input>
+        	<input type="hidden" id="selectedOppyPartnerId" value=""></input>
+        	<input type="hidden" id="selectedIndex" value=""></input>
+        </apex:pageBlock> 
+	<script>
+	
+		itb_j$=jQuery.noConflict();
+		function closePopUp(){
+			popRemove();
+		}
+		
+		function RadioCancelOther(selfId){
+        	var list_check = document.getElementsByTagName("input"); 
+            for(var i=0; i<list_check.length; i++){
+                if(list_check[i].type=="checkbox" && list_check[i].id != selfId ){
+                    list_check[i].checked = false;
+                }
+            }
+            
+        }	
+	</script>
+	<div id="status_window_account" style="align:center;margin-left:auto;margin-right:auto"> </div>
+    <div id="mask"></div> 
+    </apex:form>
+</apex:page>

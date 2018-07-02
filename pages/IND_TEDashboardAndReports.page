@@ -1,0 +1,1645 @@
+<apex:page Controller="Industrial_Report_DashboardController"  cache="true" sidebar="false" applyHtmlTag="True">
+ <!--<apex:sectionHeader title="TE Connectivity" subtitle="Reports and Dashboards" />--->
+ 
+<!------------------------------------------------------------Start of Styles--------------------------------------------------------------------------------------------------> 
+
+
+ <style>
+ 
+.headerLogo {
+   position : absolute;
+     top:15;
+    right:0;
+    border:none;    
+    margin-right:40px;
+    margin-top:0px;
+    background-color : Transparent
+    z-index : 2
+  }
+.header {
+   
+   height:60px;   
+   background:#EEEEEE;
+   background-image: url('http://imageserverdev.tycoelectronics.com/imageserver/tyco/myte/img/header_myTE.jpg'); 
+   width:100%;
+  
+    
+    }
+a.MainheaderName{
+    margin-left:30px;
+    font:normal 30px/70px Helvetica;
+    color:#000000;
+    text-decoration:none;
+     text-align : right
+}
+
+
+a.URL1Name, a.URL1Name:visited {
+    margin-left:20px;
+    font:normal 15px/30px Helvetica;
+    color:#000000;
+    text-decoration:none;
+     text-align : right;
+     font-weight:bold; 
+     
+}
+
+a.URL1Name:hover {
+    color:#FFBF00;
+    text-decoration:underline;
+    font-weight:bold;
+}
+.box {
+    position:relative;
+    width:100%;
+    /*height:1%;*/
+    padding:5px 5px;
+   background:#EEEEEE;
+    overflow:hidden;
+    z-index:0;
+}
+.hdr
+{
+color:#FFFFFF;
+font-size:16px;
+font-weight:bold;
+text-align:center;
+}  
+      
+ </style>
+ 
+ <!-----------------Test Code   rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' || $Profile.Name =='BU Admin' , true , false)}">
+    -->
+     <!----------------test code rendered="{!IF( $UserRole.Name =='(102700) - Industrial China' || $UserRole.Name =='(102263) - Industrial-Rail' || $UserRole.Name =='(102262) - Industrial-A&C' || $UserRole.Name =='(102202) - Industrial' || $UserRole.Name =='(102261) - Industrial-IB' || $Profile.Name =='System Administrator' || $Profile.Name =='BU Admin' , true , false)}">
+                     -->
+ 
+<!------------------------------------------------------------END of Styles--------------------------------------------------------------------------------------------------> 
+   
+ <html>
+  
+ <!---------------------------------------------------------------Start Of Visualforce page----------------------------------------------------------------------------------------------------->
+    
+  
+  <!------------------------------------------------------------Start of Company Header Part--------------------------------------------------------------------------------------------------> 
+     <apex:panelGrid styleClass="header">
+         <a class="MainheaderName">Reports and Dashboards</a>
+         <img class="headerLogo" width="150" height="60" src="{!$Resource.tyco_logo}"/>
+          
+  </apex:panelGrid>
+  <br/>
+    <apex:outputLink styleClass="URL1Name" Value="/00O/o"> Go to Report and Folder Page</apex:outputLink>
+    <apex:outputLink styleClass="URL1Name" Value="/01Z/o">Go to Dashboard Home Page </apex:outputLink>
+  <br/>
+  <center><apex:outputText style="font-family:arial;color:red;font-size:20px;" rendered="{!IF(NOT(ISPICKVAL($User.GIBU__c,'Industrial')), true , false)}" value="This page is only viewable for Industrial User,You do not have permission to view the page. Please contact Industrial BU Admins."/></center>
+ <!-- -------------------------------------------------------------END of Company Header Part-----------------------------------------------------------------> 
+
+<apex:form enctype="multipart/form-data" rendered="{!IF(ISPICKVAL($User.GIBU__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+  
+ 
+ <!------------------------------------------------------------Start of Code for Executives--------------------------------------------------------------------------------------------------> 
+ 
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'Executive')|| Contains(UserReportingRole,'All') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+    
+       
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for Executive</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="de1" value="{!DashExecutiveIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!de1.ID_of_Report_or_Dashboard__c}" >{!de1.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!de1.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>
+             
+             </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems')|| ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+           
+                <table border="1" width="100%">
+                   <apex:repeat var="deac" value="{!DashExecutiveSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!deac.ID_of_Report_or_Dashboard__c}" >{!deac.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!deac.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>
+           
+            </td>
+             
+          </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="deIB" value="{!DashExecutiveDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!deIB.ID_of_Report_or_Dashboard__c}" >{!deIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!deIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+                
+             </td>
+          </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+    <!------------------------------------------------------------Start of Other Dashboard Row------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin'  , true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+               <table border="1" width="100%">
+                <tr>
+                    <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/01ZE0000000ZGsH" >IND China executive summary</apex:outputLink></td>
+                    <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> This dashboard contains the China executive summary for China Sub-BU. </td>
+                </tr>
+               
+               </table>
+               
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+  ----------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="Rei" value="{!RepExecutiveIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!Rei.ID_of_Report_or_Dashboard__c}" >{!Rei.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!Rei.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           
+           </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                
+                 <table border="1" width="100%">
+                   <apex:repeat var="ReAC" value="{!RepExecutiveSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReAC.ID_of_Report_or_Dashboard__c}" >{!ReAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+           
+             </td>
+             
+           </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="ReIB" value="{!RepExecutiveDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReIB.ID_of_Report_or_Dashboard__c}" >{!ReIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+ 
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+               <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+                
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+  ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+   
+         </table>
+        
+      </td>
+      
+   <!------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for Executives--------------------------------------------------------------------------------------------------> 
+  
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->     
+ 
+ <!------------------------------------------------------------Start of Code for Sales Manager--------------------------------------------------------------------------------------------------> 
+  
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'SM')|| Contains(UserReportingRole,'All')  || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}"> 
+    
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for Sales Manager</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+              
+                 <table border="1" width="100%">
+                   <apex:repeat var="Drsmi" value="{!DashRSMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!Drsmi.ID_of_Report_or_Dashboard__c}" >{!Drsmi.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!Drsmi.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+                
+            </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="DrsmAC" value="{!DashRSMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DrsmAC.ID_of_Report_or_Dashboard__c}" >{!DrsmAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DrsmAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+          </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+               
+                 <table border="1" width="100%">
+                   <apex:repeat var="DrsmIB" value="{!DashRSMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DrsmIB.ID_of_Report_or_Dashboard__c}" >{!DrsmIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DrsmIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+          </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+     
+    <!------------------------------------------------------------Start of China Dashboard Row------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+               <table border="1">
+                 <tr>
+                   <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/01ZE0000000Yzj7" >IND IB Executive dashboard</apex:outputLink></td>
+                  <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> This dashboard contains the IND Lead Dashboard for industrial BU. </td>
+                
+                 </tr>
+                </table>    
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+  ---------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+   
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                  
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RersmI" value="{!RepRSMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RersmI.ID_of_Report_or_Dashboard__c}" >{!RersmI.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RersmI.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+         </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RersmAC" value="{!RepRSMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RersmAC.ID_of_Report_or_Dashboard__c}" >{!RersmAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RersmAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                  
+               
+                 <table border="1" width="100%">
+                   <apex:repeat var="RersmIB" value="{!RepRSMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RersmIB.ID_of_Report_or_Dashboard__c}" >{!RersmIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RersmIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+ 
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+               
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+   ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+  
+         </table>
+        
+      </td>
+      
+   <!------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for Sales Manager--------------------------------------------------------------------------------------------------> 
+ 
+ <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->     
+ 
+ <!------------------------------------------------------------Start of Code for Product Manager--------------------------------------------------------------------------------------------------> 
+  
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'PM')|| Contains(UserReportingRole,'All') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}"> 
+  
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for Product Manager</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+                  
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="Dgsmi" value="{!DashGSMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!Dgsmi.ID_of_Report_or_Dashboard__c}" >{!Dgsmi.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!Dgsmi.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="DgsmAC" value="{!DashGSMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DgsmAC.ID_of_Report_or_Dashboard__c}" >{!DgsmAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DgsmAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+               
+               <table border="1" width="100%">
+                   <apex:repeat var="DgsmIB" value="{!DashGSMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DgsmIB.ID_of_Report_or_Dashboard__c}" >{!DgsmIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DgsmIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+    <!------------------------------------------------------------Start of China Dashboard Row-------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                 <tr>
+                   <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/01ZE0000000Yzj7" >IND IB Executive dashboard</apex:outputLink></td>
+                  <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> This dashboard contains the IND Lead Dashboard for industrial BU. </td>
+                
+                 </tr>
+                </table>  
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+   --------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                  
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RegsmI" value="{!RepGSMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegsmI.ID_of_Report_or_Dashboard__c}" >{!RegsmI.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegsmI.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+         </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RegsmAC" value="{!RepGSMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegsmAC.ID_of_Report_or_Dashboard__c}" >{!RegsmAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegsmAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                  
+               
+                 <table border="1" width="100%">
+                   <apex:repeat var="RegsmIB" value="{!RepGSMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegsmIB.ID_of_Report_or_Dashboard__c}" >{!RegsmIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegsmIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+ 
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+               
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+   ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+   
+         </table>
+        
+      </td>
+      
+   <!------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for Product Manager--------------------------------------------------------------------------------------------------> 
+  
+  
+      
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$---> 
+
+   
+   <!------------------------------------------------------------Start of Code for GAM's and KAM's--------------------------------------------------------------------------------------------------> 
+  
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'GAM')|| Contains(UserReportingRole,'All')|| $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for GAM's and KAM's</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="Dgami" value="{!DashGAMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!Dgami.ID_of_Report_or_Dashboard__c}" >{!Dgami.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!Dgami.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="DgamAC" value="{!DashGAMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DgamAC.ID_of_Report_or_Dashboard__c}" >{!DgamAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DgamAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+               
+               <table border="1" width="100%">
+                   <apex:repeat var="DgamIB" value="{!DashGAMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DgamIB.ID_of_Report_or_Dashboard__c}" >{!DgamIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DgamIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+    <!------------------------------------------------------------Start of China Dashboard Row-------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                 <tr>
+                   <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/01ZE0000000Yzj7" >IND IB Executive dashboard</apex:outputLink></td>
+                  <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> This dashboard contains the IND Lead Dashboard for industrial BU. </td>
+                
+                 </tr>
+                </table>  
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+   --------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                  
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RegamI" value="{!RepGAMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegamI.ID_of_Report_or_Dashboard__c}" >{!RegamI.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegamI.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+         </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="RegamAC" value="{!RepGAMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegamAC.ID_of_Report_or_Dashboard__c}" >{!RegamAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegamAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                  
+               
+                 <table border="1" width="100%">
+                   <apex:repeat var="RegamIB" value="{!RepGAMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!RegamIB.ID_of_Report_or_Dashboard__c}" >{!RegamIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!RegamIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+ 
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+               
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+   ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+  
+         </table>
+        
+      </td>
+      
+   <!------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for GAM's and KAM's--------------------------------------------------------------------------------------------------> 
+  
+   
+<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$---> 
+
+   
+<!------------------------------------------------------------Start of Code for Account Manager--------------------------------------------------------------------------------------------------> 
+  
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'AM.')|| Contains(UserReportingRole,'All')|| $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+          
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for Account Manager</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="Dami" value="{!DashAMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!Dami.ID_of_Report_or_Dashboard__c}" >{!Dami.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!Dami.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+             
+                <table border="1" width="100%">
+                   <apex:repeat var="DamAC" value="{!DashAMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DamAC.ID_of_Report_or_Dashboard__c}" >{!DamAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DamAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+               
+               <table border="1" width="100%">
+                   <apex:repeat var="DamIB" value="{!DashAMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DamIB.ID_of_Report_or_Dashboard__c}" >{!DamIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DamIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table> 
+             
+             </td>
+             
+           </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+    <!------------------------------------------------------------Start of China Dashboard Row-------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                 <tr>
+                   <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/01ZE0000000Yzj7" >IND IB Executive dashboard</apex:outputLink></td>
+                  <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> This dashboard contains the IND Lead Dashboard for industrial BU. </td>
+                
+                 </tr>
+                </table>  
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+   --------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+  
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                  
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="ReamI" value="{!RepAMIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReamI.ID_of_Report_or_Dashboard__c}" >{!ReamI.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReamI.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+         </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                             
+                <table border="1" width="100%">
+                   <apex:repeat var="ReamAC" value="{!RepAMSystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReamAC.ID_of_Report_or_Dashboard__c}" >{!ReamAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReamAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!----------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                  
+               
+                 <table border="1" width="100%">
+                   <apex:repeat var="ReamIB" value="{!RepAMDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReamIB.ID_of_Report_or_Dashboard__c}" >{!ReamIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReamIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+                
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+  
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+                <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+               
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+   ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+   
+         </table>
+        
+      </td>
+      
+   <!------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for Account Manager--------------------------------------------------------------------------------------------------> 
+  
+ 
+ <!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$---> 
+
+   
+   <!------------------------------------------------------------Start of Code for Field Engineers--------------------------------------------------------------------------------------------------> 
+  
+  
+  <apex:panelGrid styleClass="box" border="" >
+  <apex:pageBlock rendered="{!IF(Contains(UserReportingRole,'FE')|| Contains(UserReportingRole,'All')|| $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+          
+      <apex:panelGrid style="background-color:#58ACFA;width:100%">
+        <Center><apex:outputLabel styleClass="hdr">Reports and Dashboards for Field Engineers</apex:outputLabel></center>
+      </apex:panelGrid>
+    
+     <table width="100%" border="0" style="padding: 7px 7px 7px 7px; border-spacing: 8px 8px; width: 100%;background-color:#FFFFFF">
+      <tr>
+       <td width="50%" style="vertical-align:top;">
+         <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  
+  <!------------------------------------------------------------Start of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+          
+   <!------------------------------------------------------------Start of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+       
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Dashboard </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             <!--<td width="30%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Description </td>-->
+           </tr>
+   <!------------------------------------------------------------End of Dashboard Headers--------------------------------------------------------------------------------------------------> 
+   
+     
+   <!------------------------------------------------------------Start of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel >   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+               
+               <table border="1" width="100%">
+                   <apex:repeat var="DFEI" value="{!DashFEIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DFEI.ID_of_Report_or_Dashboard__c}" >{!DFEI.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DFEI.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+             
+           </tr>
+         </apex:outputPanel>    
+   <!------------------------------------------------------------END of Industrial Dashboard Row--------------------------------------------------------------------------------------------------> 
+   
+   <!------------------------------------------------------------Start of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+          <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">  
+             
+              
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="DFEAC" value="{!DashFESystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DFEAC.ID_of_Report_or_Dashboard__c}" >{!DFEAC.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DFEAC.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+             
+           </tr>
+        </apex:outputPanel>   
+   <!------------------------------------------------------------End of Systems  Dashboard Row--------------------------------------------------------------------------------------------------> 
+    
+   <!------------------------------------------------------------Start of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                
+                <table border="1" width="100%">
+                   <apex:repeat var="DFEIB" value="{!DashFEDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!DFEIB.ID_of_Report_or_Dashboard__c}" >{!DFEIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!DFEIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+             
+           </tr>
+          </apex:outputPanel>  
+   <!------------------------------------------------------------End of Devices Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+   
+    <!------------------------------------------------------------Start of China Dashboard Row-------------------------------------------------------------------------------------------------
+         <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+           
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                 <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+               
+             </td>
+             
+           </tr>
+         </apex:outputPanel>
+  ---------------------------------------------------------END of China Dashboard Row--------------------------------------------------------------------------------------------------> 
+           
+   
+        </table>
+    </td>
+  <!------------------------------------------------------------END of Code for Dashboard--------------------------------------------------------------------------------------------------> 
+  
+ <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--> 
+  
+  
+  <!------------------------------------------------------------Start of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      <td width="50%" style="vertical-align:top;">
+       <table cellspacing="2px" cellpadding="2px" border="3" >
+  
+  <!------------------------------------------------------------Start of Report Headers--------------------------------------------------------------------------------------------------> 
+           
+           <tr>
+             <th width="50%" style="font-family:arial;color:#000000;font-size:20px;text-align:center;" colspan="3" bgcolor="#FFBF00"> Report </th>
+           </tr>
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> BU </td>
+             <td width="92%" style="font-family:arial;color:#FFFFFF;font-size:15px;text-align:center;" bgcolor="#2E2E2E"> Link and Description </td>
+             
+           </tr>
+ <!------------------------------------------------------------END of Report Headers--------------------------------------------------------------------------------------------------> 
+            
+  <!------------------------------------------------------------Start of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+         <apex:outputPanel >
+             
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Industrial </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;">
+             
+                  
+                
+                 <table border="1" width="100%">
+                   <apex:repeat var="ReFEi" value="{!RepFEIND}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReFEi.ID_of_Report_or_Dashboard__c}" >{!ReFEi.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReFEi.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Industrial Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Systems Report Row--------------------------------------------------------------------------------------------------> 
+        <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Systems') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+                   
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Systems </td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                             
+                 <table border="1" width="100%">
+                   <apex:repeat var="ReFEac" value="{!RepFESystems}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReFEac.ID_of_Report_or_Dashboard__c}" >{!ReFEac.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReFEac.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+             
+             </td>
+           </tr>
+       </apex:outputPanel>
+  <!------------------------------------------------------------END of Systems Report Row--------------------------------------------------------------------------------------------------> 
+   
+  <!------------------------------------------------------------Start of Devices Report Row--------------------------------------------------------------------------------------------------> 
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Sub_Vertical__c,'Devices') || ISPICKVAL($User.Sub_Vertical__c,'Industrial') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+              
+           <tr>
+             <td width="8%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> Devices</td>
+             <td width="92%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                
+                  
+                
+                 <table border="1" width="100%">
+                   <apex:repeat var="ReFEIB" value="{!RepFEDevices}" >
+                     <tr>
+                        <td width="40%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="/{!ReFEIB.ID_of_Report_or_Dashboard__c}" >{!ReFEIB.name}</apex:outputLink></td>               
+                        <td width="60%" style="font-family:arial;font-size:15px;color:#0174DF"> {!ReFEIB.Short_Description__c}</td>                  
+                    </tr>
+                  </apex:repeat>   
+                </table>  
+            
+             </td>
+          </tr>
+       </apex:outputPanel>    
+  <!------------------------------------------------------------END of Devices Report Row--------------------------------------------------------------------------------------------------> 
+  
+  
+    <!------------------------------------------------------------Start of China Report Row-----------------------------------------------------------------------------------------------
+       <apex:outputPanel rendered="{!IF(ISPICKVAL($User.Region__c,'China') || $Profile.Name =='System Administrator' ||$Profile.Name =='BU Admin', true , false)}">
+               
+           <tr>
+             <td width="6%" style="font-family:arial;color:#FFFFFF;font-size:15px;" bgcolor="#2E2E2E"> China </td>
+             <td width="40%" style="font-family:arial;color:#000000;font-size:10px;"> 
+                 
+           <table border="1">
+                  
+                  <tr>
+                    <td width="30%" style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE00000024Pb9" >IND 13 weeks backlog CRD</apex:outputLink></td>               
+                     <td width="45%" style="font-family:arial;font-size:15px;color:#0174DF"> A/C backlog from daily  billings object. </td>                  
+                  
+                  </tr>
+                  <tr>
+                    <td style="font-family:arial;font-size:15px;"> <apex:outputLink value="https://c2s--qa.cs8.my.salesforce.com/00OE0000002I8b3" >IND Profit Delivery Performance</apex:outputLink></td>
+                    <td style="font-family:arial;font-size:15px;color:#0174DF"> Profit delivery performance. </td>
+                  </tr>
+                  </table> 
+                
+             </td>
+           </tr>
+           
+        </apex:outputPanel>         
+   ---------------------------------------------------------END of China Report Row--------------------------------------------------------------------------------------------------> 
+  
+   
+         </table>
+        
+      </td>
+      
+   <!-------------------------------------------------------------END of Code for Report--------------------------------------------------------------------------------------------------> 
+      
+      </tr>
+     </table>  
+   </apex:PageBlock>  
+ </apex:panelGrid>    
+ 
+<!------------------------------------------------------------END of Code for Field Engineers--------------------------------------------------------------------------------------------------> 
+ 
+ 
+   
+<!-- -------------------------------------------------------------End Of Visualforce page----------------------------------------------------------------------------------------------------->
+  </apex:form>  
+ </html>
+  
+</apex:page>

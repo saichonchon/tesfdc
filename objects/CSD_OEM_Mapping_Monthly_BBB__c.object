@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Allocation_For_Others__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>only for Account whose name is &quot;others&quot;</description>
+        <externalId>false</externalId>
+        <label>Allocation For Others</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Allocation__c</fullName>
+        <externalId>false</externalId>
+        <formula>OEM_Mapping__r.Allocation__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Allocation</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Bill_Amount_Minus_Cost_USD__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Bill_Amount_Minus_Cost_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bill Amount Minus Cost - USD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Amount_After_Allocation__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AND(NOT(ISNULL( Allocation_For_Others__c )),Allocation_For_Others__c &lt;&gt; 0),Monthly_Billings_Bookings_by_Part__r.Bill_Amount_USD__c*Allocation_For_Others__c,Monthly_Billings_Bookings_by_Part__r.Bill_Amount_USD__c *  OEM_Mapping__r.Allocation__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billing Amount After Allocation</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Amount__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Bill_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billing Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Book_Amount_After_Allocation__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Book_Amount_USD__c  *  OEM_Mapping__r.Allocation__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Book Amount After Allocation</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Book_Amount__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Book_Amount_USD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Book Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Month__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Fiscal_Month__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Month</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Quarter__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Fiscal_Quarter__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Quarter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Fiscal_Year__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fiscal Year</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GPL_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Part__r.GPL_txt__c</formula>
+        <label>GPL Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GPL_Family__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Part__r.Product_Hierarchy__r.CSD_GPL_Family__c</formula>
+        <label>GPL Family</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IBC1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_Industry_Business_Code__c</formula>
+        <label>IBC1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Monthly_Billings_Bookings_by_Part__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Monthly Billings/Bookings by Part</label>
+        <referenceTo>BBB_Month_Bill_Book_Cust_PN__c</referenceTo>
+        <relationshipLabel>OEM Mapping Monthly BBB</relationshipLabel>
+        <relationshipName>OEM_Mapping_Monthly_BBB</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OEM_Account__c</fullName>
+        <externalId>false</externalId>
+        <formula>OEM_Mapping__r.OEM__r.OEM__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>OEM Account</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OEM_Mapping__c</fullName>
+        <externalId>false</externalId>
+        <label>OEM Mapping</label>
+        <referenceTo>OEM_Mapping_Rule__c</referenceTo>
+        <relationshipLabel>OEM Mapping Monthly BBB</relationshipLabel>
+        <relationshipName>OEM_Mapping_Monthly_BBB</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Part_No__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Part__r.Name</formula>
+        <label>Part No.</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Profit_Center__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Profit_Center__c</formula>
+        <label>Profit Center</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Profit_Center_Desc__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.SAP_Profit_Center_Code__c</formula>
+        <label>SAP Profit Center Desc</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Office_Region_2015__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NOT(CONTAINS(&apos;S001,S002,S003&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c)),CASE(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c, &apos;S001&apos;, &apos;Americas&apos;,&apos;S002&apos;, &apos;Asia Pacific&apos;, &apos;S003&apos;, &apos;EMEA&apos;,&apos;Others&apos;), 
+IF(CONTAINS(&apos;S001,S003&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c),CASE(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c, &apos;S001&apos;, &apos;Americas&apos;, &apos;S003&apos;, &apos;EMEA&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c), 
+IF(CONTAINS(&apos;S026,S018,S025&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD2_SALES_OFFICE_CDE__c),CASE(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD2_SALES_OFFICE_CDE__c, &apos;S026&apos;, &apos;Korea&apos;, &apos;S018&apos;, &apos;South Asia Pacific&apos;,&apos;S025&apos;,&apos;Japan&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD2_SALES_OFFICE_CDE__c), 
+IF(CONTAINS(&apos;01379274,02844953,02987544&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.Account_Number_Short__c), &apos;China&apos;, 
+IF(CONTAINS(&apos;GIANTS,MARINERS&apos;, OEM_Mapping__r.OEM_Account__c ), &apos;China&apos;, 
+IF(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD3_SALES_OFFICE_CDE__c=&apos;S029&apos;,&apos;Taiwan&apos;, 
+IF(Monthly_Billings_Bookings_by_Part__r.SAP_Profit_Center_Code__c = &apos;0000000259&apos;,&apos;Taiwan&apos;, 
+IF(CONTAINS(&apos;00033915,00001242&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.WWCORPACCT__c),&apos;Taiwan&apos;,&apos;China&apos;) 
+) 
+) 
+) 
+) 
+) 
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sales Office Region 2015</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Office_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+CONTAINS(&apos;S001,S003&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c),
+
+
+CASE(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c, &apos;S001&apos;, &apos;Americas&apos;, &apos;S003&apos;, 
+
+&apos;EMEA&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD1_SALES_OFFICE_CDE__c),
+
+ IF(
+CONTAINS(&apos;S025,S026&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD3_SALES_OFFICE_CDE__c),
+
+CASE(Monthly_Billings_Bookings_by_Part__r.Customer__r.DD3_SALES_OFFICE_CDE__c, &apos;S025&apos;, &apos;JAPAN&apos;, &apos;S026&apos;, 
+
+&apos;KOREA&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.DD3_SALES_OFFICE_CDE__c),
+
+IF(CONTAINS(&apos;0464,1337,2142&apos;,Monthly_Billings_Bookings_by_Part__r.Customer__r.Account_Number_DND__c), &apos;India&apos;, 
+
+IF((CONTAINS(&apos;OPPO,VIVO, XIAOMI, COOLPAD, CHINA WHITEBOX&apos;,  OEM_Mapping__r.OEM_Account__c) || CONTAINS(&apos;38464&apos;, WWAC__c)),&apos;China Mobile&apos;,
+ 
+&apos;Asia excl JP&amp;KR&apos;
+
+
+)
+
+)
+
+)
+
+
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sales Office Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sold_to_Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Customer__r.Name</formula>
+        <label>Sold-to Account Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sold_to_Account__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Customer__r.Tech_SoldToAccountCode__c</formula>
+        <label>Sold-to Account</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(OEM_Mapping__r.Type__c)</formula>
+        <label>Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WWAC_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Customer__r.WWCORPACCTNM__c</formula>
+        <label>WWAC Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WWAC__c</fullName>
+        <externalId>false</externalId>
+        <formula>Monthly_Billings_Bookings_by_Part__r.Customer__r.WWCORPACCT__c</formula>
+        <label>WWAC</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>CSD OEM Mapping Monthly BBB</label>
+    <nameField>
+        <displayFormat>MMBBB-{0}</displayFormat>
+        <label>OEM Mapping Monthly BBB Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>OEM Mapping Monthly BBB</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

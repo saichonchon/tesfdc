@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_57340991</developerName>
+        <masterLabel>Customer Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account$Customer_Region__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>North America</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>South America</sourceValue>
+            </sourceValues>
+            <value>Americas</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>India</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>EMEA (excl. India)</sourceValue>
+            </sourceValues>
+            <value>EMEA and India</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Asia (excl. China and Japan)</sourceValue>
+            </sourceValues>
+            <value>Asia (excl. China and Japan)</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>China / HK / Taiwan</sourceValue>
+            </sourceValues>
+            <value>China/HK/Taiwan</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Japan</sourceValue>
+            </sourceValues>
+            <value>Japan</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Account.Monthly_BBBs__r$Bill_Amount_USD__c</column>
+        </chartSummaries>
+        <chartType>HorizontalBarGrouped</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Monthly_BBBs__r$Fiscal_Year__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>BucketField_57340991</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>For Ning</description>
+    <filter>
+        <booleanFilter>(((((1 or (4 and 5)) AND 2 AND 3))))</booleanFilter>
+        <criteriaItems>
+            <column>Account$GAMCD__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>g011,g014,g023,g032</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Bill_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$SAP_Profit_Center_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>0000000259</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$GAMCD__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>g103</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>dtc</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Fiscal_Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_57340991</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>EMS Combined Bill YTD GAM</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Billings_Bookings_by_Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Sales_Period__c</dateColumn>
+        <interval>INTERVAL_PREVCUR2FY</interval>
+    </timeFrameFilter>
+</Report>

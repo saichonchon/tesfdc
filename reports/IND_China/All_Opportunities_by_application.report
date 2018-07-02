@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_47641542</developerName>
+        <masterLabel>Opportunity phase</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Opportunities$StageName</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Won - Open</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won - Closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won/Qualified/G3 Approved</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Won</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Production</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Order Received  or Mass Production</sourceValue>
+            </sourceValues>
+            <value>Won</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Approved/Active</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>In Approval</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>New Opportunity</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Concept</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sampling</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Quotation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Initiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Exploring Needs</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Developing &amp; Differentiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Refining &amp; Resolving</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Contracting</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Commit</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Opportunity Development</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Open</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>New</sourceValue>
+            </sourceValues>
+            <value>On-going</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Lost/Dead - closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rejected - Closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lost - Closed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dead - Closed</sourceValue>
+            </sourceValues>
+            <value>Closed</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>On Hold</sourceValue>
+            </sourceValues>
+            <value>On-hold</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumn</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Opportunities$Application__c</groupingColumn>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Current_Year_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$One_Year_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Owner</field>
+    </columns>
+    <currency>USD</currency>
+    <description>For IM dashboard</description>
+    <filter>
+        <booleanFilter>((((8 AND 4  AND 7 ) AND (((1 OR (2 AND 3)) AND 5) OR ( 2 AND 6))) AND 9) AND 10)</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Status__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Weak,50/50,Likely,Commit</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Status__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Process_Status__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Pre-prod</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Type</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Transfer existing business,Defend Existing Business</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Days_since_last_user_update__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>lessThan</operator>
+            <value>60</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Won_Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_FISCAL_YEAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast__r$Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_FISCAL_YEAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Opportunity_Group__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Engineering,sales</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Greater China</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner.Sub_Vertical__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$IND_Billing_Region__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Application__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>All Opportunities by application</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity_with_accounts_parts_and_forecast__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>This custom setting is used for e.g. record type ids, profile ids, ... That no hardcodings in apex codes are needed.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Is custom setting record active or not.</description>
+        <externalId>false</externalId>
+        <label>Active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Describes the custom setting record.</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Value__c</fullName>
+        <description>This field contains Ids, developer names, ...</description>
+        <externalId>false</externalId>
+        <label>Value</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Apex Helper Settings</label>
+    <listViews>
+        <fullName>Annual_Budget_Planning</fullName>
+        <columns>NAME</columns>
+        <columns>Description__c</columns>
+        <columns>Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Description__c</field>
+            <operation>contains</operation>
+            <value>Report</value>
+        </filters>
+        <label>Annual Budget Planning</label>
+    </listViews>
+    <listViews>
+        <fullName>Others</fullName>
+        <columns>NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Description__c</field>
+            <operation>notContain</operation>
+            <value>Record Type Id</value>
+        </filters>
+        <filters>
+            <field>Description__c</field>
+            <operation>notContain</operation>
+            <value>Profile</value>
+        </filters>
+        <label>Others</label>
+    </listViews>
+    <listViews>
+        <fullName>Profile_Ids</fullName>
+        <columns>NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Description__c</field>
+            <operation>contains</operation>
+            <value>Profile</value>
+        </filters>
+        <label>Profile Ids</label>
+    </listViews>
+    <listViews>
+        <fullName>RT_Ids</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Value__c</columns>
+        <columns>Description__c</columns>
+        <columns>Active__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Record Type Id</value>
+        </filters>
+        <filters>
+            <field>Description__c</field>
+            <operation>contains</operation>
+            <value>Record Type Id</value>
+        </filters>
+        <label>RT Ids</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Record_Type_Ids</fullName>
+        <columns>NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Description__c</field>
+            <operation>contains</operation>
+            <value>Record Type</value>
+        </filters>
+        <label>Record Type Ids</label>
+    </listViews>
+    <listViews>
+        <fullName>Task_Leader</fullName>
+        <booleanFilter>1 or 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Value__c</columns>
+        <columns>Description__c</columns>
+        <columns>Active__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Leader</value>
+        </filters>
+        <filters>
+            <field>Description__c</field>
+            <operation>contains</operation>
+            <value>APL NPS</value>
+        </filters>
+        <label>Task Leader</label>
+    </listViews>
+    <visibility>Public</visibility>
+</CustomObject>

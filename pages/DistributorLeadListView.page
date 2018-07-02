@@ -1,0 +1,191 @@
+<apex:page Controller="DistributorLeadListController"  TabStyle="Distributor_Lead__tab" sidebar="false" contentType="{!if($CurrentPage.parameters.iscontentType == null,  null, 'application/vnd.ms-excel#MyLeads.xls')}" cache="true" expires="1200">
+   
+   <!-- Schema added to add autofilter for header row in Excel sheet -->
+    <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+     <head></head>
+   <style>
+    .fewerMore { display: none;}
+    </style> 
+     <script>
+ 
+        function myFunction()
+        {
+            alert('Came');
+             searchServer(document.getElementById("leadstatus").value);
+        }
+    </script>    
+    <apex:form id="frm">
+        <apex:pageMessages />
+        <apex:detail relatedList="true"></apex:detail>
+        <apex:pageblock id="CustomList" title="My Leads">
+      <!--  <center>
+        <table><tr><td>
+          <h6>Search Lead:</h6> <input type="text" id="leadstatus" onkeyup="myFunction();"/>
+             
+        <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="pgblk1" status="refreshstatus">
+          <apex:param name="leadstatus" value="" />
+        </apex:actionFunction>
+        </td><td>
+        <apex:actionStatus id="refreshstatus" >
+            <apex:facet name="start" >
+                <apex:outputPanel >
+                    <apex:image value="/img/loading32.gif" style="height: 25px;"/> 
+                        <b><i>Please Wait ...Loading..........</i></b>
+                </apex:outputPanel>
+            </apex:facet>
+        </apex:actionStatus>  
+        </td></tr></table>
+        </center> -->
+        
+      
+                    
+                     <apex:actionStatus id="ImgStatus">
+                        <apex:facet name="start">
+                        <apex:outputPanel >
+                        <apex:image value="/img/loading32.gif" style="height: 25px;" rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}"/>
+                        </apex:outputPanel>
+                        </apex:facet>
+                    </apex:actionStatus>
+     
+                     <!-- @@@@@@@@ Addded By Anil in the part of Enhancements @@@@@@@@ -->
+                    <apex:outputPanel rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}">
+                   <apex:outputLabel value="Rating" style="font-weight:800" >
+                   <apex:selectList value="{!Rating}" multiselect="false" size="1">
+                     &nbsp;
+                     <apex:selectOptions value="{!Options}"/>
+                   </apex:selectList>
+                   </apex:outputLabel>
+                   &nbsp;&nbsp;&nbsp;
+                   <apex:outputLabel value="Distributor Response" style="font-weight:800">
+                   <apex:selectList value="{!DistributorResponse}" multiselect="false" size="1">
+                     &nbsp;
+                     <apex:selectOptions value="{!DOptions}"/>
+                   </apex:selectList>
+                   </apex:outputLabel>
+                    &nbsp;&nbsp;&nbsp;
+                    <apex:commandButton action="{!filterSearch}" value="Go"/>
+                    </apex:outputPanel>
+                    
+                       
+                       <apex:outputPanel rendered="{!Excel && IF($CurrentPage.parameters.iscontentType == 'true',false,true)}">
+                        <apex:commandLink value="Export Excel" action="/apex/DistributorLeadlistView?iscontentType=true" style="float:right;"/>                           
+                        &nbsp;
+                        <apex:image url="{!$Resource.ExcelLogo}" style="height:25px;float:right;"/>
+                       </apex:outputPanel> 
+                       
+        <apex:pageBlockTable value="{!LeadList}" var="o" rendered="{!NOT(ISNULL(LeadList))}" id="pgblk1" border="2">
+                
+                <apex:column headerValue="Action" style="width:5%" rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}">
+                <apex:outputPanel rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}">
+                <table colspan="0" cellpadding="0" cellspacing="0"><tr><td>
+                <div style="margin:0px 0px 0px 0px">
+                
+              <apex:commandLink value="View" onclick="window.location='DistributorLeadDetailView?ID={!o.ID}&retURL={!$CurrentPage.Name}'; return false;">
+                        <apex:param name="recordid" value="{!o.id}" assignTo="{!show}"/>
+                    </apex:commandLink>
+                    </div> </td>
+                    <td>
+                <div style="{!IF((o.Distributor_Response__c == 'Convert to opportunity')||(o.Distributor_Response__c == 'Dead'), 'display:none; margin:0px 0px 0px 0px;', '')}" >
+                    |&nbsp;&nbsp;<!-- <apex:commandLink value="Edit" action="{!editPage}" immediate="false">
+                        <apex:param name="recordid" value="{!o.id}" assignTo="{!show}"/>
+                    </apex:commandLink> -->
+                    <apex:commandLink value="Edit" onclick="window.location='DistributorLeadEditView?ID={!o.ID}&retURL={!$CurrentPage.Name}'; return false;">
+                        <apex:param name="recordid" value="{!o.id}" assignTo="{!show}"/>
+                    </apex:commandLink> 
+                 </div> </td></tr></table> 
+                 </apex:outputPanel>
+                 </apex:column>
+                  
+                 
+                 <!-- Added this field (Created Date, Age in Days) By Anil as a part Communities Enhancements -->
+                 <apex:column width="" value="{!o.CreatedDate}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="CreatedDate{!IF(sortExpression=='CreatedDate',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="CreatedDate" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+                 </apex:column>                                  
+                 
+                 <apex:column width="" value="{!o.Lead_Number__c}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Lead Number{!IF(sortExpression=='Lead_Number__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Lead_Number__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+                 </apex:column>
+                 
+                 <apex:column width="" value="{!o.Rating}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Rating{!IF(sortExpression=='Rating',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Rating" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+                 </apex:column> 
+                 <apex:column width="" value="{!o.FirstName}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="First Name{!IF(sortExpression=='FirstName',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="FirstName" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column> 
+               
+           <apex:column width="" value="{!o.LastName}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Last Name{!IF(sortExpression=='LastName',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="LastName" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+           
+            <apex:column width="" value="{!o.Company}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Company{!IF(sortExpression=='Company',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Company" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+            <apex:column width="" value="{!o.Phone}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Phone{!IF(sortExpression=='Phone',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Phone" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+            <apex:column width="" value="{!o.Email}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Email{!IF(sortExpression=='Email',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Email" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+            <apex:column width="" value="{!o.Owner.Name}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Lead Owner{!IF(sortExpression=='Owner.Name',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Owner.Name" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+           
+            <apex:column width="" value="{!o.Distributor_Response__c}"> 
+                     <apex:facet name="header">
+                        <apex:commandLink action="{!runSearch}" value="Distributor Response{!IF(sortExpression=='Distributor_Response__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                              <apex:param value="Distributor_Response__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </apex:facet>
+           </apex:column>
+           <apex:column value="{!o.ACTIVITY_NOTES__c}" rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',true,false)}"/>
+           <apex:column value="{!o.Description}" rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',true,false)}"/>
+           <!--     <apex:column value="{!o.FirstName}"  style="width:10%"/>
+                <apex:column value="{!o.LastName}"  style="width:10%"/>
+                <apex:column value="{!o.Company}"  style="width:10%"/>
+                <apex:column value="{!o.Phone}"  style="width:10%"/>
+                <apex:column value="{!o.Email}"  style="width:20%"/>
+                <apex:column value="{!o.OwnerId}"  style="width:10%"/> -->
+            </apex:pageBlockTable>
+            <apex:outputLabel value="No records to display" rendered="{!(ISNULL(LeadList))}" styleClass="noRowsHeader"></apex:outputLabel>
+           
+        </apex:pageblock>
+        <u>Note</u> - You will not see a lead which you updated in 'Convert to Lead' status if that shared lead has been converted to an Opportunity by a TE sales person.
+    </apex:form>
+    </html>
+</apex:page>

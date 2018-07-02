@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_27083441</developerName>
+        <masterLabel>Opportunity State</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity$MED_Opp_Status__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>QR - Quote Released</sourceValue>
+            </sourceValues>
+            <value>Quoted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>AC - Active Project</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>HL - Hold</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>CM - Complete</sourceValue>
+            </sourceValues>
+            <value>Won</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>CN - Lost (Canceled)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>LS - Lost</sourceValue>
+            </sourceValues>
+            <value>Lost</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Forecast__r$Amount__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Requires annual updates for FY Date Range</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Owner.GIBU__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Medical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Opp_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>QR - Quote Released,PG - Win-Pending KO,WN - Win,AC - Active Project,CN - Lost (Canceled),LS - Lost,HL - Hold,CM - Complete</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Forecast__r$Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>9/28/2013</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Forecast__r$Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>8/27/2016</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Forecast__r$Date__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalYear</dateGranularity>
+        <field>Opportunity.Forecast__r$Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_27083441</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Quotes, Wins &amp; Dates by FY</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

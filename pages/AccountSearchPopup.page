@@ -1,0 +1,93 @@
+<apex:page standardController="Partner_Role__c" extensions="PartnerRoleAccountSearch" showHeader="false" sidebar="false" standardStylesheets="true">
+  <apex:messages />
+  <apex:form id="form" >  
+        
+     <div style="width 100%">
+        <apex:pageBlock title="Lookup" id="block">
+           
+          <apex:pageBlockSection id="section">
+              Enter search text and click Go<br/>
+              <apex:inputText value="{!query}" id="query"/> 
+              <apex:commandButton value="Go" action="{!runQuery}"/>
+          </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:pageBlock >
+          <apex:pageBlockSection columns="1">
+              <apex:pageBlockTable value="{!accounts}" var="account" id="accountTable">
+                <apex:column >
+                        <apex:facet name="header"> 
+                         <apex:commandLink value="{!$ObjectType.Account.fields.Name.label}" action="{!doAccountListSort}" rerender="accountTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'Name', accountListPrevSortField == accountListSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'Name', accountListPrevSortField != accountListSortField),true,false)}"/>							                       
+                             <apex:param name="accountListSortField" value="Name" assignTo="{!accountListSortField}"/> 
+                         </apex:commandLink>
+                        </apex:facet>                
+                  <apex:outputLink value="#" onclick="fillIn('{!JSINHTMLENCODE(account.Name)}', '{!account.id}')">{!account.Name}</apex:outputLink>       
+                </apex:column>
+                <apex:column value="{!account.BillingStreet}">
+                        <apex:facet name="header"> 
+                         <apex:commandLink value="Street" action="{!doAccountListSort}" rerender="accountTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingStreet', accountListPrevSortField == accountListSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingStreet', accountListPrevSortField != accountListSortField),true,false)}"/>							                       
+                             <apex:param name="accountListSortField" value="BillingStreet" assignTo="{!accountListSortField}"/> 
+                         </apex:commandLink>
+                        </apex:facet>                 
+                </apex:column>                
+                <apex:column value="{!account.BillingCity}">
+                        <apex:facet name="header"> 
+                         <apex:commandLink value="City" action="{!doAccountListSort}" rerender="accountTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingCity', accountListPrevSortField == accountListSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingCity', accountListPrevSortField != accountListSortField),true,false)}"/>							                       
+                             <apex:param name="accountListSortField" value="BillingCity" assignTo="{!accountListSortField}"/> 
+                         </apex:commandLink>
+                        </apex:facet>                 
+                </apex:column>                
+                <apex:column value="{!account.BillingPostalCode}">
+                        <apex:facet name="header"> 
+                         <apex:commandLink value="Postcode" action="{!doAccountListSort}" rerender="accountTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingPostalCode', accountListPrevSortField == accountListSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(accountListSortField == 'BillingPostalCode', accountListPrevSortField != accountListSortField),true,false)}"/>							                       
+                             <apex:param name="accountListSortField" value="BillingPostalCode" assignTo="{!accountListSortField}"/> 
+                         </apex:commandLink>
+                        </apex:facet>                 
+                </apex:column>                
+              </apex:pageBlockTable>    
+          </apex:pageBlockSection>
+        </apex:pageBlock>
+        <button type="button" onclick="CloseWindow();">Close Window</button>
+     </div>
+	
+<script>
+
+function fillIn(name, id)    
+{       
+	var winMain=window.opener;       
+	if (null==winMain)       
+	{          
+		winMain=window.parent.opener;       
+	}       
+	
+	var ele=winMain.document.getElementById('{!$CurrentPage.parameters.namefield}');       
+	ele.value=name;       
+	ele=winMain.document.getElementById('{!$CurrentPage.parameters.idfield}');       
+	ele.value=id;
+	       
+	CloseWindow();    
+}      
+
+function CloseWindow()    
+{       
+	var winMain=window.opener;       
+	
+	if (null==winMain)       
+	{          
+		winMain=window.parent.opener;       
+	}       
+	
+	winMain.closeLookupPopup();    
+	
+} 
+</script>
+   </apex:form>
+</apex:page>

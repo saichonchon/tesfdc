@@ -1,0 +1,436 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="LiveAgentChatByBooksCTRL">
+    
+<apex:includeScript value="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/jquery.js')}"/>  
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-global-en.css')}" 
+       title="default" media="all"/>
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/standardChatWindow.css')}" 
+       title="default" media="all"/>
+ <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/vf.css')}" title="default" 
+       media="all"/>
+ 
+    <!-- Add custom CSS here -->
+    <style>
+        body {
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:14px !important;
+        }
+       
+        #logo { 
+            z-index: 999999;
+            display: inline;
+            left: 47.5%;
+            position: relative;
+            top: -9px;
+        }
+        #oo_tab div { 
+            background-image: url({!IF(VisitorLocaleLang = 'CHINESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-chinese.png'),
+                                IF(VisitorLocaleLang = 'JAPANESE',URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-japanese.png'),
+                                URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/feedback-english.png')))}); 
+            } 
+        #oo_tab span { 
+            background: url({!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_tab_icon.gif')}) no-repeat; 
+        }
+         
+        #saveTranscript{
+            position:relative;
+            float:left;
+        }
+    
+        #chatControls{
+            position:relative;
+            float:right; 
+            left:10px;
+        }
+        #liveAgentChatLog{
+            width:451px;
+            margin:0 auto;    
+            padding:5px;
+            height:220px;
+            border:solid 1px #bababa;
+            position:relative;
+            top:-12px; 
+        }
+        .inputBox{
+            position: absolute;
+            bottom:5px;
+            left:12px;
+        }
+        .inputBox input{
+            position: absolute;
+            padding:5px;
+            border:solid 1px #bababa;
+            
+        }
+        
+        .liveAgentEndButton{    
+            background-color: #F44336;
+            border: solid 1px #F44336;
+            color:#fff;
+            padding:2px 5px;
+            margin-top:5px; 
+        }
+        .no_save .liveAgentSaveButton {
+            display: initial;
+        }
+        .liveAgentCancelButton {
+            background-color: #0066a1; 
+            color: #fff;  
+            font-size: 2em;
+        } 
+        .liveAgentSaveButton:hover, .liveAgentCancelButton:hover {
+            background-color: #3F51B5;
+        } 
+        .liveAgentSaveButton {
+            background-color: #2196F3;
+            color: #fff;
+            display: inline-block;
+            float: left;
+            margin: 5px 10px 5px 10px;
+            border-radius: 3px;
+            font-size: 1em;
+            padding: 2px 8px;
+        }
+        .liveAgentSaveButton, .liveAgentEndButton, .liveAgentCancelButton {
+            font-family: Arial;
+            line-height: normal;
+            text-align: center;
+            border-style: solid;
+            border-width: 0px;
+            cursor: pointer;
+        }
+        
+        .liveAgentSendButton {
+            background-color: #d6e342 !important;
+            display: inline-block;
+            padding: 0.3rem !important;
+            width: 50px;
+            font-size: 1em;
+            font-family: Arial;
+            border-radius: 3px;
+            border-width: 0px;
+            color: #fff;
+            margin: 5px 10px 5px 0px;
+            right: -67px;
+            top: 0px;
+            position: absolute;
+        } 
+        .modal{
+            padding:5px;
+        }
+        .liveAgentChatInput {
+            width: auto;
+            height: auto;
+            padding: 10px;
+            border: none;
+            background-color: #ffffff;
+        }
+        
+        #chatInput {
+            right: 0;
+            bottom: 0;
+            left: 0; 
+            margin-right: 67px;
+            position: absolute; 
+        } 
+        #liveAgentChatTextArea{
+            resize: none;
+            font-size: 1em;
+            width: 100%;
+            border: none;
+            font-family: Arial, Helvetica,sans-serif;
+            padding: 0px 10px;
+            outline: none;
+            display: block;
+            -webkit-line-break: after-white-space;
+        }
+        
+        #liveAgentClientChat textarea#liveAgentChatTextArea {
+            color: #222;
+            border: none;
+            resize: none;
+            width: 100%;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: #fff;
+            line-height: 18px;
+            -webkit-line-break: after-white-space;
+            word-wrap: break-word;
+            outline-style:none;
+            height: 18px;
+            display: block;
+            font-size: 13px;
+            padding: 0px;
+            margin: 0px;
+            font-family: Arial, Helvetica,sans-serif;
+        }
+        
+        .liveAgentState #transcript, .liveAgentStateEnded #transcript, .liveAgentStateStatusMessage #transcript {
+            bottom: 38px;
+            overflow: auto !important;
+            word-wrap: break-word;
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            background-color: #F7F8F8 !important;
+            border-bottom: solid #D1D8E0 2px;
+        }
+        #liveAgentChatLogText .operator .bubble {           
+            color:#444444;
+        }
+        #liveAgentChatLogText .bubble {
+            position: relative;
+            display: -moz-inline-stack;
+            display: inline-block;
+            margin: 0.2em 0em 0.4em 0em;
+            padding: 8px 10px 8px 10px;
+            border: 0px solid #E2E8ED;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            max-width: 90%;
+        }
+        
+        #liveAgentChatLogText .client .bubble {
+            background-color: #e3e3e3;
+            color:#444444;
+        }
+        #liveAgentChatLogText .operator .timestamp {
+            left: 10px;
+        }
+        #liveAgentChatLogText .timestamp {
+            display: inline-block;
+            font-size: 0.85em;
+            font-weight: 200;
+            color: #929A9D;
+            text-transform: uppercase;
+            padding: 8px 0px 8px 0px;
+            position: absolute;
+            bottom: -20px;
+        }
+        
+        #liveAgentChatLogText span {
+            text-align: left;
+        }
+        
+        #liveAgentChatLogText .operator {
+            float: left;
+            padding: 8px 10px 0px 10px;
+        }
+        
+        #liveAgentChatLogText .operator, #liveAgentChatLogText .client, #liveAgentChatLogText .system {
+            margin-bottom: 10px;
+            clear: both;
+            position: relative;
+            width: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        } 
+         
+        .liveAgentState #transcript, .liveAgentStateEnded #transcript, .liveAgentStateStatusMessage #transcript {
+            bottom: 38px;
+            overflow: hidden;
+            word-wrap: break-word;
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            background-color: #F7F8F8 !important;
+            border-bottom: solid #D1D8E0 2px;
+        }
+          
+        #liveAgentClientChat #liveAgentChatLog {
+            width: auto;
+            height: auto;
+            border: none;
+        }
+        #liveAgentChatLog {
+            border: 1px solid #000;
+            width: 100%;
+            height: 365px;
+        }
+        
+        .liveAgentState #chatTranscript, .liveAgentStateStatusMessage #chatTranscript, .liveAgentStateEnded #chatTranscript {
+            position: absolute;
+            overflow-y: auto;
+            overflow-x: hidden;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        
+            .liveAgentStateWaiting #wait_marketing {
+                display: table;
+            }
+            #wait_marketing {
+                display: none;
+            }
+            #wait_marketing {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                vertical-align: middle;
+                text-align: center;
+            }
+            table {
+                line-height: 21px;
+                font-size: 75%;
+            }
+         .spinner {
+                margin: 90px auto 0;
+                width: 70px;
+                text-align: center;
+            }       
+         /* display waitingMessage while waiting for agent to answer */
+         .liveAgentStateWaiting .waiting_div {
+                display: block; 
+                position: absolute; 
+                width: 400px;
+                height: 200px; 
+                top:50%;
+                left:50%;
+                margin-left:-200px;/* half width*/
+                margin-top:-100px;/* half height*/
+            }   
+         .logo_div {
+                display: block; 
+                position: absolute; 
+                width: 400px;
+                height: 200px; 
+                top:50%;
+                left:50%;
+                margin-left:-200px;/* half width*/
+                margin-top:-100px;/* half height*/
+            }       
+        
+            #liveAgentChatLogText .name {
+                display: block !important;
+                white-space: pre;
+            }
+        .header_logo{ 
+            position: relative;
+            width: 130%;
+            height: 200%;
+            left: 50%;
+            top: -23px;
+        }
+        .noagent_logo{ 
+            position: relative; 
+        }
+        
+        #logo_top {
+            text-indent: -5000px;
+            z-index: 999999;
+            display: block;
+            width: 147px;
+            height: 77px;
+            float: left;
+            background: url("{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/te-connectivity-logo.svg')}") 50% 50% no-repeat;
+            margin-left: 15px;
+            position: absolute;
+            top: -1px;
+        }
+    </style>
+    
+    <script>
+        document.title = "Chat Window";
+        
+        var j$ = jQuery.noConflict();
+        j$( document ).ready(function() {
+            j$.ajaxSetup ({
+                // Disable caching of AJAX responses */
+                cache: false
+            });
+              
+            j$('#ChatEndedDiv').show();
+            j$('#ChatEndedDiv').click({
+                alert("a");
+            });
+
+        });
+        
+          
+    </script>    
+     
+    <!-- The root element for the chat window. This element gets a CSS class dynamically applied
+to indicate the state of the chat window. Available states are:
+"liveAgentStateWaiting" - indicates that the chat has not yet been answered.
+"liveAgentState" - indicates that the chat is engaged
+"liveAgentStateStatusMessage" - indicates that a status message is being displayed to the
+user.
+"liveAgentStateEnded" - indicates that the chat has ended. -->
+     
+    <div id="oo_tab" class="oo_tab_right" tabindex="0">
+        <div>
+            <a></a><span></span>
+        </div>
+        <div class="screen_reader">Activate to launch comment card</div>
+    </div>
+    
+     
+        
+    <div class="te-page">
+        <div id="noAgentMsg" class="livechat-no-agent-form-wrapper" style="display:none">
+            <div id="logo_top"/>
+             
+            <div class="livechat-no-agent-main-header-text" id="livechat-no-agent-main-header-tex">{!mapHTMLTranslations['livechat-no-agent-main-header-tex']}</div>
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text">{!mapHTMLTranslations['livechat-no-agent-header-text']}</div>
+            
+            <apex:outputPanel rendered="{!CCMessage}">
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-2">{!mapHTMLTranslations['livechat-no-agent-header-text-2']}</div>
+            </apex:outputPanel> 
+                          
+            <apex:outputPanel rendered="{!!CCMessage}">         
+            <div class="livechat-no-agent-header-text" id="livechat-no-agent-header-text-3">{!mapHTMLTranslations['livechat-no-agent-header-text-3']} or <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"> {!mapHTMLTranslations['livechat-no-agent-header-text-link']}</a></div>                           
+            <div class="livechat-no-agent-header-text" id="livechat-windowclose">
+                 <!-- Prabhanjan: commenting it case:00901054
+                <p> This window will be automatically closed in <span class="windowcounter"></span> seconds...</p>
+                -->
+                <span class="windowcounter" style="display:none"></span>
+            </div>
+            
+            <div class="livechat-no-agent-button-wrapper">
+                <div class="livechat-no-agent-button">
+                    <a href="{!mapHTMLTranslations['contact-support']}" onclick="closeWindow();" target="_blank"
+                                                         class="btn-block-11 btn-clr-13 login-button"> {!mapHTMLTranslations['SENDEMAILREQUEST']} <i role="presentation"> > </i> </a>
+                </div>
+            </div>
+                        </apex:outputPanel> 
+        </div>
+         
+        <div id="ChatEndedDiv" class="livechat-no-agent-form-wrapper">
+            <div id="logo_top"/>
+             
+            <div class="livechat-no-agent-main-header-text" id="livechat-chat-ended"> {!mapHTMLTranslations['livechat-chat-ended']}</div>
+            <div class="livechat-no-agent-header-text" id="livechat-chat-ended-header-text">{!mapHTMLTranslations['livechat-chat-ended-header-text']}</div>
+               
+             <br/>
+                <div class="livechat-no-agent-button"  style="padding-left:180px">
+                    <a href="#" onclick="closeWindow();" class="btn-block-11 btn-clr-13 login-button" id="livechat-chat-ended-close-win">  {!mapHTMLTranslations['livechat-chat-ended-close-win']}</a>
+                </div>
+             
+            
+        </div>
+    </div>
+ 
+    
+    <script type="text/javascript">
+    document.title = "Chat Window";
+    
+    (function() {
+        var d=document,
+        h=d.getElementsByTagName('head')[0],
+        s=d.createElement('script');
+        s.type='text/javascript';
+        s.async=true;
+        s.src="{!URLFOR($Resource.TE_Live_Agent, '/TE_Live_Agent/oo_optimized.js')}";
+        s.charset='windows-1252'
+        h.appendChild(s);
+    }());
+    </script> 
+    
+</apex:page>

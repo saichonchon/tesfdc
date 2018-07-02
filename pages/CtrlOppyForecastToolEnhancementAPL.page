@@ -1,0 +1,380 @@
+<apex:page title="Opportunity Forecast Tool Enhancement APL" controller="CtrlOppyForecastToolEnhancementAPL" id="thePage" docType="html-5.0" applyBodyTag="true" >
+    
+	<head>
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CtrlOppyForecastToolEnhancementAPLCss}" />
+	    <apex:slds />
+		<style type="text/css">
+			table thead th, table tbody td{empty-cells: show;}
+			.slds-table-total, .slds-table-table{border-right: 1px solid #d8dde6; }
+			.slds-table-left-right{border-right: 1px solid #d8dde6; border-left: 1px solid #d8dde6;}
+			.slds-scope .slds-table--bordered tbody td.slds-td-transparent, 
+			.slds-scope .slds-table--bordered tbody th.slds-td-transparent, 
+			.slds-scope .slds-table_bordered tbody td.slds-td-transparent, 
+			.slds-scope .slds-table_bordered tbody th.slds-td-transparent{
+				border: transparent;
+			}
+			.slds-scope .slds-table--bordered.slds-none-top--bordered, 
+			.slds-scope .slds-table_bordered.slds-none-top--bordered{ border-top: none; }
+			
+			.slds-scope .slds-table--fixed-layout thead.slds-section-business-thead, 
+			.slds-scope .slds-table_fixed-layout thead.slds-section-business-thead{ background: #ffffff; }
+			
+			.slds-scope .slds-table--fixed-layout thead.slds-section-other-thead, 
+			.slds-scope .slds-table_fixed-layout thead.slds-section-other-thead{ background: #ffffff; }
+			
+			.slds-scope .slds-section__title-action.slds-section-business-btn{background: #f7efe9;}
+			.slds-scope .slds-section__title-action.slds-section-other-btn{background: #e5f1dc;}
+			
+			.slds-scope .slds-section__title-action.slds-section-business-btn:active, 
+			.slds-scope .slds-section__title-action.slds-section-business-btn:focus, 
+			.slds-scope .slds-section__title-action.slds-section-business-btn:hover{background: #f7d7bf;}
+			
+			.slds-scope .slds-section__title-action.slds-section-other-btn:active, 
+			.slds-scope .slds-section__title-action.slds-section-other-btn:focus, 
+			.slds-scope .slds-section__title-action.slds-section-other-btn:hover{background: #d6f3c0;}
+			
+			.slds-scope .slds-button.slds-section-business-btn:focus{box-shadow: 0 0 3px #9d4f1c;}
+			.slds-scope .slds-button.slds-section-other-btn:focus{box-shadow: 0 0 3px #6dc421;}
+			.slds-scope .slds-button.slds-section-total-btn:focus{box-shadow: 0 0 3px #0070d2;}
+			
+			
+			.slds-section-total { border: 1px solid #c2dbfd; border-radius: .25rem; }
+			
+			.slds-scope .slds-section__title-action.slds-section-total-btn{background: #f3f8ff;}
+			.slds-scope .slds-section__title-action.slds-section-total-btn:active, 
+			.slds-scope .slds-section__title-action.slds-section-total-btn:focus, 
+			.slds-scope .slds-section__title-action.slds-section-total-btn:hover{background: #e7f1ff;}
+			
+			.slds-border-left{ border-left: 1px solid #d8dde6 !important; }
+			
+			.slds-white-space{
+				white-space: pre-wrap !important; /* css-3 */
+				white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+				white-space: -pre-wrap !important; /* Opera 4-6 */
+				white-space: -o-pre-wrap !important; /* Opera 7 */
+				word-wrap: break-word !important; /* Internet Explorer 5.5+ */
+			}
+			
+			.slds-section-business-table thead th:FIRST-CHILD,
+			.slds-section-business-table tbody td:FIRST-CHILD{ border-left: 1px solid #d8dde6; }
+			.slds-section-other-table thead th:FIRST-CHILD,
+			.slds-section-other-table tbody td:FIRST-CHILD{ border-left: 1px solid #d8dde6; }
+			.slds-foot-td{ border-top: 1px solid #d8dde6; border-bottom: 1px solid #d8dde6; background: #e9eaed; }
+			.slds-foot-td-left{ border-top: 1px solid #d8dde6; border-left: transparent !important; }
+			.slds-section-business{border: 1px solid #f4b084; border-radius: .25rem;}
+			.slds-scope h1.slds-section-business-previous{padding: 5px;font-size: 1.2rem; color: red; font-weight: bold; }
+			.slds-scope h1.slds-section-business-current{padding: 5px;font-size: 1.2rem; color: red; font-weight: bold; }
+			.slds-section-business-table{background: transparent !important; border-bottom: transparent !important; }
+			.slds-section-business-table tbody tr:HOVER td{background: #f7efe9;}
+			
+			.slds-section-other{border: 1px solid #a2d281; border-radius: .25rem;}
+			.slds-scope h1.slds-section-other-previous{padding: 5px;font-size: 1.2rem; color: #529b11; font-weight: bold; }
+			.slds-scope h1.slds-section-other-current{padding: 5px;font-size: 1.2rem; color: #529b11; font-weight: bold; }
+			.slds-section-other-table{background: transparent !important; border-bottom: transparent !important; }
+			.slds-section-other-table tbody tr:HOVER td{background: #e5f1dc;}
+			
+			.slds-scope .slds-modal{z-index: 35; position: absolute;}
+			.slds-modal-bg{position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 32; opacity: .5; background: #d8dde6;}
+			.slds-p-horizontal_small.slds-tp{padding-top: .5rem; padding-bottom: .5rem; border-bottom: 1px solid #d8dde6;}
+			
+			.slds-scope .slds-spinner_container{z-index: 30;}
+			.slds-select.slds-multiple{height: 100% !important;}
+			
+			.slds-pill-container.custom-slds-pill-contailner{position: absolute; z-index: 10; width: 100%; background: #fdfdfd;}
+			.slds-pill-container span.slds-pill{width: 100%;}
+			.slds-lookup__search-input.slds-lookup-custom-input{background: #fff; border: 1px solid #d8dde6; border-radius: .25rem;padding: 0 1rem 0 .75rem; line-height: 1.875rem; min-height: calc(1.875rem + (1px * 2));}
+			.slds-lookup__search-input.slds-lookup-custom-input:FOCUS{outline: 0; border-color: #1589ee; background-color: #fff; box-shadow: 0 0 3px #0070D2;}
+			
+			.slds-form-element span.lookupInput{position: relative;}
+			
+			.slds-form-element span.lookupInput a.slds-input:ACTIVE,
+			.slds-form-element span.lookupInput a.slds-input:FOCUS{box-shadow:none !important;}
+			
+			.slds-form-element span.lookupInput a.slds-input{
+				position: absolute !important;
+			    right: 8px !important;
+			    display: inline-block !important;
+			    background-color: transparent !important;
+			    width: auto !important;
+			    padding: 0 !important;
+			    border: none !important;
+			}
+			.slds-form-element__control span.dateInput{position: relative;}
+			.slds-form-element__control span.dateInput span.dateFormat{position: absolute; right: 1px; top: 0px;}
+			
+			
+			.slds-form-element__control table.multiSelectPicklistTable{width: auto !important;}
+			.slds-form-element__control table.multiSelectPicklistTable td.multiSelectPicklistCell{text-align: center !important; padding: 0 10px !important;}
+			.slds-form-element__control table.multiSelectPicklistTable select.slds-input{width: 120px !important;}
+			.slds-form-element__control table.multiSelectPicklistTable img.slds-input.picklistArrowRight,
+			.slds-form-element__control table.multiSelectPicklistTable img.slds-input.picklistArrowLeft{ 
+				border: none !important;
+			    width: 24px !important;
+			    height: 20px !important;
+			    line-height: 0 !important;
+			    min-height: 20px !important;
+			    padding: 0 !important;
+			    margin: 0 2px !important;
+			}
+			.slds-form-element__control select.slds-input:FOCUS,
+			.slds-form-element__control select.slds-input:HOVER,
+			.slds-form-element__control select.slds-input:ACTIVE,
+			.slds-form-element__control table.multiSelectPicklistTable select.slds-input:FOCUS,
+			.slds-form-element__control table.multiSelectPicklistTable select.slds-input:HOVER,
+			.slds-form-element__control table.multiSelectPicklistTable select.slds-input:ACTIVE { background-color: #fff !important;}
+			
+			.slds-border-top-transparent{border-top: 1px solid transparent !important;}
+			.slds-border-left-transparent{border-left: 1px solid transparent !important;}
+			
+			.slds-table-total tr:HOVER td+td{ background: #f3f8ff; }
+			
+			select:-internal-list-box optgroup option::before{content: "" !important;}
+			
+			.slds-scope .slds-input-field-cls span select{
+				background-color: #fff;
+			    color: #16325c;
+			    border: 1px solid #d8dde6;
+			    border-radius: .25rem;
+			    width: 100%;
+			    transition: border .1s linear,background-color .1s linear;
+			    display: inline-block;
+			    padding: 0 1rem 0 .75rem;
+			    line-height: 1.875rem;
+			    min-height: calc(1.875rem + (1px * 2));
+			}
+			.custom-th-order:HOVER{
+				cursor: pointer;
+			}
+			.custom-th-order:HOVER .custom-order{
+				background-image:url('{!URLFOR($Resource.jQueryTool, '/img/stortByIcon.png')}');
+                background-position:-158px -110px; 
+			}
+			.custom-th-order:HOVER .custom-order.asc{
+				background-image:url('{!URLFOR($Resource.jQueryTool, '/img/stortByIcon.png')}');
+                background-position:-158px -110px; 
+			}
+			.custom-th-order:HOVER .custom-order.desc{
+				background-image:url('{!URLFOR($Resource.jQueryTool, '/img/stortByIcon.png')}');
+                background-position:-158px -94px; 
+			}
+			.custom-order{
+				display: inline-block; position: absolute; width: 15px; height: 15px; top: 40%; right: 5px; 
+			}
+			.custom-order.asc{
+				background-image:url('{!URLFOR($Resource.jQueryTool, '/img/stortByIcon.png')}');
+                background-position:-158px -110px; 
+			}
+			.custom-order.desc{
+				background-image:url('{!URLFOR($Resource.jQueryTool, '/img/stortByIcon.png')}');
+                background-position:-158px -94px; 
+			}
+			.slds-scope .slds-checkbox--add-button .slds-checkbox--faux:after, 
+			.slds-scope .slds-checkbox--add-button .slds-checkbox--faux:before, 
+			.slds-scope .slds-checkbox--add-button .slds-checkbox_faux:after, 
+			.slds-scope .slds-checkbox--add-button .slds-checkbox_faux:before, 
+			.slds-scope .slds-checkbox_add-button .slds-checkbox--faux:after, 
+			.slds-scope .slds-checkbox_add-button .slds-checkbox--faux:before, 
+			.slds-scope .slds-checkbox_add-button .slds-checkbox_faux:after, 
+			.slds-scope .slds-checkbox_add-button .slds-checkbox_faux:before{
+				background: transparent;
+			}
+		</style>
+		<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+
+		<script src="{!URLFOR($Resource.CSVTOOLS, '/svgbody/2.1.9/svg4everybody.min.js')}" type="text/javascript"></script>
+		<script>svg4everybody();</script>
+		<script src="{!URLFOR($Resource.CSVTOOLS, '/async/2.5.0/async.min.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.CSVTOOLS, '/jszip/3.1.4/jszip.min.js')}" type="text/javascript"></script>
+		<script src="{!URLFOR($Resource.CSVTOOLS, '/papaparse/4.3.2/papaparse.min.js')}" type="text/javascript"></script>
+		
+		
+		<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+		<script src="{!URLFOR($Resource.CtrlOppyForecastToolEnhancementAPLJS)}" type="text/javascript"></script>
+		
+	    <script type="text/javascript">
+			
+	        function setFocusOnLoad() {}
+	        ;function userInof(){
+	        	return {
+	        		'userName' : '{!$User.Username}'
+	        	};
+	        }
+            addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+	    </script>
+	</head>
+	<body class="slds-scope">
+	
+		<div style="position: relative;">
+			<apex:form >
+			<apex:pageMessages id="messages"/>
+		    <input id="currentFiscalHide" type="hidden" value="{!co.territoryInfo.strCurrentFiscalYear}-{!co.territoryInfo.strCurrentFiscalMonth}" />
+			<div>
+				<div class="slds-page-header" style="">
+					<div class="slds-grid slds-grid_align-center">
+						<div class="slds-col slds-align-middle" style="margin: 0 10px; font-size: 1rem; padding: 5px; border: 1px solid #efefef;">
+							<label>Territory Name</label>
+							<span style="margin-left: 10px;" >{!co.territoryInfo.territoryName}</span>
+						</div>
+						<div class="slds-col slds-align-middle" style="margin: 0 10px; font-size: 1rem; padding: 5px; border: 1px solid #efefef;">
+							<label>Territory Code</label>
+							<span style="margin-left: 10px;" id="userTerritoryCode">{!co.territoryInfo.Code}</span>
+						</div>
+						<div class="slds-col slds-align-middle" style="padding: 5px;">
+							<button onclick="event_exportToExcel_click(this)" class="slds-button slds-button_neutral exportBtn" type="button">
+								<svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+									<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/doctype-sprite/svg/symbols.svg#csv')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+								</svg>
+								<span class="slds-truncate" title="Export to CSV">Export to CSV</span>
+							</button>
+						</div>
+						<div class="slds-col slds-align-middle" style="padding: 5px;">
+							<button onclick="nextForecastAcctGroup()" class="slds-button slds-button_neutral exportBtn" type="button">
+								<span class="slds-truncate" title="{!$Label.APL_btn_next}">{!$Label.APL_btn_next}</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<c:CompToolEnhancementSectionTotalAPL pageCtrl="{!this}"/>
+			<c:CompToolEnhancementSectionBusinessAPL pageCtrl="{!this}" />
+			<c:CompToolEnhancementSectionOtherAPL pageCtrl="{!this}"/>
+			
+			
+		
+			<c:CompToolEnhancementModalsBusinessAPL pageCtrl="{!this}"/>
+			
+			</apex:form>		
+		</div>
+		
+		
+		<div id="slds-notify-success" class="slds-notify_container slds-hide" style="top: 30%;">
+			<div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+				<span class="slds-assistive-text">success</span>
+				<span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top">
+					<svg class="slds-icon slds-icon_small" aria-hidden="true">
+						<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#success')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+					</svg>
+				</span>
+				<div class="slds-notify__content"><!-- APL Lost Dead Project -->
+					<h2 class="slds-text-heading_small "><a id="sMessage" href="javascript:void(0);"> </a> widgets was succeeded.</h2>
+				</div>
+				<button onclick="event_notifyClose(this, 'slds-notify-success')" class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close" type="button">
+					<svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+						<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+					</svg>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+			</div>
+		</div>
+		
+		<div id="slds-notify-error" class="slds-notify_container slds-hide" style="top: 30%; width: 50%; left: 25%;">
+			<div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+				<span class="slds-assistive-text">success</span>
+				<span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top">
+					<svg class="slds-icon slds-icon_small" aria-hidden="true">
+						<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#error')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+					</svg>
+				</span>
+				<div class="slds-notify__content">
+					<h2 class="slds-text-heading_small " id="eMessage"></h2>
+				</div>
+				<button onclick="event_notifyClose(this, 'slds-notify-error')" class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close" type="button">
+					<svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+						<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+					</svg>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+			</div>
+		</div>
+		
+		
+		<script id="lostTemplate" type="text/template">
+			<tr>
+				<td class="slds-align-middle actionCls">
+					<div class="slds-button-group" role="group">
+						<button onclick="event_editLoast_click(this)" class="slds-button slds-button_icon slds-button_icon-border" title="Edit" type="button">
+							<svg class="slds-button__icon">
+								<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#edit_form')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+							</svg>
+							<span class="slds-assistive-text">Edit</span>
+						</button>
+						<button onclick="event_deleteLoast_click(this)" class="slds-button slds-button_icon slds-button_icon-border" title="Delete" type="button">
+							<svg class="slds-button__icon">
+								<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+							</svg>
+							<span class="slds-assistive-text">Delete</span>
+						</button>
+					</div>
+				</td>
+				<apex:repeat value="{!co.list_cfsm_lost}" var="lost">
+				<td class="{!lost.cls} slds-align-middle" data-api="{!lost.apiName}" data-isInternalClass="{!lost.isInternalClass}" data-type="{!lost.gType}">
+					<div class="slds-truncate "></div>
+				</td>
+				</apex:repeat>
+			</tr>
+		</script>
+		<script id="otherTemplate" type="text/template">
+			<tr>
+				<td class="slds-align-middle actionCls">
+					<div class=" ">
+						<button onclick="event_otherFlag_click(this)" class="slds-button slds-button_icon slds-button_icon-border custom-all" type="button">
+							<span class="slds-hide span-checked">
+								<svg class="slds-button__icon">
+									<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#check')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+								</svg>
+								<span class="slds-assistive-text">Edit</span>
+							<span>
+						</button>
+						<button title="Mark as in S&OP already" onclick="event_otherOwn_click(this)" style="margin-left: 0;" class="slds-button slds-button_icon slds-button_icon-border custom-partner" type="button">
+							Flg
+						</button>
+					</div>
+				</td>
+				<apex:repeat value="{!co.list_cfsm_other}" var="lost">
+				<td class="{!lost.cls} slds-align-middle" data-api="{!lost.apiName}" data-isInternalClass="{!lost.isInternalClass}" data-type="{!lost.gType}">
+					<div class="slds-truncate "></div>
+				</td>
+				</apex:repeat>
+			</tr>
+		</script>
+		<script id="otherPreviousTemplate" type="text/template">
+			<tr>
+				<td class="slds-align-middle actionCls">
+					<div class=" ">
+						<button onclick="event_otherFlag_click(this)" class="slds-button slds-button_icon slds-button_icon-border custom-all" type="button">
+							<span class="slds-hide span-checked">
+								<svg class="slds-button__icon">
+									<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#check')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+								</svg>
+								<span class="slds-assistive-text">Edit</span>
+							</span>
+						</button>
+						<button title="Mark as in S&OP already" onclick="event_otherOwn_click(this)" style="margin-left: 0;" class="slds-button slds-button_icon slds-button_icon-border custom-partner" type="button">
+							Flg
+						</button>
+					</div>
+				</td>
+				<apex:repeat value="{!co.list_cfsm_other_previous}" var="lost">
+				<td class="{!lost.cls} slds-align-middle" data-api="{!lost.apiName}" data-isInternalClass="{!lost.isInternalClass}" data-type="{!lost.gType}">
+					<div class="slds-truncate "></div>
+				</td>
+				</apex:repeat>
+			</tr>
+		</script>
+		<script type="text/javascript">
+			function remoteAddRemoveOtherWon(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.addremoveOtherWon}';}
+			function remoteAddremoveOtherWonWithinSOP(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.addremoveOtherWonWithinSOP}';}
+			function remoteOtherWon(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.otherWon}';}
+			function remoteExsitingBusinessLost(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.exsitingBusinessLost}';}
+			function remoteSaveExsitingBusinessLost(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.saveExsitingBusinessLost}';}
+			function remoteDeleteExsitingBusinessLost(){ return '{!$RemoteAction.CtrlOppyForecastToolEnhancementAPL.deleteExsitingBusinessLost}';}
+			var addAPLWonForecast = ('{!aplForecastMagt}'==''?'':'{!aplForecastMagt.Add_APL_Won_Forecast__c}'); //Added by Tangyong Li 2017-10-24
+		</script>
+
+	</body>
+        
+</apex:page>

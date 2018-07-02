@@ -1,0 +1,31 @@
+<apex:component layout="block" id="compmenu">
+	<apex:attribute name="pageCtrl" type="CtrlRSMChangeScreen" required="true" description="the root page controller reference" />
+	
+	<div class="mgauto compmenucls tc" id="menubtnid">
+	<!-- 
+		<div style="width: 50%;float: left;text-align: right;padding-right: 10px;">
+			<label for="currencyunits">Change display currency : </label>
+			<select name="currencyunits" onchange="changeCurrency(this)">
+				<option value="_default">default</option>
+				<option value="K" selected="selected">K</option>
+				<option value="K_M">K-M</option>
+				<option value="M">M</option>
+				<option value="M_B">M-B</option>
+				<option value="B">B</option>
+				<option value="B_T">B-T</option>
+				<option value="T">T</option>
+				<option value="K_M_B_T">K-M-B-T</option>
+			</select>
+			<input type="checkbox" name="unitckbox" title="Unit" id="unitckbox"/>
+		</div>
+	 -->
+		
+		<div class="p_r">
+			<input type="button" value="{!$Label.rsm_change_sales_view}" viewtype="{!pageCtrl.map_viewType['sv']}" onclick="changViewType(target, '{!pageCtrl.map_viewType['sv']}')" class="designedBtn"/>
+			<input type="button" value="{!$Label.rsm_change_profit_center_view}" viewtype="{!pageCtrl.map_viewType['pcv']}" onclick="changViewType(target, '{!pageCtrl.map_viewType['pcv']}')" class="designedBtn"/>
+			<b class="ftsize usdbox">
+				{!$Label.rsm_usd_label}
+			</b>
+		</div>
+	</div>
+</apex:component>

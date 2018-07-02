@@ -1,0 +1,116 @@
+<apex:component layout="block">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+<div id="team_oppy_tab" class="team_box" style="margin-top: 30px;">
+
+	<div id="team_box">
+		<div id="oppy_head" class="team_head team_ovhide">
+			<div class="fix_width">
+				<table border="0" cellspacing="0" cellpadding="0" class="tabdft" >
+					<thead id="oppyheadid">
+						<tr class="team_cls">
+						<apex:repeat var="tc" value="{!pageCtrl.OppyColumns}">
+							<th class="team_hf_h {!tc.cls} team_bt cp {!if(tc.isOrderBy, 'obycls', '')} {!tc.fieldName}_head" field-name="{!tc.fieldName}">
+								<div class="team_div">
+									<div class="left">
+										<span class="pdleft">{!tc.name}</span>
+										<apex:outputPanel rendered="{!tc.isOrderBy}">
+											<span class="team_orderby" asc="▲" desc="▼"></span>
+										</apex:outputPanel>
+									</div>
+									<div class="headright"></div>
+								</div>
+							</th>
+						</apex:repeat>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+		<div id="oppy_body" class="" style="min-height:36px; overflow-y: scroll; overflow-x: hidden;">
+			<b class="oppyinfomsg" id="oppyinfomsgid" data-msg=" {!$Label.PMV_team_opp_msg} " style="display: none;"> </b>
+			<div class="fix_width">
+				<table id="oppyTabId" border="0" cellspacing="0" cellpadding="0" class="tabdft overTab" >
+					<tbody id="oppyBodyId">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div id="oppy_foot" class="team_foot team_ovhide">
+			<div class="fix_width">
+				<table border="0" cellspacing="0" cellpadding="0" class="tabdft" >
+					<thead>
+						<tr class="team_cls">
+							<th class="team_body_h tc" colspan="1000">
+								<span id="oppteaminfoid" style="display: none;">
+									<div style="display: inline-block;" class="oppteaminfo">
+<!-- 										<span id="opprevid" class="oppprev oppyfoot oppypage" >◄</span> -->
+										<span class="oppyfoot oppteam nomoer"> 
+											<b>{!$Label.PMV_team_selected_member}: </b>
+											<span id="selectedmemberid" style="font-weight: 100;"></span>
+										</span>
+<!-- 										<span id="opnextid" class="oppnext oppyfoot oppypage" >►</span> -->
+									</div>
+								</span>
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+	
+	
+	<apex:outputPanel id="getoppyactionid" style="display:none;">
+		<apex:inputHidden value="{!pageCtrl.pageConf.dateInfoJson}" id="datejsonhideid"/>
+		<apex:inputHidden value="{!pageCtrl.pageConf.isLastPage}" id="isstopid"/>
+		<table>
+			<tbody id="oppytmpBodyId">
+				<apex:variable value="{!0}" var="rowNum"/>
+				<apex:repeat var="fm" value="{!pageCtrl.list_oppysForMemb}">
+				<tr id="{!fm.id}" sumAtt="{!fm.SumAtt}" sumAbility="{!fm.SumAbility}" class="{!if(mod(rowNum, 2) == 0, '', 'old')}">
+					<apex:repeat var="tc" value="{!pageCtrl.OppyColumns}">
+					<td class="team_body_h {!tc.cls} {!tc.fieldName}_cls" data-value=" {!fm[tc.fieldName]} " data-match="{!tc.fieldName}">
+						<apex:outputPanel styleClass="pdleft pdright textovhide" rendered="{!if(or(tc.fieldName = 'oppyname', tc.fieldName = 'progress', tc.fieldName='acctname', tc.fieldName = 'size', tc.fieldName = 'projected', tc.fieldName='health'), false, true)}" layout="block">
+							{!fm[tc.fieldName]}
+						</apex:outputPanel>
+						<apex:outputPanel styleClass="textovhide allimg {!fm[tc.fieldName]} healthsp_cls" rendered="{!if(or(tc.fieldName = 'size', tc.fieldName = 'projected', tc.fieldName='health'), true, false)}">
+							<apex:outputPanel style="display:none;" styleClass="healthcmtcls" layout="block" rendered="{!if(tc.fieldName='health', true, false)}">
+								<div style="position: relative;">
+									<div class="healthheadbox">
+										<div class="healthcontentbox">
+											<span class="healthcmt_cls">{!fm.healthComt}</span>
+										</div>
+									</div>
+									<div class="healthimgdiv">
+										<span class="healthimg"></span>
+									</div>
+								</div>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						
+						<apex:outputPanel styleClass="textovhide {!fm[tc.fieldName]}" rendered="{!if(or(tc.fieldName = 'progress'), true, false)}" layout="block">
+						
+						</apex:outputPanel>
+						
+						<apex:outputPanel styleClass="pdleft pdright textovhide" rendered="{!if(or(tc.fieldName = 'oppyname', tc.fieldName='acctname'), true, false)}" layout="block">
+							<a title="{!fm[tc.fieldName]}" href="/{!if(tc.fieldName = 'oppyname', fm.id, fm.acctid)}" target="_blank">
+								{!fm[tc.fieldName]}
+							</a>
+						</apex:outputPanel>
+					</td>
+					</apex:repeat>
+				</tr>
+				<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+				</apex:repeat>
+			</tbody>
+		</table>
+	</apex:outputPanel>
+	
+
+</apex:component>

@@ -1,0 +1,61 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_View_Customer_Page_ctrl" tabStyle="ACP_Relationship__c" standardStylesheets="true" showHeader="true" sidebar="false">  
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'gotham.css')}" />
+<div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+      <apex:form >
+         <apex:pageBlock mode="maindetail">
+            <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:outputText value="{!$Label.ACP_Stakeholder_and_Relationship}" styleClass="SectionHeader"> </apex:outputText>
+            <br/><apex:pageMessages /></div>
+            <br/>
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-default">
+                     <div class="panel-heading"> {!$Label.ACP_Create_Relationship}  </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar">
+                     {!$Label.ACP_Relationship_Information} 
+                     </div>
+                     <br/>
+                        <div class ="col-md-6">
+                           <div class="form-group">
+                              <label><font style="color:red">*</font>{!$Label.ACP_Name}</label><br />
+                              <apex:inputField taborderhint="1" value="{!acp_relationObj.ACP_Name__c}" styleClass="inputField" html-placeholder="{!$Label.ACP_Enter_Name}" required="true"/>
+                           </div>
+                           <!--<div class="form-group">
+                              <label>{!$Label.ACP_Comments}</label><br />
+                              <apex:inputField taborderhint="2" value="{!acp_relationObj.ACP_Comments__c}" styleClass="inputField" html-placeholder="{!$Label.ACP_Enter_Your_Comments}" />
+                           </div>-->
+                        </div>
+                        <div class ="col-md-6">
+                           <div class="form-group">
+                              <!--<label><font style="color:red"></font>{!$Label.ACP_Location}</label><br />-->
+                              <label>{!$Label.ACP_Comments}</label><br />
+                              <apex:inputField taborderhint="2" value="{!acp_relationObj.ACP_Comments__c}" styleClass="inputField" html-placeholder="{!$Label.ACP_Enter_Your_Comments}" />
+                              <!--<apex:inputField taborderhint="3" value="{!acp_relationObj.ACP_Location__c}" styleClass="inputField" html-placeholder="{!$Label.ACP_Enter_Location}" />-->
+                           </div>
+                        </div></div>
+                        <div class = "panel-footer">
+                        <div align ="right" style="">
+                       <!-- <apex:commandButton value="{!$Label.ACP_Cancel}" immediate="true" action="{!masterPage1Redirection}" styleClass="btn btn-default" />&nbsp;
+                       -->
+                       <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="relationship" />
+                         </apeX:commandLink>&nbsp;
+
+                        <apex:commandButton value="{!$Label.ACP_Save_And_New}" action="{!saveAndNew}" styleClass="btn btn-default" disabled="{!IF($CurrentPage.parameters.enableSaveNew != 'true',false, true)}"/>&nbsp;
+                        <apex:commandButton value="{!$Label.ACP_Save}" action="{!saveRelation}"  styleClass="btn btn-primary" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </apex:pageBlock>
+      </apex:form>
+   </div>
+   </div>
+</apex:page>

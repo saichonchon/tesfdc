@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Disty_Temp__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(ww_acct_name__c)=&quot;Arrow Electronics Inc&quot;, &quot;Arrow Electronics Inc&quot;, 
+IF(TEXT(ww_acct_name__c)=&quot;Avnet Inc&quot;, &quot;Avnet Inc&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;TTI Inc&quot;, &quot;TTI Inc&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;DAC Group&quot;, &quot;DAC Group&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;Digi-Key Corp.&quot;, &quot;Digi-Key Corp.&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;Electrocomponents PLC&quot;, &quot;Electrocomponents PLC&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;Element14&quot;, &quot;Element14&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;Future Electronics&quot;, &quot;Future Electronics&quot;,
+IF(TEXT(ww_acct_name__c)=&quot;Sager Electronics&quot;, &quot;Sager Electronics&quot;,&quot;Other&quot;)))))))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Disty_Temp</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Market__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Market</label>
+        <referenceTo>Market__c</referenceTo>
+        <relationshipLabel>Price Requests</relationshipLabel>
+        <relationshipName>Price_Requests</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Total_Approved_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Approved Value</label>
+        <summarizedField>Price_Request_Parts__c.approved_amt__c</summarizedField>
+        <summaryForeignKey>Price_Request_Parts__c.Price_Requests__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>agrmt_nbr__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <externalId>false</externalId>
+        <label>Agreement Number</label>
+        <length>20</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>branch_id__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Branch Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>calendar_month__c</fullName>
+        <externalId>false</externalId>
+        <label>Cal Month</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>calendar_quarter__c</fullName>
+        <externalId>false</externalId>
+        <label>Cal Qtr</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>calendar_year__c</fullName>
+        <externalId>false</externalId>
+        <label>Cal Year</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cust_contact_email__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Customer Email</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cust_contact_name__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Customer Contact</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cust_contact_phone__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Customer Phone</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>distributor_region_desc__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Account Region</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>effective_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Effective Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>entering_branch_market_name__c</fullName>
+        <externalId>false</externalId>
+        <label>Market (Entering Branch)</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_acct_name__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Account Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_acct_nbr__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Account Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_city_name__c</fullName>
+        <externalId>false</externalId>
+        <label>POS City</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_cust_country__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Country</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_industry_code__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Industry Code</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_postal_code_2__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Postal Code</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_sales_terr__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Sales Territory</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_sename__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Sales Engineer</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pos_st_name_abbrn__c</fullName>
+        <externalId>false</externalId>
+        <label>POS State</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>primary_indicator__c</fullName>
+        <externalId>false</externalId>
+        <label>Primary Distributor?</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>requesting_acct_name__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Name</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>requesting_city_name__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor City</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>requesting_iso_ctry_cde__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Country</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>requesting_org_acct_nbr__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Account Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>requesting_postal_code_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Postal Code</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>requesting_st_name_abbrn__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor State</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>sales_terr__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Territory</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>sename__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Engineer / Branch Advocate</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>status_dscrptn__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                    <label>Active</label>
+                </value>
+                <value>
+                    <fullName>Not Active</fullName>
+                    <default>false</default>
+                    <label>Not Active</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>term__c</fullName>
+        <externalId>false</externalId>
+        <label>Term</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>type_code__c</fullName>
+        <externalId>false</externalId>
+        <label>Request Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CCR</fullName>
+                    <default>false</default>
+                    <label>CCR</label>
+                </value>
+                <value>
+                    <fullName>LDR</fullName>
+                    <default>false</default>
+                    <label>LDR</label>
+                </value>
+                <value>
+                    <fullName>MCP</fullName>
+                    <default>false</default>
+                    <label>MCP</label>
+                </value>
+                <value>
+                    <fullName>NDR</fullName>
+                    <default>false</default>
+                    <label>NDR</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ww_acct_name__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Worldwide Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AE Petsche Company</fullName>
+                    <default>false</default>
+                    <label>AE Petsche Company</label>
+                </value>
+                <value>
+                    <fullName>Aesco Electronics Inc</fullName>
+                    <default>false</default>
+                    <label>Aesco Electronics Inc</label>
+                </value>
+                <value>
+                    <fullName>Arrow Electronics Inc</fullName>
+                    <default>false</default>
+                    <label>Arrow Electronics Inc</label>
+                </value>
+                <value>
+                    <fullName>Avnet Inc</fullName>
+                    <default>false</default>
+                    <label>Avnet Inc</label>
+                </value>
+                <value>
+                    <fullName>BJG ELECTRONICS INC</fullName>
+                    <default>false</default>
+                    <label>BJG ELECTRONICS INC</label>
+                </value>
+                <value>
+                    <fullName>BK CONTROLS INC.</fullName>
+                    <default>false</default>
+                    <label>BK CONTROLS INC.</label>
+                </value>
+                <value>
+                    <fullName>Cabyter S.A. De CV</fullName>
+                    <default>false</default>
+                    <label>Cabyter S.A. De CV</label>
+                </value>
+                <value>
+                    <fullName>Chief Enterprises</fullName>
+                    <default>false</default>
+                    <label>Chief Enterprises</label>
+                </value>
+                <value>
+                    <fullName>COAST AIR INC.</fullName>
+                    <default>false</default>
+                    <label>COAST AIR INC.</label>
+                </value>
+                <value>
+                    <fullName>Components Center</fullName>
+                    <default>false</default>
+                    <label>Components Center</label>
+                </value>
+                <value>
+                    <fullName>CONECTER, S.A. DE C.V.</fullName>
+                    <default>false</default>
+                    <label>CONECTER, S.A. DE C.V.</label>
+                </value>
+                <value>
+                    <fullName>CUMBERLAND ELECTRONIC INC</fullName>
+                    <default>false</default>
+                    <label>CUMBERLAND ELECTRONIC INC</label>
+                </value>
+                <value>
+                    <fullName>DAC Group</fullName>
+                    <default>false</default>
+                    <label>DAC Group</label>
+                </value>
+                <value>
+                    <fullName>DEE ELECTRONICS INC</fullName>
+                    <default>false</default>
+                    <label>DEE ELECTRONICS INC</label>
+                </value>
+                <value>
+                    <fullName>Digi-Key Corp.</fullName>
+                    <default>false</default>
+                    <label>Digi-Key Corp.</label>
+                </value>
+                <value>
+                    <fullName>DISTRIBUIDORA ANAYA</fullName>
+                    <default>false</default>
+                    <label>DISTRIBUIDORA ANAYA</label>
+                </value>
+                <value>
+                    <fullName>Electro Insulation Corp</fullName>
+                    <default>false</default>
+                    <label>Electro Insulation Corp</label>
+                </value>
+                <value>
+                    <fullName>ELECTRO SONIC  INC</fullName>
+                    <default>false</default>
+                    <label>ELECTRO SONIC  INC</label>
+                </value>
+                <value>
+                    <fullName>Electro Sonic Inc</fullName>
+                    <default>false</default>
+                    <label>Electro Sonic Inc</label>
+                </value>
+                <value>
+                    <fullName>Electrocomponents PLC</fullName>
+                    <default>false</default>
+                    <label>Electrocomponents PLC</label>
+                </value>
+                <value>
+                    <fullName>Electronic Industries Inc</fullName>
+                    <default>false</default>
+                    <label>Electronic Industries Inc</label>
+                </value>
+                <value>
+                    <fullName>Element14</fullName>
+                    <default>false</default>
+                    <label>Element14</label>
+                </value>
+                <value>
+                    <fullName>FLAME ENTERPRISES, INC.</fullName>
+                    <default>false</default>
+                    <label>FLAME ENTERPRISES, INC.</label>
+                </value>
+                <value>
+                    <fullName>Fogel De Centroamerica SA</fullName>
+                    <default>false</default>
+                    <label>Fogel De Centroamerica SA</label>
+                </value>
+                <value>
+                    <fullName>Future Electronics</fullName>
+                    <default>false</default>
+                    <label>Future Electronics</label>
+                </value>
+                <value>
+                    <fullName>GEMCAP INC.</fullName>
+                    <default>false</default>
+                    <label>GEMCAP INC.</label>
+                </value>
+                <value>
+                    <fullName>Genuine Parts Company</fullName>
+                    <default>false</default>
+                    <label>Genuine Parts Company</label>
+                </value>
+                <value>
+                    <fullName>GO ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>GO ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>Gopher Electronics</fullName>
+                    <default>false</default>
+                    <label>Gopher Electronics</label>
+                </value>
+                <value>
+                    <fullName>Hammond Electronics Inc.</fullName>
+                    <default>false</default>
+                    <label>Hammond Electronics Inc.</label>
+                </value>
+                <value>
+                    <fullName>HARDWARE SPECIALITY CO</fullName>
+                    <default>false</default>
+                    <label>HARDWARE SPECIALITY CO</label>
+                </value>
+                <value>
+                    <fullName>HAWK ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>HAWK ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>HUGHES-PETERS INC</fullName>
+                    <default>false</default>
+                    <label>HUGHES-PETERS INC</label>
+                </value>
+                <value>
+                    <fullName>Insco-Insulation Supply</fullName>
+                    <default>false</default>
+                    <label>Insco-Insulation Supply</label>
+                </value>
+                <value>
+                    <fullName>JoKell Inc</fullName>
+                    <default>false</default>
+                    <label>JoKell Inc</label>
+                </value>
+                <value>
+                    <fullName>KC Electronic</fullName>
+                    <default>false</default>
+                    <label>KC Electronic</label>
+                </value>
+                <value>
+                    <fullName>Kimball Electronics</fullName>
+                    <default>false</default>
+                    <label>Kimball Electronics</label>
+                </value>
+                <value>
+                    <fullName>LAKELAND ENG. EQUIP. CO.</fullName>
+                    <default>false</default>
+                    <label>LAKELAND ENG. EQUIP. CO.</label>
+                </value>
+                <value>
+                    <fullName>Lapp Tannehill</fullName>
+                    <default>false</default>
+                    <label>Lapp Tannehill</label>
+                </value>
+                <value>
+                    <fullName>March Electronics</fullName>
+                    <default>false</default>
+                    <label>March Electronics</label>
+                </value>
+                <value>
+                    <fullName>MARSH ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>MARSH ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>MASLINE ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>MASLINE ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>MASTER INTL CORP</fullName>
+                    <default>false</default>
+                    <label>MASTER INTL CORP</label>
+                </value>
+                <value>
+                    <fullName>MILRAIL INC.</fullName>
+                    <default>false</default>
+                    <label>MILRAIL INC.</label>
+                </value>
+                <value>
+                    <fullName>NEDCO ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>NEDCO ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>NORSTAN ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>NORSTAN ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>NORVELL ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>NORVELL ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>PANAMERICANA DE PRODU</fullName>
+                    <default>false</default>
+                    <label>PANAMERICANA DE PRODU</label>
+                </value>
+                <value>
+                    <fullName>PEERLESS ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>PEERLESS ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>Peerless Electronics Inc</fullName>
+                    <default>false</default>
+                    <label>Peerless Electronics Inc</label>
+                </value>
+                <value>
+                    <fullName>POWELL ELECTRONICS INC</fullName>
+                    <default>false</default>
+                    <label>POWELL ELECTRONICS INC</label>
+                </value>
+                <value>
+                    <fullName>PROVEEDORA DE AISLANT</fullName>
+                    <default>false</default>
+                    <label>PROVEEDORA DE AISLANT</label>
+                </value>
+                <value>
+                    <fullName>R S I INC</fullName>
+                    <default>false</default>
+                    <label>R S I INC</label>
+                </value>
+                <value>
+                    <fullName>RADAR ELECTRONIC SPCLTS</fullName>
+                    <default>false</default>
+                    <label>RADAR ELECTRONIC SPCLTS</label>
+                </value>
+                <value>
+                    <fullName>RAY Q LTD.</fullName>
+                    <default>false</default>
+                    <label>RAY Q LTD.</label>
+                </value>
+                <value>
+                    <fullName>RELAY SPECIALTIES</fullName>
+                    <default>false</default>
+                    <label>RELAY SPECIALTIES</label>
+                </value>
+                <value>
+                    <fullName>SAGER ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>SAGER ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>SHERBURN ELECTRONICS CORP</fullName>
+                    <default>false</default>
+                    <label>SHERBURN ELECTRONICS CORP</label>
+                </value>
+                <value>
+                    <fullName>SIMCONA ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>SIMCONA ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>SOUTHERN CONTROLS</fullName>
+                    <default>false</default>
+                    <label>SOUTHERN CONTROLS</label>
+                </value>
+                <value>
+                    <fullName>STARK ELECTRONIC SUPPLY</fullName>
+                    <default>false</default>
+                    <label>STARK ELECTRONIC SUPPLY</label>
+                </value>
+                <value>
+                    <fullName>STATE ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>STATE ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>Stranco Products Midwest</fullName>
+                    <default>false</default>
+                    <label>Stranco Products Midwest</label>
+                </value>
+                <value>
+                    <fullName>SUMITEX</fullName>
+                    <default>false</default>
+                    <label>SUMITEX</label>
+                </value>
+                <value>
+                    <fullName>Superior Fuse&amp;Mfg Co Inc</fullName>
+                    <default>false</default>
+                    <label>Superior Fuse&amp;Mfg Co Inc</label>
+                </value>
+                <value>
+                    <fullName>Talcup Inc.</fullName>
+                    <default>false</default>
+                    <label>Talcup Inc.</label>
+                </value>
+                <value>
+                    <fullName>The Carlyle Group</fullName>
+                    <default>false</default>
+                    <label>The Carlyle Group</label>
+                </value>
+                <value>
+                    <fullName>THE GENIE GROUP INC.</fullName>
+                    <default>false</default>
+                    <label>THE GENIE GROUP INC.</label>
+                </value>
+                <value>
+                    <fullName>TTI Inc</fullName>
+                    <default>false</default>
+                    <label>TTI Inc</label>
+                </value>
+                <value>
+                    <fullName>WACO ELECTRONICS</fullName>
+                    <default>false</default>
+                    <label>WACO ELECTRONICS</label>
+                </value>
+                <value>
+                    <fullName>WES-GARDE COMPONENTS</fullName>
+                    <default>false</default>
+                    <label>WES-GARDE COMPONENTS</label>
+                </value>
+                <value>
+                    <fullName>WESCO International Inc</fullName>
+                    <default>false</default>
+                    <label>WESCO International Inc</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ww_acct_number__c</fullName>
+        <externalId>false</externalId>
+        <label>Distributor Worldwide Account Number</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Price Requests</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Market__c</columns>
+        <columns>ww_acct_name__c</columns>
+        <columns>pos_acct_name__c</columns>
+        <columns>effective_date__c</columns>
+        <columns>status_dscrptn__c</columns>
+        <columns>Total_Approved_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>NDRs</fullName>
+        <columns>NAME</columns>
+        <columns>Market__c</columns>
+        <columns>ww_acct_name__c</columns>
+        <columns>pos_acct_name__c</columns>
+        <columns>effective_date__c</columns>
+        <columns>status_dscrptn__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>type_code__c</field>
+            <operation>equals</operation>
+            <value>NDR</value>
+        </filters>
+        <label>NDR&apos;s</label>
+    </listViews>
+    <nameField>
+        <label>Price Request Number</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Price Requests</pluralLabel>
+    <recordTypes>
+        <fullName>Channel_PR</fullName>
+        <active>true</active>
+        <label>Channel PR</label>
+        <picklistValues>
+            <picklist>primary_indicator__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>status_dscrptn__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not Active</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>type_code__c</picklist>
+            <values>
+                <fullName>CCR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LDR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MCP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NDR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ww_acct_name__c</picklist>
+            <values>
+                <fullName>AE Petsche Company</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aesco Electronics Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Arrow Electronics Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Avnet Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BJG ELECTRONICS INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BK CONTROLS INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COAST AIR INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CONECTER%2C S%2EA%2E DE C%2EV%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CUMBERLAND ELECTRONIC INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cabyter S%2EA%2E De CV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chief Enterprises</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Components Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAC Group</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DEE ELECTRONICS INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DISTRIBUIDORA ANAYA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Digi-Key Corp%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ELECTRO SONIC  INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electro Insulation Corp</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electro Sonic Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electrocomponents PLC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electronic Industries Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Element14</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FLAME ENTERPRISES%2C INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fogel De Centroamerica SA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Electronics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GEMCAP INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GO ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Genuine Parts Company</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Gopher Electronics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HARDWARE SPECIALITY CO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HAWK ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HUGHES-PETERS INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hammond Electronics Inc%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insco-Insulation Supply</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JoKell Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>KC Electronic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kimball Electronics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LAKELAND ENG%2E EQUIP%2E CO%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lapp Tannehill</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MARSH ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MASLINE ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MASTER INTL CORP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MILRAIL INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>March Electronics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NEDCO ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NORSTAN ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NORVELL ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PANAMERICANA DE PRODU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PEERLESS ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>POWELL ELECTRONICS INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROVEEDORA DE AISLANT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Peerless Electronics Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>R S I INC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RADAR ELECTRONIC SPCLTS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RAY Q LTD%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RELAY SPECIALTIES</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SAGER ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SHERBURN ELECTRONICS CORP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SIMCONA ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SOUTHERN CONTROLS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>STARK ELECTRONIC SUPPLY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>STATE ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SUMITEX</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Stranco Products Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Superior Fuse%26Mfg Co Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>THE GENIE GROUP INC%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TTI Inc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Talcup Inc%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>The Carlyle Group</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WACO ELECTRONICS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WES-GARDE COMPONENTS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WESCO International Inc</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>requesting_acct_name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>pos_acct_name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>status_dscrptn__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>type_code__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Total_Approved_Value__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>New_Opportunity</fullName>
+        <availability>online</availability>
+        <description>Create a New Opportunity</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Opportunity</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/006/e?CF00NE0000000n1P4={!Price_Requests__c.Name}&amp;CF00NE0000000n1P4_lkid={!Price_Requests__c.Id}&amp;CF00NE0000000mRFS={!Price_Requests__c.Market__c}&amp;CF00NE0000000mRFS_lkid={!Price_Requests__c.MarketId__c}&amp;00NE0000000mnS1={!Price_Requests__c.Disty_Temp__c}&amp;opp5=&quot;NDR&quot;&amp;opp7={!Price_Requests__c.Total_Approved_Value__c}&amp;opp9={!Price_Requests__c.effective_date__c}&amp;opp11=&quot;Opportunity Identification&quot;&amp;retURL={!Price_Requests__c.Id}&amp;RecordType=012E0000000Irym&amp;ent=Opportunity</url>
+    </webLinks>
+</CustomObject>

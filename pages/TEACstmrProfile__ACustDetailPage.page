@@ -1,0 +1,714 @@
+<apex:page standardController="TEACstmrProfile__A_Customer_Profile__c" extensions="TEACstmrProfile.ACustomerControllerView">
+    <style>
+    .datatable TD 
+    {padding:4px; border-collapse:collapse;   }
+    .headerrow TD
+    {vertical-align: bottom; color: #DE8703; font-weight: bold; font-size:110%; }
+    </style>
+    
+    <apex:outputPanel rendered="false">
+        <table cellspacing="10">
+        <tbody>
+            <tr>
+                <td>
+                    <span style="font-weight: bold; font-size: 12pt;">Insufficient Privileges</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary. 
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </apex:outputPanel>
+    
+    <apex:sectionHeader title="{!$ObjectType.TEACstmrProfile__A_Customer_Profile__c.label}" rendered="false"/> 
+    <apex:pageBlock mode="maindetail" tabStyle="A_Customer_Profile__c" rendered="true">
+        <apex:pageBlockButtons >
+        <apex:form >
+            <apex:image height="16" width="16" title="Lock" alt="Lock" value="/img/lock_small.gif" rendered="{!ApprovalLock}"/>
+            <apex:commandButton action="{!UnLock}" rendered="{!UnlockBtn}" value="Unlock Record" onclick="if(!confirm('Are you sure?')){return false;}"/>
+            <apex:commandButton action="{!Edit}" value="Edit" rendered="{!WriteAccess}"/>
+            <apex:commandButton action="{!delete}" value="Delete" onclick="if(!confirm('Are you sure?')){return false;}" rendered="{!WriteAccess}"/>
+            <apex:commandButton action="{!URLFOR($Action.A_Customer_Profile__c.Share,A_Customer_Profile__c.id)}" value="Sharing" rendered="{!WriteAccess}"/>
+        </apex:form>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection showHeader="false" title="Fields" columns="1" collapsible="true">
+        <apex:outputPanel rendered="{!DisplayLogo}">
+            <img src="data:{!LogoData.ContentType};base64,{!LogoData.Body}" />
+            </apex:outputPanel>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection showHeader="false" columns="2">
+                
+            <apex:pageBlockSectionItem dataStyle="{font-weight:bold; vertical-align: bottom;}" >            
+                <apex:outputLabel value="Customer" style="vertical-align: bottom;"/>
+                <apex:outputText ><font color="0073AE" size="4px"><b>{!TEACstmrProfile__A_Customer_Profile__c.Name}</b></font></apex:outputText>
+            </apex:pageBlockSectionItem> 
+                     
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Customer Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Type__c}"/> 
+                    <apex:outputText rendered="{!NOT(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Type__c == 'A Customer')}"><br/>This Profile will <u>not</u> be sent to the Executive Dashboard. </apex:outputText>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem> 
+                         
+            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Business_Unit__c}"/>
+            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Approval_Status__c}"/>                    
+                       
+            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Plan_Year__c}"/>            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Content Editor"/>
+                <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Editor__c}"/>  
+            </apex:pageBlockSectionItem>                                    
+             
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Account Definition"/>
+                <apex:outputPanel >
+                   <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Definition__c}"/>&nbsp;
+                   <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__GAM_Code__c}"/>
+                   <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Worldwide_Account__c}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >            
+                <apex:outputLabel value="Owner"/>
+                <apex:outputPanel >
+                     <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.OwnerId}"/>&nbsp;
+                    <apex:outputLink value="{!Changeowner}">[Change]</apex:outputLink></apex:outputPanel>
+            </apex:pageBlockSectionItem>
+                                               
+            
+            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Sales_Figures_Makeup__c}"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Created By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.CreatedById}"/>,&nbsp;
+                    <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.CreatedDate}"/> 
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>   
+                        
+            <apex:pageBlockSectionItem dataStyle="vertical-align:middle">
+                <apex:outputLabel value="Voice Overview"/>
+                <apex:outputPanel >
+                   <apex:form >
+                     <a href="/servlet/servlet.FileDownload?file={!VoiceId}">
+                        <apex:image url="{!$Resource.TEACstmrProfile__Speaker}" width="25" height="25" title="Voice Overview exists. Click speaker to listen." rendered="{!DisplayVoice}"/>
+                     </a>
+                     <apex:outputLabel style="color:grey" value="Not loaded" rendered="{!Not(DisplayVoice)}"/>&nbsp;&nbsp;                                       
+                     <apex:outputLabel rendered="{!DisplayPhoto}"><img width="30" height="30" src="data:{!PhotoData.ContentType};base64,{!PhotoData.Body}"/></apex:outputLabel> 
+                   </apex:form>
+                </apex:outputPanel>                                
+            </apex:pageblockSectionItem>
+            <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Last Modified By"/>
+                        <apex:outputPanel >
+                            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.LastModifiedByID}"/>,&nbsp;
+                            <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.LastModifiedDate}"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>                                
+            
+        </apex:pageBlockSection>
+        
+        <table width="100%"><hr/><h2><font color="0073AE" size="4px">Customer Overview</font></h2><br/><br/></table>          
+            <table width="80%" border="1" bordercolor="" style="background-color: " cellpadding="4" cellspacing="0">
+                <tr style="background-color: lightblue">
+                    <td colspan="1" align="center"><i>All figures in Millions, USD</i></td><b>
+                    <td colspan="5" align="center">Customer&rsquo;s Revenue</td> </b>              
+                </tr> 
+                <tr style="background-color: lightblue">
+                    <td width="25%" align="center"><b>Category </b></td>
+                   <b> <td width="15%" align="center">{!PlanYearMinus3}</td>
+                    <td width="15%" align="center">{!PlanYearMinus2}</td>
+                    <td width="15%" align="center">YoY Variance</td>
+                    <td width="15%" align="center">{!PlanYearMinus1}</td>
+                    <td width="15%" align="center">YoY Variance</td>    </b>      
+                 </tr>
+                 <tr>
+                    <td width="25%" align="center"><b>Total</b></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_3__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_2__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Rev_Pct_Chg_Plan_Yr_2__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_2__c))}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_1__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Rev_Pct_Chg_Plan_Yr_1__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Total_Revenue_M_Plan_Yr_1__c))}"/></td>
+                </tr>
+                <tr>
+                    <td width="25%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Name__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_3__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_2__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Rev_Pct_Chg_Plan_Yr_2__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_2__c))}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_1__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Rev_Pct_Chg_Plan_Yr_1__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category1_Revenue_M_Plan_Yr_1__c))}"/></td>
+                </tr>
+                <tr>
+                    <td width="25%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Name__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_3__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_2__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Rev_Pct_Chg_Plan_Yr_2__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_2__c))}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_1__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Rev_Pct_Chg_Plan_Yr_1__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category2_Revenue_M_Plan_Yr_1__c))}"/></td>
+                </tr>
+                <tr>
+                    <td width="25%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Name__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_3__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_2__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Rev_Pct_Chg_Plan_Yr_2__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_2__c))}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_1__c}"/></td>
+                    <td nowrap="nowrap" width="15%" align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Rev_Pct_Chg_Plan_Yr_1__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Category3_Revenue_M_Plan_Yr_1__c))}"/></td>
+                </tr>        
+             </table>
+          
+             <br/><br/>        
+             <table width="60%" border="" bordercolor="" style="background-color: " cellpadding="4" cellspacing="0">                
+                <tr>
+                    <td align="left"><b><font color="DE8703" size="3px">Industry Segment:</font></b>&nbsp;&nbsp;&nbsp;<apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Industry_Segment__c}"/></td>
+                </tr>
+             </table>                         
+             <br/>
+             <table class="datatable" rules="rows">                
+                <tr class="headerrow">                
+                    <td align="left"> Customer&rsquo;s Key Products&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>                    
+                    <td align="center" colspan="2"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_Percent_Title__c}" /></td>
+                    <td />                    
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_1_Outlook__c))}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_2_Outlook__c))}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_3_Outlook__c))}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_4_Outlook__c))}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_5_Outlook__c))}"/></td>                     
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6__c}" /></td>
+                    <td align="right">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Pct__c}" /></td>                                                            
+                    <td align="left">   <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Outlook__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Outlook__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Product_6_Outlook__c))}"/></td>                     
+                </tr>
+             </table>
+             
+        <br/>
+        <table width="100%"><hr/><h2><font color="0073AE" size="4px">TE Performance Overview</font></h2><br/><br/></table>
+        <table>
+           <tr><td width="70%" align="left"><b><font color="DE8703" size="3px">TE Performance:</font></b>&nbsp;&nbsp;<apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Performance_Status__c+ '.jpg')}" 
+                                            title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Performance_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Performance_Status__c))}" />&nbsp;{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Performance_Status__c}</td>
+            </tr>
+        </table><br/>
+        <table border="1" bordercolor="" style="background-color:" width="100%" cellpadding="5" cellspacing="0">       
+            <tr style="background-color: lightblue">
+                <td colspan="1" align="center"><i>All figures in Millions, USD</i></td><b>
+                <td colspan="1" align="center">Actual</td>
+                <td colspan="2" align="center">Forecast ({!PlanYear})</td>
+                <td colspan="7" align="center">Annual Plan</td>
+                </b>
+            </tr>       
+            <tr style="background-color: lightblue">
+                <td align="center"><i>Fiscal Years</i></td><b>
+                <td align="center">{!PlanYearMinus1}</td>
+                <td align="center">YTD Actuals</td>
+                <td align="center">Forecast</td>
+                <td align="center">{!PlanYear} </td>
+                <td align="center">YoY</td>
+                <td align="center">{!PlanYearPlus1}</td>
+                <td align="center">YoY</td>
+                <td align="center">{!PlanYearPlus4}</td>
+                <td align="center">YoY</td>
+                </b>
+            </tr>
+            <tr>
+                <td align="center">TE</td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Prior_Yr_Actual_M__c}"/></td>  
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_YTD_Actual_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_CY_Forecast_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Pct_Change_Plan_Yr__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_1_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Pct_Change_Plan_Yr_1__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Fcst_Plan_Yr_4_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TE_Revenue_Pct_Change_Plan_Yr_4__c}"/></td>
+            </tr>
+            <tr>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Business_Unit__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Prior_Yr_Actual_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_YTD_Actual_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_CY_Forecast_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Pct_Change_Plan_Yr__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_1_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Pct_Change_Plan_Yr_1__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Fcst_Plan_Yr_4_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__BU_Revenue_Pct_Change_Plan_Yr_4__c}"/></td>
+            </tr>
+            <tr>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Revenue_TAM_SAM__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Prior_Yr_M__c}"/></td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Year_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Pct_Change_Plan_Yr__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Yr_1_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Pct_Change_Plan_Yr_1__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Plan_Yr_4_M__c}"/></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__TAM_Pct_Change_Plan_Yr_4__c}"/></td>
+            </tr>
+            <tr>
+                <td align="center">MS%</td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Market_Share_Prior_Yr__c}"/></td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Market_Share_Plan_Yr__c}"/></td>
+                <td align="center"></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Market_Share_Plan_Yr_1__c}"/></td>
+                <td align="center"></td>
+                <td align="center"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Market_Share_Plan_Yr_4__c}"/></td>
+                <td align="center"></td>
+            </tr>
+        </table>
+        <i>TE Revenue Section Last Updated By&nbsp;<apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Revenue_Section_Last_Updated_By__c}"/>&nbsp;on&nbsp;<apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Revenue_Section_Last_Updated__c}"/></i>      
+        <br/><br/>
+     
+      
+      <table>
+         <tr>
+          <td>
+           <table>                
+                <tr class="headerrow"><td colspan="4">Relationships</td></tr>
+                <tr>
+                    <td>Executive:</td>
+                    <td><apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship__c))}" /></td>
+                    <td><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship__c}"/></td>
+                    <td width="50%"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Executive_Relationship_Comments__c}"/></td>                
+                </tr>                
+                <tr>
+                    <td>Purchasing:</td>
+                    <td><apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship__c))}" /></td>
+                    <td><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship__c}"/></td>
+                    <td><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Purchasing_Relationship_Comments__c}"/></td>
+                </tr>                
+                <tr>
+                    <td>Engineering:</td>
+                    <td><apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship__c))}" /></td>
+                    <td><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship__c}"/></td>
+                    <td><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Engineering_Relationship_Comments__c}"/></td>
+                </tr>
+           </table>
+           </td>
+           <td >&nbsp;&nbsp;
+           </td>
+           <td >
+               <table>
+               <tr class="headerrow"><td align="center" >Sales Breakdown</td></tr>
+               <tr><td ><apex:image url="{!Piechart}" /></td></tr>
+               </table>
+            </td>
+        </tr>
+        </table>
+       
+             <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">Competitors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>                    
+                    <td colspan="2" align="center">Market Share</td>
+                    <td align="left">Comments</td>                              
+                </tr>
+                <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_Market_Share__c}" /></td>                                                            
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_1_Comments__c}" /></td>
+                </tr>    
+                <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_Market_Share__c}" /></td>                                                            
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_2_Comments__c}" /></td>
+                </tr>                 
+                <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_Market_Share__c}" /></td>                                                            
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_3_Comments__c}" /></td>
+                </tr>                  
+                <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_Market_Share__c}" /></td>                                                            
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_4_Comments__c}" /></td>
+                </tr>                  
+                  <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_Market_Share__c}" /></td>                                      
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_5_Comments__c}" /></td>
+                </tr>                  
+                  <tr>
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6__c}" /></td>
+                    <td align="right"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_Market_Share__c}" /></td>                                      
+                    <td align="left">  <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_MS_Trend__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_MS_Trend__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_MS_Trend__c))}"/></td>                
+                    <td align="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Competitor_6_Comments__c}" /></td>
+                </tr>                                                    
+             </table>
+             
+        <br/>
+        <table width="100%"><hr/>
+        <tr>
+        <td width="40%"> 
+        <table ><h2><font color="0073AE" size="4px">Strategies</font></h2><br/></table>     
+        <table class="datatable" rules="rows">
+                <tr class="headerrow">
+                    <td align="left"><b>Strategic Account Objectives </b></td>                                                                                                             
+                </tr> 
+                <tr>
+                    <td align="left"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_1__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_2__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_3__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_4__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left"><apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Account_Objective_5__c}"/></td>                    
+                </tr>     
+            </table>
+        </td>
+        <td  width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td  width="50%">
+        <table ><h2><font color="0073AE" size="4px">&nbsp;</font></h2><br/></table>     
+        <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">   Strategic Initiatives/Penetration Plan&nbsp;&nbsp;&nbsp; </td>                    
+                    <td align="center"> Target</td> 
+                    <td align="center"> Status</td>                            
+                </tr>                                                
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_1_Status__c))}"/></td>                        
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_2_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_3_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_4_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_5_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_6_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_7_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_8_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_9_Status__c))}"/></td>                
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Target__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Status__c + '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Strategic_Initiative_10_Status__c))}"/></td>                
+                </tr>
+             </table>
+        </td>
+        </tr> 
+        </table> 
+                    
+        <br/>
+        <table width="100%"><hr/>
+        <tr>
+        <td width="40%"> 
+        <table width="100%"><h2><font color="0073AE" size="4px">Breakthrough Programs</font></h2><br/></table>   
+             <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">  <b>Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td align="center"><b>Status&nbsp;</b></td>
+                    <td align="left">  <b>Comments</b></td>                              
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_1__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Status__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Status__c))}"/></td>                     
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_1_Comments__c}"/></td>
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_2__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Status__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Status__c))}"/></td>                     
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_2_Comments__c}"/></td>
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_3__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Status__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Status__c))}"/></td>                                       
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_3_Comments__c}"/></td>
+                </tr>                                                  
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Program_4__c}"/></td>
+                    <td align="center"> <apex:image Value="{!URLFOR($Resource.TEACstmrProfile__Graphics, TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Status__c+ '.jpg')}" title="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Status__c}" rendered="{!NOT(ISNULL(TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Status__c))}"/></td>                                       
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Breakthrough_Pgm_4_Comments__c}"/></td>
+                </tr>                     
+             </table>        
+        </td>
+        <td  width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td  width="50%">
+        <table width="100%"><h2><font color="0073AE" size="4px">Key Projects/Opportunities</font></h2><br/></table>   
+             <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">  <b>Key Project/Opportunity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td align="center"><b>5 Yr Value(M)&nbsp;</b> </td>                    
+                    <td align="center"><b>Start Date</b></td>                             
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1_Value_M__c}"/></td>                    
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_1_Start_Date__c}"/></td>
+                </tr>                                   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2_Value_M__c}"/></td>               
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_2_Start_Date__c}"/></td>
+                </tr>                                  
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3_Value_M__c}"/></td>                    
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_3_Start_Date__c}"/></td>
+                </tr>                                   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4_Value_M__c}"/></td>                    
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_4_Start_Date__c}"/></td>
+                </tr>                                   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5_Value_M__c}"/></td>                    
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_5_Start_Date__c}"/></td>
+                </tr>                                   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6_Value_M__c}"/></td>                    
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Key_Project_6_Start_Date__c}"/></td>
+                </tr>                                   
+             </table>
+        </td>
+        </tr>                     
+        </table>
+        
+        <br/>
+        <table width="100%"><hr/>
+        <tr>
+        <td  width="40%">
+        <table width="100%"><h2><font color="0073AE" size="4px">Recent Big Wins</font></h2><br/></table>           
+            <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">  <b>Recent Win&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td align="center"><b>5 Yr Value(M)&nbsp;</b> </td>                                       
+                    <td align="center"><b>Date Won &nbsp;</b></td>
+                    <td align="left">  <b>Comments</b></td>                              
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Date_Won__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_1_Comments__c}"/></td>
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Date_Won__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_2_Comments__c}"/></td>
+                </tr>                  
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Date_Won__c}"/></td>
+                    <td walign="left">  <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_3_Comments__c}"/></td>
+                </tr>   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Date_Won__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Big_Win_4_Comments__c}"/></td>
+                </tr>                                                  
+             </table>
+        </td>
+        <td  width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td  width="40%">
+         <table width="100%"><h2><font color="0073AE" size="4px">Recent Losses</font></h2><br/></table>           
+            <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left">  <b>Recent Loss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td align="center"><b>5 Yr Value(M)&nbsp;</b> </td>                                       
+                    <td align="center"><b>Date Lost&nbsp;</b></td>
+                    <td align="left">  <b>Comments</b></td>                              
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Date__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_1_Comments__c}"/></td>
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Date__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_2_Comments__c}"/></td>
+                </tr>                  
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Date__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_3_Comments__c}"/></td>
+                </tr>   
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Value_M__c}"/></td>
+                    <td align="center"> <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Date__c}"/></td>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Recent_Loss_4_Comments__c}"/></td>
+                </tr>                                                  
+             </table>                                                        
+       </td>
+       <td  width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+       </tr> 
+       </table>  
+       
+        <br/>
+        <table width="100%"><hr/>
+        <tr>
+        <td  width="40%">       
+        <table width="100%"><h2><font color="0073AE" size="4px">Obstacles</font></h2><br/></table>   
+             <table class="datatable" rules="rows">                
+                <tr class="headerrow">
+                    <td align="left"><b>Obstacle/Headwind </b></td>                                                                                                             
+                </tr>
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_1__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_2__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_3__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_4__c}"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="left">   <apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Obstacle_5__c}"/></td>                    
+                </tr>     
+            </table>           
+        </td>
+        <td  width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td  width="60%">         
+        <table width="100%"><h2><font color="0073AE" size="4px">Customer Scorecard</font></h2><br/></table>   
+        <apex:pageBlockSection showHeader="false" title="Customer Scorecard" columns="1">
+          <apex:pageBlockSectionItem >
+             <apex:outputLabel value="Customer Scorecard" style="color: #DE8703; font-weight: bold;"/>
+             <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Scorecard__c}"/>  
+          </apex:pageBlockSectionItem>       
+          <apex:pageBlockSectionItem >
+             <apex:outputLabel value="Comments" style="color: #DE8703; font-weight: bold;"/>
+             <apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Customer_Scorecard_Comments__c}"/>
+          </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        </td>
+        </tr>
+        </table>
+        <table width="100%"><hr/><h2><font color="0073AE" size="4px">&nbsp;Monthly Update</font></h2><br/><br/></table>          
+        <table border="1" bordercolor="" style="background-color:" width="80%" cellpadding="5" cellspacing="0">       
+            <tr><td><apex:outputField value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Monthly_Update__c}"/></td></tr>
+        </table>
+        <i>&nbsp;&nbsp;&nbsp;Monthly Update Last Modified By&nbsp;<apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Monthly_Update_Last_Updated_By__c}"/>&nbsp;on&nbsp;<apex:outputfield Value="{!TEACstmrProfile__A_Customer_Profile__c.TEACstmrProfile__Monthly_Update_Last_Updated__c}"/></i>      
+        <br/><br/>
+
+    </apex:pageBlock>
+    <apex:form >
+    <apex:pageBlock mode="edit" title="Notes & Attachments">        
+        <apex:pageBlockButtons location="top">            
+                <apex:commandButton value="New Note" action="/002/e?parent_id={!aid}&retURL=/apex/ACustDetailPage?id={!aid}"/>
+                <apex:commandButton value="Attach File" action="/apex/ACustAttachment?id={!aid}&parentname={!A_Customer_Profile__c.Name}"/>
+                <apex:commandButton value="View All" action="/ui/content/ViewAllNotesPage?id={!aid}" rendered="{!(NOT(ISNULL(LstAttachment)))}"/>            
+         </apex:pageBlockButtons>
+         <table class="list" cellspacing="0" cellpadding="0" border="0">
+            <tr class="headerRow">
+                <th class="actionColumn" scope="col">Action</th>
+                <th class="" scope="col">Type</th>
+                <th class="" scope="col">Name</th>
+                <th class="" scope="col">Title</th>
+                <th class="" scope="col">Author</th>
+                <th class="" scope="col">Last Modified</th>
+                <th class="" scope="col">Created By</th>
+                <th class="" scope="col">Send To Executive Dashboard</th>
+            </tr>
+            <apex:repeat value="{!LstAttachment}" var="att">
+            <tr class="dataRow even first" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}">
+                <td class="actionColumn">
+                    <apex:outputLink value="/{!att.Id}/e?retURL=/apex/ACustDetailPage?id={!aid}" styleClass="actionLink" rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}">Edit</apex:outputLink>
+                    <apex:outputLink value="/{!att.TEACstmrProfile__AttachmentId__c}/e?retURL=/apex/ACustDetailPage?id={!aid}" styleClass="actionLink" rendered="{!(att.TEACstmrProfile__Type__c == 'Note')}">Edit</apex:outputLink><apex:outputText >&nbsp;|&nbsp;</apex:outputText>
+                    <apex:outputLink value="/servlet/servlet.FileDownload?file={!att.TEACstmrProfile__AttachmentId__c}" target="_blank" styleClass="actionLink"  rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}">View</apex:outputLink><apex:outputText rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}">&nbsp;|&nbsp;</apex:outputText>
+                    <apex:outputLink value="/setup/own/deleteredirect.jsp?id={!aid}&sfdc.override=1&delID={!att.TEACstmrProfile__AttachmentId__c}&retURL=/apex/ACustDetailPage?id={!aid}" styleClass="actionLink" onclick="return confirmDelete();">Del</apex:outputLink>
+                    <!--
+                    <apex:commandLink action="/{!att.Id}/e?retURL=/apex/ACustDetailPage?id={!aid}" value="Edit" styleClass="actionLink" rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}"/>
+                    <apex:commandLink action="/{!att.TEACstmrProfile__AttachmentId__c}/e?retURL=/apex/ACustDetailPage?id={!aid}" value="Edit" styleClass="actionLink" rendered="{!(att.TEACstmrProfile__Type__c == 'Note')}"/><apex:outputText >&nbsp;|&nbsp;</apex:outputText>
+                    <apex:commandLink action="/servlet/servlet.FileDownload?file={!att.TEACstmrProfile__AttachmentId__c}" target="_blank" value="View" styleClass="actionLink"  rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}"/><apex:outputText rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}">&nbsp;|&nbsp;</apex:outputText>
+                    <apex:commandLink action="/setup/own/deleteredirect.jsp?id={!aid}&sfdc.override=1&delID={!att.TEACstmrProfile__AttachmentId__c}&retURL=/apex/ACustDetailPage?id={!aid}" value="Del" styleClass="actionLink" onclick="return confirmDelete();"/>
+                     -->                    
+                </td>
+                <th class=" dataCell " scope="row">{!att.Type__c}</th>
+                <td class=" dataCell">
+                <apex:outputPanel rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}"><a href="/{!att.Id}">             {!att.Name}</a></apex:outputPanel>
+                <apex:outputPanel rendered="{!(att.TEACstmrProfile__Type__c == 'Note')}">      <a href="/{!att.TEACstmrProfile__AttachmentId__c}">{!att.Name}</a></apex:outputPanel>
+                </td>
+                <td class=" dataCell ">{!att.Title__c}</td>
+                <td class=" dataCell ">{!att.Author__c}</td>
+                <td class=" dataCell "><apex:outputText value="{0,date, M/d/yyyy HH:mm}"><apex:param value="{!att.LastModifiedDate}"/></apex:outputText></td>                                                               
+                <td class=" dataCell ">
+                <a href="/{!att.CreatedById}">{!att.CreatedBy.Name}</a>
+                </td>
+                <td><apex:outputPanel rendered="{!(att.TEACstmrProfile__Type__c == 'Attachment')}"><apex:image styleClass="checkImg" width="21" height="16" title="checked" url="/img/checkbox_checked.gif" rendered="{!att.TEACstmrProfile__Send_Attachment_to_Executive_Dashboard__c}"/>
+                    <apex:image styleclass="checkImg" width="21" height="16" title="Not Checked" url="/img/checkbox_unchecked.gif" rendered="{!Not(att.TEACstmrProfile__Send_Attachment_to_Executive_Dashboard__c)}"/></apex:outputPanel></td>
+            </tr>           
+            </apex:repeat>
+        </table>        
+    </apex:pageBlock>
+    </apex:form>
+    <apex:relatedList list="ProcessSteps" />   
+</apex:page>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>A sprint is a development iteration which defines a specific scope of user stories. All assigned user stories to one sprint define so-called sprint backlog.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AgileVizArt__Claimed_Points__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total effort points of all done (or closed) requirements or defects</inlineHelpText>
+        <label>Claimed Points</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Parent__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Define parent sprint or phase</inlineHelpText>
+        <label>Parent</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.AgileVizArt__Release__c</field>
+                <operation>equals</operation>
+                <valueField>AgileVizArt__Sprint__c.AgileVizArt__Release__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__Sprint__c</referenceTo>
+        <relationshipLabel>Sub Sprints</relationshipLabel>
+        <relationshipName>Sub_Sprints</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Project_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into master detail relationship lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Release__r.AgileVizArt__Project__c</formula>
+        <label>Project Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Project_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into master detail relationship lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Release__r.AgileVizArt__Project__r.Name</formula>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Release_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into master detail relationship lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Release__r.Name</formula>
+        <label>Release Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Release__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Release</label>
+        <referenceTo>AgileVizArt__Release__c</referenceTo>
+        <relationshipLabel>Sprints</relationshipLabel>
+        <relationshipName>Sprints</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Scope_Cut_Off_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Start_Date__c + (AgileVizArt__End_Date__c - AgileVizArt__Start_Date__c + 1) * 0.3</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Cut off date after which additionally created defects are excluded from sprint scope in velocity calculations. Cut off date defined as 30% of calendar period. At beginning scope might be adjusted, later identified defects belong to user stories of sprint</inlineHelpText>
+        <label>Scope Cut Off Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines status of your sprint. Until sprint planning meeting completed this should be planned. Set on completed when your sprint is done.</inlineHelpText>
+        <label>Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Planned</fullName>
+                    <default>true</default>
+                    <label>Planned</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Total_Points__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total effort points of all requirement and defect user stories</inlineHelpText>
+        <label>Total Points</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Working_Days__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of working days of this sprint. This will be calculated if not populated based on week days between sprint start and end date. Only correct if there are many holidays in between.</inlineHelpText>
+        <label>Working Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Sprint</label>
+    <listViews>
+        <fullName>AgileVizArt__All</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Release__c</columns>
+        <columns>AgileVizArt__Start_Date__c</columns>
+        <columns>AgileVizArt__End_Date__c</columns>
+        <columns>AgileVizArt__Total_Points__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Sprint Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Sprints</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>AgileVizArt__Release__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Start_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__End_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Parent__c</customTabListAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>AgileVizArt__EndDate_gt_StartDate</fullName>
+        <active>true</active>
+        <description>End date must be greater than start date</description>
+        <errorConditionFormula>AgileVizArt__End_Date__c &lt;= AgileVizArt__Start_Date__c</errorConditionFormula>
+        <errorDisplayField>AgileVizArt__End_Date__c</errorDisplayField>
+        <errorMessage>End date must be greater than start date</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>AgileVizArt__New_Sub_Sprint</fullName>
+        <availability>online</availability>
+        <description>Used to create sub sprint from sprint page layout passing release into page</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Sub Sprint</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Sprint__c.Id}&amp;URL_Sprint.SprintName={!AgileVizArt__Sprint__c.Name}&amp;URL_Sprint.SprintId={!AgileVizArt__Sprint__c.Id}&amp;URL_Sprint.ReleaseName={!AgileVizArt__Sprint__c.AgileVizArt__Release_Name__c}&amp;URL_Sprint.ReleaseId
+={!AgileVizArt__Sprint__c.AgileVizArt__ReleaseId__c}&amp;obj=Sprint__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__Scrumboard</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Scrumboard</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/AgileVizArt__CtrlSprintUserStory?scrumsprintid={!AgileVizArt__Sprint__c.Id}</url>
+    </webLinks>
+</CustomObject>

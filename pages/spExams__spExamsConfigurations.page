@@ -1,0 +1,756 @@
+<apex:page controller="spExams.SPExamsConfigurationCtrl">
+
+	<c:spExamsConfigurations_Resources />
+	<c:RaphaelResources />
+	
+	<style>        
+        #salesforce_bootstrap .table-questions {
+            width: 100%;
+            border: 1px solid rgb(213, 208, 202);
+            border-collapse: collapse;
+            background-color: rgb(255, 255, 255);
+        }
+        
+        #salesforce_bootstrap .table-questions th,  #salesforce_bootstrap .table-questions td {
+            border: 1px solid rgb(213, 208, 202);
+            padding: 2px 6px;
+            font-weight: normal;
+            line-height: 20px;
+            font-family: "helvetica neue", helvetica, arial, sans-serif;
+            font-size: 13px;
+        }       
+        
+        #salesforce_bootstrap .table-questions th {
+            color: rgb(114, 114, 114);
+            font-weight: normal;
+            background-color: rgb(240, 240, 240);
+        }
+                
+        #salesforce_bootstrap .table-mmapping{
+        	width: auto;
+        	background-color: transparent;
+        	margin: auto;
+        }
+        
+        #salesforce_bootstrap .table-mmapping th{
+	        color: rgb(114, 114, 114);
+			font-weight: normal;
+			background-color: rgb(240, 240, 240);
+        }
+        
+        #salesforce_bootstrap .table-mmapping td{
+        	vertical-align: middle;
+        }
+        
+        #salesforce_bootstrap .table-mmapping td select{
+        	height: 24px;
+        	padding: 2px 3px
+        }        
+	</style>
+	
+	<div id="salesforce_bootstrap">
+		<apex:outputPanel id="apex-message" styleClass="apex-message">
+        	<apex:messages ></apex:messages>
+        </apex:outputPanel>
+		<apex:form >
+			<apex:inputFile value="{!body}" styleClass="inputUpload-background hide" accept="image/*" onchange="loadSpin.show('Uploading image...'); SaveBackgroundImage();"/>
+			<apex:inputFile value="{!body}" styleClass="inputUpload-logo hide" accept="image/*" onchange="loadSpin.show('Uploading image...'); SaveLogoImage();"/>
+			
+			<apex:actionFunction name="SaveBackgroundImage" 
+							 	 action="{!SaveBackgroundImage}">
+		  	</apex:actionFunction>
+		  	
+			<apex:actionFunction name="SaveLogoImage" 
+							 	 action="{!SaveLogoImage}">
+		  	</apex:actionFunction>		  	
+		</apex:form>
+		<apex:form >
+			<apex:actionFunction name="updateAttachment" 
+	                             action="{!updateAttachment}" 
+	                             rerender="apex-message, logo-img, background-preview"
+	                             oncomplete="setValuesForPreview();"> 
+	        	<apex:param name="attachmentName" value="" />
+	        </apex:actionFunction>
+	        
+	        <apex:actionFunction name="restoreData" 
+	        					 action="{!restoreData}"
+	                             rerender="apex-message, settings-panel"
+	                             oncomplete="afterRestoreData(); getObjectsPagesListJS(''); getActiveTab();">
+	        </apex:actionFunction>
+	        
+			<apex:actionFunction name="updateExamSettings" 
+							 	 action="{!updateExamSettings}" 
+							 	 rerender="apex-message, logo-img"
+							 	 oncomplete="loadSpin.hide();  manageMsgInner($('.inner-msg-after-setting'), 'Show', 'alert-info', GLOBAL_message[0]);">
+			</apex:actionFunction>
+			
+			<apex:actionFunction name="fillObjectsPagesList"
+	                             action="{!fillObjectsPagesList}" 
+	                             rerender="apex-message, default-object-page-table, custom-object-page-table, standard-object-page-table"
+	                             oncomplete="adjustHeader();"> 
+	            <apex:param name="objectLabelSubstring" value=""/>
+	        </apex:actionFunction>
+	        
+	        <apex:actionFunction name="generatePage" 
+	                             action="{!generatePage}" 
+	                             rerender="apex-message, default-object-page-table, custom-object-page-table, standard-object-page-table"
+	                             oncomplete="generatePageCompleted('{!GeneratorMessage}'); adjustHeader();"> 
+	        	<apex:param name="objectLabelName" value="" />
+	            <apex:param name="objectAPIName" value="" />
+	        </apex:actionFunction>
+	        
+	        <apex:actionFunction name="setActiveTab" 
+	                             action="{!setActiveTab}"
+	                             rerender="oPanelActiveTab"
+	                             oncomplete="adjustHeader();"> 
+                <apex:param name="tabName" value="" />
+	        </apex:actionFunction>
+
+			<!-- Action Function To Get The Fields To Map -->
+		    <apex:actionFunction action="{!getObjectFieldList}" 
+		    		name="getObjectFieldListJS" 
+		    		rerender="apex-message, mappingPanel"
+		    		oncomplete="$('#mappingModal').modal('show');">
+		        <apex:param name="objectNameParam" assignTo="{!objectName}" value="" />
+		    </apex:actionFunction>	        
+	        
+	        <apex:actionFunction action="{!saveMapFieldList}" 
+	        					 name="saveMapFieldList" 
+	        					 rerender="apex-message, default-object-page-table, standard-object-page-table, custom-object-page-table"> 
+		        <apex:param name="fieldFirstNameParam" assignTo="{!fieldFirstName}" value="" />
+		        <apex:param name="fieldLastNameParam" assignTo="{!fieldLastName}" value="" />
+		        <apex:param name="fieldEmailParam" assignTo="{!fieldEmail}" value="" />		        
+		    </apex:actionFunction>	        
+	        
+	        <div class="hero-unit header-title">
+		    	<h4>spExams Configuration</h4>
+		    	<img class="pull-right logo" src="{!URLFOR($Resource.spExams__SkyExam, 'img/spExams-60x60.png')}"/>
+	        </div>       
+		        
+	    	<div class="hero-unit header-title">
+		    	<div class="form-horizontal well">
+		    		<h3>Settings</h3>
+		    		<hr class="inner-msg-after-setting"/>
+		    		<apex:outputPanel id="settings-panel">
+		
+						<div class="tabbable">
+					    	<ul class="nav nav-tabs">
+					    		<li id="tab-Company" class="active">
+					    			<a href="#tab_Company" data-toggle="tab">Company</a>
+				    			</li>
+					    		<li id="tab-Look-Feel">
+					    			<a href="#tab_Look_Feel" data-toggle="tab">Look &amp; Feel</a>
+				    			</li>
+				    			<li id="tab-Advanced">
+				    				<a href="#tab_Advanced" data-toggle="tab">Advanced</a>
+				    			</li>
+					    	</ul>
+					    	
+					    	<div class="tab-content">
+					    								    	
+					    		<!--=================================  TAB COMPANY  ======================================-->
+							    <div class="tab-pane active" id="tab_Company">
+							    	<div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label">
+									    		Site URL
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Site URL', 'The Default Web Address of the public site hosting the public interface for the users. (Setup | Develop | Sites | Your Site | Default Web Address field)')" 
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls">
+										    	<apex:inputField styleClass="input-xlarge site-url" value="{!ExamSettings.spExams__Site__c}" onchange="preview();"/>
+										    </div>
+									  	</div>
+								    </div>
+					    			<div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label">
+									    		Company Name
+									    		<a class="icon-info" onmouseover="positioningTooltip($(this), 'Company Name', 'The Name of the Organization sending the exams. The Company Name will appear when the user receives a new exam notification via email, and also in the initial page of the exam. Click PREVIEW for a visual example.')" 
+								    			   onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls">
+										    	<apex:inputField styleClass="input-xlarge company-name-input" value="{!ExamSettings.spExams__Company_Name__c}" onchange="setValuesForPreview();"/> 
+										    </div>
+									  	</div>
+								    </div>
+								    <div class="span12"> 
+										<div class="control-group">
+											<label class="control-label label-image">
+												Company Logo
+												<a class="icon-info" 
+														onmouseover="positioningTooltip($(this), 'Company Logo', 'The logo that appears when the user receives a new exam notification via email, and also in the header of every page of the exam. Click PREVIEW for a visual example.')" 
+														onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+											</label>
+											<apex:image id="logo-img" styleClass="logo-preview" value="{!ExamSettings.spExams__Logo_URL__c}"/>
+									    	<a class="btn company-logo-btn" onclick="$('.inputUpload-logo').trigger('click');">
+								    			<i class="icon-search"></i>
+								    		</a>
+								    		<a class="btn images-trash-btn" onclick="updateAttachmentJS('Logo Image Temp')">
+								    			<i class="icon-trash"></i>
+								    		</a>
+										    <apex:inputField styleClass="input-xlarge company-logo-input hide" value="{!ExamSettings.spExams__Logo_URL__c}"/>
+									  	</div>
+								    </div>
+							    </div>
+							    
+							    <!--=================================  TAB LOOK AND FEEL  ======================================-->                                
+							    <div class="tab-pane" id="tab_Look_Feel">
+							    	<div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label look_and_feel">
+									    		Background Color
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Background Color', 'Background color on every page of the exam.')"
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls" style="margin-left:180px">
+										    	<apex:inputField styleClass="color-picker-input hide" value="{!ExamSettings.spExams__Background_Color__c}" onchange="setValuesForPreview();"/>
+										    	<div class="color-picker-selector">
+										    		<div style="background-color: {!IF(ISNULL(ExamSettings.Background_Color__c), 'white',  ExamSettings.Background_Color__c)};">
+										    			<a>
+											    			<i class="icon-arrow-down"></i>
+											    		</a>
+										    		</div>
+										    	</div>
+										    </div>
+									  	</div>
+								    </div>
+								    <div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label label-image look_and_feel">
+									    		Background Image
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Background Image', 'Background image on every page of the exam. If a background image is specified then the background color does take effect.')" 
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+									    	<apex:image id="background-preview" styleClass="background-preview" value="{!ExamSettings.spExams__Background_Image__c}" />
+									    	<a class="btn bg-image-btn" onclick="$('.inputUpload-background').trigger('click');">
+								    			<i class="icon-search"></i>
+								    		</a>
+								    		<a class="btn images-trash-btn" onclick="updateAttachmentJS('Background Image Temp')">
+								    			<i class="icon-trash"></i>
+								    		</a>
+								    		<apex:inputField styleClass="input-xlarge bg-image-input hide" value="{!ExamSettings.spExams__Background_Image__c}"/>
+									  	</div>
+								    </div>
+								    <div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label look_and_feel">
+									    		Background Position
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Background Position', 'Indicates how the Background Image will be displayed on every page of the exam. Click PREVIEW for a visual example.')" 
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls" style="margin-left:180px">
+												<apex:inputField styleClass="background-position-select" value="{!ExamSettings.spExams__Background_Position__c}" onchange="setValuesForPreview();"/>
+										    </div>
+									  	</div>
+								    </div>
+								    <div class="span12"> 
+								   		<hr/>
+								   	</div>						   	
+								   	
+								   	<div class="span12"> 
+										<div class="control-group">
+											<label class="control-label look_and_feel">
+												Instructions
+												<a class="icon-info" 
+														onmouseover="positioningTooltip($(this), 'Instructions', 'The Instructions paragraph will appear on the initial page of the exam and should be used to describe general or specific terms and conditions. E.g., describing the type of questions, what happens when the time expires, sample questions, disclaimers etc. Click PREVIEW for a visual example.')" 
+														onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+											</label>
+										    <div class="control-group" style="margin-left:180px">
+											    <div class="btn-toolbar btn-toolbar-instructions" data-role="editor-toolbar-instructions" data-target="#instructions-editor">
+											    	<div class="btn-group">
+												    	<a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="icon-font"></i><b class="caret"></b></a>
+												        <ul class="dropdown-menu">
+												        	<li><a data-edit="fontName Serif" style="font-family:'Serif'">Serif</a></li>
+												         	<li><a data-edit="fontName Sans" style="font-family:'Sans'">Sans</a></li>
+												         	<li><a data-edit="fontName Arial" style="font-family:'Arial'">Arial</a></li>
+												         	<li><a data-edit="fontName Arial Black" style="font-family:'Arial Black'">Arial Black</a></li>
+												         	<li><a data-edit="fontName Courier" style="font-family:'Courier'">Courier</a></li>
+												         	<li><a data-edit="fontName Courier New" style="font-family:'Courier New'">Courier New</a></li>
+												         	<li><a data-edit="fontName Comic Sans MS" style="font-family:'Comic Sans MS'">Comic Sans MS</a></li>
+												         	<li><a data-edit="fontName Helvetica" style="font-family:'Helvetica'">Helvetica</a></li>
+												         	<li><a data-edit="fontName Impact" style="font-family:'Impact'">Impact</a></li>
+												         	<li><a data-edit="fontName Lucida Grande" style="font-family:'Lucida Grande'">Lucida Grande</a></li>
+												         	<li><a data-edit="fontName Lucida Sans" style="font-family:'Lucida Sans'">Lucida Sans</a></li>
+												         	<li><a data-edit="fontName Tahoma" style="font-family:'Tahoma'">Tahoma</a></li>
+												         	<li><a data-edit="fontName Times" style="font-family:'Times'">Times</a></li>
+												         	<li><a data-edit="fontName Times New Roman" style="font-family:'Times New Roman'">Times New Roman</a></li>
+												         	<li><a data-edit="fontName Verdana" style="font-family:'Verdana'">Verdana</a></li>
+												    	</ul>
+											        </div>
+											      	<div class="btn-group">
+											        	<a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="icon-text-height"></i>&nbsp;<b class="caret"></b></a>
+												        <ul class="dropdown-menu">
+												        	<li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+												        	<li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+												      	<li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+											      		</ul>
+											        </div>
+											        <div class="btn-group">
+											      		<a class="btn" data-edit="bold" title="" data-original-title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
+											        	<a class="btn" data-edit="italic" title="" data-original-title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
+											        	<a class="btn" data-edit="strikethrough" title="" data-original-title="Strikethrough"><span class="icon-strikethrough"><s>S</s></span></a>
+											        	<a class="btn" data-edit="underline" title="" data-original-title="Underline (Ctrl/Cmd+U)"><span class="icon-underline"><u>U</u></span></a>
+											        </div>
+											        <div class="btn-group">
+												        <a class="btn" data-edit="insertunorderedlist" title="" data-original-title="Bullet list"><i class="icon-list"></i></a>
+												        <a class="btn" data-edit="insertorderedlist" title="" data-original-title="Number list"><i class="icon-list-alt"></i></a>
+												        <a class="btn" data-edit="outdent" title="" data-original-title="Reduce indent (Shift+Tab)"><i class="icon-indent-left"></i></a>
+												        <a class="btn" data-edit="indent" title="" data-original-title="Indent (Tab)"><i class="icon-indent-right"></i></a>
+											        </div>
+											        <div class="btn-group">
+												   		<a class="btn btn-info" data-edit="justifyleft" title="" data-original-title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"></i></a>
+												        <a class="btn" data-edit="justifycenter" title="" data-original-title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"></i></a>
+												        <a class="btn" data-edit="justifyright" title="" data-original-title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"></i></a>
+												        <a class="btn" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"></i></a>
+											        </div>
+											        <div class="btn-group">
+												        <a class="btn" title="" id="pictureBtn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+												        <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 41px; height: 30px;"/>
+											        </div>
+											        <div class="btn-group">
+													  	<a class="btn" data-edit="undo" title="" data-original-title="Undo (Ctrl/Cmd+Z)"><i class="undo-icon"></i></a>
+														<a class="btn" data-edit="redo" title="" data-original-title="Redo (Ctrl/Cmd+Y)"><i class="redo-icon"></i></a>
+											        </div>
+											    </div>
+											    											    
+											    <div id="instructions-editor" class="instructions-textarea" contenteditable="true" onkeyup="$('input.instructions-textarea').val($(this).html());$('.instructions').html($(this).html());"></div>
+											    <apex:inputText styleClass="input-xxlarge instructions-textarea hide" value="{!ExamSettings.spExams__Instructions__c}"></apex:inputText>
+											    
+											    <script>
+											    	$('#instructions-editor').html($('input.instructions-textarea').val());
+											    </script>
+										    </div>
+									  	</div>
+								    </div>
+								    
+								    <div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label look_and_feel">
+									    		Confirmation Message
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Confirmation Message', 'The confirmation message displayed to the user just about to start the exam. Click PREVIEW and START for a visual example')" 
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls" style="margin-left:180px">
+										    	<apex:inputField styleClass="input-xxlarge confirmation-message-textarea" value="{!ExamSettings.spExams__Confirmation_Message__c}"></apex:inputField>
+										    </div>
+									  	</div>
+								    </div>
+							    </div>
+							    
+							    <!--=================================  TAB OTHERS  ======================================-->
+							    <!-- 
+							    <div class="tab-pane" id="tab_Others">
+									<div class="control-group">
+								    	<label class="control-label label-large span2">
+								    		No. of allowed interruptions
+								    		<a class="icon-info" 
+								    				onmouseover="positioningTooltip($(this), 'No. of allowed interruptions', 'Indicates the number of times an exam can be interrupted by any reason.')" 
+								    				onmouseout="manageTooltip($(this), 'Close', null)">
+									    		<i class="icon-info-sign"></i>
+											</a>
+							    		</label>
+									    <div class="controls">
+									    	<apex:inputField styleClass="input-mini interruptions-number-select" value="{!ExamSettings.No_of_allowed_interruptions__c}"></apex:inputField>
+									    	<script>
+									    		$('.interruptions-number-select option').each(function(){
+									    			if($(this).val() == '')
+									    				$(this).remove();
+									    		});
+									    	</script>
+									    </div>
+								  	</div>
+								     
+									<div class="control-group">
+									    <label class="control-label label-large span2">
+									    	Time between interruptions
+									    	<a class="icon-info" 
+									    			onmouseover="positioningTooltip($(this), 'Time between interruptions', 'Indicates how much time can elapse prior')" 
+									    			onmouseout="manageTooltip($(this), 'Close', null)">
+									    		<i class="icon-info-sign"></i>
+											</a>
+								    	</label>
+									    <div class="input-append">
+											<apex:inputField styleClass="input-mini time-interruptions-input" value="{!ExamSettings.Time_between_interruptions__c}"></apex:inputField>
+										  	<span class="add-on">min</span>
+										</div>
+								  	</div>
+							    </div>
+							     -->
+							    
+							    <!--=================================  TAB ADVANCED  ======================================-->
+							    <div class="tab-pane" id="tab_Advanced">
+							    	<h3>Enable Recipient Object</h3>
+						    		<hr class="inner-msg-after-pages"/>
+								   	
+								   	<div class="span12"> 
+										<div class="control-group">
+									    	<label class="control-label">
+									    		Search Object
+									    		<a class="icon-info" 
+									    				onmouseover="positioningTooltip($(this), 'Exam Search Object', 'Type here to automatically filter the lists below.')" 
+									    				onmouseout="manageTooltip($(this), 'Close', null)">
+										    		<i class="icon-info-sign"></i>
+												</a>
+								    		</label>
+										    <div class="controls">
+										    	<input id="search-object-input" placeholder="Type Object Name" type="text" onkeyup="getObjectsPagesListJS(this.value);"/>
+										    </div>
+									  	</div>
+								    </div>								    
+								    
+									<!-- ================================= Default Objects Table ==================================== -->
+								    <div class="span12" style="margin:10px 0;">
+								    	<h5>Default Enabled Standard Objects</h5> 
+								    	<div class="dinamic-page table-header">
+									    	<table class="dinamic-page-table table-header {!if(objectsPagesList.size == 0, 'hide', '')}">
+									    		<tr>
+									    			<th width="25%">
+								   	 					Object Name 
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					API Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Page Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Field Mappings
+								   	 				</th>
+									    		</tr>
+										    </table>
+									    </div>
+									    <div class="dinamic-page">	
+									    	<apex:outputPanel id="default-object-page-table">
+									    		<apex:outputPanel rendered="{!if(defaultObjectList.size == 0, true, false)}">
+							                        <div class="no-found">
+							                            No Object found.
+							                        </div>
+							                    </apex:outputPanel>
+										    	<table class="dinamic-page-table {!if(defaultObjectList.size == 0, 'hide', '')}">
+										    		<apex:repeat value="{!defaultObjectList}" var="objectPage">
+											    		<tr class="object-selected-row">
+											    			<td width="25%">
+										   	 					{!objectPage.ObjectLabel}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.Object_API_Name}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.ObjectDinamicPageName}
+										   	 					<label class="createIt {!IF(ISNULL(objectPage.ObjectDinamicPageName),'', 'hide')}" title="It will create SP_RECIPIENT_{!UPPER(SUBSTITUTE(objectPage.Object_API_Name, '__c',''))} Page"
+										   	 						   onclick="generatePageJS('{!objectPage.ObjectLabel}', '{!objectPage.Object_API_Name}');">
+										   	 						Create Recipient Page
+										   	 					</label>
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					<a class="mapLink {!IF(ISNULL(objectPage.ObjectDinamicPageName),'hide', '')}" 
+										   	 						data-firstName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_First_Name__c, '')}"
+										   	 						data-lastName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Last_Name__c, '')}"
+										   	 						data-email="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Email__c, '')}" 
+										   	 						onclick="ShowModal($(this))" 
+										   	 						href="#">{!IF(objectPage.MappedObject != null, 'Update Mappings', 'Create Mappings')}
+									   	 						</a>
+										   	 					<input type="hidden" value="{!objectPage.Object_API_Name}"/>
+										   	 				</td>
+											    		</tr>
+											    	</apex:repeat>	
+										    	</table>
+										    </apex:outputPanel>	
+									    </div>
+									</div> 
+									
+									<!-- ================================= Standard Objects Table ==================================== -->
+									<div class="span12" style="margin:10px 0;">
+										<h5>Standard Objects</h5> 
+								    	<div class="dinamic-page table-header">
+									    	<table class="dinamic-page-table table-header {!if(standardObjectList.size == 0, 'hide', '')}">
+									    		<tr>
+									    			<th width="25%">
+								   	 					Object Name 
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					API Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Page Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Field Mappings
+								   	 				</th>
+									    		</tr>
+										    </table>
+									    </div>
+									    <div class="dinamic-page">	
+									    	<apex:outputPanel id="standard-object-page-table">
+									    		<apex:outputPanel rendered="{!if(standardObjectList.size == 0, true, false)}">
+							                        <div class="no-found">
+							                            No Object found.
+							                        </div>
+							                    </apex:outputPanel>
+										    	<table class="dinamic-page-table {!if(standardObjectList.size == 0, 'hide', '')}">
+										    		<apex:repeat value="{!standardObjectList}" var="objectPage">
+											    		<tr class="object-selected-row">
+											    			<td width="25%">
+										   	 					{!objectPage.ObjectLabel}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.Object_API_Name}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.ObjectDinamicPageName}
+										   	 					<label class="createIt {!IF(ISNULL(objectPage.ObjectDinamicPageName),'', 'hide')}" title="It will create SP_RECIPIENT_{!UPPER(SUBSTITUTE(objectPage.Object_API_Name, '__c',''))} Page"
+										   	 						   onclick="generatePageJS('{!objectPage.ObjectLabel}', '{!objectPage.Object_API_Name}');">
+										   	 						Create Recipient Page
+										   	 					</label>
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					<a class="mapLink {!IF(ISNULL(objectPage.ObjectDinamicPageName),'hide', '')}"
+										   	 						data-firstName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_First_Name__c, '')}"
+										   	 						data-lastName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Last_Name__c, '')}"
+										   	 						data-email="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Email__c, '')}"
+										   	 						onclick="ShowModal($(this))" 
+										   	 						href="#">{!IF(objectPage.MappedObject != null, 'Update Mappings', 'Create Mappings')}
+									   	 						</a>
+										   	 					<input type="hidden" value="{!objectPage.Object_API_Name}"/>
+										   	 				</td>
+											    		</tr>
+											    	</apex:repeat>	
+										    	</table>
+										    </apex:outputPanel>	
+									    </div>
+									</div> 
+									
+									<!-- ================================= Custom Objects Table ==================================== -->
+									<div class="span12" style="margin:10px 0;"> 
+										<h5>Custom Objects</h5>
+								    	<div class="dinamic-page table-header">
+									    	<table class="dinamic-page-table table-header {!if(customObjectList.size == 0, 'hide', '')}">
+									    		<tr>
+									    			<th width="25%">
+								   	 					Object Name 
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					API Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Page Name
+								   	 				</th>
+								   	 				<th width="25%">
+								   	 					Field Mappings
+								   	 				</th>
+									    		</tr>
+										    </table>
+									    </div>
+									    <div class="dinamic-page">	
+									    	<apex:outputPanel id="custom-object-page-table">
+									    		<apex:outputPanel rendered="{!if(customObjectList.size == 0, true, false)}">
+							                        <div class="no-found">
+							                            No Object found.
+							                        </div>
+							                    </apex:outputPanel>
+										    	<table class="dinamic-page-table {!if(customObjectList.size == 0, 'hide', '')}">
+										    		<apex:repeat value="{!customObjectList}" var="objectPage">
+											    		<tr class="object-selected-row">
+											    			<td width="25%">
+										   	 					{!objectPage.ObjectLabel}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.Object_API_Name}
+										   	 				</td>
+										   	 				<td width="25%">
+										   	 					{!objectPage.ObjectDinamicPageName}
+										   	 					<label class="createIt {!IF(ISNULL(objectPage.ObjectDinamicPageName),'', 'hide')}" title="It will create SP_RECIPIENT_{!UPPER(SUBSTITUTE(objectPage.Object_API_Name, '__c',''))} Page"
+										   	 						   onclick="generatePageJS('{!objectPage.ObjectLabel}', '{!objectPage.Object_API_Name}');">
+										   	 						Create Recipient Page
+										   	 					</label>
+										   	 				</td>
+										   	 				<td width="25%"> 
+										   	 					<a class="mapLink {!IF(ISNULL(objectPage.ObjectDinamicPageName),'hide', '')}"
+										   	 						data-firstName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_First_Name__c, '')}"
+										   	 						data-lastName="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Last_Name__c, '')}"
+										   	 						data-email="{!IF(objectPage.MappedObject != null, objectPage.MappedObject.Field_Email__c, '')}"
+										   	 						onclick="ShowModal($(this))" 
+										   	 						href="#">{!IF(objectPage.MappedObject != null, 'Update Mappings', 'Create Mappings')}
+									   	 						</a>
+										   	 					<input type="hidden" value="{!objectPage.Object_API_Name}"/>
+										   	 				</td>
+											    		</tr>
+											    	</apex:repeat>	
+										    	</table>
+										    </apex:outputPanel>	
+									    </div>
+									</div>
+									
+									<!-- ================================== Mapping ================================== -->
+									
+									<div id="mappingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">										
+					                    <input id="hdn-firstName" type="hidden" value="" />
+					                    <input id="hdn-lastName" type="hidden" value="" />
+					                    <input id="hdn-email" type="hidden" value="" />
+					                    
+					                    <div class="modal-header">
+					                    	<h3>Mapping</h3>
+					                    </div>
+					                    <div class="modal-body">
+					                    	<div id="mappingModal-message-region" style="display: none;">
+						                    	<div class="alert alert-error" style="display: block;">
+													<button class="close" onclick="$(this).parent().parent().hide();" type="button">×</button>
+													<div>There are some missing field values</div>
+												</div>
+					                    	</div>
+						                    <apex:outputPanel id="mappingPanel">
+						                        <table class="table-questions table-mmapping">
+						                            <tr>
+						                                <th width="50%">
+						                                    Field
+						                                </th>
+						                                <th>
+						                                    Map to... 
+						                                </th>
+						                            </tr>
+						                            <tr>
+						                                <td>
+						                                    First Name
+						                                </td>
+						                                <td class="td-map-to">
+						                                    <select id="select-firstName">
+						                                        <option value="{!null}">-- Select Field --</option>
+						                                        <apex:repeat value="{!FieldStringList}" var="fieldName">
+						                                        	<option value="{!fieldName}">{!fieldName}</option>
+						                                        </apex:repeat>					                                         
+						                                    </select> 
+						                                </td>
+						                            </tr> 
+						                            <tr>
+						                                <td>
+						                                    Last Name
+						                                </td>
+						                                <td class="td-map-to">
+						                                    <select id="select-lastName" onchange="">
+						                                        <option value="{!null}">-- Select Field --</option>
+						                                        <apex:repeat value="{!FieldStringList}" var="fieldName">
+						                                        	<option value="{!fieldName}">{!fieldName}</option>
+						                                        </apex:repeat>
+						                                    </select>
+						                                </td>
+						                            </tr> 
+						                            <tr>
+						                                <td>
+						                                    Email
+						                                </td>
+						                                <td class="td-map-to">
+						                                    <select id="select-email-field">
+						                                        <option value="{!null}">-- Select Field --</option>
+						                                        <apex:repeat value="{!FieldEmailList}" var="fieldName">
+						                                        	<option value="{!fieldName}">{!fieldName}</option>
+						                                        </apex:repeat>
+						                                    </select>
+						                                </td>
+						                            </tr>                    
+						                        </table>
+					                        </apex:outputPanel>
+				                        </div>
+				                        <div class="modal-footer">
+										    <a id="btn-mapping-cancel" class="btn" data-dismiss="modal" aria-hidden="true" onclick="CloseModal()">
+										    	<i class="icon-remove"></i>
+										    	Cancel
+									    	</a>
+										    <a id="btn-mapping-save" class="btn" onclick="SaveMapping()">
+										    	<i class="icon-ok"></i>
+										    	Save Changes
+										    </a>
+									    </div> 
+					                </div>
+									
+									<!-- ================================== End Mapping ============================== -->
+							    </div>									    
+				  			</div>
+						</div>
+						
+						<div style="margin-top:20px">
+						    <div class="span12 footer-buttons-group"> 
+						    	<a class="btn pull-right" onclick="updateExamSettingsJS();">
+						    		<i class="icon-ok"></i>
+						    		Save
+					    		</a>
+							    <a class="btn pull-right" onclick="restoreExamSettingsJS();">
+							    	<i class="icon-refresh"></i>
+							    	Restore Values
+						    	</a>
+								<a class="btn pull-right" onclick="showCustomModalPreview()">
+									<i class="icon-eye-open"></i>
+									Preview
+								</a>
+							</div>
+						</div>	
+					</apex:outputPanel>
+		    	</div>
+		    </div>
+		    
+		    
+		    <!-- ============================================= MODAL FOR PREVIEW ====================================== -->
+			<div id="dialog" class="modal fade hide"  aria-hidden="false" data-backdrop="static">
+				<div class="modal-header modal-preview" style="font-size: 0.9em;">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onmousedown="event.stopPropagation(); $('.btn-close-confirm-action').trigger('click');">&times;</button>
+				    <h3>Preview</h3>
+				</div>
+				<div class="modal-body">
+					<div class="container">
+				  		<c:spExamsUserVerificationComponent ExamSettings="{!ExamSettings}" UserExam="{!null}" IsPreview="true"/>
+				  	</div>	
+				</div>  	
+			</div> 
+			
+			</apex:form>		
+			
+			<!--=================================  TEMPLATES  ======================================-->
+			
+			<!--=================================  INNER MSG  ======================================-->
+			
+			<div class="alert hide msg-inner template">
+				<button type="button" class="close" onclick="manageMsgInner($(this).parent(), 'Hide', null, null);">&times;</button>
+				<div>Information</div>
+			</div>
+		</div>	
+		
+		<!-- ************************************************* TOOLTIP *************************************************  -->
+		<div class="tooptip-container hide">
+		   <div class="popover in  bottom" style="display: block;">
+			   <div class="arrow"></div>
+			   <div class="popover-title">
+					   <span>
+							   <!-- Title -->
+					   </span>
+				   </div> 
+			   <div class="popover-content"><!-- Tooltip --></div>
+		   </div>
+		</div>
+		
+		<!-- ************************************************* ACTIVE TAB HIDDEN *************************************************  -->
+		<apex:outputPanel id="oPanelActiveTab">
+			<input id="hdn-ActiveTab" type="hidden" value="{!activeTab}"/>
+		</apex:outputPanel>
+		
+</apex:page>

@@ -1,0 +1,546 @@
+<apex:page showHeader="true" sidebar="false" standardStylesheets="true" applyBodyTag="false" applyHtmlTag="true"
+           apiVersion="39.0" docType="html-5.0" standardController="ACP_Account_Plan__c"
+           extensions="ACP_congaHandlerUtilCtrl,ACP_View_Customer_Page_ctrl" tabStyle="ACP_Account_Plan__c">
+    <!-- Ghanshyam Choudhari -->
+         <style> 
+        #snackbar, #snackbarerror {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #83dbc7;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 30px;
+        font-size: 17px;
+        }
+        #snackbar.show ,  #snackbarerror.show{
+        visibility: visible;  
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+    </style>
+    <script>
+    function congaupdatepdf() {  
+        var acpidd="{!acpId}";       
+        var pdf='PDF';
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ACP_congaHandlerUtilCtrl.congaupdateattachh}',
+            pdf,acpidd,
+            function(result, event){
+            console.log('In remoting');
+                if(event.status){
+                    if(true){
+                        
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+            return true;  }return false;
+                    
+                } else if (event.type === 'exception'){
+                   if(true){
+                       
+            var x = document.getElementById("snackbarerror");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+            return true;  }
+                } else {
+                    // unexpected problem...
+                }
+        });
+		}
+</script>
+     <script>
+    function congaupdateppt() {
+      
+        var acpidd="{!acpId}";
+       
+        var pdf='PPT';
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ACP_congaHandlerUtilCtrl.congaupdateattachh}',
+            pdf,acpidd,
+            function(result, event){
+             console.log('In remoting');
+                if(event.status){
+                    if(true){
+                        // alert('inside result');
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+            return true;  }return false;
+                    
+                } else if (event.type === 'exception'){
+                    if(true){
+                       
+            var x = document.getElementById("snackbarerror");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+            return true;  }
+                  
+                } else {
+                    // unexpected problem...
+                }
+        });
+		}
+</script>
+    <div id="snackbar">{!$Label.Conga_email_sent_notifiy} </div>
+    <div id="snackbarerror">Error while sending email</div>
+     <!-- Ghanshyam Choudhari --> 
+    <Style>
+      
+        //#j_id0_j_id6_j_id35_market_j_id173_sPanel8_j_id190_0_j_id193_0_j_id195 {max-width:75px;}
+        input[type=text] {max-width:55px;}
+        .headerRow ColumnHeader{width:30%;}
+    </style>
+    <style>
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 0px solid #ccc;
+        //background-color:lightslategrey;
+            padding-left: 20%;
+        }
+        
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 0 .75rem;
+            transition: 0.3s;
+            font-size: 17px;
+            background: lightgrey;
+            padding-left: 1.8em;
+        }
+        
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color:#E98300;
+            color: white;
+        }
+        
+        /* Create an active/current tablink class */
+        .active{
+        //background: #E98300;
+        }
+
+    </style>
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'Tab_Headers.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'panelCSS.css')}" />
+    <!-- Ghanshyam Choudhari Date: Aug-07-2017 Purpose:Js function for open conga window START -->
+   <!-- <Script Language="JavaScript">
+        function openConga() 
+        { window.open('{!URLFOR($Action.ACP_Account_Plan__c.Conga_Composer_Account_Plan,acpId)}', '','scrollbars=yes,menubar=no,height=600,width=800,resizable=yes, toolbar=no,location=no,status=yes'); }
+</Script> -->
+    <!-- Conga composer END -->
+    <script>
+    function calltab(page){
+        //alert('====='+page);
+        CallTabpage(page);
+    }
+    </script>
+    <apex:form >
+        <apex:actionFunction action="{!redirectTabpage}" name="CallTabpage" reRender="formId" status="Load">
+            <apex:param value="tabpage" name="tabpage"/>
+        </apex:actionFunction>
+        <apex:pageMessages />    
+        <apex:pageBlock mode="maindetail">
+            
+            <div class="bootstrap-sfdc" id="bootsrapsfdcid">
+                <div class="container-fluid" style="margin-top:20px">
+                    <div class="row" style="min-height:200px">
+                    <div class="tab">
+                 <apex:commandButton id="per"  styleclass="active" style="text-decoration:none;border:0px ;padding-left:10px;margin-right:10px;border-radius:5px;background-color:#E98300;" value="{!$Label.ACP_View_of_the_Customer}" action="{!viewTab}" disabled="true"/>  
+                    <apex:commandButton id="pers" styleclass="tablinks" style="text-decoration:none;border:0px ;padding-left:10px;margin-right:10px;border-radius:5px;background-color:#E98300;" value="{!$Label.ACP_Market_and_Performance}" action="{!performanceTab}"/> 
+                      <apex:commandButton id="perss" styleclass="tablinks" style="text-decoration:none;border:0px ;padding-left:10px;margin-right:10px;border-radius:5px;background-color:#E98300;" value="{!$Label.ACP_Strategy_and_Metrics}" action="{!summaryTab}"/> 
+                      
+                  <!--<button class="active" style="text-decoration:none;border:0px ;padding-left:10px;margin-right:10px;border-radius:5px;background-color:#E98300;" >{!$Label.ACP_View_of_the_Customer}</button>&nbsp;&nbsp;&nbsp;
+                  <button class="tablinks" style="text-decoration:none;border:0px;padding-left:10px;margin-right:10px;border-radius:5px;" onclick="calltab('ACP_Performance_Analytics_Page');">{!$Label.ACP_Market_and_Performance}</button>&nbsp;&nbsp;&nbsp;
+                  <button class="tablinks" style="text-decoration:none;border:0px;padding-left:10px;margin-right:10px;border-radius:5px;" onclick="calltab('ACP_Account_Plan_Summary_Page');">{!$Label.ACP_Strategy_and_Metrics}</button>&nbsp;-->
+                       <!-- Ghanshyam Choudhari Date: Aug-07-2017 Purpose: Conga Button START -->
+                 <!-- <apex:commandButton value="{!$Label.Conga_Button_Name}" onclick="openConga();return false;"/>-->
+                  
+                        
+                        <apex:commandButton id="pptid" value="{!$Label.Conga_PPT_Button_Name}"
+                                            style=" margin-left: 10px;" 
+                                             onClick="congaupdateppt(); return false;" >
+                             
+                        </apex:commandButton> 
+                        <apex:commandButton id="pdfid" value="{!$Label.Conga_PDF_Button_Name}"
+                                            style=" margin-left: 10px;" 
+                                           onClick="congaupdatepdf();return false;" >                            
+                            </apex:commandButton> 
+                 <!-- Ghanshyam Choudhari Date: Aug-07-2017 Purpose: Conga Button END -->
+                </div>
+                        <!--------------------------------------------------Account Plan Front Page----------------------------------------------------------------------------------->              
+                        <apex:pageBlock mode="maindetail">
+                            <apex:outputText value="Account Plan" styleClass="SectionHeader"></apex:outputText>
+                            <div align="center">
+                                <apex:commandButton value="Edit" action="{!editAccountPlan}" />
+                                
+                            </div>
+                            <!-----------------------------------------------------------Display Company Logo--------------------------------------------------------------------->
+                            <div align="center">
+                                <div class ="row firstrow" >
+                                    <div class = "col-md-3 border"  >
+                                        <apex:outputLabel ><div class = "logo" >Company Logo</div></apex:outputLabel><br/>
+                                        <apex:image rendered="{!IF(accountPlancompanyLogoId!=null, true, false)}" url="/servlet/servlet.FileDownload?file={!accountPlancompanyLogoId}" style="max-width:100%; height:auto; padding-left: 10px !important;"/>
+                                        <apex:image rendered="{!IF(accountPlancompanyLogoId!=null, false, true)}" url="{!URLFOR($Resource.ACP_CSS, 'companyLogoPlaceholder.jpg')}" width="250" height="100" />
+                                        
+                                    </div>
+                                    
+                                    
+                                    <div class = "col-md-1 bar" >
+                                        <center>
+                                            <apex:image url="{!URLFOR($Resource.ACP_CSS, 'bar.png')}" width="12px" height="200"/>
+                                        </center>
+                                    </div>
+                                    
+                                    <!-------------------------------------------------------Dispaly Account Details using Fieldset-------------------------------------------------------------------------------->                     
+                                    <div class = "col-md-4" >
+                                        <div class = "panel panel-default">
+                                            <div class = "panel-body border" >
+                                                <!--<apex:pageblockSection >
+<apex:repeat value="{!AcctPlanFields}" var="fs">
+<apex:outputfield value="{!acpdet[fs]}"/><br/>
+</apex:repeat>
+</apex:pageblockSection>--->
+                                                <!-----New block added by Raju----->     
+                                                <apex:pageblockSection >
+                                                    <apex:repeat value="{!headerAcctPlanFields}" var="fs">
+                                                        <apex:outputfield value="{!accountPlanDet[fs]}"/><br/>
+                                                    </apex:repeat>
+                                                </apex:pageblockSection>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class = "col-md-1 bar" >
+                                        <center>
+                                            <apex:image url="{!URLFOR($Resource.ACP_CSS, 'bar.png')}" width="12px" height="200"/>
+                                        </center>
+                                    </div> 
+                                    <!-------------------------------------------------------Dispaly Account Manager Image---------------------------------------------------------------------->
+                                    <div class = "col-md-4 first border" >
+                                        <div class = "col-md-6 MgrName" >
+                                            
+                                     
+                                            <!-----New block added by Raju----->
+                                            <apex:pageBlockTable value="{!accountPlantHeaderRec}" var="acc" styleClass="MgrName">
+                                                <apex:column headerclass="hidden" styleClass="MgrNameFont" >
+                                                    <apex:outputField value="{!acc.ACP_Account_Manager__c}"  /><br/>
+                                                    <apex:outputLabel value="Account Manager"/>
+                                                </apex:column>
+                                            </apex:pageBlockTable>
+                                        </div>
+                                        <div class = "col-md-6 MgrImg" >
+                                            
+                                                
+                                                <apex:image rendered="{!IF(accountPlanmanagerImgId !=null, true, false)}" url="/servlet/servlet.FileDownload?file={!accountPlanmanagerImgId}" styleClass="MgrImage" width="120" height="120" id="comLogo" />
+                                                <apex:image rendered="{!IF(accountPlanmanagerImgId !=null, false, true)}" url="{!URLFOR($Resource.ACP_CSS, 'ManagerPlaceholder.png')}" styleClass="MgrImage" width="120" height="120" id="comLogo1"/>
+                                        
+                                          
+                                        </div>
+                                    </div>
+                                </div>                     
+                                <!------------------------------------------------Display Account Summary------------------------------------------------------------------------------->           
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default" >
+                                            <div class="panel-heading" style=" background-color: #E98300;">{!$Label.ACP_Account_Summary}</div>
+                                            <div class="panel-body" >
+                                               
+                                                    <!--<apex:pageBlockTable value="{!AccDet}" var="ac" >
+<apex:column headerClass="hidden" >
+<br>
+<apex:OutputField value="{!ac.ACP_Account_Summary__c}" id="acSum"  />
+</br>
+<br></br>
+<br/>
+<br/>
+</apex:column>
+</apex:pageBlockTable>-->
+                                                    <!-----New block added by Raju----->
+                                                    <apex:pageBlockTable value="{!accountPlantHeaderRec}" var="ac" >
+                                                        <apex:column headerClass="hidden" >
+                                                            <br>
+                                                            <apex:OutputField value="{!ac.ACP_Account_Summary__c}" id="acSum"  />
+                                                        </br>
+                                                        <br></br>
+                                                    <br/>
+                                                    <br/>
+                                                </apex:column>
+                                            </apex:pageBlockTable>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------------------------------------------------------------Display Products in 2 rows------------------------------------------------------------>
+                            <div class="col-md-6">
+                                <div class="panel panel-default" >
+                                    <div class="panel-heading" style=" background-color: #E98300;">{!$Label.ACP_Product}</div>
+                                    <div class="panel-body AccountPanel" Style="border: 1px solid #ddd !important; padding : 10px !important; ">
+                                       
+                                            <table style = "width : 100%;">
+                                                <tr>
+                                                    <!---- modified by Raju--->
+                                                    <apex:repeat value="{!accountPlanOddRowImagesProd}" var="image">
+                                                        <td>
+                                                            <div align = "center">
+                                                                <apex:Outputtext value="{!image}"  />
+                                                                <br/>
+                                                                <img src="/servlet/servlet.FileDownload?file={!accountPlanOddRowImagesProd[image]}" style = "max-width:100%; height:auto;"/>
+                                                            </div>
+                                                        </td>
+                                                    </apex:repeat>
+                                                </tr>
+                                                <tr>
+                                                     <apex:repeat value="{!accountPlanEvenRowImagesProd}" var="image">
+                                                        <td>
+                                                            <div align = "center">
+                                                                <apex:Outputtext value="{!image}"  />
+                                                                <br/>
+                                                                <img src="/servlet/servlet.FileDownload?file={!accountPlanEvenRowImagesProd[image]}" style = "max-width:100%; height:auto;"/>
+                                                            </div>
+                                                        </td>
+                                                    </apex:repeat>
+                                                </tr>
+                                            </table>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+                
+                <!--------------------------------------------------Account Plan Front Page End----------------------------------------------------------------------------------->                           
+                <!----------------------------------------Tab Start---------------------------------->
+                
+                <apex:pageMessages />
+                <!--div class="tab">
+                  <button class="active" style="text-decoration:none;border:0px ;padding-left:10px;margin-right:10px;border-radius:5px;background-color:#E98300;" >View of the Customer</button>&nbsp;&nbsp;&nbsp;
+                  <button class="tablinks" style="text-decoration:none;border:0px;padding-left:10px;margin-right:10px;border-radius:5px;" onclick="calltab('ACP_Performance_Analytics_Page');">Market and Performance</button>&nbsp;&nbsp;&nbsp;
+                  <button class="tablinks" style="text-decoration:none;border:0px;padding-left:10px;margin-right:10px;border-radius:5px;" onclick="calltab('ACP_Account_Plan_Summary_Page');">Strategy and Metrics</button>&nbsp;
+                </div-->
+                <!--<div style="padding-left:275px;margin-top:5px;">
+                    <a id="ViewCust" class="Tabbuttonclciked" style="text-decoration:none;border:1px solid #000000;" >View of the Customer</a>&nbsp;
+                    <a id="PerfAnaly" class="TabButton" style="text-decoration:none;border:1px solid #000000;" onclick="calltab('ACP_Performance_Analytics_Page');">Performance Analytics Page</a>&nbsp;
+                    <a id="AcctPlanSum" class="TabButton" style="text-decoration:none;border:1px solid #000000;" onclick="calltab('ACP_Account_Plan_Summary_Page');">Account Plan Summary</a>&nbsp;
+                    
+                </div>-->  
+                <!-------------------------------------Tab End--------------------------------------------->   
+                <!-- Customer Overview -------------------  -->
+                
+                <div id = "customer">
+                    <apex:image url="{!$Resource.status_bar}" width="100%" height="8" /><br/><br/><br/>
+                    <!-- <apex:outputText value="{!$Label.ACP_Customer_Overview}"  styleClass="SectionHeader"> </apex:outputText><br/><br/>-->
+                    
+                    <apex:outputText value="{!custrec.ACP_Header_Label__c}" styleClass="SectionHeader"> </apex:outputText><br/><br/>
+                    <apex:pageMessages />
+                    <apex:commandButton value="{!$Label.ACP_Add}" action="{!RecordTypeSelection}" styleClass="btn btn-default" style="float:right"/>
+                </div><br/><br/>
+                <div class="row" >
+                    
+                    
+                    
+                    <div class="col-md-3">
+                        <c:ACP_Customer_Comp_Rev id="rev" sObjectName="ACP_Customer_Overview__c" recordList="{!acpRevGrowthList}" 
+                                                 recordTypeName="Revenue and Growth"  fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_Rev_Growth_Fieldset}" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}" ></c:ACP_Customer_Comp_Rev>                 
+                    </div>  
+                    <div class="col-md-3" style="padding-left: 0;"> 
+                        <c:ACP_Customer_Comp_End id="market" sObjectName="ACP_Customer_Overview__c" recordList="{!acpEndMarketList}" 
+                                                 recordTypeName="End Markets"  fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_End_Markets_Fieldset}" tableid="market" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}"></c:ACP_Customer_Comp_End>                 
+                    </div>
+                    <div class="col-md-3" style="padding-left: 0;"> 
+                        <c:ACP_Customer_Comp_Reg id="region" sObjectName="ACP_Customer_Overview__c" recordList="{!acpRegionsList}" 
+                                                 recordTypeName="Regions" fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_Regions_Fieldset}" tableid="region" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}"></c:ACP_Customer_Comp_Reg>                 
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style=" background-color: {!custrec.ACP_Header_BG_Color__c};color:{!custrec.ACP_Header_Font_Color__c};">
+                                {!$Label.ACP_Customer_s_Competitors_Logo} &nbsp;
+                                <apex:commandButton value="Edit" action="{!editCompetitors}" styleClass="btn btn-default"/>
+                            </div>
+                            <div class="panel-body" Style="border: 1px solid #ddd !important; padding : 10px !important; ">
+                                <table style="width : 100%;">
+                                    <tr>
+                                        <apex:repeat value="{!oddRowImages}" var="image">
+                                            <td>
+                                                <div align="center">
+                                                    <apex:Outputtext value="{!image}" style="font-size : 12px;" /><br/>
+                                                    <img src="/servlet/servlet.FileDownload?file={!oddRowImages[image]}" style = "max-width:100%; height:auto;"/>
+                                                </div>
+                                            </td>
+                                        </apex:repeat>
+                                    </tr>
+                                    <tr>
+                                        <apex:repeat value="{!evenRowImages}" var="image">
+                                            <td>
+                                                <div align="center">
+                                                    <apex:Outputtext value="{!image}" style="font-size : 12px;" /><br/>
+                                                    <img src="/servlet/servlet.FileDownload?file={!evenRowImages[image]}" style = "max-width:100%; height:auto;"/>
+                                                </div>
+                                            </td>
+                                        </apex:repeat>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <apex:outputPanel rendered="{!If(custrec.Customer_Overview_2nd_Row__c=true,true,false)}"> 
+                    <div class="row" >  
+                        <div class="col-md-4"> 
+                            <c:ACP_Customer_Comp_Key id="key" sObjectName="ACP_Customer_Overview__c" recordList="{!acpKeyManufList}" 
+                                                     title="key"   recordTypeName="Key Manufacturing /Purchasing Locations"  fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_Key_Fieldset}" tableid="key" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}"></c:ACP_Customer_Comp_Key>                 
+                        </div>
+                        
+                        <div class="col-md-4" style="padding-left: 0;"> 
+                            <c:ACP_Customer_Comp_Loc id="loc" sObjectName="ACP_Customer_Overview__c" recordList="{!acpKeyEngList}" 
+                                                     recordTypeName="Key Engineering /Design locations" fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_Location_Fieldset}" tableid="location" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}"></c:ACP_Customer_Comp_Loc>                 
+                        </div>
+                        
+                        <div class="col-md-4" style="padding-left: 0;"> 
+                            <c:ACP_Customer_Comp_Vend id="vend" sObjectName="ACP_Customer_Overview__c" recordList="{!acpVendList}" 
+                                                      recordTypeName="Key Vendors in Supply Chain"  fields="{!$ObjectType.ACP_Customer_Overview__c.FieldSets.ACP_Vendors_Fieldset}" tableid="vendor" headerColor="{!custrec.ACP_Header_BG_Color__c}" sectionSettingRec="{!custrec}" user_BU="{!userBU}"></c:ACP_Customer_Comp_Vend>                 
+                        </div>
+                        
+                    </div>
+                </apex:outputPanel>  
+                <!-- </apex:outputPanel>   -->
+                <div align="center">
+                    <apex:outputPanel id="outpanel1">
+                        <div align="right">
+                            <apex:commandButton value="{!$Label.ACP_Save}" action="{!saveSummary}" rendered="{!editmode}" styleClass="btn btn-default" rerender="outpanel,outpanel1,outpanelGrowth,outpanelChallenge,outpanelGrowths" id="saveSumm" />&nbsp;
+                            <apex:commandButton value="{!$Label.ACP_Cancel}" action="{!cancelSummary}" rendered="{!editmode}" styleClass="btn btn-default" rerender="outpanel,outpanel1,outpanelGrowth,outpanelChallenge,outpanelGrowths" id="cancel" />
+                        </div>
+                    </apex:outputPanel>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style=" background-color: {!custrec.ACP_Header_BG_Color__c};color:{!custrec.ACP_Header_Font_Color__c};">
+                                {!$Label.ACP_Customer_s_strategy_summary}
+                            </div>
+                            <div class="panel-body">
+                             <apex:outputPanel id="outpanelGrowths">
+                               <!-- <apex:outputPanel rendered="{!$Setup.ACP_Account_Plan_CustSet__c.ACP_Cust_Strategy_Sum__c}" id="outpanel">-->
+                                    <apex:actionSupport event="ondblclick" action="{!inlineedit}" rerender="outpanel,outpanel1,outpanelGrowths,outpanelGrowths" />
+                                    <apex:pageBlockTable value="{!record}" var="ac" styleClass="table table-bordered">
+                                        <apex:column headerClass="hidden">
+                                            <apex:outputfield value="{!ac.ACP_Customer_Strategy_Summary__c}" rendered="{!readonly}" />
+                                            <apex:inputField value="{!ac.ACP_Customer_Strategy_Summary__c}" rendered="{!editmode}" style="width:100%;" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style=" background-color: {!custrec.ACP_Header_BG_Color__c};color:{!custrec.ACP_Header_Font_Color__c};">
+                                {!$Label.ACP_Customer_s_major_growth_areas}
+                            </div>
+                            <div class="panel-body">
+                                <apex:outputPanel id="outpanelGrowth">
+                                    <apex:actionSupport event="ondblclick" action="{!inlineedit}" rerender="outpanel,outpanel1,outpanelGrowth,outpanelGrowth" />
+                                    <apex:pageBlockTable value="{!record}" var="ac" styleClass="table table-bordered">
+                                        <apex:column headerClass="hidden">
+                                            <apex:outputfield value="{!ac.ACP_Customer_Major_Growth_Areas__c}" rendered="{!readonly}" />
+                                            <apex:inputField value="{!ac.ACP_Customer_Major_Growth_Areas__c}" rendered="{!editmode}" style="width:100%;" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style=" background-color: {!custrec.ACP_Header_BG_Color__c};color:{!custrec.ACP_Header_Font_Color__c};">
+                                {!$Label.ACP_Customer_s_challenges_and_threats}
+                            </div>
+                            <div class="panel-body">
+                                <apex:outputPanel id="outpanelChallenge">
+                                    <apex:actionSupport event="ondblclick" action="{!inlineedit}" rerender="outpanel,outpanel1,outpanelChallenge,outpanelChallenge" />
+                                    <apex:pageBlockTable value="{!record}" var="ac" styleClass="table table-bordered">
+                                        <apex:column headerClass="hidden">
+                                            <apex:outputfield value="{!ac.ACP_Customer_Challenges_and_Threats__c}" rendered="{!readonly}" />
+                                            <apex:inputField value="{!ac.ACP_Customer_Challenges_and_Threats__c}" rendered="{!editmode}" style="width:100%;" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                <!-- Customer Overview-------------------  -->   
+                
+                <!-- Stakeholder & Relationship - Start-->
+               <div id="relationship">
+                <apex:image url="{!$Resource.status_bar}" width="100%" height="8" /><br/><br/><br/>
+                 
+                <!--<apex:outputText value="{!$Label.ACP_Stakeholder_and_Relationship}" styleClass="SectionHeader"> </apex:outputText><br/><br/> -->
+                <apex:outputText value="{!relrec.ACP_Header_Label__c}" styleClass="SectionHeader"> </apex:outputText><br/><br/>
+                <div class="col-md-12" style="padding-left: 0;"  >
+                    <c:ACP_Stakeholder_Executive id="CompExec" sObjectName="{!relrec.ACP_Object_Reference__c}" execRelationList="{!acpExecutiveRelationList}" title="{!$Label.ACP_Executive_Relationship}" fields="{!StakeholderFields}" tableid="Executive" headerColor="{!relrec.ACP_Header_BG_Color__c}" headerTextColor="{!relrec.ACP_Header_Font_Color__c}" sectionSettingRec="{!relrec}"></c:ACP_Stakeholder_Executive>
+                    <c:ACP_Stakeholder_Purchasing id="CompPur" sObjectName="{!relrec.ACP_Object_Reference__c}" purRelationList="{!acpPurchasingRelationList}" title="{!$Label.ACP_Purchasing_Relationship}" fields="{!StakeholderFields}" tableid="Purchasing" headerColor="{!relrec.ACP_Header_BG_Color__c}" headerTextColor="{!relrec.ACP_Header_Font_Color__c}" sectionSettingRec="{!relrec}"></c:ACP_Stakeholder_Purchasing>                 
+                    <c:ACP_Stakeholder_Engineering id="CompEng" sObjectName="{!relrec.ACP_Object_Reference__c}" engRelationList="{!acpEngineeringRelationList}" title="{!$Label.ACP_Engineering_Relationship}" fields="{!StakeholderFields}" tableid="Engineering" headerColor="{!relrec.ACP_Header_BG_Color__c}" headerTextColor="{!relrec.ACP_Header_Font_Color__c}" sectionSettingRec="{!relrec}"></c:ACP_Stakeholder_Engineering>    
+                    <!--<c:ACP_Task_Action_Component sectionId="Evaluation" accountPlanId="{!acpId}" category="Stakeholder and Relationship" myItemList="{!stakeholderRelTaskList}"/>-->
+                    <c:ACP_Task_Action_StakeholderComponent accountPlanId="{!acpId}" category="Stakeholder and Relationship" taskList="{!taskList}" />
+                </div>
+                </div>
+                <!-- Stakeholder & Relationship - End-->
+                <!-- Supplier Evaluation - Start -->
+                 
+                <apex:image url="{!$Resource.status_bar}" width="100%" height="8" /><br/><br/><br/>
+                <div id="rating">
+                <apex:outputText value="{!evalrec.ACP_Header_Label__c}" styleClass="SectionHeader"> </apex:outputText><br/><br/>
+                <apex:pageMessages />
+                <div class = "row">
+                <div class="col-md-4" >
+                    <div class = "panel panel-default" >
+                        <div class = "panel-heading" style=" background-color: {!evalrec.ACP_Header_BG_Color__c};color:{!evalrec.ACP_Header_Font_Color__c};">{!$Label.ACP_Relationship_Hierarchy}</div>
+                        <div class = "panel-body" style = "border: 1px solid lightgray!important">
+                            <center> <apex:image url="{!URLFOR($Resource.ACP_CSS,  'pyramid.PNG')}" height="220px" width="320px"/></center>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8" style="padding-left: 0;" >
+                    <c:ACP_SuppliersRating_Component id="ACP_SupplierRating" sObjectName="ACP_TE_Suppliers_Rating__c" supplierRatingList="{!suppliersRatingList}" 
+                                                     title="{!$Label.ACP_TE_Suppliers_Rating}" headerColor="{!evalrec.ACP_Header_BG_Color__c}" headerTextColor="{!evalrec.ACP_Header_Font_Color__c}" sectionSettingRec="{!evalrec}" fields="{!RatingFields}" user_BU="{!userBU}" tableid="SupplierRating"></c:ACP_SuppliersRating_Component>
+                    
+                    
+                </div>
+                </div>
+                </div>
+                  <div id="evaluation">
+                <div class = "row">
+                <div class="col-md-12" >                
+                    <c:ACP_SupplierEvaluation_Component id="ACP_SupplierEval" sObjectName="ACP_TE_Supplier_Evaluation__c" supplierEvalList="{!supplierEvaluationList}" 
+                                                        title="{!$Label.ACP_TE_Supplier_Evaluation}" headerColor="{!evalrec.ACP_Header_BG_Color__c}" headerTextColor="{!evalrec.ACP_Header_Font_Color__c}" sectionSettingRec="{!evalrec}" fields="{!EvaluationFields}" user_BU="{!userBU}" tableid="SupplierEval"></c:ACP_SupplierEvaluation_Component>
+                    
+                </div>
+                </div>
+                </div>
+                <c:ACP_Task_Action_SupplierRating accountPlanId="{!acpId}" category="Supplier Evaluation" taskList="{!taskList}" /> 
+                
+                <!-- Supplier Evaluation - End -->   
+            </div>
+        </div>
+    </div>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This is a generic template for Custom Object.  With this template, you may adjust the default elements and values and add new elements and values.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Business_Issues__c</fullName>
+        <externalId>false</externalId>
+        <label>Business Issues</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Concerns__c</fullName>
+        <externalId>false</externalId>
+        <label>Concerns</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Contact_Email__c</fullName>
+        <description>looks up the email from the contact, used for interest tags</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Role_Counter__c</fullName>
+        <defaultValue>1</defaultValue>
+        <externalId>false</externalId>
+        <label>Contact Role Counter</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Contact Roles</relationshipLabel>
+        <relationshipName>Custom_Opportunity_Contact_Roles</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>true</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>External_ID__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>combination of oppy id and contact id: OPPYID * &apos;|&apos; * ContactId</description>
+        <externalId>true</externalId>
+        <label>External ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Focus_Point__c</fullName>
+        <externalId>false</externalId>
+        <label>Focus Point</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Focus of Receptivity (FOR)</fullName>
+                    <default>false</default>
+                    <label>Focus of Receptivity (FOR)</label>
+                </value>
+                <value>
+                    <fullName>Focus of Dissatisfaction (FOD)</fullName>
+                    <default>false</default>
+                    <label>Focus of Dissatisfaction (FOD)</label>
+                </value>
+                <value>
+                    <fullName>Focus of Power (FOP)</fullName>
+                    <default>false</default>
+                    <label>Focus of Power (FOP)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Name__c</fullName>
+        <description>copies the name of the contact from the contact role into a new text field</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot;&amp;Id, Contact__r.Full_Name__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>Custom_Opportunity_Contact_Roles</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Primary__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Primary</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Resolution_of_Concerns__c</fullName>
+        <externalId>false</externalId>
+        <label>Resolution of Concerns</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Executive Sponsor</fullName>
+                    <default>false</default>
+                    <label>Executive Sponsor</label>
+                </value>
+                <value>
+                    <fullName>Engineering/Development</fullName>
+                    <default>false</default>
+                    <label>Engineering/Development</label>
+                </value>
+                <value>
+                    <fullName>Purchasing</fullName>
+                    <default>false</default>
+                    <label>Purchasing</label>
+                </value>
+                <value>
+                    <fullName>Operations / Manufacturing</fullName>
+                    <default>false</default>
+                    <label>Operations / Manufacturing</label>
+                </value>
+                <value>
+                    <fullName>Quality</fullName>
+                    <default>false</default>
+                    <label>Quality</label>
+                </value>
+                <value>
+                    <fullName>Supply Chain / Logistic</fullName>
+                    <default>false</default>
+                    <label>Supply Chain / Logistic</label>
+                </value>
+                <value>
+                    <fullName>Standardisation / Approval</fullName>
+                    <default>false</default>
+                    <label>Standardisation / Approval</label>
+                </value>
+                <value>
+                    <fullName>Service /  Repair</fullName>
+                    <default>false</default>
+                    <label>Service /  Repair</label>
+                </value>
+                <value>
+                    <fullName>Legal Advisor / Contract Review</fullName>
+                    <default>false</default>
+                    <label>Legal Advisor / Contract Review</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Contact Role</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Contact__c</columns>
+        <columns>Focus_Point__c</columns>
+        <columns>Name__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Role__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_my_Contact_Roles</fullName>
+        <columns>Contact__c</columns>
+        <columns>Focus_Point__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Role__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>All my Contact Roles</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_FOD_Contacts</fullName>
+        <columns>Contact__c</columns>
+        <columns>Focus_Point__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Role__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Focus_Point__c</field>
+            <operation>includes</operation>
+            <value>Focus of Dissatisfaction (FOD)</value>
+        </filters>
+        <label>My FOD Contacts</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_FOP_Contacts</fullName>
+        <columns>Contact__c</columns>
+        <columns>Focus_Point__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Role__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Focus_Point__c</field>
+            <operation>includes</operation>
+            <value>Focus of Power (FOP)</value>
+        </filters>
+        <label>My FOP Contacts</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_FOR_Contacts</fullName>
+        <columns>Contact__c</columns>
+        <columns>Focus_Point__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Role__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Focus_Point__c</field>
+            <operation>includes</operation>
+            <value>Focus of Receptivity (FOR)</value>
+        </filters>
+        <label>My FOR Contacts</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>COCR-{0000}</displayFormat>
+        <label>Contact Role Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Contact Roles</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Focus_Point__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Role__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Primary__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>Contact__c</searchFilterFields>
+        <searchFilterFields>Focus_Point__c</searchFilterFields>
+        <searchFilterFields>Primary__c</searchFilterFields>
+        <searchFilterFields>Role__c</searchFilterFields>
+        <searchResultsAdditionalFields>Contact__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Focus_Point__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Role__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Primary__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Do_not_add_internal_contacts</fullName>
+        <active>true</active>
+        <description>This rule prevents users from adding internal contacts as a contact role</description>
+        <errorConditionFormula>AND
+(
+$Profile.Name &lt;&gt; &quot;Service Account&quot;,
+$Profile.Name &lt;&gt; &quot;Systemadministrator&quot;,
+$Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+$Profile.Name &lt;&gt; &quot;BU Admin&quot;, 
+Contact__r.RecordTypeId = &quot;012E0000000NDOD&quot;
+)</errorConditionFormula>
+        <errorMessage>You are not allowed to add a TE contact as a contact role.
+Please add a customer contact instead.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

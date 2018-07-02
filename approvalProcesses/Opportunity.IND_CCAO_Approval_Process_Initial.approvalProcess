@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Account</field>
+        <field>Account_Number__c</field>
+        <field>Five_Year_Revenue__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CCAO_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>CCAO PM Approval</label>
+        <name>CCAO_PM_Approval</name>
+    </approvalStep>
+    <description>New approval process for the CCAO group.
+This approval process is used for the first submission of an opportunity into an approval process.</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.RecordType</field>
+            <operation>equals</operation>
+            <value>IND - Engineering project</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Request_Type__c</field>
+            <operation>equals</operation>
+            <value>Cable Assembly - New Dev,Cable Assembly - Extension</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>notEqual</operation>
+            <value>On Hold,Won,Production,Won - Open,Won - Closed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Status_PMV__c</field>
+            <operation>equals</operation>
+            <value>New,G0 Rejected</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Submission_Counter__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Final_Approver</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Quote_requested_date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Quote_required</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_Approval_Date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Quote_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Set_approval_status_PMV_G0_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_Initial_submission_date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Submission_Counter</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>IND CCAO Approval Process Initial</label>
+    <recallActions>
+        <action>
+            <name>Reset_Quote_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_to_New</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

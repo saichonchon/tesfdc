@@ -1,0 +1,47 @@
+<apex:page standardController="User" extensions="spExams.SPExamsAttachRecipientsToExamCtrl" recordSetVar="" sideBar="{!ISNULL(examIdByParameter)}" showHeader="{!ISNULL(examIdByParameter)}">
+    <c:spExamsCreation_Resources />
+    <c:LookupComponentResources />
+    <apex:form >
+        <c:spExamsAttachExamToRecipients examIdByParameter="{!examIdByParameter}"
+                                         ObjectLabel="{!objectLabel}"
+                                       	 ObjectPluralLabel="{!objectPluralLabel}"
+                                       	 Exam="{!Exam}"
+                                       	 RecipientObjectList="{!objectWrapperList}"
+										 SelectedSObjecstListSize="{!SelectedSObjecstListSize}"		
+										 ExamRecipientMapping="{!ExamRecipientMapping}"/>    
+	</apex:form>
+	
+    <script type="text/javascript">
+        function saveUsersExamRemote() {
+	         Visualforce.remoting.Manager.invokeAction(
+		         '{!$RemoteAction.SPExamsAttachRecipientsToExamCtrl.saveUsersExam}',
+			     getRrecipientsList(), 
+				 function(result, event){
+				     if (event.status){ 
+						 $('.msg-inner').removeClass('alert-error').addClass('alert-info').find('div').html(result);
+						 manageMsgInner('Show')					 }
+					 else if (event.type == 'exception') {
+						 $('.msg-inner').removeClass('alert-info').addClass('alert-error').find('div').html(event.message);
+						 manageMsgInner('Show')				     } 
+				},
+				{escape: true}
+			);
+	     }
+
+        function getExistingUsersExamStatusRemote() {
+	         Visualforce.remoting.Manager.invokeAction(
+		         '{!$RemoteAction.SPExamsAttachRecipientsToExamCtrl.getExistingUsersExamStatus}',
+			     getRrecipientsIdsList(), 
+				 function(result, event){
+				     if (event.status){ 
+						 setUpRecipientsListStatus(result);
+					 }
+					 else if (event.type == 'exception') {
+						 $('.msg-inner').removeClass('alert-info').addClass('alert-error').find('div').html(event.message);
+						 manageMsgInner('Show')				     } 
+				},
+				{escape: true}
+		     );
+	     }
+    </script>
+</apex:page>

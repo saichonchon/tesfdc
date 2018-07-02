@@ -1,0 +1,320 @@
+<apex:page controller="CtrlNPSMatrix" sidebar="false">
+<apex:includeScript value="{!URLFOR($Resource.jq4matrix)}" />
+<script type="text/javascript">
+	$(function () {
+		matrix();
+    });
+    
+	function matrix()
+		{
+			var data =$('#jsonAPString').find('input').val();
+			var ary1=[],ary2=[],ary3=[];
+			var yMax = 100 ,yMin=0;
+			var yTitle="" ,toolTip="" ,auther="";
+			var averageValue = $('#averageValue').find('input').val();
+			if($(':radio[name="matrixType"]:checked').val()=="Profitability")
+			{
+				var maxprof = $('#maxProf').find('input').val();
+				var minprof = $('#minProf').find('input').val();
+				if(data!=null&&data!=""&&data!='"no records!"')
+				{
+					data =$.parseJSON(data);
+			        for(var i=0;i<data.length;i++) {
+			        	if(data[i]["profitability"]<=30){
+							ary1.push([data[i]["npsScore"], data[i]["profitability"],data[i]["accountName"],data[i]["accountNumber"],data[i]["growth"]]);
+						}
+						else if(data[i]["profitability"]>30&&data[i]["profitability"]<=70){
+							ary2.push([data[i]["npsScore"], data[i]["profitability"],data[i]["accountName"],data[i]["accountNumber"],data[i]["growth"]]);
+						}
+						else{
+							ary3.push([data[i]["npsScore"], data[i]["profitability"],data[i]["accountName"],data[i]["accountNumber"],data[i]["growth"]]);
+						}
+					}
+					yMax = parseFloat(maxprof);
+					yMin = parseFloat(minprof);
+				}
+				yTitle ="Profitability(%)";
+				toolTip = "Profitability: ";
+				auther = "Growth: ";
+			}
+			else
+			{
+				var maxGrowth = $('#maxGrowth').find('input').val();
+    			var minGrowth = $('#minGrowth').find('input').val();
+				if(data!=null&&data!=""&&data!='"no records!"')
+				{
+					data =$.parseJSON(data);
+			        for(var i=0;i<data.length;i++) {
+			        	if(data[i]["growth"]<=30){
+							ary1.push([data[i]["npsScore"], data[i]["growth"],data[i]["accountName"],data[i]["accountNumber"],data[i]["profitability"]]);
+						}
+						else if(data[i]["growth"]>30&&data[i]["growth"]<=70){
+							ary2.push([data[i]["npsScore"], data[i]["growth"],data[i]["accountName"],data[i]["accountNumber"],data[i]["profitability"]]);
+						}
+						else{
+							ary3.push([data[i]["npsScore"], data[i]["growth"],data[i]["accountName"],data[i]["accountNumber"],data[i]["profitability"]]);
+						}
+					}
+					yMax = parseFloat(maxGrowth);
+					yMin = parseFloat(minGrowth);
+				}
+				yTitle ="Growth(%)";
+				toolTip = "Growth: ";
+				auther = "Profitability: ";
+			}
+			
+			var interval=Math.abs(yMax)>Math.abs(yMin)?Math.abs(yMax):Math.abs(yMin);
+			var sum=ary1.length+ary2.length+ary3.length;
+			var subtitle = "total:"+sum;
+	        $('#container').highcharts({
+	            chart: {
+	                type: 'scatter',
+					plotBackgroundColor:'#d9d9d9',
+	                zoomType: 'xy'
+	            },
+	            title: {
+	                text: 'Customer Matrix'
+	            },
+	            subtitle:{
+	            	text: subtitle
+	            },
+	            xAxis: {
+	                title: {
+	                    enabled: false
+	                },
+					max:10,
+					min:0,
+	                gridLineWidth:1,
+					startOnTick:true,
+					endOnTick:true,
+					tickPosition:'inside',
+					allowDecimals:false,
+					tickPositions:[0,6,8,10]
+	            },
+	            yAxis: {
+	                title: {
+	                    text: yTitle,
+	                    style:{
+	                    	fontWeight: 'bold'
+	                    }
+	                },
+					max:yMax,
+					min:yMin
+	            },
+				legend: {
+	                enabled:false
+	            },
+	            plotOptions: {
+	                scatter: {
+	                    marker: {
+	                        radius: 5,
+	                        states: {
+	                            hover: {
+	                                enabled: true,
+	                                lineColor: 'rgb(100,100,100)'
+	                            }
+	                        }
+	                    },
+	                    states: {
+	                        hover: {
+	                            marker: {
+	                                enabled: false
+	                            }
+	                        }
+	                    }
+	                }
+	            },
+	            tooltip: {
+	                formatter: function() {
+	                		var accountName,accountNmber,autherName;
+	                    	for(var i=0;i<ary1.length;i++){
+	                    		if(this.x==ary1[i][0]&&this.y==ary1[i][1]){
+	                    			accountName=ary1[i][2];
+	                    			accountNmber=ary1[i][3];
+	                    			autherName=ary1[i][4];
+	                    		}
+	                    	}
+	                    	for(var i=0;i<ary2.length;i++){
+	                    		if(this.x==ary2[i][0]&&this.y==ary2[i][1]){
+	                    			accountName=ary2[i][2];
+	                    			accountNmber=ary2[i][3];
+	                    			autherName=ary2[i][4];
+	                    		}
+	                    	}
+	                    	for(var i=0;i<ary3.length;i++){
+	                    		if(this.x==ary3[i][0]&&this.y==ary3[i][1]){
+	                    			accountName=ary3[i][2];
+	                    			accountNmber=ary3[i][3];
+	                    			autherName=ary3[i][4];
+	                    		}
+	                    	}
+                		return '<b>'+ accountName +'</b><br/><b>Account Number: '+accountNmber+'</b><br/>NPS Score: <b>'+ this.x +'</b><br/>'+toolTip +'<b>' + this.y + ' %' +'</b><br/>'+auther +'<b>' + autherName + ' %' +'</b>';
+    					}
+	                },
+	            series: [{
+	            	name:'NPS1',
+	                color: '#CF2429',
+	                data: ary1,
+	                marker: {
+		                symbol: 'circle'
+		            }
+	            },{
+	            	name:'NPS2',
+	                color: '#f2fa0b',
+	                data: ary2,
+	                marker: {
+		                symbol: 'circle'
+		            }
+	            },{
+	            	name:'NPS3',
+	                color: '#349967',
+	                data: ary3,
+	                marker: {
+		                symbol: 'circle'
+		            }
+	            }]
+	        });
+	        
+	        //averageValue=(averageValue="0")?50:averageValue;
+	        var chart = $('#container').highcharts();
+		   	chart.yAxis[0].addPlotLine({
+			 	value: averageValue,
+				color: '#1074AC',
+			 	width: 2,
+				id: 'plot-line-1'
+		 	});
+        }
+
+    
+     function drawMatrix(){
+    	console.log($('#jsonAPString').find('input').val());
+    	//var list_ap = $.parseJSON($('#jsonAPString').find('input').val());
+    	var maxprof = $('#maxProf').find('input').val();
+    	var minprof = $('#minProf').find('input').val();
+    	console.log(maxprof);
+    	console.log(minprof);
+    	var maxGrowth = $('#maxGrowth').find('input').val();
+    	var minGrowth = $('#minGrowth').find('input').val();
+    	console.log(maxGrowth);
+    	console.log(minGrowth);
+    	hideLoading();
+    	matrix();
+    }
+    function showLoading(){
+    	$('#loading-curtain-div').show();
+    }
+    function hideLoading(){
+    	$('#loading-curtain-div').hide();
+    }
+	function refresh(){
+    	if($(':radio[name="matrixType"]:checked').val()=="Profitability"){
+    		$('#calType').find('input').val('prof');
+    	}
+    	else{
+    		$('#calType').find('input').val('growth');
+    	}
+    	
+    	//console.log($('#max').val());
+    	//console.log($('#min').val());
+    	
+    	//console.log($("[id $= 'campaignType'] option:selected").text());
+    	/*if($("[id $= 'campaignType'] option:selected").text() == 'Industry'){
+    		$('#campaignType').find('input').val('NPS IND');
+    	}
+    	else if($("[id $= 'campaignType'] option:selected").text() == 'Appliance'){
+    		
+    		$('#campaignType').find('input').val('NPS APPL');
+    	}
+    	else{
+    		$('#campaignType').find('input').val('');
+    	}*/
+    	
+    	refreshMatrix();
+    }
+</script>
+<apex:includeScript value="{!URLFOR($Resource.highchartsSrc)}" />
+<div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;display:none;background-color:#FFF;opacity:0.85;position:absolute;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');"></div>
+<apex:pageMessages id="msg" escape="false"/>
+<apex:form >
+	<apex:outputPanel id="listAccPoint">
+		<span id="jsonAPString">
+				<apex:inputHidden value="{!list_apJson}"/>
+		</span>
+		<span id="maxProf">
+				<apex:inputHidden value="{!maxProf}"/>
+		</span>
+		<span id="minProf">
+				<apex:inputHidden value="{!minProf}"/>
+		</span>
+		<span id="calType">
+				<apex:inputHidden value="{!calType}"/>
+		</span>
+		<span id="maxGrowth">
+				<apex:inputHidden value="{!maxGrowth}"/>
+		</span>
+		<span id="minGrowth">
+				<apex:inputHidden value="{!minGrowth}"/>
+		</span>
+		<span id="averageValue">
+				<apex:inputHidden value="{!averageValue}"/>
+		</span>
+<!-- 		<span id="campaignType"> -->
+<!-- 				<apex:inputHidden value="{!campaignTypeApp}"/> -->
+<!-- 		</span> -->
+	</apex:outputPanel>
+	
+	<apex:pageblock mode="mainDetail" tabStyle="Account" id="filterPB">
+		<apex:outputPanel style="float:left; width:20%;">
+			<apex:pageBlockSection columns="1">
+				<input type="radio" name="matrixType" id="Profitability" checked="checked" value="Profitability"/>
+				<label for="Profitability">Profitability</label>
+				<input type="radio" name="matrixType" id="Growth" value="Growth"/>
+				<label for="Growth">Growth</label>
+				<apex:inputField value="{!acc4choose.Customer_Classification__c}"></apex:inputField>
+				<apex:outputpanel >
+					<label class="labelCol" style="margin-left:25px;">Industry: </label>
+					<apex:selectList size="1" value="{!campaignTypeApp}" id="campaignType">
+						<apex:selectOptions value="{!CampaignNameOption}"/>
+					</apex:selectList>
+				</apex:outputpanel>
+				<apex:outputpanel >
+					<label class="labelCol" style="margin-left:-1px;">Cust. Region: </label>
+					<apex:selectList size="1" value="{!selectedRegion}" id="selectedRegion" style="width: 100px;margin-left: 2px;">
+						<apex:selectOptions value="{!RegionOption}"/>
+					</apex:selectList>
+				</apex:outputpanel>
+				<apex:outputpanel >
+					<label class="labelCol" style="margin-left:-8px;">Cust. Industry: </label>
+					<apex:selectList size="1" value="{!selectedIndustry}" id="selectedIndustry">
+						<apex:selectOptions value="{!IndustryOption}"/>
+					</apex:selectList>
+				</apex:outputpanel>
+				<apex:outputpanel >
+					<label class="labelCol" style="margin-left:47px;">Max: </label><apex:inputtext style="width:100px;" value="{!max}"/>
+				</apex:outputpanel>
+				<apex:outputpanel >
+					<label class="labelCol" style="margin-left:51px;">Min: </label><apex:inputtext style="width:100px;" value="{!min}"/>
+				</apex:outputpanel>
+				<apex:inputField value="{!acc4choose.GAMCD__c}" ></apex:inputField>
+				<apex:inputField value="{!acc4choose.AccountNumber}" ></apex:inputField>
+				<input type="button" value="refresh" onclick="showLoading();refresh();" class="btn"/>
+				<apex:actionfunction action="{!getMatrixData}" name="refreshMatrix" rerender="listAccPoint,jsonAPString,container" onComplete="drawMatrix();"/>
+			</apex:pageBlockSection>
+		</apex:outputPanel>
+		<div style=" margin-left:50px; float:left;">
+			<div id="container" style="width: 600px; height: 400px;"></div>
+			<div style=" clearn:both; margin-left:66px;">
+				<apex:outputPanel style="color:#1074ac; margin:auto 150px; font-weight: bold;">Detractor</apex:outputPanel>
+				<apex:outputPanel style="color:#1074ac; font-weight: bold;">Passive</apex:outputPanel>
+				<apex:outputPanel style="color:#1074ac; margin-left:50px; font-weight: bold;">Promoter</apex:outputPanel>
+			</div>
+			<div style=" clearn:both; margin-left:66px;">
+				<apex:image style=" float:left;" url="{!URLFOR($Resource.sagittate, 'left.png')}"/>
+				<apex:outputPanel style="float:left; background-color:#1074ac; color:white; text-align:center; font-size:18pt; padding:0px 185px; margin-top:20px;">- NPS +</apex:outputPanel>
+				<apex:image style=" float:left;" url="{!URLFOR($Resource.sagittate, 'right.png')}"/>
+			</div>
+		</div>
+		<div style="Clear:both;" />
+	</apex:pageblock>
+</apex:form>
+</apex:page>

@@ -1,0 +1,80 @@
+<apex:component layout="block">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+
+
+<div id="team_view_tab" class="team_box" style="margin-top: 10px;">
+
+	<div id="team_box">
+		<div id="team_head" class="team_head team_ovhide">
+			<div class="fix_width">
+				<table border="0" cellspacing="0" cellpadding="0" class="tabdft" >
+					<thead id="teamheadid">
+						<tr class="team_cls">
+						<apex:repeat var="tc" value="{!pageCtrl.teamColumns}">
+							<th  matchName=" {!tc.matchName} "  class="team_hf_h {!tc.cls} team_bt cp" >
+								<div class="team_div">
+									<div class="left">
+										<span class="pdleft">{!tc.name}</span>
+										<span class="team_orderby" asc="▲" desc="▼"> </span>
+									</div>
+									<div class="headright"></div>
+								</div>
+							</th>
+						</apex:repeat>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+		<div id="team_body" class="" style="min-height:36px; overflow-y: scroll; overflow-x: hidden;">
+			<div class="fix_width">
+				<table id="teamTabId" border="0" cellspacing="0" cellpadding="0" class="tabdft overTab" >
+					<tbody id="teamBodyId" class="teamviewbody">
+						<apex:variable value="{!0}" var="rowNum"/>
+						<apex:repeat var="tm" value="{!pageCtrl.list_teamMembs}">
+						<tr id="{!tm.id}"  data-name=" {!tm.name} " data-role=" {!tm.roleid} " class="{!if(mod(rowNum, 2) == 0, '', 'old')}">
+							<apex:repeat var="tc" value="{!pageCtrl.teamColumns}">
+							<td class="team_body_h {!tc.cls}" data-match="{!tc.fieldName}" data-value=" {!tm[tc.fieldName]} ">
+								<div class="pdleft pdright textovhide" >
+									{!tm[tc.fieldName]}
+								</div>
+							</td>
+							</apex:repeat>
+						</tr>
+						<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+						</apex:repeat>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div id="team_foot" class="team_foot team_ovhide">
+			<div class="fix_width">
+				<table border="0" cellspacing="0" cellpadding="0" class="tabdft" >
+					<thead>
+						<tr class="team_cls" id="teamrowtotalid">
+						<apex:repeat var="tc" value="{!pageCtrl.teamColumns}">
+							<th class="team_hf_h {!tc.cls} botml fontw" data-value="  ">
+								<div class="team_div">
+									<div class="left fontw valcls">
+										<apex:outputPanel styleClass="pdleft" rendered="{!if(tc.fieldName = 'name', true, false)}">
+											{!$Label.PMV_team_total_sum}
+										</apex:outputPanel>
+									</div>
+									<div class="footright"></div>
+								</div>
+							</th>
+						</apex:repeat>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+
+</apex:component>

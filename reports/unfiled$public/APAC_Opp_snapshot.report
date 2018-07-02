@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_46978410</developerName>
+        <masterLabel>Sales Channel</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities$Owner.Profile</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Channel Standard User</sourceValue>
+            </sourceValues>
+            <value>Channel</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Industrial Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial Engineering User w/Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial User w/ Cost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay Standard User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Relay User w/ Cost</sourceValue>
+            </sourceValues>
+            <value>Industrial Direct</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Account.Opportunities$Owner</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Opportunity_Part_Count__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Distributor__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Timestamp__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Part_Confidence__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Process_Status__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Won_Date__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Part_Won_Fiscal_Year__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND (2 or 3)) AND 4</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Snapshot_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Monthly</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner.UserRole</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>102521,102750,102338,102757,102480,102333,102331,102334</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>sophie kim,jose li,sean kong</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$Won_Fiscal_Year__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>2013</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Part_Won_Fiscal_Quarter__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Parts__r$Won_Fiscal_Quarter__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities.Parts__r.Forecast_Snapshots__r$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>APAC Opp snapshot</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Opportunity_snapshot__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities.Parts__r.Forecast_Snapshots__r$Won_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

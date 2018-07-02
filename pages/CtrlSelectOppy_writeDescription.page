@@ -1,0 +1,47 @@
+<apex:page controller="CtrlSelectOppy" showheader="false" sidebar="false">
+	<apex:stylesheet value="{!URLFOR($Resource.ITB_Table_Style)}" />
+	
+	<apex:form id="topForm">
+		<apex:pageMessages id="messages" />
+        <apex:pageBlock id="pValues" mode="edit" tabStyle="Opportunity">
+            <apex:pageBlockButtons location="top">
+            	<apex:commandButton value="{!$Label.SaveButton}" onclick="fetchValueToOpener();"/>  
+                <apex:commandButton value="{!$Label.CancelButton}" onclick="self.close();"/>     
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="theSection" columns="1" title="{!$ObjectType.Opportunity.Fields.Account_Plan_Comment__c.Label}">
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Name.Label}"/>
+            		<apex:outputLink value="/{!oppy.Id}" target="_Blank">{!oppy.Name}</apex:outputLink>
+            	</apex:pageBlockSectionItem>
+            	<apex:pageBlockSectionItem />
+            	<apex:pageBlockSectionItem />
+            	<apex:pageBlockSectionItem />
+            	<apex:pageBlockSectionItem id="oppyItem">
+            		<apex:outputPanel >
+	            		<apex:outputLabel value="{!$Label.write_a_comment}"/>
+	            		<br/>
+	            		<apex:inputField value="{!oppy.Account_Plan_Comment__c}" id="oppyComment" style="width:320px;height:180px"></apex:inputField>
+            		</apex:outputPanel>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <Script>
+        	function fetchValueToOpener()
+        	{
+        		//alert(item.innerHTML);
+        		
+        		var comment = document.getElementById('{!$Component.topForm.pValues.theSection.oppyItem.oppyComment}');
+        		//var oppyid = 'lossWin';
+        		//oppyid += '{!oppyId}';
+        		var commentId = '{!commentId}';
+        		//alert(commentId);
+        		var openerComment = opener.document.getElementById(commentId);
+        		openerComment.value = comment.value;
+        		
+        		self.close();
+        	}
+        </Script>
+    </apex:form>
+</apex:page>

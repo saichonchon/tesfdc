@@ -1,0 +1,124 @@
+<apex:component controller="ACP_DataTable_Ctrl" allowDML="true" id="markCompPanel">
+  <!-- <apex:attribute name="borderColor" description="This is the value for border color" type="String" default="#ada9a9" />
+   <apex:attribute name="bgColor" description="This is the value for Container background color" type="String" default="#fff" />
+   <apex:attribute name="headerColor" description="This is the value for Header background color" type="String" default="#E98300" />
+   <apex:attribute name="headerTextColor" description="This is the value for header Text color" type="String" default="#fff" />
+   <apex:attribute name="bodyTextColor" description="This is the value for body text color" type="String" default="#1C2833" />
+   <apex:attribute name="title" description="This is the value Table Title" type="String"/>
+   <apex:attribute name="tableId" description="This is the value for Table ID" type="String" required="true" assignTo="{!tableType}"/>
+   <apex:attribute name="fields" description="This is the value for FieldSet" type="String[]"  />
+   <apex:attribute name="sObjectName" description="This is the value for Object API" type="String" required="true" />-->
+   <!--apex:attribute name="strategyList" type="ACP_Strategy__c[]" description="" assignTo="{!strategiesList}" /-->
+   <!--apex:attribute name="supplierEvlList" type="ACP_TE_Supplier_Evaluation__c[]" description="" assignTo="{!supplierEvaluationList}" /-->
+ <!--<apex:attribute name="marketList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!MarkCompList}"/>-->
+ <!--  <apex:attribute name="admList" type="ACP_Market_and_Competition__c[]" description="" assignTo="{!ADMData}"/>-->
+<!--   <apex:attribute name="oppTAMRevList" type="ACP_Opportunity_TAM_Revenue__c[]" description="" assignTo="{!OppTAMList}"/>
+   <apex:attribute name="user_BU" type="String" description="curren User's BU" assignTo="{!userBU}"/> -->
+  <!-- <apex:attribute name="sectionSettingRec" type="ACP_Section_Detail__c" assignTo="{!oppTAMrec}" description="ACP Section Detail" />-->
+  <!-- <apex:attribute name="markSettingRec" type="ACP_Section_Detail__c" assignTo="{!markrec}" description="ACP Section Detail" />-->
+  
+  <!-- <apex:pageBlock mode="maindetail" id="sPanel">-->
+
+   
+
+
+    
+    
+      
+      <!------------------------------------------------- Opportunity TAM Revenue---------------------------------------------------- ------------------>
+
+
+        
+
+<!--<apex:outputPanel rendered="{!IF(OppTAMList== null, false, true)}" id="oppPanel">
+    
+    <div class="panel panel-default"  style="border-color:{!borderColor}; background-color:{!bgColor}; position: relative;overflow: hidden;">
+        <div class="panel-heading"  style=" background-color: {!oppTAMrec.ACP_Header_BG_Color__c};border-color:{!borderColor};position: position: relative;">-->
+      <!--     <apex:commandButton value="{!$Label.ACP_Add}" styleClass="btn btn-default" id="addButtonOpp" action="{!AddOppTAM}" style="float:right"/>-->
+      <!--   <apex:commandButton value="{!$Label.ACP_Save}" styleClass="btn btn-default" id="saveButtonOpp"  action="{!actionSaveOpp}" style="float:right; display:none" reRender="sPanel"/>
+                <apex:commandButton value="{!$Label.ACP_Cancel}" styleClass="btn btn-default" id="cancelButtonOpp" onclick="this.form.reset();" immediate="true"  style="float:right; display:none" reRender="sPanel"/>
+          <div class="panel-title">
+                <h4 style="color:{!oppTAMrec.ACP_Header_Font_Color__c};"> {!oppTAMrec.ACP_Header_Label__c}</h4>
+            </div>
+        </div>
+            
+           
+
+           <table class="table table-bordered:1px solid black">
+        
+          
+                    <tr class="columnHeader" >
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_Product_CBC}</th>
+                       <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'LY Bill',true,false)}">
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_TAM_LY}</th>
+                       </apex:outputPanel>
+                       <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'CY BIll(RR)',true,false)}">
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_TAM_CY}</th>
+                       </apex:outputPanel>
+                       <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'NY Fcst',true,false)}">
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_TAM_NY}</th>
+                       </apex:outputPanel>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_LY_Bill}</th>
+                     
+                      <th bgcolor="#f4f4f7">
+                      
+                        <apex:outputLink value="{!oppTAMrec.ACP_Pipeline_4Q_Rolling__c}">{!$Label.ACP_Pipeline_4Q_Rolling}</apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!oppTAMrec.ACP_Conversion_current_YTD__c}"><apex:outputText value="{!$Label.ACP_Conversion_current_YTD}" escape="false" /> </apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!oppTAMrec.ACP_L12M_Lost_1Yvalue__c}"><apex:outputText value="{!$Label.ACP_L12M_Lost_1Yvalue}" escape="false" /> </apex:outputLink>
+                      </th>
+                      <th bgcolor="#f4f4f7">
+                        <apex:outputLink value="{!oppTAMrec.ACP_L12M_Won_1Y_Value__c}"><apex:outputText value="{!$Label.ACP_L12M_Won_1Y_Value}" escape="false" /></apex:outputLink>
+
+                      </th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_CY_Pipeline}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_NY_Pipeline}</th>
+                      <th bgcolor="#f4f4f7">{!$Label.ACP_5Y_Pipeline}</th>
+                    </tr>
+                   <apex:repeat value="{!OppTAMList}" var="Opp">
+            <tr class="table border-collapse"> 
+            <td>
+                <apex:outputField value="{!Opp.ACP_CBC__c}" />
+                </td>
+                <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'LY Bill',true,false)}">
+                <td>
+                <apex:outputField value="{!Opp.ACP_TAM_LY_Bill__c}" >   </apex:outputfield>          
+                </td>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'CY BIll(RR)',true,false)}">
+                <td>
+                <apex:outputField value="{!Opp.ACP_TAM_CY__c}" >   </apex:outputfield>          
+                </td>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!If(markrec.ACP_TAM_PAM_SAM_Billing__c = 'NY Fcst',true,false)}">
+                <td>
+                <apex:outputField value="{!Opp.ACP_TAM_NY__c}" >   </apex:outputfield>          
+                </td>
+                </apex:outputPanel>
+
+              <apex:repeat value="{!fields}" var="FldName">
+                
+            <td>
+                <apex:outputField value="{!Opp[FldName]}">
+                        <apex:inlineEditSupport changedStyleClass="myBoldClass"  
+                resetFunction="resetInlineEdit" showOnEdit="saveButtonOpp,cancelButtonOpp" event="ondblclick" />
+                    </apex:outputField>
+                </td>
+                </apex:repeat>
+            </tr>
+        </apex:repeat>
+                  </table>
+                
+    </div>
+    </apex:outputPanel>
+
+     
+        
+   </apex:pageBlock>-->
+  
+</apex:component>

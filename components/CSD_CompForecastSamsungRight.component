@@ -1,0 +1,32 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	<!-- total -->
+	<!-- 
+	<apex:variable value="{!0}" var="rowNum"/>
+	<apex:repeat var="total" value="{!pageCtrl.list_TotalColumns}">
+	    <tr class="{!total.cls} totcls {!if(rowNum=0, '', ' dn subtotcls ')}">
+	        <apex:repeat var="fd" value="{!pageCtrl.list_allDateItems}">
+	        <td class=" " >
+	            
+	        </td>
+	        </apex:repeat>
+	    </tr>
+	<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+	</apex:repeat>
+	 -->
+	<!-- total -->
+	
+	<apex:repeat var="gpl" value="{!pageCtrl['list_GPLFamilyData']}">
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!pageCtrl['list_GPLFamilyColumns']}">
+		<tr class="{!if(rowNum = 0, ' v1 ', ' dn ')} rlevel1">
+			<apex:repeat var="fd" value="{!pageCtrl['list_allDateItems']}">
+	        <td class="  {!if(fd['isFutrue'], 'td_input', '')} " data-old="{!if(fd.isInput, gpl['csFC'][fd.mLabel], '')}" data-pmfc="{!if(fd.isInput, gpl['pmFC'][fd.mLabel], '')}" data-dcfc="{!if(fd.isInput, gpl['dcFC'][fd.mLabel], '')}"></td>
+	        </apex:repeat>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+	
+</apex:component>

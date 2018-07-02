@@ -1,0 +1,889 @@
+<apex:page standardController="Account_Plan__c" docType="html-5.0" sidebar="false" renderAs="pdf"
+    extensions="ExtAccountPlanView_controlPDF" applyBodyTag="true" title="{!$ObjectType.Account_Plan__c.label}">
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.ITB_Table_StyleNew)}" /> 
+    <style type="text/css">
+        @page { size: A4; }
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+        .tdbg{
+            background:#ADD8E6 !important;
+        }
+        .tar{text-align: left;}
+        .tdline{
+            border-bottom: 1px solid #ECECEC;
+        }
+        .sectionhead{
+            background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;margin-bottom: 2px;width: 100%;
+        }
+        .sectionimg{
+            background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;
+            background-repeat: no-repeat; height: 11px;width: 11px;
+            background-position: 1px -36px; margin-right: 4px;
+        }
+        .mess5titlecls{
+            color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;
+        }
+        .h2 {text-align:center}
+        #newsdiv_id  br{
+            page-break-after:avoid !important; page-break-after:avoid;
+        }
+        #newsdiv_id  span{
+            page-break-after:avoid !important; page-break-after:avoid;
+        }
+        #newsdiv_id  table,tbody,tr,td{
+            page-break-after:avoid !important; page-break-after:avoid;
+        }
+        
+    </style>
+</head>
+<body>
+  
+    <apex:form id="theForm">
+        <apex:pageMessages />    
+<!--         <apex:pageBlock id="theBlock" mode="detail">   -->
+                   
+        <apex:outputPanel id="mess1" layout="block" rendered="{!map_isShowStyle['ckstyle1'].isShow}" style="page-break-after:avoid;">
+            <table class="detailList" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td class="tdline" style="font-size:13px;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; border-bottom: 1px solid #ECECEC; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color:#4a4a56; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!$Label.Not_loaded}" >
+                            <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Company_Logo_Id__c)}"/>
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Company_Logo__c.Label}" rendered="{!Not(IsNull(accountPlan.Company_Logo_Id__c))}"></apex:outputLabel>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                            <apex:outputField value="{!accountPlan.Company_Logo__c}"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" >
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Account_Manager__c.Label}" rendered="{!Not(IsNull(accountPlan.Account_Manager_Id__c))}"/>
+                            <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Account_Manager_Id__c)}"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Account_Manager__c}" id="testId1"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC;"></td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC;"></td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" >
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Account_Manager__c.Label}" rendered="{!Not(IsNull(accountPlan.Account_Manager_Id__c))}"/>
+                            <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Account_Manager_Id__c)}"/><br/><br/>
+                            <apex:outputLabel value="{!$Label.Customer}" style="vertical-align: bottom;"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                            <span style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor}; text-decoration: underline;">
+                                {!Account_Plan__c.Account_Manager_Approver__r.Name}
+                            </span><br/><br/>
+                            <apex:outputText style="color:#0073AE; vertical-align: bottom;">
+                                <b style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">{!Account_Plan__c.Customer__r.Name}</b>
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdline"  style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$Label.Customer_Type}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                            <apex:outputPanel style="font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                                <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Customer_Type__c}"/> 
+                                <apex:outputText style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" rendered="{!accountPlan.Replicate_to_Central_Org__c != true}"><br/>
+                                {!$Label.Profile_dont_be_sent_to_Dashboard} </apex:outputText>
+                            </apex:outputPanel>
+                        </td>
+                        <td class="tdline"  style="border-bottom: 1px solid #ECECEC;font-size:13px;color:#4a4a56; font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Business_Unit__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Business_Unit__c}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Plan_Year__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Plan_Year__c}"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Active__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Active__c}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.GAM_Code__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.GAM_Code__c}"/>
+                        </td>
+                         <td class="tdline" style="border-bottom: 1px solid #ECECEC;font-size:13px;color:#4a4a56; font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Account_Definition__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Account_Definition__c}" rendered="{!accountPlan.Customer_Type__c='A'}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel style="font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!$ObjectType.Account_Plan__c.Fields.Sales_Figures_Makeup__c.Label}" />
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputField style="font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.Sales_Figures_Makeup__c}"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size:13px;color:#4a4a56;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!$Label.Last_Modified_By}"/>
+                        </td>
+                        <td class="tdline" style="border-bottom: 1px solid #ECECEC; font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                            <apex:outputPanel style="font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                                <span style="text-decoration:underline; font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};">
+                                    {!Account_Plan__c.LastModifiedBy.Name}
+                                </span>,&nbsp;
+                                <apex:outputField style="font-size:12px;color:#000;font-size: {!map_isShowStyle['ckstyle1'].fontSize}; font-family: {!map_isShowStyle['ckstyle1'].fontFamily}; color: #{!map_isShowStyle['ckstyle1'].fontColor};" value="{!accountPlan.LastModifiedDate}"/> 
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="mess2" rendered="{!Or(map_isShowStyle['ckstyle2'].isShow, map_isShowStyle['ckstyle3'].isShow)}">
+            <div class="sectionhead" style=" vertical-align: middle;page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.Customer_Overview}</span>
+            </div>
+
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td style="padding-top: 5px;">
+                        <apex:outputPanel id="overviewPanel" rendered="{!And(list_overview.size > 0, map_isShowStyle['ckstyle2'].isShow)}" style="text-align: center;margin-top:5px;">
+                            <table class="itb-table-style-01" style="margin: 0 auto; font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                <thead  style="page-break-after:avoid;">
+                                    <tr>
+                                        <th colspan="1" align="center" class="tdbg" style="background:#ADD8E6 !important;font-size:14px;color:black;font-weight:bold;">
+                                             <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!$Label.All_figures_in_Millions}"/> 
+                                        </th>
+                                        <th colspan="5" align="center" class="tdbg" style="background:#ADD8E6 !important;font-size:14px;color:black;font-weight:bold;">
+                                             <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!$Label.Customer_Revenue}"/> 
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr  style="page-break-after:avoid;">
+                                        <td width="25%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <b><apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!$Label.Category}"/></b>
+                                        </td>
+                                        <td width="15%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!planYearMinus3}"/>
+                                        </td>
+                                        <td width="15%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!planYearMinus2}"/>
+                                        </td>
+                                        <td width="15%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!$Label.YoY_Variance}"/>
+                                        </td>
+                                        <td width="15%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!planYearMinus1}"/>
+                                        </td>
+                                        <td width="15%" class="tdbg" style="background:#ADD8E6 !important;">
+                                            <apex:outputText style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};" value="{!$Label.YoY_Variance}"/>
+                                        </td>
+                                    </tr>
+                                    
+                                    <apex:repeat value="{!list_overview}" var="item">
+                                    <tr  style="page-break-after:avoid;">
+                                        <td width="25%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{!item.name}"/>
+                                        </td>
+                                        <td width="15%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear3}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear2}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{!item.yoVariante2}" rendered="{!NOT(ISNULL(item.yoVariante2))}"/>
+                                        </td>
+                                        <td width="15%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear1}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" style="font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                                            <apex:outputText value="{!item.yoVariante1}" rendered="{!NOT(ISNULL(item.yoVariante1))}"/>
+                                        </td>
+                                    </tr>
+                                       
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!And(list_overview.size == 0, map_isShowStyle['ckstyle2'].isShow)}" style="page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle2'].fontSize}; font-family: {!map_isShowStyle['ckstyle2'].fontFamily}; color: #{!map_isShowStyle['ckstyle2'].fontColor};">
+                            <b><apex:outputLabel value="{!$Label.No_overview}"/></b>
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            </table>
+            
+       </apex:outputPanel>
+        <apex:outputPanel id="newsStr" rendered="{!And(map_isShowStyle['ckstyle3'].isShow, isAppliancesBU)}" > 
+
+            <table style="page-break-after:avoid; text-align:left; margin-top:20px; vertical-align: top; width: 100%;" border="0" cellpadding="0" cellspacing="0">      
+                <tbody style="page-break-after:avoid;">
+                 <tr style="page-break-after:avoid;">                    
+                    <td width="20%" class="tar" style="border-bottom: 1px solid #ECECEC; vertical-align: top; text-align: left; font-size:14px;color:black;font-weight:bold;">
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Customer_News__c.Label}" style="font-size: {!map_isShowStyle['ckstyle3'].fontSize}; font-family: {!map_isShowStyle['ckstyle3'].fontFamily}; color: #{!map_isShowStyle['ckstyle3'].fontColor}; color: #DE8703; " styleClass="setfontcls"/>
+                    </td> 
+                    
+                    <td style="border-bottom: 1px solid #ECECEC;">
+                        <apex:outputField value="{!accountPlan.Customer_News__c}"/>
+                    </td>    
+                </tr>
+                </tbody>
+            </table> 
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="mess3" rendered="{!map_isShowStyle['ckstyle4'].isShow}">
+            <div style="page-break-after:avoid;">
+            
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};">
+                <tr style="page-break-after:avoid; ">
+                    <td style="vertical-align: top;">
+                        <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Industry_Segment__c))}">
+                            <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                <thead >
+                                    <tr>
+                                        <th align="center" class="tdbg" style="font-size: {!map_isShowStyle['ckstyle4'].fontSize};  background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"><apex:outputText value="{!$Label.Industry_Segment}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr>
+                                        <td style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"><apex:outputText value="{!accountPlan.Industry_Segment__c}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(accountPlan.Industry_Segment__c)}" style="page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};">
+                            <b>{!$Label.No_Industry_Segment}</b>
+                        </apex:outputPanel>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <apex:outputPanel id="keyAccountPanel" rendered="{!list_keyProduct.size > 0}">
+                            <table class="itb-table-style-01" style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};" border="0" cellpadding="0" cellspacing="0">
+                                <thead >
+                                    <tr >
+                                        <th class="tdbg" style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"><apex:outputText value="{!$Label.key_Products}"/> </th>                    
+                                        <th class="tdbg" colspan="2" style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"><apex:outputText value="{!accountPlan.Key_Product_Percent_Title__c}"/></th>
+                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_keyProduct}" var="item">
+                                        <tr style="page-break-after:avoid;">
+                                            <td style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"> <apex:outputText value="{!item.name}"/></td>
+                                            <td style="font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};"> <apex:outputText value=" {!item.productPct}" />&nbsp;<apex:image value="{!URLFOR($Resource.Graphics, item.productOutlook + '.jpg')}" title="{!item.productOutlook}" rendered="{!NOT(ISNULL(item.productOutlook))}"/></td>                                                            
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_keyProduct.size == 0}" style="page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle4'].fontSize}; font-family: {!map_isShowStyle['ckstyle4'].fontFamily}; color: #{!map_isShowStyle['ckstyle4'].fontColor};">
+                            <b >{!$Label.No_Key_Product}</b>
+                        </apex:outputPanel>
+                    </td>
+                </tr>       
+            </table>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="mess4" rendered="{!or(map_isShowStyle['ckstyle5'].isShow,map_isShowStyle['ckstyle6'].isShow, map_isShowStyle['ckstyle7'].isShow,map_isShowStyle['ckstyle8'].isShow)}">
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px; padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.TE_Performance_Overview}</span>
+            </div>
+           
+            <apex:outputPanel rendered="{!map_isShowStyle['ckstyle5'].isShow}"> 
+                <table style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};">
+                    <tr  style="page-break-after:avoid;">
+                        <td width="70%" align="left">
+                            <b style="color: #DE8703;">{!$Label.TE_Performance}:</b>&nbsp;&nbsp;
+                            <apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.TE_Performance_Status__c+ '.jpg')}" 
+                                                    title="{!accountPlan.TE_Performance_Status__c}" rendered="{!NOT(ISNULL(accountPlan.TE_Performance_Status__c))}" />&nbsp;
+                            {!accountPlan.TE_Performance_Status__c}
+                        </td>
+                    </tr>
+                </table>   
+                <apex:outputPanel id="performancePanel" rendered="{!list_tePerformance.size > 0}">
+                    <table class="itb-table-style-01" style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};" border="0" cellpadding="0" cellspacing="0">
+                        <thead  style="page-break-after:avoid;">
+                            <tr >
+                                <th colspan="1" class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><i><apex:outputText value="{!$Label.All_figures_in_Millions}"/></i></th>
+                                <th colspan="1" class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.Actual}"/></th>
+                                <th colspan="2" class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.Forecast} ({!planYear})"/></th>
+                                <th colspan="7" class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.Annual_Plan}"/></th>
+                            </tr>
+                         </thead>
+                        <tbody>
+                            <tr >
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><i><apex:outputText value="{!$Label.Fiscal_Years}"/></i></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!planYearMinus1}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.YTD_Actuals}"/></td>
+                                
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.Adjusted_Forecast}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!planYear}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.YoY}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!planYearPlus1}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.YoY}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!planYearPlus4}"/></td>
+                                <td class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!$Label.YoY}"/></td>
+                            </tr>
+                        
+                            <apex:repeat value="{!list_tePerformance}" var="item">
+                                <tr  style="page-break-after:avoid;">
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.Name}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.actualValue}"/></td>  
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.ytdActualValue}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.forecastValue}"/></td>
+                                    
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.apValue1}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.yoyValue1}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.apValue2}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.yoyValue2}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.apValue3}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};"><apex:outputText value="{!item.yoyValue3}"/></td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                    <apex:outputPanel style="page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};" styleClass="tdline" rendered="{!NOT(ISNULL(accountPlan.Revenue_Section_Last_Updated_By__c))}">
+                        <i>{!$Label.TE_Revenue_Section_Last_Updated_By}&nbsp;
+                            <b style="text-decoration: underline;">{!Account_Plan__c.Revenue_Section_Last_Updated_By__r.Name}</b> &nbsp;on&nbsp;
+                            <apex:outputfield Value="{!accountPlan.Revenue_Section_Last_Updated__c}"/>
+                        </i>
+                    </apex:outputPanel>       
+                </apex:outputPanel>                      
+                <apex:outputPanel style="border-bottom: 1px solid #ECECEC; page-break-after:avoid; font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};" rendered="{!list_tePerformance.size == 0}" styleClass="tdline">
+                    <b><apex:outputLabel value="{!$Label.Nothing_To_View}"/></b>
+                </apex:outputPanel>               
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!And(map_isShowStyle['ckstyle6'].isShow, isAppliancesBU)}" > 
+                <table  style="page-break-after:avoid; vertical-align: top;">
+                    <tbody>
+                        <tr>
+                            <td width="20%" class="tdline tar" style="border-bottom: 1px solid #ECECEC; vertical-align: top; text-align: left; font-size:14px;color:black;font-weight:bold;">
+                                <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Pricing__c.label}" style="font-size: {!map_isShowStyle['ckstyle6'].fontSize}; font-family: {!map_isShowStyle['ckstyle6'].fontFamily}; color: #{!map_isShowStyle['ckstyle6'].fontColor}; color: #DE8703;" styleClass="setfontcls"/>
+                            </td>
+                            <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                                <apex:outputField styleClass="setfontcls" value="{!accountPlan.Pricing__c}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                 </table>
+            </apex:outputPanel>
+            
+                <table  style=" vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>                  
+                        <apex:outputPanel rendered="{!And(map_isShowStyle['ckstyle7'].isShow, isAppliancesBU)}" > 
+                            <tr>
+                                <td width="20%" class="tdline tar" style="border-bottom: 1px solid #ECECEC; vertical-align: top; text-align: left; font-size:14px;color:black;font-weight:bold;" >
+                                    <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Capacity_Issues__c.label}" styleClass="setfontcls" style="font-size: {!map_isShowStyle['ckstyle7'].fontSize}; font-family: {!map_isShowStyle['ckstyle7'].fontFamily}; color: #{!map_isShowStyle['ckstyle7'].fontColor}; color: #DE8703;"/>
+                                </td>
+                                <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                                    <apex:outputField styleClass="setfontcls" value="{!accountPlan.Capacity_Issues__c}" />
+                                </td>
+                            </tr>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!And(map_isShowStyle['ckstyle8'].isShow, isAppliancesBU)}" > 
+                            <tr>
+                                <td width="20%" class="tdline tar" style="border-bottom: 1px solid #ECECEC; vertical-align: top; text-align: left; font-size:14px;color:black;font-weight:bold;">
+                                    <apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Outlook__c.label}" styleClass="setfontcls" style="font-size: {!map_isShowStyle['ckstyle8'].fontSize}; font-family: {!map_isShowStyle['ckstyle8'].fontFamily}; color: #{!map_isShowStyle['ckstyle8'].fontColor}; color: #DE8703;"/>
+                                </td>
+                                <td class="tdline" style="border-bottom: 1px solid #ECECEC;">
+                                    <apex:outputField styleClass="setfontcls" value="{!accountPlan.Outlook__c}" />
+                                </td>
+                            </tr>
+                        </apex:outputPanel>
+                    </tbody>
+                  </table>
+
+
+        <apex:outputPanel id="mess5" rendered="{!map_isShowStyle['ckstyle9'].isShow}" >
+            <div style="page-break-after:avoid; ">
+                <span class="mess5titlecls"  style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" value="{!$Label.Competitors}" />
+                </span>
+                <apex:outputPanel id="competPanel" rendered="{!list_competitor.size > 0}">
+                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                        <thead  style="page-break-after:avoid;">
+                            <tr style="page-break-after:avoid;">
+                                <th style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="25%" class="tdbg"><apex:outputText value="{!$Label.Competitors}"/></th>
+                                <th style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="50%" class="tdbg"><apex:outputText value="{!$Label.Market_Share}"/></th>
+                                <th style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="25%" class="tdbg"><apex:outputText value="{!$Label.Comments}"/></th>
+                            </tr>
+                        </thead>
+                        <tbody style="page-break-after:avoid;">
+                            <apex:repeat value="{!list_competitor}" var="item">
+                                <tr  style="page-break-after:avoid;">
+                                    <td style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="25%" ><apex:outputLink value="/{!item.compId}" target="_Blank" style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #000;color: #{!map_isShowStyle['ckstyle9'].fontColor};">{!item.name}</apex:outputLink></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="50%" ><apex:outputText value="{!item.marketShare}"/>&nbsp;<apex:image Value="{!URLFOR($Resource.Graphics, item.tendend+ '.jpg')}" title="{!item.tendend}" rendered="{!NOT(ISNULL(item.tendend))}"/></td>
+                                    <td style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};" width="25%" ><apex:outputText value="{!item.comment}"/></td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </apex:outputPanel>
+            </div>
+            
+            <apex:outputPanel rendered="{!list_competitor.size == 0}" style="page-break-after:avoid;">
+                <b style="font-size: {!map_isShowStyle['ckstyle9'].fontSize}; font-family: {!map_isShowStyle['ckstyle9'].fontFamily}; color: #{!map_isShowStyle['ckstyle9'].fontColor};"><apex:outputLabel value="{!$Label.No_Competitor}"/></b>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+         <apex:outputPanel rendered="{!map_isShowStyle['ckstyle10'].isShow}">
+          <div class="mess5titlecls" style=" color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+              <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};" value="{!$Label.Relationships}" />
+          </div>
+             <table class="itb-table-style-01" style="page-break-after:avoid; margin-top: 10px;" border="0" cellpadding="0" cellspacing="0">
+                 <thead >
+                     <tr class="headerrow" >
+                         <th style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};" class="tdbg" colspan="4">{!$Label.Relationships}</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <tr >
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};">{!$ObjectType.Account_Plan__c.fields.Executive_Relationship__c.label}:</td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Executive_Relationship__c+ '.jpg')}" title="{!accountPlan.Executive_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Executive_Relationship__c))}" /></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:outputText value="{!accountPlan.Executive_Relationship__c}"/></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};" width="50%"><apex:outputText value="{!accountPlan.Executive_Relationship_Comments__c}"/></td>                
+                     </tr>                
+                     <tr  style="page-break-after:avoid;">
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};">{!$ObjectType.Account_Plan__c.fields.Purchasing_Relationship__c.label}:</td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Purchasing_Relationship__c+ '.jpg')}" title="{!accountPlan.Purchasing_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Purchasing_Relationship__c))}" /></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:outputText value="{!accountPlan.Purchasing_Relationship__c}"/></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:outputText value="{!accountPlan.Purchasing_Relationship_Comments__c}"/></td>
+                     </tr>                
+                     <tr  style="page-break-after:avoid;">
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};">{!$ObjectType.Account_Plan__c.fields.Engineering_Relationship__c.label}:</td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Engineering_Relationship__c+ '.jpg')}" title="{!accountPlan.Engineering_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Engineering_Relationship__c))}" /></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:outputText value="{!accountPlan.Engineering_Relationship__c}"/></td>
+                         <td style="font-size: {!map_isShowStyle['ckstyle10'].fontSize}; font-family: {!map_isShowStyle['ckstyle10'].fontFamily}; color: #{!map_isShowStyle['ckstyle10'].fontColor};"><apex:outputText value="{!accountPlan.Engineering_Relationship_Comments__c}"/></td>
+                     </tr>
+                 </tbody>
+            </table>
+
+         </apex:outputPanel>
+     </apex:outputPanel>  
+      <apex:outputPanel rendered="{!And(map_isShowStyle['ckstyle11'].isShow, isAppliancesBU)}" > 
+          <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+            <tbody>
+               <tr >
+                   <td style="font-size:14px;color:black;font-weight:bold;border-bottom: 1px solid #ECECEC;vertical-align: top; text-align: left; font-size: {!map_isShowStyle['ckstyle11'].fontSize}; font-family: {!map_isShowStyle['ckstyle11'].fontFamily}; color: #{!map_isShowStyle['ckstyle11'].fontColor};" width="20%" class="tar tdline"><apex:outputLabel style="color: #DE8703;" value="Competition"/></td>
+                   <!-- add lili zhao 2014.3.18 begin
+                   <td style=" font-size: {!map_isShowStyle['ckstyle5'].fontSize}; font-family: {!map_isShowStyle['ckstyle5'].fontFamily}; color: #{!map_isShowStyle['ckstyle5'].fontColor};" class="tdline"><apex:outputField id="theTextOutput5" value="{!accountPlan.Competition__c}" /></td>
+                   -->
+                   <td class="tdline" style="border-bottom: 1px solid #ECECEC;"><apex:outputField id="theTextOutput5" value="{!accountPlan.Competition__c}" /></td>
+                   <!--add lili zhao 2014.3.18 end -->
+               </tr>
+            </tbody>
+          </table>
+      </apex:outputPanel>
+        
+        <apex:outputPanel id="mess6" layout="block" rendered="{!map_isShowStyle['ckstyle12'].isShow}" >
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.Strategies}</span>
+            </div>
+            <div>
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <thead style="page-break-after:avoid;">
+                        <tr >
+                            <th width="48%" style="vertical-align: top;">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" value="{!$Label.Strategies}" />
+                                </div>
+                            </th>
+                            <th width="48%" style="vertical-align: top;">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" value="{!$Label.Strategic_Initiatives_Penetration_Plan}" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="straPanel" rendered="{!list_strategies.size > 0}">
+                                    <table class="itb-table-style-01">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Strategic_Account_Objectives}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="Location"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_strategies}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!item.objective}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!item.location}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_strategies.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!$Label.no_stategies}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                            
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="straplanPanel" rendered="{!list_strategiesInitiativesPenetrationPlan.size > 0}">
+                                    <table class="itb-table-style-01">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Strategic_Initiatives_Penetration_Plan}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Target}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Status}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Owner}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_strategiesInitiativesPenetrationPlan}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!item.plan}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!item.target}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!item.owner}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_strategiesInitiativesPenetrationPlan.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle12'].fontSize}; font-family: {!map_isShowStyle['ckstyle12'].fontFamily}; color: #{!map_isShowStyle['ckstyle12'].fontColor};"><apex:outputText value="{!$Label.no_stategies}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel id="mess7" layout="block" rendered="{!or(map_isShowStyle['ckstyle13'].isShow, map_isShowStyle['ckstyle14'].isShow)}" >  
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.Breakthrough_Programs}</span>
+            </div>
+            <div>
+            <apex:outputPanel layout="block" rendered="{!map_isShowStyle['ckstyle13'].isShow}">
+                <table style="vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <thead style="page-break-after:avoid;">
+                        <tr>
+                            <th width="48%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" value="{!$Label.Breakthrough_Programs}" />
+                                </div>
+                            </th>
+                            <th width="48%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" value="{!$Label.Key_Projects_Opportunities}" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="breackPanel" rendered="{!list_BreakthroughProgram.size > 0}">
+                                    <table class="itb-table-style-01">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Breakthrough_Programs}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Status}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Comments}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_BreakthroughProgram}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!item.name}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/><apex:outputText value="{!item.status}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!item.comments}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_BreakthroughProgram.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!$Label.No_Breakthrough_Program}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="keyProjectPanel" rendered="{!list_keyProjects.size > 0}">
+                                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Key_Projects_Opportunities}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Start_Date}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Type}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Master_Programm}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_keyProjects}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputLink value="/{!item.keyProjectId}" target="_Blank" style="color: #000;font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};">{!item.name}</apex:outputLink></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!item.startDate}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!item.proTyp}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputLink value="/{!item.masterProjectId}" target="_Blank" style="color: #000;font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};">{!item.masterProgramm}</apex:outputLink></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_keyProjects.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle13'].fontSize}; font-family: {!map_isShowStyle['ckstyle13'].fontFamily}; color: #{!map_isShowStyle['ckstyle13'].fontColor};"><apex:outputText value="{!$Label.No_Projects_Opportunities}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </apex:outputPanel>
+            </div>
+            <apex:outputPanel rendered="{!And(map_isShowStyle['ckstyle14'].isShow, isAppliancesBU)}" >  
+                <table style="vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="font-size:14px;color:black;font-weight:bold;font-size: {!map_isShowStyle['ckstyle14'].fontSize}; font-family: {!map_isShowStyle['ckstyle14'].fontFamily}; vertical-align: top; text-align: left; color: #{!map_isShowStyle['ckstyle14'].fontColor};" width="20%" class="tar">
+                                <apex:outputLabel style="color: #DE8703;" styleClass="setfontcls" value="{!$ObjectType.Account_Plan__c.fields.Key_Opportunity_Comments__c.label}"/>
+                            </td>                       
+                            <td >
+                                <apex:outputField styleClass="setfontcls" value="{!accountPlan.Key_Opportunity_Comments__c}" />
+                            </td>
+                            <!-- modified by lili zhao 2014.03.18 end -->
+                        </tr>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel> 
+           
+        <apex:outputPanel id="mess8" layout="block" rendered="{!map_isShowStyle['ckstyle15'].isShow}" >  
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.Recent_Wins_Losses}</span>
+            </div>
+            <div>
+                <table style="vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <thead style="page-break-after:avoid;">
+                        <tr >
+                            <th width="48%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" value="{!$Label.Recent_Big_Wins}" />
+                                </div>
+                            </th>
+                            <th width="48%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" value="{!$Label.Recent_Losses}" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="recentWinsPanel" rendered="{!list_wins.size > 0}">
+                                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr >
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Recent_Big_Wins}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Date_Won}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Comments}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_wins}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputLink value="/{!item.oppId}" target="_Blank" style="color: #000;font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};">{!item.Name}</apex:outputLink></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!item.dateValue}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!item.comments}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_wins.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!$Label.No_Recent_Big_Wins}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="lossesPanel" rendered="{!list_losses.size > 0}">
+                                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr >
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Recent_Losses}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Date_Lost}"/></th>
+                                                <th style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; background:#ADD8E6 !important; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};" class="tdbg"><apex:outputText value="{!$Label.Comments}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_losses}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputLink value="/{!item.oppId}" target="_Blank" style="color: #000;font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};">{!item.Name}</apex:outputLink></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!item.dateValue}"/></td>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!item.comments}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_losses.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle15'].fontSize}; font-family: {!map_isShowStyle['ckstyle15'].fontFamily}; color: #{!map_isShowStyle['ckstyle15'].fontColor};"><apex:outputText value="{!$Label.No_Losses}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel> 
+        
+        <apex:outputPanel id="mess9" layout="block" rendered="{!map_isShowStyle['ckstyle16'].isShow}">  
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 8px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$Label.Obstecles_And_Scorcard}</span>
+            </div>
+            <div>
+                <table style="vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <thead style="page-break-after:avoid;">
+                        <tr >
+                            <th width="33%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};" value="{!$Label.Obstacles}" />
+                                </div>
+                            </th>
+                            <th width="65%">
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};" value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="obsteclesPanel" rendered="{!list_obstecles.size > 0}">
+                                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr >
+                                                <th class="tdbg" style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};">
+                                                    <apex:outputText value="{!$Label.Obstacle_Headwind}"/>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!list_obstecles}" var="item">
+                                                <tr>
+                                                    <td style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};"><apex:outputText value="{!item}"/></td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!list_obstecles.size == 0}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};"><apex:outputText value="{!$Label.No_Obstecles}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="ScorcardPanel" rendered="{!NOT(ISNULL(accountPlan.Customer_Scorecard__c))}">
+                                    <table class="itb-table-style-01" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr >
+                                                <th style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};" width="49%" class="tdbg"><apex:outputText value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}"/></th>
+                                                <th style="background:#ADD8E6 !important; font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};" width="51%" class="tdbg"><apex:outputText value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard_Comments__c.label}"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="word-break:break-all;word-wrap:break-word; overflow: hidden;">
+                                                    <apex:outputLink value="{!accountPlan.Customer_Scorecard__c}"
+                                                    target="_Blank" style="color: #000;width:100%; display:block;word-wrap: break-word;float:left;overflow: hidden; font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};">
+                                                        {!accountPlan.Customer_Scorecard__c}
+                                                    </apex:outputLink>
+                                                </td>
+                                                <td style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};"><apex:outputText value="{!accountPlan.Customer_Scorecard_Comments__c}"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!ISNULL(accountPlan.Customer_Scorecard__c)}">
+                                    <b style="font-size: {!map_isShowStyle['ckstyle16'].fontSize}; font-family: {!map_isShowStyle['ckstyle16'].fontFamily}; color: #{!map_isShowStyle['ckstyle16'].fontColor};"><apex:outputText value="{!$Label.No_Customer_Scorecard}"/></b>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel>   
+        
+        <apex:outputPanel id="mess10" layout="block"  rendered="{!map_isShowStyle['ckstyle17'].isShow}" >  
+            <div class="sectionhead" style="page-break-after:avoid; background-color: #8BBEC1; border-color: #8BBEC1; line-height:15px; height: 15px;font-weight: bold;margin-top: 15px; overflow:hidden; color:#fff !important; border-width: 2px 0 0;border-style: solid; padding: 4px 3px;padding-bottom: 10px; margin-bottom: 2px;width: 100%;">
+                <img src="/s.gif" alt="Hide Section - Strategies" class="sectionimg" name="Strategies" style="cursor:pointer;background: rgba(0, 0, 0, 0) url('/img/alohaSkin/twisty_sprite.png') 0 -11px no-repeat;background-repeat: no-repeat; height: 11px;width: 11px;background-position: 1px -36px; margin-right: 4px;" tabindex="0" title="Hide Section - Strategies" />
+                <span style="display: inline-block;">{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}</span>
+            </div>
+            <div>
+                <table style="vertical-align: top;" border="0" cellpadding="0" cellspacing="0">
+                    <thead style="page-break-after:avoid;">
+                        <tr >
+                            <th>
+                                <div class="mess5titlecls" style="color: #DE8703; font-weight: bold; font-size: 16px; height: 21px; line-height: 21px; margin-top: 7px;">
+                                    <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle17'].fontSize}; font-family: {!map_isShowStyle['ckstyle17'].fontFamily}; color: #{!map_isShowStyle['ckstyle17'].fontColor};" value="{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-after:avoid;">
+                            <td style="vertical-align: top;">
+                                <apex:outputPanel id="updatePanel" layout="block" rendered="{!NOT(ISNULL(accountPlan.Monthly_Update__c))}">
+                                    <apex:outputField style="font-size: {!map_isShowStyle['ckstyle17'].fontSize}; font-family: {!map_isShowStyle['ckstyle17'].fontFamily}; color: #{!map_isShowStyle['ckstyle17'].fontColor};" id="editor_update" value="{!accountPlan.Monthly_Update__c}"/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Monthly_Update_Last_Updated_By__c))}">
+                                    <i style="font-size:12px;font-size: {!map_isShowStyle['ckstyle17'].fontSize}; font-family: {!map_isShowStyle['ckstyle17'].fontFamily}; color: #{!map_isShowStyle['ckstyle17'].fontColor};">&nbsp;&nbsp;&nbsp;{!$ObjectType.Account_Plan__c.fields.Monthly_Update_Last_Updated_By__c.label}&nbsp;
+                                        <b style="text-decoration: underline;">{!Account_Plan__c.Monthly_Update_Last_Updated_By__r.Name}</b> &nbsp;on&nbsp;
+                                        <apex:outputfield style="font-size:12px;font-size: {!map_isShowStyle['ckstyle17'].fontSize}; font-family: {!map_isShowStyle['ckstyle17'].fontFamily}; color: #{!map_isShowStyle['ckstyle17'].fontColor};" Value="{!accountPlan.Monthly_Update_Last_Updated__c}"/>
+                                    </i>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel id="mess11" layout="block" rendered="{!And(map_isShowStyle['ckstyle18'].isShow, isAppliancesBU)}" > 
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr style="page-break-after: avoid;">
+                    <td width="20%" style="vertical-align: top; text-align: left;font-size:14px;color:black;font-weight:bold;">
+                        <apex:outputLabel style="font-size: {!map_isShowStyle['ckstyle18'].fontSize};  font-family: {!map_isShowStyle['ckstyle18'].fontFamily}; color: #{!map_isShowStyle['ckstyle18'].fontColor}; color: #DE8703;" value="{!$ObjectType.Account_Plan__c.Fields.Industry_Trends_Indicators__c.Label}"/>        
+                    </td>
+                    
+                    <td >
+                       <apex:outputField id="theTextOutput7" value="{!accountPlan.Industry_Trends_Indicators__c}" />
+                    </td>
+                    
+                </tr>  
+            </table>
+        </apex:outputPanel> 
+
+    </apex:form>   
+</body>   
+</apex:page>

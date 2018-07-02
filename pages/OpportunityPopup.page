@@ -1,0 +1,141 @@
+<apex:page controller="displayrelatedcontact" showHeader="true" sidebar="true" standardStylesheets="true" id="page" >
+    
+    
+    <script type="text/javascript">   
+    if({!$CurrentPage.parameters.conrel} == '1'){
+        location.replace('/006/e?nooverride=1&lookupcmpgn=1&accid={!$CurrentPage.parameters.accid}&conid={!$CurrentPage.parameters.conid}');
+    }
+    </script> 
+    <script type="text/javascript">
+    function selectAllCheckboxes(obj,receivedInputID){
+        var inputCheckBox = document.getElementsByTagName("input");
+        for(var i=0; i<inputCheckBox.length; i++){
+            //alert('hello---'+i);
+            if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){
+                inputCheckBox[i].checked = obj.checked;
+            }
+        }
+        // to call action support
+        callactionfun();
+    }
+    
+    function changeValue(input, textid) {
+        document.getElementById(textid).value = input.value;
+    }  
+    
+    function select_row(input){       
+        input.parentElement.parentElement.previousElementSibling.firstChild.checked = true;
+        var defaultId=document.getElementById('page:form:selctdcon').value=input.value; 
+    } 
+    function check_error(input){  
+        debugger;     
+        if(input.parentElement.nextElementSibling.firstChild.firstElementChild.checked == true){
+            input.checked = true;
+            setError();
+            
+        }      
+    }
+    
+    </script>
+    <script>
+    function doValidation(){
+        if(document.getElementById('page:form:pb:sel:section:lid').value == ''){
+            document.getElementById('page:form:selctdAcc').value='';
+            //alert('hi===>'+document.getElementById('page:form:selctdAcc').value);
+        }else{
+          var defaultId=document.getElementById('page:form:selctdAcc').value=document.getElementById('page:form:pb:sel:section:lid').value; 
+        }
+    }
+    </script> 
+     <script>
+	  function HideMsg(istrue)
+  		{
+    	var checkval = document.getElementById('page:form:pb:sel:section:lid').value=;
+            alert('Hi>>>');
+    	if(istrue.checked )
+    	{  
+        	var checkval = document.getElementById('errormsg').style.display='Block';
+    	}
+    	else
+    	{
+        	var checkval = document.getElementById('errormsg').style.display='none';
+    	}
+  		}
+    </script> 
+
+    <apex:form id="form">
+        <apex:inputText value="{!contactId1}" id="selctdcon" style="display:None;" />
+        <apex:actionFunction action="{!setError}" rerender="showmessage,selected_cons" name="setError"/>
+        <apex:actionFunction action="{!getSelectedWrapper}" rerender="showmessage,selected_cons" name="callactionfun"/>
+        <apex:pageBlock title="Account and Contact Selection" id="pb">
+            <apex:pageMessages id="showmessage" />
+            <apex:pageBlockSection title="All Related Contacts" collapsible="false" columns="2" >
+                <apex:pageblockTable title="All Contacts" value="{!listContactWrp}" var="sc" id="check">
+                    
+                    <!-- <div style="overflow: scroll; width: 100px; height: 100px;"> -->
+                    <apex:column width="10" id="checkbox">
+                        <apex:facet name="header">
+                            <apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputId')" rendered="{!listContactWrp.size > 0}" id="chckId" >
+                            </apex:inputCheckbox>
+                        </apex:facet> 
+                        <apex:inputCheckbox value="{!sc.selected}" id="inputId" styleClass="checkcls" >
+                            <apex:actionSupport event="onclick" action="{!getSelectedWrapper}"  rerender="selected_cons,showmessage" oncomplete="check_error(this)"/>
+                        </apex:inputCheckbox>
+                    </apex:column>
+                    <apex:column headerValue="Primary Contact" width="15" id="radiob">
+                        <apex:actionSupport event="onclick" action="{!getSelectedWrapper}"  rerender="showmessage,selected_cons">
+                            <apex:param name="primarycon" value="{!sc.con.id}" assignTo="{!primaryConSelectedOnPage }">
+                                <apex:outputPanel rendered="{!sc.con.id == conId}" id="pnl">
+                                    <input type="radio" name="chosen" id="{!sc.con.id}" VALUE="{!sc.con.id}" checked="checked" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!(sc.con.id == conId)}">
+                                    <input type="radio" name="chosen" id="{!sc.con.id}" VALUE="{!sc.con.id}" onclick="select_row(this);"/>
+                                </apex:outputPanel>
+                            </apex:param>
+                        </apex:actionSupport> 
+                    </apex:column> 
+                    <apex:column value="{!sc.con.Name}" width="100" />
+                    <apex:column value="{!sc.con.MQL_Flag_Contact__c}" width="15"/>
+                    <apex:column value="{!sc.con.MQL_age__c}" width="15"/> 
+                    <!--  </div> -->
+                </apex:pageblockTable>
+                
+                <apex:pageblockTable title="Selected Contacts" value="{!selectedContactWrapper}" var="scon" id="selected_cons" >
+                    <apex:column headerValue="Selected Contact(s)" width="10" >
+                        <apex:inputCheckbox value="{!scon.selected}" id="inputId" styleClass="checkcls" selected="true" disabled="true"/>
+                    </apex:column>
+                    <apex:column headervalue="Primary Contact" width="30" >
+                        <apex:outputPanel id="chkrender" rendered="{!scon.primarycon1==true}" >                                           
+                            <input type="radio" id="radioValue" name="selectedIds" checked ="true"/>                        
+                        </apex:outputPanel>
+                        <apex:outputPanel id="unChkrender" rendered="{!scon.primarycon1!=true}" >
+                            <input type="radio" id="radioValue" name="selectedIds" disabled="true" />                        
+                        </apex:outputPanel> 
+                    </apex:column>    
+                    <apex:column value="{!scon.con.Name}" width="50" />
+                    <apex:column value="{!scon.con.MQL_Flag_Contact__c}" width="10"/>
+                    <apex:column value="{!scon.con.MQL_age__c}" width="10"/>
+                    
+                </apex:pageblockTable> 
+                
+            </apex:pageBlockSection>  
+            
+            <apex:pageBlock id="sel">                
+                <!--<apex:pageMessages id="showmsg" />-->
+                <apex:pageBlockSection id="section">
+                    <apex:outputLabel value="Please Select Account:"> 
+                       <apex:inputField value="{!conRec.AccountId}" required="false" id="lid" onkeypress="HideMsg(this);">
+                       <apex:actionsupport event="onchange" action="{!showContacts}" rerender="check,selected_cons,showmessage"/>
+                       </apex:inputField>
+                    </apex:outputLabel> 
+                </apex:pageBlockSection>
+            </apex:pageBlock>          
+            <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton value="Next" action="{!gotoOpportunity}" reRender="showmessage" onclick="doValidation();"/> 
+                <apex:commandButton value="Cancel" action="{!Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:inputHidden value="{!primaryCon }" id="RadioButtonValue" />
+        </apex:pageBlock>
+      <apex:inputText value="{!selAccountId}" id="selctdAcc" style="display:None;"/> 
+    </apex:form>
+</apex:page>

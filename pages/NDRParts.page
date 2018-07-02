@@ -1,0 +1,1026 @@
+<!--
+/**********************************************************************************************************************************************
+*******
+Name: NDRParts 
+Copyright © 2013 TE Connectivity | Salesforce Instance : C2S Org
+===============================================================================================================================================
+
+Purpose: This page displays the  NDR Opportunity Part information.
+===============================================================================================================================================
+REQUIREMENT INFORMATION & DEVELOPMENT INFORMATION:                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+VERSION   AUTHOR              DATE          DETAIL                           
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ 1.0   Abhijeet Manepatil   04/1/2013    Visualforce Page                       
+***********************************************************************************************************************************************
+*****/
+-->
+
+<apex:page standardController="Opportunity" extensions="NDRPartsController" sidebar="false" tabStyle="Opportunity_Part__c" >
+
+    <apex:form id="NDRPartsForm">
+    
+    <!--------------------- Script for Expand/Collapse section --------------------------->
+    <script>
+    var recTyp = '{!Rectyp}'; <!-- Added by Raghu part of CCR Project -->
+    function switchMenu(obj,obj1,obj2,obj3) 
+        {
+            var elements = new Array();
+            var elements1 = new Array();
+            var elements2 = new Array();
+            var col1_array = new Array();
+            var col2_array = new Array();
+            var col3_array = new Array();
+            var col4_array = new Array();
+            var col5_array = new Array();
+            var col6_array = new Array();
+            var col7_array = new Array();
+            var col8_array = new Array();
+            var col9_array = new Array();
+            var col10_array = new Array();
+            var col11_array = new Array();
+            var col12_array = new Array();
+            <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->
+            var col13_array = new Array();
+            var col14_array = new Array();
+            var col15_array = new Array();
+            <!-- CCR Changes ends here-->
+            var s = '{!vNDRWrapperList.size}';
+            var collapse = obj2.toString();
+            var index = collapse.indexOf("minusimage")
+           
+            for (var i = 0; i < s; i++) {
+            var cid = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':inlinetablesec';
+            var cid1 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':minusimage';
+            var cid2 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':plusimage';
+            var col1 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column1';
+            var col2 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column2';
+            var col3 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column3';
+            var col4 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column4';
+            var col5 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column5';
+            var col6 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column6';
+            var col7 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column7';
+            var col8 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column8';
+            var col9 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column9';
+            var col10 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column10';
+            var col11 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column11';
+            var col12 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column12';
+           <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->
+            var col13 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column13';
+            var col14 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column14';
+            var col15 = 'j_id0:NDRPartsForm:NDRPartsBlock:NDRPartPageBlockTable:'+i+':Column15';
+            <!-- CCR Changes ends here -->
+             elements.push(cid);
+            elements1.push(cid1);
+            elements2.push(cid2);
+            col1_array.push(col1);
+            col2_array.push(col2);
+            col3_array.push(col3);
+            col4_array.push(col4);
+            col5_array.push(col5);
+            col6_array.push(col6);
+            col7_array.push(col7);
+            col8_array.push(col8);
+            col9_array.push(col9);
+            col10_array.push(col10);
+            col11_array.push(col11);
+            col12_array.push(col12);
+           <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->            
+            col13_array.push(col13);
+            col14_array.push(col14);
+            col15_array.push(col15);
+            <!-- CCR Changes ends here -->            
+             }
+             
+            
+            for(var i = 0; i < s; i++){
+                var el = document.getElementById(elements[i]);
+                var e2 = document.getElementById(elements1[i]);
+                var e3 = document.getElementById(elements2[i]);
+                var c1 = document.getElementById(col1_array[i]);
+                var c2 = document.getElementById(col2_array[i]);
+                var c3 = document.getElementById(col3_array[i]);
+                var c4 = document.getElementById(col4_array[i]);
+                var c5 = document.getElementById(col5_array[i]);
+                var c6 = document.getElementById(col6_array[i]);
+                var c7 = document.getElementById(col7_array[i]);
+                var c8 = document.getElementById(col8_array[i]);
+                var c9 = document.getElementById(col9_array[i]);
+                var c10 = document.getElementById(col10_array[i]);
+                var c11 = document.getElementById(col11_array[i]);
+                var c12 = document.getElementById(col12_array[i]);
+               <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->                
+                var c13 = document.getElementById(col13_array[i]);
+                var c14 = document.getElementById(col14_array[i]);
+                var c15 = document.getElementById(col15_array[i]);
+                <!-- CCR Changes ends here -->                
+                    if(obj == elements[i]){
+                        if ( el.style.display != 'none' ) {
+                            el.style.display = 'none';
+                        }
+                        else {
+                            el.style.display = '';
+                        }
+                    } 
+                    else{
+                        el.style.display = 'none';
+                    }
+                    
+                    if(obj1 == elements1[i]){
+                        if ( e2.style.display != 'none' ) {
+                            e2.style.display = 'none';
+                        }
+                        else {
+                            e2.style.display = '';
+                        }
+                    } 
+                    else{
+                        e2.style.display = 'none';
+                    }
+              
+                    if(obj2 == elements2[i]){
+                        if ( e2.style.display != 'none' ) {
+                            e3.style.display = 'none';
+                        }
+                        else {
+                            e3.style.display = '';
+                        }
+                    } 
+                    else{
+                        e3.style.display = '';
+                    }
+                    
+                    if(obj3 == col1_array[i] ){
+                        c1.style.background = '';
+                        c1.style.opacity = '';
+                        c2.style.background = '';
+                        c2.style.opacity = '';
+                        c3.style.background = '';
+                        c3.style.opacity = '';
+                        c4.style.background = '';
+                        c4.style.opacity = '';
+                        c5.style.background = '';
+                        c5.style.opacity = '';
+
+                        c7.style.background = '';
+                        c7.style.opacity = '';
+                        c8.style.background = '';
+                        c8.style.opacity = '';
+                        c9.style.background = '';
+                        c9.style.opacity = '';
+                        c10.style.background = '';
+                        c10.style.opacity = '';
+                        c11.style.background = '';
+                        c11.style.opacity = '';
+                        c12.style.background = '';
+                        c12.style.opacity = '';
+                       <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->                        
+                        if(recTyp == 'true'){
+                        c6.style.background = '';
+                        c6.style.opacity = '';                        
+                        c13.style.background = '';
+                        c13.style.opacity = '';
+                        c14.style.background = '';
+                        c14.style.opacity = '';
+                        c15.style.background = '';
+                        c15.style.opacity = '';
+                        }
+                        <!-- CCR Changes ends here -->                        
+                      }
+                   else{
+                       c1.style.background ='silver';
+                       c1.style.opacity = '0.5';
+                       c2.style.background ='silver';
+                       c2.style.opacity = '0.5';
+                       c3.style.background ='silver';
+                       c3.style.opacity = '0.5';
+                       c4.style.background ='silver';
+                       c4.style.opacity = '0.5';
+                       c5.style.background ='silver';
+                       c5.style.opacity = '0.5';
+
+                       c7.style.background ='silver';
+                       c7.style.opacity = '0.5';
+                       c8.style.background ='silver';
+                       c8.style.opacity = '0.5';
+                       c9.style.background ='silver';
+                       c9.style.opacity = '0.5';
+                       c10.style.background ='silver';
+                       c10.style.opacity = '0.5';
+                       c11.style.background ='silver';
+                       c11.style.opacity = '0.5';
+                       c12.style.background ='silver';
+                       c12.style.opacity = '0.5';
+                       <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->            
+                       if(recTyp == 'true'){
+                       c6.style.background ='silver';
+                       c6.style.opacity = '0.5';                       
+                       c13.style.background ='silver';
+                       c13.style.opacity = '0.5';
+                       c14.style.background ='silver';
+                       c14.style.opacity = '0.5';
+                       c15.style.background ='silver';
+                       c15.style.opacity = '0.5';
+                       }
+                        <!-- CCR Changes ends here -->                       
+                    }
+                    
+                    if(index != -1){
+                        c1.style.background = '';
+                        c1.style.opacity = '';
+                        c2.style.background = '';
+                        c2.style.opacity = '';
+                        c3.style.background = '';
+                        c3.style.opacity = '';
+                        c4.style.background = '';
+                        c4.style.opacity = '';
+                        c5.style.background = '';
+                        c5.style.opacity = '';
+
+                        c7.style.background = '';
+                        c7.style.opacity = '';
+                        c8.style.background = '';
+                        c8.style.opacity = '';
+                        c9.style.background = '';
+                        c9.style.opacity = '';
+                        c10.style.background = '';
+                        c10.style.opacity = '';
+                        c11.style.background = '';
+                        c11.style.opacity = '';
+                        c12.style.background = '';
+                        c12.style.opacity = '';
+                       <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->                        
+                        if(recTyp == 'true'){
+                        c6.style.background = '';
+                        c6.style.opacity = '';                        
+                        c13.style.background = '';
+                        c13.style.opacity = '';
+                        c14.style.background = '';
+                        c14.style.opacity = '';
+                        c15.style.background = '';
+                        c15.style.opacity = '';   
+                        }              
+                        <!-- CCR Changes ends here -->                               
+                    }
+             }  
+       }
+       </script>
+    <!-------------------  Style for a pageblock table and popup -------------------->
+      <style type="text/css">
+        .custPopup{
+            background-color: #FFFFFF;
+            border-width: 3px;
+            border-style: solid;
+            border-color: #bddbfa;
+            z-index: 9999;
+            left: 50%;
+            padding:30px;
+            position: fixed;
+            width: 400px; 
+            height:260px;
+            margin-left: -250px;
+            top:10%;  
+            -webkit-border-radius: 40px;
+            -moz-border-radius: 40px;
+            border-radius: 0px;  
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.10;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 180%;
+            height: 250%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        } 
+        .classname{
+            background: rgb(159,216,239) !important; /* Old browsers */
+            background: -moz-linear-gradient(top, rgba(159,216,239,1) 46%, rgba(191,232,249,1) 100%, rgba(42,176,237,1) 100%) !important; 
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(46%,rgba(159,216,239,1)), color-stop(100%,rgba(191,232,249,1)), color-stop(100%,rgba(42,176,237,1))) !important; 
+            background: -webkit-linear-gradient(top, rgba(159,216,239,1) 46%,rgba(191,232,249,1) 100%,rgba(42,176,237,1) 100%) !important; 
+            background: -o-linear-gradient(top, rgba(159,216,239,1) 46%,rgba(191,232,249,1) 100%,rgba(42,176,237,1) 100%) !important; 
+            background: -ms-linear-gradient(top, rgba(159,216,239,1) 46%,rgba(191,232,249,1) 100%,rgba(42,176,237,1) 100%) !important;
+            background: linear-gradient(to bottom, rgba(159,216,239,1) 46%,rgba(191,232,249,1) 100%,rgba(42,176,237,1) 100%) !important; 
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9fd8ef', endColorstr='#2ab0ed',GradientType=0 ) !important; 
+            
+            -moz-border-radius:6px !important;
+            -webkit-border-radius:6px !important;
+            border-radius:0px 0px 7px 7px !important;
+            color:black !important;
+            height:20px !important;
+        } 
+ 
+        body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock  {
+            background-color: #FFFFFF !important;
+            border:0px !important;
+        } 
+        body .pbBody table.list {
+            border:0px !important;
+        }   
+        body .pbBody table.list tr.dataRow th, body .pbBody table.list tr.dataRow td {
+            border-width: 0 0 0 0 !important;
+            border-color:#3093c7 !important;
+            vertical-align: middle !important;
+        }
+        
+        .ExpandCollapse{
+            background: rgb(122,188,255) !important; 
+            background: -moz-linear-gradient(top, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%) !important; 
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1))) !important; 
+            background: -webkit-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important; 
+            background: -o-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important; 
+            background: -ms-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important; 
+            background: linear-gradient(to bottom, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important;  
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=0 ) !important; 
+            color:#ffffff !important;
+   
+            -moz-border-radius:6px !important;
+            -webkit-border-radius:6px !important;
+            border-radius:3px !important;
+            border:0px solid blue !important;
+            display:inline-block !important;
+            color:#000000 !important;
+            font-family:arial !important;
+            font-size:11px !important;
+            font-weight:bold !important;
+            padding:0px 2px !important;
+            text-decoration:none !important;
+        }
+        
+        .FormButton {
+            background: rgb(122,188,255) !important;
+            background: -moz-linear-gradient(top, rgba(122,188,255,1) 0%, rgba(96,171,248,1) 44%, rgba(64,150,238,1) 100%) !important; 
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(122,188,255,1)), color-stop(44%,rgba(96,171,248,1)), color-stop(100%,rgba(64,150,238,1))) !important;
+            background: -webkit-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important; 
+            background: -o-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important; 
+            background: -ms-linear-gradient(top, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important;
+            background: linear-gradient(to bottom, rgba(122,188,255,1) 0%,rgba(96,171,248,1) 44%,rgba(64,150,238,1) 100%) !important;  
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=0 ) !important;
+            color:#000000 !important;
+            font-weight:bold !important;
+            -moz-border-radius:6px !important;
+            -webkit-border-radius:6px !important;
+            border-radius:6px !important;
+            border:0px solid #eeb44f !important;
+            display:inline-block !important;
+            
+            font-family:arial !important;
+            font-size:11px !important;
+            font-weight:bold !important;
+            padding:4px 9px !important;
+            text-decoration:none !important;
+    
+}
+    </style>  
+    <!-----------------  CSS For custom Confirm Box ----------------->  
+ <style type="text/css">
+    <!-- css script for modal pop up -->
+        .DialogPopup{
+            background-color: #bddbfa;
+            border-width: 3px;
+            border-style: solid;
+            border-color: #bddbfa;
+            z-index: 9999;
+            left: 50%;
+            padding:30px;
+            position: fixed;
+            width: 400px; 
+            height:60px;
+            margin-left: -250px;
+            top:20%;  
+            -webkit-border- r-radius: 0px;
+            -moz-border-radius: 0px;
+            border-radius: 0px;  
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6) );
+            background:-moz-linear-gradient( center top, #ffffff 5%, #f6f6f6 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6');
+            background-color:#ffffff;   
+        }
+        .AgreedisagreeDialogPopup{
+            background-color: #bddbfa;
+            border-width: 3px;
+            border-style: solid;
+            border-color: #bddbfa;
+            z-index: 9999;
+            left: 50%;
+            padding:30px;
+            position: fixed;
+            width: 400px; 
+            height:130px;
+            margin-left: -250px;
+            top:20%;  
+            -webkit-border- r-radius: 0px;
+            -moz-border-radius: 0px;
+            border-radius: 0px;  
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6) );
+            background:-moz-linear-gradient( center top, #ffffff 5%, #f6f6f6 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6');
+            background-color:#ffffff;   
+        }
+         .DialogButton{
+    
+            -moz-box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+            -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+            box-shadow:inset 0px 1px 0px 0px #ffffff !important;
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6) ) !important;
+            background:-moz-linear-gradient( center top, #ffffff 5%, #f6f6f6 100% ) !important;
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6') !important;
+            background-color:#ffffff;
+            border:1px solid #dcdcdc;
+            display:inline-block !important;
+            color:#666666 !important;
+            font-family:arial !important;
+            font-size:15px!important;
+            font-weight:bold !important;
+            padding:6px 20px !important;
+            text-decoration:none !important;
+            text-shadow:1px 1px 0px #ffffff !important;
+        }
+      .DialogStrip{
+            background-color: red;
+            background-color: #F0FFFF;
+            border-width: 0px;
+            z-index: 9000;
+            left: 58.8%;
+            padding:0px;
+            position: absolute;
+            width: 462px; 
+            height:25px;
+            margin-left: -270px;
+            top:0%;  
+            -webkit-border-r-radius: 40px;
+            -moz-border-radius: 10px;
+            border-radius: 40 40 0 0;  
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #bddbfa), color-stop(1, #80b5ea) );
+            background:-moz-linear-gradient( center top, #bddbfa 5%, #80b5ea 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddbfa', endColorstr='#80b5ea');
+            
+          }
+      .DialogCancel{
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #bddbfa), color-stop(1, #80b5ea) ) !important;
+            background:-moz-linear-gradient( center top, #bddbfa 5%, #80b5ea 100% ) !important;
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddbfa', endColorstr='#80b5ea') !important;
+            background-color:#bddbfa !important;
+            -moz-border-radius:29px !important;
+            -webkit-border-radius:29px !important;
+            border-radius:29px !important;
+            border:1px solid #84bbf3 !important;
+            display:inline-block !important;
+            color:#ffffff !important;
+            font-family:arial !important;
+            font-size:18px !important;
+            font-weight:bold !important;
+            padding:0px 14px !important;
+            text-decoration:none !important;
+      }
+     .helpOrb {
+            background-image: url(/img/help/helpOrbs.gif);
+            background-position: 0 0;
+            width: 20px;
+            height: 15px;
+        }
+    
+    .vfHelpText div
+   {
+   position:relative;
+   }
+   .vfHelpText div span{display: none;}
+   
+   .vfHelpText div:hover span{
+   display: block;
+              position:absolute;
+              top:1.25em;
+              padding:2px 5px;
+              left:-40em; width:40em;
+              z-index:100;
+            
+              color:black;
+              opacity:0.9;
+              color: #000000; 
+                background: #333333;
+                background: #FFFFFF;
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #EEEEEE 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#EEEEEE));
+                background: -ms-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#EEEEEE));
+                
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#EEEEEE',GradientType=0 );
+                border:1px solid black;
+                border-radius:4px;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -moz-box-shadow: 3px 3px 8px #CCC;
+                -webkit-box-shadow: 3px 3px 8px #CCC;
+                box-shadow: 3px 3px 8px #CCC;
+     }
+    </style>
+      
+   
+    
+        <apex:pageMessage summary="All parts need to be 'approved' or 'rejected' or a combination of the 2 for the data to flow back to GPMS & SAP." severity="info" strength="3" />
+        <apex:pageBlock id="NDRPartsBlock">
+            <apex:pageblockSection id="NDR" columns="1" collapsible="true"/>
+                <apex:pageblocktable value="{!vNDRWrapperList}"  var="accdet" id="NDRPartPageBlockTable" headerclass="classname">
+                    <apex:column >
+                        <apex:outputpanel id="plusimage">
+                            <apex:outputLabel value="+" styleClass="ExpandCollapse"  onclick="switchMenu('{!$Component.inlinetablesec}','{!$Component.minusimage}','{!$Component.plusimage}','{!$Component.Column1}')"  ></apex:outputLabel>
+                        </apex:outputpanel>
+                        <apex:outputpanel id="minusimage" style="display:none;">
+                            <apex:outputLabel value="- " styleClass="ExpandCollapse" onclick="switchMenu('{!$Component.inlinetablesec}','{!$Component.plusimage}','{!$Component.minusimage}','{!$Component.Column1}')" title="Collapse - NDR Part"/>
+                        </apex:outputpanel>
+                    </apex:column>
+                    <!--
+                    <apex:column id="Column1">
+                        <apex:facet name="header">
+                           &nbsp;&nbsp; Part Number &nbsp;&nbsp;
+                        </apex:facet> 
+                        <apex:commandLink value="{!accdet.vNDR.Part__r.name}" action="{!pageRefId}" target="_blank">
+                            <apex:param name="setIdParam" value="{!accdet.vNDR.Id}" assignTo="{!vSetParamId}"/> 
+                        </apex:commandLink>
+                    </apex:column>
+                    -->
+                    <apex:column id="Column12">
+                        <apex:facet name="header">
+                        
+                        <apex:commandLink action="{!toggleSort}" rerender="NDRPartsForm">
+                           <apex:outputLabel escape="false" value="DMM Response(Approve/Reject){!IF(sortField=='NDR_DMM_Response_on_GMPS_Response__c',IF(sortDir ='asc','▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','▲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),'▼▲&nbsp;&nbsp;')}"/>  
+                            <apex:param name="sortField" value="NDR_DMM_Response_on_GMPS_Response__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                        </apex:facet> 
+                        
+                        <center>
+                            <apex:commandButton value="Approve" onclick="javascript:approveRecord('{!accdet.vNDR.Id}'); return true;" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c == null && accdet.vNDR.NDR_GPMS_Status__c != null}" styleClass="FormButton" reRender="NDRPartsForm"/>                      
+                            <apex:commandButton value="Reject"  onclick="javascript:rejectRecord('{!accdet.vNDR.Id}'); return true;" reRender="pop" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c == null && accdet.vNDR.NDR_GPMS_Status__c != null}" styleClass="FormButton"/> 
+                            <apex:commandButton value="Approve With Comments"  onclick="javascript:approveRecordWithComments('{!accdet.vNDR.Id}'); return true;" reRender="confirmpop" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c == null && accdet.vNDR.NDR_GPMS_Status__c != null}" styleClass="FormButton"/> 
+                             
+                            <b>
+                                <apex:outputField value="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c}" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c != null}"/>
+                            </b>  
+                             
+                        </center>
+                       <!---------------------- Popup for confirm --------------------------->
+                       <apex:outputPanel id="confirmpop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayconfirmPopUp}"/>
+                                                             
+                               <apex:outputPanel layout="block" styleClass="DialogPopup" rendered="{!displayconfirmPopUp}"> 
+                                   <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                       <apex:commandButton value="×"  action="{!closeRejectPopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                   
+                                   <apex:image value="/img/msg_icons/info24.png"/>
+                                          
+                                    <br/><br/><center>
+                                     <apex:commandButton value="No"  action="{!closeRejectPopup}" styleClass="DialogButton" rerender="NDRPartsForm"/>                                            
+                                     <apex:commandButton value="Yes"  action="{!ShowRejectPopup}" rerender="pop" styleClass="DialogButton"/>   </center>                                                                       
+                            </apex:outputPanel> 
+                        </apex:outputPanel>
+                        <!---------------------- Popup for Approve confirm --------------------------->
+                       <apex:outputPanel id="confirmApprovepop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayApproveconfirmPopUp}"/>
+                                                             
+                               <apex:outputPanel layout="block" styleClass="custPopup" rendered="{!displayApproveconfirmPopUp}"> 
+                                   <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                       <apex:commandButton value="×"  action="{!closeApprovePopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                   
+                                   <apex:image value="/img/msg_icons/info24.png"/>
+                                   <b> Please Provide Your Comments: </b><br/>
+                                   <apex:inputTextArea value="{!ndrcomment}" style="width: 350px; height: 100px" />
+                                     <br/><br/><center>
+                                     <apex:commandButton value="No"  action="{!closeApprovePopup}" styleClass="DialogButton" rerender="NDRPartsForm"/>                                            
+                                     <apex:commandButton value="Yes"  action="{!saveApproveComments}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                            </apex:outputPanel> 
+                        </apex:outputPanel>
+                        <!--------------------- Popup on Reject button ---------------------->
+                        <apex:outputPanel id="pop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!vDisplayPopUp}"/>                                  
+                            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!vDisplayPopUp}">
+                            <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                        <h4><apex:outputText value="Please select rejection reason and enter comments:"/></h4>
+                                       <apex:commandButton value="×"  action="{!closeRejectPopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                <apex:pagemessages />     
+                                    <br/><br/>   
+                                    <div style="float:left">                          
+                                   Rejection reason :
+                                   </div>
+                                   <center>
+                                    <apex:inputField value="{!vActiononNDR.NDR_Rejection_Reason__c}" label="Rejection reason:"/> <br/><br/>
+                                    </center>
+                                    <div style="float:left">
+                                    Rejection comments :</div>
+                                    <center>
+                                    <apex:inputField value="{!vActiononNDR.NDR_Rejection_Comments__c}" id="Comments" style="width:250px; Height:110px;" label="Rejection reason:"/> 
+                                    <br/><br/>   
+                                    <apex:commandButton value="Save"   action="{!saveRejectComments}" reRender="NDRPartsForm" styleClass="DialogButton"/>   
+                                    <apex:commandButton value="Cancel" action="{!closeRejectPopup}"  reRender="NDRPartsForm" styleClass="DialogButton"/>                                            
+                                     </center>                                                                                                                                                                                                    
+                            </apex:outputPanel> 
+                        </apex:outputPanel> 
+                        
+                    </apex:column>
+                    
+                    <apex:column id="Column1">
+                        <apex:facet name="header">
+                           &nbsp;&nbsp; Part Number &nbsp;&nbsp;
+                        </apex:facet> 
+                        <apex:commandLink value="{!accdet.vNDR.Part__r.name}" action="{!pageRefId}" target="_blank">
+                            <apex:param name="setIdParam" value="{!accdet.vNDR.Id}" assignTo="{!vSetParamId}"/> 
+                        </apex:commandLink>
+                    </apex:column>
+                   
+                    <!-- Added by Raghurama Y for CCR Project - CCR Changes Startes here-->
+
+                     <apex:column id="Column13"  rendered="{!Rectyp}" >
+                        <apex:facet name="header">
+                           Competitor <br/> Part Number 
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Competitor_Part_Number__c}"/>
+                    </apex:column>   
+                    <apex:column id="Column14" rendered="{!Rectyp}">
+                        <apex:facet name="header">
+                           Competitor <br/> Name
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Competitor_Name__c}"/>
+                    </apex:column>   
+                    <apex:column id="Column15" rendered="{!Rectyp}">
+                        <apex:facet name="header">
+                           Competitor <br/> Price
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.Competitor_Price__c}"/>
+                    </apex:column>       
+                    <!-- CCR Changes Ends here-->                    
+                    <apex:column id="Column2">
+                        <apex:facet name="header">
+                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Part Description &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Part_Description__c}"/>
+                    </apex:column> 
+                    
+                    <apex:column id="Column9">
+                        <apex:facet name="header"> 
+                            <apex:commandLink action="{!toggleSort}" rerender="NDRPartsForm">
+                           
+                          <apex:outputLabel escape="false" value="Pricing Signal{!IF(sortField=='NDR_GPMS_Signal__c',IF(sortDir="asc",'▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','▲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),'▼▲&nbsp;&nbsp;')}"/>
+                           <apex:param name="sortField" value="NDR_GPMS_Signal__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                        </apex:facet>  
+                        <div style="float:left">
+                        <apex:outputField value="{!accdet.vNDR.NDR_GPMS_Signal__c}"/>
+                        </div>
+                        <div style="float:left">
+                            <apex:outputPanel rendered="{!accdet.vNDR.Red_Flag_Reason__c != null}">
+                            <span class="vfHelpText">
+                            <div>
+                                    <img src="/s.gif" alt="" class="helpOrb" title="" /> 
+                                <span>
+                           <apex:outputLabel escape="false" value="{!accdet.vRFRlst}">
+                           </apex:outputLabel>
+                           </span>
+                        </div>
+                    </span>
+                           </apex:outputPanel>    
+                             </div>
+                    </apex:column>
+                    <apex:column id="Column10">
+                        <apex:facet name="header">
+                        <apex:commandLink action="{!toggleSort}" rerender="NDRPartsForm">
+                            
+                           <apex:outputLabel value="Pricing<br/>Approval{!IF(sortField=='NDR_GPMS_Approval_Flag__c',IF(sortDir ='asc','▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','▲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),'▼▲&nbsp;&nbsp;')}" escape="false"/>
+                            <apex:param name="sortField" value="NDR_GPMS_Approval_Flag__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                        </apex:facet>
+                             <apex:outputField value="{!accdet.vNDR.NDR_GPMS_Approval_Flag_formula__c}"/>
+                                   
+                    </apex:column>  
+                      
+                    <apex:column id="Column11">
+                        <apex:facet name="header">
+                          &nbsp;&nbsp;Part URL&nbsp;&nbsp;
+                        </apex:facet>
+                        <apex:outputPanel title="{!accdet.vNDR.NDR_Part_URL__c}" >
+                            <apex:outputField value="{!accdet.vNDR.NDR_part_URL_Custom_link__c}"/>
+                        </apex:outputPanel>
+                    </apex:column> 
+                    
+                    <apex:column id="Column8">
+                        <apex:facet name="header">
+                            Item<br/> Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Item_Status_Desc__c}"/>
+                    </apex:column>
+                    
+                    <apex:column id="Column3">
+                        <apex:facet name="header">
+                            Requested <br/> Price
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Customer_Requested_Price__c}"/>
+                    </apex:column>
+                    <apex:column id="Column4">
+                        <apex:facet name="header">
+                            Requested<br/>Quantity
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.Quantity__c}"/>
+                    </apex:column>
+                    <apex:column id="Column5">
+                        <apex:facet name="header">
+                            Total <br/>Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Item_Total_Price_Total_Value__c}"/>
+                    </apex:column>
+                    <!-- Modified by Raghu for CCR Project -->
+                    <apex:column id="Column6" rendered="{!Rectyp}">
+                        <apex:facet name="header">
+                            Ship and<br/> debit price
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Ship_and_Debit_Price__c}"/>
+                    </apex:column>
+                    <apex:column id="Column7">
+                        <apex:facet name="header">
+                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Award Type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </apex:facet>
+                        <apex:outputField value="{!accdet.vNDR.NDR_Award_Type_Description__c}"/>
+                    </apex:column>               
+
+                                                   
+                           <!--             
+                    <apex:column id="Column12">
+                        <apex:facet name="header">
+                        
+                        <apex:commandLink action="{!toggleSort}" rerender="NDRPartsForm">
+                           <apex:outputLabel escape="false" value="DMM Response(Approve/Reject){!IF(sortField=='NDR_DMM_Response_on_GMPS_Response__c',IF(sortDir ='asc','▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','▲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),'▼▲&nbsp;&nbsp;')}"/>  
+                            <apex:param name="sortField" value="NDR_DMM_Response_on_GMPS_Response__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                        </apex:facet> 
+                        
+                        <center>
+                            <apex:commandButton value="Approve" onclick="javascript:approveRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmApprovepop" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c == null && accdet.vNDR.NDR_GPMS_Status__c != null}" styleClass="FormButton" />                      
+                            <apex:commandButton value="Reject"  onclick="javascript:rejectRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmpop" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c == null && accdet.vNDR.NDR_GPMS_Status__c != null}" styleClass="FormButton"/> 
+                            <b>
+                                <apex:outputField value="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c}" rendered="{!accdet.vNDR.NDR_DMM_Response_on_GMPS_Response__c != null}"/>
+                            </b>   
+                        </center>
+                       <!---------------------- Popup for confirm --------------------------->
+                    <!--   <apex:outputPanel id="confirmpop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayconfirmPopUp}"/>
+                                                             
+                               <apex:outputPanel layout="block" styleClass="DialogPopup" rendered="{!displayconfirmPopUp}"> 
+                                   <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                       <apex:commandButton value="×"  action="{!closeRejectPopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                   
+                                   <apex:image value="/img/msg_icons/info24.png"/>
+                                   <h3><apex:outputText value="Are you sure?"/></h3><br/><br/><center>
+                                     <apex:commandButton value="No"  action="{!closeRejectPopup}" styleClass="DialogButton" rerender="NDRPartsForm"/>                                            
+                                     <apex:commandButton value="Yes"  action="{!ShowRejectPopup}" rerender="pop" styleClass="DialogButton"/>   </center>                                                                       
+                            </apex:outputPanel> 
+                        </apex:outputPanel>
+                        <!---------------------- Popup for Approve confirm --------------------------->
+                    <!--   <apex:outputPanel id="confirmApprovepop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayApproveconfirmPopUp}"/>
+                                                             
+                               <apex:outputPanel layout="block" styleClass="DialogPopup" rendered="{!displayApproveconfirmPopUp}"> 
+                                   <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                       <apex:commandButton value="×"  action="{!closeApprovePopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                   
+                                   <apex:image value="/img/msg_icons/info24.png"/>
+                                   <h3><apex:outputText value="Are you sure?"/></h3><br/><br/><center>
+                                     <apex:commandButton value="No"  action="{!closeApprovePopup}" styleClass="DialogButton" rerender="NDRPartsForm"/>                                            
+                                     <apex:commandButton value="Yes"  action="{!saveApproveComments}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                            </apex:outputPanel> 
+                        </apex:outputPanel>
+                        <!--------------------- Popup on Reject button ---------------------->
+                     <!--   <apex:outputPanel id="pop">                                                                      
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!vDisplayPopUp}"/>                                  
+                            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!vDisplayPopUp}">
+                            <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                        <h4><apex:outputText value="Please select rejection reason and enter comments:"/></h4>
+                                       <apex:commandButton value="×"  action="{!closeRejectPopup}" style="float: right" styleClass="DialogCancel" rerender="NDRPartsForm"/>                                            
+                                   </apex:outputPanel>
+                                <apex:pagemessages />     
+                                    <br/><br/>   
+                                    <div style="float:left">                          
+                                   Rejection reason :
+                                   </div>
+                                   <center>
+                                    <apex:inputField value="{!vActiononNDR.NDR_Rejection_Reason__c}" label="Rejection reason:"/> <br/><br/>
+                                    </center>
+                                    <div style="float:left">
+                                    Rejection comments :</div>
+                                    <center>
+                                    <apex:inputField value="{!vActiononNDR.NDR_Rejection_Comments__c}" id="Comments" style="width:250px; Height:110px;" label="Rejection reason:"/> 
+                                    <br/><br/>   
+                                    <apex:commandButton value="Save"   action="{!saveRejectComments}" reRender="NDRPartsForm" styleClass="DialogButton"/>   
+                                    <apex:commandButton value="Cancel" action="{!closeRejectPopup}"  reRender="NDRPartsForm" styleClass="DialogButton"/>                                            
+                                     </center>                                                                                                                                                                                                    
+                            </apex:outputPanel> 
+                        </apex:outputPanel> 
+                        
+                    </apex:column>
+                    <!--------------------------- Column for Collapsible sections -------------------------->
+                    <apex:column breakBefore="true" colspan="13" id="inlinetablesec" style="display:none;"> <!-- padding-left: 80px;" -->
+                        <apex:outputpanel id="AdditionalOutputPanel" rendered="{!accdet.vNDR.NDR_GPMS_Approval_Flag__c != null}">
+                         
+                        <apex:pageBlockSection title="DMM Comments" id="NDRPartsComments" collapsible="true" columns="1" >
+                                <apex:pageblocktable value="{!accdet}" var="a" border="0" id="table3">
+                                    <apex:column headerValue="Enter your comments" > 
+                                        <center>
+                                            <apex:inputField value="{!accdet.vNDR.NDR_Comment__c}" style="width: 600px; height: 100px" />
+                                            
+                                        </center> 
+                                    </apex:column>
+                                </apex:pageblocktable>  
+                            </apex:pageBlockSection>
+                            
+                            <apex:pageBlockSection title="Price Details" id="NDRPartPriceInfo" collapsible="true" columns="1" >
+                                <apex:pageblocktable value="{!accdet}" var="a" id="table2" headerclass="classname">
+                                   
+                                    <apex:column headerValue="DMM Response(Remove Part/Return to PA)">
+                                        <apex:commandButton value="Remove Part" onclick="javascript:agreeRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmagreepop" rendered="{!accdet.vNDR.NDR_Current_Stage__c == 'Additional Pricing Information received from GPMS' && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != null && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'A' && accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'O'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'H'))}" styleClass="FormButton"/> 
+                                        <apex:commandButton value="Return to PA" onclick="javascript:disagreeRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmdisagreepop" rendered="{!accdet.vNDR.NDR_Current_Stage__c == 'Additional Pricing Information received from GPMS'&& (accdet.vNDR.NDR_GPMS_Approval_Flag__c != null && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'A' && accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'O'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'H'))}" styleClass="FormButton"/> 
+                                        <b><apex:outputField value="{!accdet.vNDR.NDR_DMM_Response_on_Price_Information__c}" rendered="{!accdet.vNDR.NDR_Current_Stage__c != 'Additional Pricing Information received from GPMS'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != null}"/> </b>
+                                            <!---------------------- Popup for Agree confirm --------------------------->
+                                        
+                                        <apex:outputPanel id="confirmagreepop">                                                                      
+                                        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!accdet.vDisplayAgreeConfirmPopup}"/>
+                                        <apex:outputPanel layout="block" styleClass="AgreedisagreeDialogPopup" rendered="{!accdet.vDisplayAgreeConfirmPopup}"> 
+                                        <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                            <apex:commandButton value="×"  action="{!closeagreePopup}" style="float: right" styleClass="DialogCancel" rerender="table2"/>                                            
+                                        </apex:outputPanel><h3>
+                                            Did you enter the comments?Click cancel to go back and enter comments.<br/>
+                                           </h3> <center>
+                                             <apex:commandButton value="Cancel"  action="{!closeagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                           </center>
+                                           <br/>
+                                            <apex:image value="/img/msg_icons/info24.png"/>
+                                            <h3>
+                                            <apex:outputText >
+                                            Are you sure you want to Remove the part?
+                                            </apex:outputText></h3><br/><br/><center>
+                                            <apex:commandButton value="No"  action="{!closeagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            <apex:commandButton value="Yes"  action="{!AgreeNDR}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                                        </apex:outputPanel> 
+                                        </apex:outputPanel>
+                                        
+                                        <!--------------------- Popup on Disagree button ---------------------->
+                                           
+                                        <apex:outputPanel id="confirmdisagreepop">                                                                      
+                                        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!accdet.vDisplaydisagreeConfirmPopup}"/>
+                                        <apex:outputPanel layout="block" styleClass="AgreedisagreeDialogPopup" rendered="{!accdet.vDisplaydisagreeConfirmPopup}"> 
+                                        <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                            <apex:commandButton value="×"  action="{!closedisagreePopup}" style="float: right" styleClass="DialogCancel" rerender="table2"/>                                            
+                                        </apex:outputPanel>
+                                            <h3>
+                                            Did you enter the comments?Click cancel to go back and enter comments.<br/>
+                                           </h3> <center>
+                                            <apex:commandButton value="Cancel"  action="{!closedisagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            </center>
+                                           <br/>
+                                            <apex:image value="/img/msg_icons/info24.png"/>
+                                            <h3>
+                                            <apex:outputText >
+                                            Are you sure you want to return to the Pricing Analyst?
+                                            </apex:outputText>
+                                            </h3><br/><br/><center>
+                                            <apex:commandButton value="No"  action="{!closedisagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            <apex:commandButton value="Yes"  action="{!DisagreeNDR}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                                        </apex:outputPanel> 
+                                        </apex:outputPanel>
+                                        
+                                       
+                                    </apex:column>
+                                    
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Approved Price
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_GPMS_Approval_Price__c}"/>
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Range
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_Range__c}"/>  
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            UOM
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.Code_for_unit_of_measurement__c}"/>   
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                             Currency
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_GPMS_Approved_Currency__c}"/>   
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Effective Date
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_Price_Effective_Date__c}"/>   
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Expiration Date
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_Price_Expiration_Date__c}"/>   
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Customer Comments
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_Customer_Comments__c}"/>   
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">
+                                            Final<br/>Approver Name
+                                        </apex:facet>
+                                        <apex:outputField value="{!accdet.vNDR.NDR_Final_Approver_Name__c}"/>   
+                                    </apex:column>
+                                    
+                                    <!--
+                                    <apex:column headerValue="DMM Response(Remove Part/Return to PA)">
+                                        <apex:commandButton value="Remove Part" onclick="javascript:agreeRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmagreepop" rendered="{!accdet.vNDR.NDR_Current_Stage__c == 'Additional Pricing Information received from GPMS' && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != null && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'A' && accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'O'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'H'))}" styleClass="FormButton"/> 
+                                        <apex:commandButton value="Return to PA" onclick="javascript:disagreeRecord('{!accdet.vNDR.Id}'); return true;" reRender="confirmdisagreepop" rendered="{!accdet.vNDR.NDR_Current_Stage__c == 'Additional Pricing Information received from GPMS'&& (accdet.vNDR.NDR_GPMS_Approval_Flag__c != null && (accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'A' && accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'O'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != 'H'))}" styleClass="FormButton"/> 
+                                        <b><apex:outputField value="{!accdet.vNDR.NDR_DMM_Response_on_Price_Information__c}" rendered="{!accdet.vNDR.NDR_Current_Stage__c != 'Additional Pricing Information received from GPMS'&& accdet.vNDR.NDR_GPMS_Approval_Flag__c != null}"/> </b>
+                                            <!---------------------- Popup for Agree confirm --------------------------->
+                                        <!--
+                                        <apex:outputPanel id="confirmagreepop">                                                                      
+                                        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!accdet.vDisplayAgreeConfirmPopup}"/>
+                                        <apex:outputPanel layout="block" styleClass="AgreedisagreeDialogPopup" rendered="{!accdet.vDisplayAgreeConfirmPopup}"> 
+                                        <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                            <apex:commandButton value="×"  action="{!closeagreePopup}" style="float: right" styleClass="DialogCancel" rerender="table2"/>                                            
+                                        </apex:outputPanel><h3>
+                                            Did you enter the comments?Click cancel to go back and enter comments.<br/>
+                                           </h3> <center>
+                                             <apex:commandButton value="Cancel"  action="{!closeagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                           </center>
+                                           <br/>
+                                            <apex:image value="/img/msg_icons/info24.png"/>
+                                            <h3>
+                                            <apex:outputText >
+                                            Are you sure you want to Reject the part?
+                                            </apex:outputText></h3><br/><br/><center>
+                                            <apex:commandButton value="No"  action="{!closeagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            <apex:commandButton value="Yes"  action="{!AgreeNDR}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                                        </apex:outputPanel> 
+                                        </apex:outputPanel>
+                                        
+                                        <!--------------------- Popup on Disagree button ---------------------->
+                                         <!--  
+                                        <apex:outputPanel id="confirmdisagreepop">                                                                      
+                                        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!accdet.vDisplaydisagreeConfirmPopup}"/>
+                                        <apex:outputPanel layout="block" styleClass="AgreedisagreeDialogPopup" rendered="{!accdet.vDisplaydisagreeConfirmPopup}"> 
+                                        <apex:outputPanel styleClass="DialogStrip" layout="block">
+                                            <apex:commandButton value="×"  action="{!closedisagreePopup}" style="float: right" styleClass="DialogCancel" rerender="table2"/>                                            
+                                        </apex:outputPanel>
+                                            <h3>
+                                            Did you enter the comments?Click cancel to go back and enter comments.<br/>
+                                           </h3> <center>
+                                            <apex:commandButton value="Cancel"  action="{!closedisagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            </center>
+                                           <br/>
+                                            <apex:image value="/img/msg_icons/info24.png"/>
+                                            <h3>
+                                            <apex:outputText >
+                                            Are you sure you want to return to the Pricing Analyst?
+                                            </apex:outputText>
+                                            </h3><br/><br/><center>
+                                            <apex:commandButton value="No"  action="{!closedisagreePopup}" styleClass="DialogButton" rerender="table2"/>                                            
+                                            <apex:commandButton value="Yes"  action="{!DisagreeNDR}" styleClass="DialogButton" rerender="NDRPartsForm"/>  </center>                                                                        
+                                        </apex:outputPanel> 
+                                        </apex:outputPanel>
+                                        
+                                       
+                                    </apex:column>
+                                    -->
+                                </apex:pageblocktable>  
+                            </apex:pageBlockSection> 
+                            
+                        </apex:outputpanel>
+                    </apex:column>
+                </apex:pageblocktable> 
+                
+                <apex:actionFunction action="{!rejectActionOnNDR}" name="rejectRecord" reRender="pop" >
+                    <apex:param name="recordid" value="" assignTo="{!vSelectedRecordId}"/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!approveActionOnNDR}" name="approveRecord" reRender="NDRPartsForm">
+                    <apex:param name="recordid" value="" assignTo="{!vSelectedRecordId}"/>
+                </apex:actionFunction> 
+                <apex:actionFunction action="{!ShowApprovePopup}" name="approveRecordWithComments" reRender="confirmApprovepop">
+                    <apex:param name="recordid" value="" assignTo="{!vSelectedRecordId}"/>
+                </apex:actionFunction> 
+                <apex:actionFunction action="{!agreeActionOnNDR}" name="agreeRecord" reRender="confirmagreepop" >
+                    <apex:param name="recordid" value="" assignTo="{!vSelectedRecordId}"/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!disagreeActionOnNDR}" name="disagreeRecord" reRender="confirmdisagreepop">
+                    <apex:param name="recordid" value="" assignTo="{!vSelectedRecordId}"/>
+                </apex:actionFunction>
+                
+                <apex:inputHidden id="SelectedNDRPart" value="{!vSelectedId}"/>
+            </apex:pageBlock>
+    </apex:form>
+</apex:page>

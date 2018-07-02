@@ -1,0 +1,119 @@
+<apex:page sidebar="false" showHeader="true" standardStylesheets="false"  standardController="ACP_Account_Plan__c" extensions="ACP_Performance_Analytics_ctrl"  >
+<head>
+<script type="text/javascript"> 
+  function openLookup(baseURL, width, modified, searchParam){
+ 
+    var originalbaseURL = baseURL;
+    var originalwidth = 700;
+    var originalmodified = modified;
+    var originalsearchParam = searchParam;
+    var acpId = "{!JSENCODE(acpId)}"
+    var lookupType = baseURL.substr(baseURL.length-3, 3);
+    if (modified == '1') baseURL = baseURL + searchParam;
+    var isCustomLookup = false;
+
+    // Following "006" is the lookup type for Opportunity object so change this as per your standard or custom object
+    if(lookupType == "006"){
+
+      var urlArr = baseURL.split("&");
+      
+      var txtId = '';
+      if(urlArr.length > 1) {
+        urlArr = urlArr[1].split('=');
+        txtId = urlArr[1];
+      
+      }
+
+      // Following is the url of Custom Lookup page. You need to change that accordingly
+      baseURL = "/apex/ACP_Opportunity_Search?txt=" + txtId;
+
+      // Following is the id of apex:form control "myForm". You need to change that accordingly
+     
+      if (modified == '1') {
+     
+        baseURL = baseURL + "&acpId=" + acpId;
+      
+      }
+
+      // Following is the ID of inputField that is the lookup to be customized as custom lookup
+      if(txtId.indexOf('Opportunity') > -1 ){
+    
+        isCustomLookup = true;
+      }
+    }
+
+    if(isCustomLookup == true){
+      openPopup(baseURL, "lookup", 600, 700, "width="+1200+",height=480,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    }
+    else {
+      if (modified == '1') originalbaseURL = originalbaseURL + originalsearchParam;
+      openPopup(originalbaseURL, "lookup", 600, 700, "width="+originalwidth+",height=480,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    } 
+  }
+</script>
+<apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   
+  
+  </head>
+  <div class = "bootstrap-sfdc">
+  <div class = "container-fluid">
+  <apex:form >
+ 
+  
+  <br/>
+            <div style="margin-left: 5%;" id = "add">
+            <apex:outputText value="{!$Label.ACP_Top_Open_Opportunities}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/>
+ <apex:pageMessages />
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-default" >
+                     <div class="panel-heading"> {! $Label.ACP_Create_Open_Opportunity}  </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar" >{! $Label.ACP_Top_Open_Opportunity_Information}</div>
+                     <br/>
+                        <div class ="col-md-6">
+                        
+                        
+                           <div class="form-group">
+                              <label><font style="color:red">*</font>{! $Label.ACP_Opportunity_Name}</label>
+                              <apex:inputField value="{!NewTopOpenOpp.ACP_Opportunity_Name__c}" required="true" id="Opportunity" styleClass="inputField"/>
+                           </div>
+                           
+                         <!-- <div class="form-group">
+                              <label>          {! openOpprec.ACP_Application__c}      </label>
+                              <apex:inputField value="{!NewTopOpenOpp.ACP_Application__c}" styleClass="form-control"/>
+                           </div> -->
+                           
+                        </div>
+                        
+                        
+                        <div class ="col-md-6">                         
+                             <div class="form-group">
+                              <label>{! $Label.ACP_Current_Status_Comments}</label>
+                              <apex:inputField value="{!NewTopOpenOpp.ACP_Current_Status_Comment__c}"  styleClass="form-control"/>
+                           </div>
+                           
+                           
+                       
+                        </div>
+                  </div>
+                       <div class = "panel-footer">
+                        <div align ="right" style="">
+                         <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="topOpenOpp" />
+                         </apeX:commandLink>&nbsp;
+
+                          <apex:commandButton value="{!$Label.ACP_Save_New}"  action="{!saveNewTopOpenOpp}" styleClass="btn btn-default" disabled="{!IF(topOpenOpportunityList.size< openOpprec.ACP_No_Of_Records__c-1, false, true)}" />&nbsp;
+                         <apex:commandButton action="{!saveTopOpenOpp}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" /></div>
+                      
+               </div>
+            </div>
+            </div>
+            </div>
+        
+      </apex:form>
+   </div>
+  </div>
+</apex:page>

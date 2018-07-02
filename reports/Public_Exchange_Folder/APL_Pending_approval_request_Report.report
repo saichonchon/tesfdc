@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CreatedDate</field>
+    </columns>
+    <columns>
+        <field>SubmittedBy</field>
+    </columns>
+    <columns>
+        <field>TargetEntity</field>
+    </columns>
+    <columns>
+        <field>TargetType</field>
+    </columns>
+    <columns>
+        <field>Actor</field>
+    </columns>
+    <columns>
+        <field>CurrentNode.Description</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>ProcessName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>,Admin Approval Process,APL Cross BU Approval Process,APL Engineering Related Reqeust(Non EQR),APL ENG Opp Routing Process V3_3,APPL ENG Project Approval Process G1,APPL ENG Project Approval Process Ver2</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>SubmittedBy</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Michael Ludwig,Klaus Klein</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>ProcessName</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>APL Pending approval request Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>AllPendingWorkitems</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Define_CTL_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>t.hultermans@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>all Fiber requests go to Twan Hultermans</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Cable_Assembly_Fiber__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Fiber Cable Assembly Approval China</label>
+        <name>Approval_by_Fiber_Manager_CN</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>sampress.xin@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Cable_Assembly_Non_Fiber__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Approval by regional CCAO China</label>
+        <name>Approval_by_regional_PM_CN</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Define_CTL_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>peter.yin@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Cable_Assembly_Non_Fiber__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Approval by CCAOMANAGER China</label>
+        <name>Approval_by_CCAOMANAGER_CN</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.CTL_Approval__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>Assign a CTL if project needs setting up in PLM, otherwise re-assign to yourself for final approval</label>
+        <name>Approval_by_CTL_CN_Ext</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>This approval process is used for engineering projects of type CA Extension for customer region China</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND( 
+$RecordType.DeveloperName =&quot;Opportunity_Engineering_Project&quot;,  
+ISPICKVAL(Request_Type__c ,&quot;Cable Assembly - Extension&quot;), 
+Industry_Code__c &lt;&gt; &quot;Appliances&quot;, 
+Industry_Code__c &lt;&gt; &quot;DataComm&quot;, 
+Industry_Code__c &lt;&gt; &quot;EMS&quot;,
+Account.Customer_Region__c=&quot;China / HK / Taiwan&quot;, 
+Amount &gt; 0, 
+OR( 
+ISPICKVAL(StageName, &quot;Approved/Active&quot;), 
+ISPICKVAL(StageName, &quot;New&quot;) 
+), 
+NOT( 
+AND( 
+Cable_Assembly_Fiber__c &gt; 0, 
+Cable_Assembly_Non_Fiber__c &gt;0 
+) 
+) 
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Opportunity_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>StageName_to_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>China CA Extension</label>
+    <recallActions>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Stage_name_New</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

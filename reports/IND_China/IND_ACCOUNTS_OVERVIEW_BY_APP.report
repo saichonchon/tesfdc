@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_63024851</developerName>
+        <masterLabel>Account type</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account$ACCT_GROUP_CDE__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>0001</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>0002</sourceValue>
+            </sourceValues>
+            <value>Direct Account</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>ZEND</sourceValue>
+            </sourceValues>
+            <value>ZEND Account</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account$Territory_L5_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account$Owner</field>
+    </columns>
+    <currency>USD</currency>
+    <description>IM Dashboard- IND ACCOUNTS BY INDUSTRY</description>
+    <filter>
+        <criteriaItems>
+            <column>Account$IND_Billing_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Greater China</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Customer_Industry__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>A&amp;C</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Bill_Type_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>POS,Direct,CMA</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Fiscal_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_63024851</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$Industry_Code_Comb__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND ACCOUNTS OVERVIEW BY APP</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Monthly_BB_direct_and_Indirect_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Fiscal_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

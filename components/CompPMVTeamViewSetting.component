@@ -1,0 +1,62 @@
+<apex:component id="teamViewComp">
+	<apex:attribute name="pageCtrl" type="CtrlPMVCustomSettings" required="true" description="the root page controller reference" />
+	<div>					
+		<center>
+        	<input type="button" value="{!$Label.PMV_team_btn_new}" class="new_btn btn" onclick="showNewDiv(this, 'teamview');" />
+        </center>
+        <div id="teamViewPanel" style="overflow:auto; width:1200px;max-height:500px">
+        
+            <table class="parentTable itb-table-style-01" id="teamview_table">
+                <thead>
+                	<th class="actionColumn"><span>{!$Label.PMV_Setting_Label_Action}</span></th>
+                	<th><span>{!$ObjectType.PMV_Team_View__c.fields.User_Role_Id__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Team_View__c.fields.AvgAmountOpportunityRelationship__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Team_View__c.fields.BigOpportunityAmountThreshold__c.label}</span></th>
+                	<th><span>{!$ObjectType.PMV_Team_View__c.fields.BigOpportunityCountThreshold__c.label}</span></th>
+                </thead>
+                <tbody>
+                	<apex:repeat value="{!pageCtrl.listTVs}" var="tv">
+                		<tr>
+                			<td class="actionColumn"> 
+                				<a onclick="editRecord(this, 'teamview');" class="edit" data-rid="{!tv.Id}">{!$Label.PMV_team_btn_edit}</a>
+                				&nbsp;|&nbsp;
+                				<a onclick="if(confirm('{!$Label.PMV_Setting_Delete_Message}')){deleteRecord(this, 'teamview');}" class="del" data-rid="{!tv.Id}">{!$Label.PMV_team_btn_del}</a>
+                			</td>
+                			<td>{!tv.UserRoleName}</td>
+                			<td>{!tv.AvgAmountOpportunityRelationship}</td>
+                			<td>{!tv.BigOpportunityAmountThreshold}</td>
+                			<td>{!tv.BigOpportunityCountThreshold}</td>
+                		</tr>
+                	</apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        <div class="hideClass tvNewEditDiv">
+        	<apex:pageMessages id="pageMessage"/>
+        	<center class="btnCenter">
+        		<input type="button" class="btn" onclick="saveRecord('teamview');" value="{!$Label.PMV_team_button_save}"/>
+        		<input type="button" class="btn" onclick="cancel('tvNewEditDiv');" value="{!$Label.PMV_team_button_cancel}"/>
+        	</center>
+        	<apex:pageblockSection title="{!$Label.PMV_Setting_General_Infomation}">
+	        	<apex:pageblocksectionItem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Team_View__c.fields.User_Role_Id__c.label}"/>
+        			<apex:selectList value="{!pageCtrl.entryTeamView.User_Role_Id}" size="1">
+            			<apex:selectOptions value="{!pageCtrl.UserRoleid}"/>
+        			</apex:selectList>
+        		</apex:pageblocksectionItem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Team_View__c.fields.AvgAmountOpportunityRelationship__c.label}"/>
+        			<apex:inputText value="{!pageCtrl.entryTeamView.AvgAmountOpportunityRelationship}"/>
+        		</apex:pageblocksectionitem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Team_View__c.fields.BigOpportunityAmountThreshold__c.label}"/>
+        			<apex:inputText value="{!pageCtrl.entryTeamView.BigOpportunityAmountThreshold}"/>
+        		</apex:pageblocksectionitem>
+        		<apex:pageblocksectionitem >
+        			<apex:outputlabel value="{!$ObjectType.PMV_Team_View__c.fields.BigOpportunityCountThreshold__c.label}"/>
+        			<apex:inputText value="{!pageCtrl.entryTeamView.BigOpportunityCountThreshold}"/>
+        		</apex:pageblocksectionitem>	
+        	</apex:pageblockSection>
+        </div>
+	</div>
+</apex:component>

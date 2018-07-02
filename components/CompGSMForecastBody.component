@@ -1,0 +1,761 @@
+<apex:component id="compbody" layout="block">
+
+	<apex:attribute name="pageCtrl" type="CtrlGSMForecast" required="true" description="the root page controller reference" />
+	<apex:attribute name="inputVal" type="String" required="false" description="the page controller reference" />
+
+	<div class="mgauto" id="compbodyall" style=" min-width: 800px; visibility: hidden;">
+	
+		<div class="mainTabFix" style=" margin-bottom: 0.2px;"><!-- START head table -->
+			<div class="compwp tabRowFix">
+				<div id="lcellhead" class="tabCellFix lCellw" style="vertical-align: bottom !important;">
+					<div id="menudivid" class="ftsize menucls fix_lh " style="cursor: default;"> 
+						<b class="menucollapse" style="margin-left: 15px;"></b>
+	                    <div style="float: left;width: 80%;">{!$Label.rsm_menu} </div>
+	                    <b class="menucollapse"></b>
+					</div>
+					<div class="dn" id="defidivid">
+						<table border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed; width: 100%;" class="ftsize tl border_l border_r">
+							<tr>
+								<td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'acls', 'datadivid', 'aacls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+									<div class="p_r plw" >
+										<b class="allbox collapse">-</b>
+										<span class="spmg">{!pageCtrl.category_a}</span>
+									</div>
+								</td>
+								<td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'bcls', 'datadivid', 'bbcls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+									<div class="p_r plw1" >
+										<b class="allbox collapse">-</b>
+										<span class="spmg">{!pageCtrl.category_b}</span>
+									</div>
+								</td>
+								<td class="hd border_t border_b trhfix left_bg" onclick="ck_allCell(this, 'ccls', 'datadivid', 'cccls')" onmouseover="this.style.backgroundColor='#e3f3ff';" onmouseout="this.style.backgroundColor='#fff';">
+									<div class="p_r" >
+										<b class="allbox collapse">-</b>
+										<span class="spmg">{!pageCtrl.category_channel}</span>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div id="rcellhead" class="noTabCell rCellw " style="overflow-y: hidden; overflow-x: hidden;">
+					<table border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+						<tbody>
+							<tr id="rsmcolspanid">
+								<apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+									<apex:outputText value="{!dateItems.type1}" escape="false"/>
+								</apex:repeat>
+							
+							</tr>
+							
+							<tr id="rsmHeadId">
+							<apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+								<apex:repeat var="dSubItems" value="{!pageCtrl.map_dateItems[dateItems.itemName]}">
+								<td class="{!dSubItems.type} tc trhfix border_t border_b headbg pd_r" workingdays="{!dSubItems.workingDays}" fmonth="{!dSubItems.fMonth}" fyear="{!dSubItems.fYear}">
+									<div class="{!dSubItems.type1} fwb p_r">
+										<span>{!dSubItems.itemName}</span>
+									</div>
+								</td>
+								</apex:repeat>
+							</apex:repeat>
+							</tr>
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div><!-- END head table -->
+		
+		<div class="mainTabFix" ><!-- START body table -->
+			<div class="compwp tabRowFix" id="datadivid">
+			
+				<!-- START left tab-->
+				<div class="lCellw fol ov">
+					<div id="lcellbody" class="db ov">
+						<!-- START A TABLE -->
+						<apex:variable var="cList" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_a]}"/>
+						<div class="folw ">
+							<div class="{!if(or(cList.size = 0, cList = null), 'dn nodata', '')} acls aacls tabRow ">
+								<div class="tabCellFix va_impl cw_fix border_l cellwb fwb">{!pageCtrl.category_a}</div>
+								<div class="ldm_wh">
+									<table class="dataTabcls border_l" cellspacing="0" cellpadding="0" border="0" >
+										<tbody id="aTab" >
+											<apex:repeat var="cItems" value="{!cList}">
+											<tr id="{!cItems.id}" ocls="aidx{!cItems.id}" class="aidx{!cItems.id} hd">
+												<td class="tl trh  border_r left_titlebg"  onclick="ck_leftCell(this, 'aTab{!cItems.id}', 'aTab', true)">
+													<div class="p_r trh lineh border_b pd_0_0">
+														<b class="imgce expand" col=" " exp=" "> </b> 
+														{!cItems.name}
+													</div>
+												</td>
+											</tr>
+												<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+											<tr class="a{!field.clsName}{!cItems.id} dn aTab{!cItems.id} acls" ocls="a{!field.clsName}{!cItems.id}">
+												<td class="tl trh  border_r ">
+													<div class="trh lineh border_b pd_l_1">{!field.fieldName}</div>
+												</td>
+											</tr>
+												</apex:repeat>
+											
+												<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+											<tr class="border_r {!clist.id} aTab{!cItems.id} fso dn acls" ocls="{!clist.id}">
+												<td class="tl trh  border_r fwb  hd" onclick="ck_leftCell(this, 'aTab{!clist.id}', 'aTab', false)">
+													<div class="p_r trh lineh border_b pd_l_1">
+														<b class="imgce subp  expand oaftsubcell" col=" " exp=" "> </b> 
+														{!clist.rsmName}
+													</div>
+												</td>
+											</tr>
+													<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+											<tr class="{!clist.id}_{!drf.clsParent} acls sbcell aTab{!clist.id} aTab{!cItems.id} dn" ocls="{!clist.id}_{!drf.clsParent}">
+												<td class="tl trh  border_r ">
+													<div class="p_r trh lineh border_b {!drf.clsName}">{!drf.fieldName}</div>
+												</td>
+											</tr>
+													</apex:repeat>
+												</apex:repeat>
+												
+											</apex:repeat>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- START A Total -->
+							<div class="atotal tabRow datatotalcls" >
+								<table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+									<tbody id="aTotal">
+										<tr class="not_total" >
+											<th colspan="2" class="border_b trh tl pd_l_1 dTabbg hd" onclick="ck_leftCell(this, 'aTotal', 'aTotal', true)">
+												<div class="p_r">
+													<b class="alltotal_b subp expand curcsubcell" col="+" exp="-">+</b> 
+													{!$Label.rsm_a_total}
+												</div>
+											</th>
+										</tr>
+										<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+										<tr class="a{!field.clsName} aTotal dn" ocls="a{!field.clsName}">
+											<td class="trh cw_fix dTabbg1"></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b pd_0_0">{!field.fieldName}</div>
+											</td>
+										</tr>
+										</apex:repeat>
+										
+										<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_a]}">
+										<tr class="{!totalitems.id} aTotal fso dn" ocls="{!totalitems.id}">
+											<td class="trh cw_fix dTabbg1"></td>
+											<td class="hd tl trh  border_l border_r fwb " onclick="ck_leftCell(this, 'aTotal{!totalitems.id}', 'aTotal', false)">
+												<div class="p_r trh lineh border_b pd_0_0">
+													<b class="imgce subp expand oaftsubcell" col=" " exp=" "> </b> 
+													{!totalitems.rsmName}
+												</div>
+											</td>
+										</tr>
+												<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+										<tr class="aTotal aTotal{!totalitems.id} {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b {!drf.clsName} opl">{!drf.fieldName}</div>
+											</td>
+										</tr>
+												</apex:repeat>
+											
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+							<!-- END A Total -->
+						</div>
+						<!-- END A TABLE -->
+						
+						
+						<!-- START B TABLE -->
+						<apex:variable var="cList" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_b]}"/>
+						<div class="folw ">
+							<div class="{!if(or(cList.size = 0, cList = null), 'dn nodata', '')} bcls bbcls tabRow ">
+								<div class="tabCellFix va_impl cw_fix   border_l border_b cellwb fwb">{!pageCtrl.category_b}</div>
+								<div class="ldm_wh">
+									<table class="dataTabcls border_l" cellspacing="0" cellpadding="0" border="0" >
+										<tbody id="bTab">
+											<apex:repeat var="cItems" value="{!cList}">
+											<tr id="{!cItems.id}" ocls="aidx{!cItems.id}" class="aidx{!cItems.id} hd">
+												<td class="tl trh  border_r  left_titlebg" onclick="ck_leftCell(this, 'bTab{!cItems.id}', 'bTab', true)">
+													<div class="p_r trh lineh border_b pd_0_0">
+														<b class="imgce expand" col=" " exp=" "> </b> 
+														{!cItems.name}
+													</div>
+												</td>
+											</tr>
+												<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+											<tr class="bcls a{!field.clsName}{!cItems.id} dn bTab{!cItems.id}" ocls="a{!field.clsName}{!cItems.id}">
+												<td class="tl trh  border_r  ">
+													<div class="trh lineh border_b pd_l_1">{!field.fieldName}</div>
+												</td>
+											</tr>
+												</apex:repeat>
+											
+												<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+											<tr class="bcls {!clist.id} bTab{!cItems.id} fso dn" ocls="{!clist.id}">
+												<td class="tl trh  border_r fwb hd " onclick="ck_leftCellImg(this, 'bTab{!clist.id}', 'bTab', false)">
+													<div class="p_r trh lineh border_b pd_l_1">
+														<b class="imgce subp  expand oaftsubcell" col=" " exp=" "> </b> 
+														{!clist.rsmName}
+													</div>
+												</td>
+											</tr>
+													<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+											<tr class="bcls {!clist.id}_{!drf.clsParent} sbcell bTab{!clist.id} bTab{!cItems.id} dn" ocls="{!clist.id}_{!drf.clsParent}">
+												<td class="tl trh  border_r ">
+													<div class="trh lineh border_b {!drf.clsName}">{!drf.fieldName}</div>
+												</td>
+											</tr>
+													</apex:repeat>
+												</apex:repeat>
+												
+											</apex:repeat>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						
+							<!-- START B TOTAL -->
+							<div class="btotal tabRow datatotalcls" >
+								<table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+									<tbody id="bTotal">
+										<tr class="not_total">
+											<th class="border_b  trh dTabbg tl pd_l_1 hd" onclick="ck_leftCell(this, 'bTotal', 'bTotal', true)" colspan="2">
+												<div class="p_r">
+													<b class="alltotal_b subp expand curcsubcell" col="+" exp="-">+</b> 
+													{!$Label.rsm_bu_total}
+												</div>
+											</th>
+										</tr>
+										<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+										<tr class="b{!field.clsName}  bTotal dn" ocls="b{!field.clsName}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b pd_0_0">{!field.fieldName}</div>
+											</td>
+										</tr>
+										</apex:repeat>
+										
+										<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_b]}">
+										<tr class=" bTotal {!totalitems.id} fso dn" ocls="{!totalitems.id}">
+											<td class="trh cw_fix dTabbg1"></td>
+											<td class="tl trh  border_l border_r fwb  hd" onclick="ck_leftCell(this, 'bTotal{!totalitems.id}', 'bTotal', false)">
+												<div class="p_r trh lineh border_b pd_0_0">
+													<b class="imgce subp expand oaftsubcell" col=" " exp=" "> </b> 
+													{!totalitems.rsmName}
+												</div>
+											</td>
+										</tr>
+												<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+										<tr class="bTotal{!totalitems.id} bTotal {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b {!drf.clsName} opl">{!drf.fieldName}</div>
+											</td>
+										</tr>
+												</apex:repeat>
+											
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+							<div class="btotal tabRow datatotalcls" >
+								<table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+									<tbody id="abTotal">
+										<tr class="not_total">
+											<th class="border_b pd_l_1 trh dTabbg tl  hd" onclick="ck_leftCell(this, 'abTotal', 'abTotal', true)" colspan="2">
+												<div class="p_r">
+													<b class="alltotal_b subp expand curcsubcell" col="+" exp="-">+</b> 
+													{!$Label.rsm_total_direct}
+												</div>
+											</th>
+										</tr>
+										<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+										<tr class="ab{!field.clsName} abTotal  dn" ocls="ab{!field.clsName}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b pd_0_0">{!field.fieldName}</div>
+											</td>
+										</tr>
+										</apex:repeat>
+										
+										<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_ab]}">
+										<tr class="abTotal {!totalitems.id} fso dn" ocls="{!totalitems.id}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl hd trh  border_l border_r fwb " onclick="ck_leftCell(this, 'abTotal{!totalitems.id}', 'abTotal', false)">
+												<div class="p_r trh lineh border_b pd_0_0">
+													<b class="imgce subp expand oaftsubcell" col=" " exp=" "> </b> 
+													{!totalitems.rsmName}
+												</div>
+											</td>
+										</tr>
+												<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+										<tr class="abTotal{!totalitems.id} dn abTotal {!totalitems.id}_{!drf.clsParent} sbcell" ocls="{!totalitems.id}_{!drf.clsParent}">
+											<td class="trh cw_fix dTabbg1 sbcell "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b {!drf.clsName} opl">{!drf.fieldName}</div>
+											</td>
+										</tr>
+												</apex:repeat>
+											
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+							<!-- END B TOTAL -->
+						
+						</div>
+						<!-- END B TABLE -->
+						
+						<!-- START C TABLE -->
+						<apex:variable var="cList" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_channel]}"/>
+						<div class="folw ">
+							<div class="{!if(or(cList.size = 0, cList = null), 'dn nodata', '')} ccls cccls tabRow ">
+								<div class="tabCellFix va_impl cw_fix   border_l border_b cellwb fwb">{!pageCtrl.category_channel}</div>
+								<div class="ldm_wh">
+									<table class="dataTabcls border_l" cellspacing="0" cellpadding="0" border="0" >
+										<tbody id="cTab">
+											<apex:repeat var="cItems" value="{!cList}">
+											<tr id="{!cItems.id}" ocls="aidx{!cItems.id}" class="aidx{!cItems.id} hd">
+												<td class="tl trh  border_r  left_titlebg" onclick="ck_leftCell(this, 'cTab{!cItems.id}', 'cTab', true)">
+													<div class="p_r trh lineh border_b pd_0_0">
+														<b class="imgce expand" col=" " exp=" "> </b> 
+														{!cItems.name}
+													</div>
+												</td>
+											</tr>
+												<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+											<tr class="ccls a{!field.clsName}{!cItems.id} dn cTab{!cItems.id}" ocls="a{!field.clsName}{!cItems.id}">
+												<td class="tl trh  border_r ">
+													<div class="trh lineh border_b pd_l_1">{!field.fieldName}</div>
+												</td>
+											</tr>
+												</apex:repeat>
+											
+												<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+											<tr class="ccls {!clist.id} cTab{!cItems.id} fso dn" ocls="{!clist.id}">
+												<td class="tl trh  border_r fwb hd " onclick="ck_leftCellImg(this, 'cTab{!clist.id}', 'cTab', false)">
+													<div class="p_r trh lineh border_b pd_l_1">
+														<b class="imgce subp  expand oaftsubcell" col=" " exp=" "> </b> 
+														{!clist.rsmName}
+													</div>
+												</td>
+											</tr>
+													<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+											<tr class="ccls {!clist.id}_{!drf.clsParent} sbcell cTab{!clist.id} cTab{!cItems.id} dn" ocls="{!clist.id}_{!drf.clsParent}">
+												<td class="tl trh  border_r">
+													<div class="trh lineh border_b {!drf.clsName}">{!drf.fieldName}</div>
+												</td>
+											</tr>
+													</apex:repeat>
+												</apex:repeat>
+												
+											</apex:repeat>
+										
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+							<!-- START C TOTAL -->
+							<div class="ctotal tabRow datatotalcls" >
+								<table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+									<tbody id="cTotal">
+										<tr class="not_total">
+											<th class="border_b  trh dTabbg tl pd_l_1 hd" onclick="ck_leftCell(this, 'cTotal', 'cTotal', true)" colspan="2">
+												<div class="p_r">
+													<b class="alltotal_b subp expand curcsubcell" col="+" exp="-">+</b> 
+													{!$Label.rsm_total_distribution}
+												</div>
+											</th>
+										</tr>
+										<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+										<tr class="c{!field.clsName} cTotal dn" ocls="c{!field.clsName}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b pd_0_0">{!field.fieldName}</div>
+											</td>
+										</tr>
+										</apex:repeat>
+										
+										<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_channel]}">
+										<tr class=" cTotal {!totalitems.id} dn fso" ocls="{!totalitems.id}">
+											<td class="trh cw_fix dTabbg1"></td>
+											<td class="tl trh  border_l border_r  fwb hd" onclick="ck_leftCell(this, 'cTotal{!totalitems.id}', 'cTotal', false)">
+												<div class="p_r trh lineh border_b pd_0_0">
+													<b class="imgce subp expand oaftsubcell" col=" " exp=" "> </b> 
+													{!totalitems.rsmName}
+												</div>
+											</td>
+										</tr>
+												<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+										<tr class="cTotal{!totalitems.id} cTotal {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+											<td class="trh cw_fix dTabbg1 "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b {!drf.clsName} opl">{!drf.fieldName}</div>
+											</td>
+										</tr>
+												</apex:repeat>
+											
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+							<div class="ctotal tabRow datatotalcls" >
+								<table class="dTabcls border_l" cellspacing="0" cellpadding="0" border="0">
+									<tbody id="bcTotal">
+										<tr class="not_total">
+											<th class="border_b  trh dTabbg tl pd_l_1 hd" onclick="ck_leftCell(this, 'bcTotal', 'bcTotal', true)" colspan="2">
+												<div class="p_r">
+													<b class="alltotal_b subp expand curcsubcell" col="+" exp="-">+</b> 
+													{!$Label.rsm_total}
+												</div>
+											</th>
+										</tr>
+										<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+										<tr class="bc{!field.clsName} bcTotal dn" ocls="bc{!field.clsName}">
+											<td class="trh cw_fix dTabbg1  "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b pd_0_0">{!field.fieldName}</div>
+											</td>
+										</tr>
+										</apex:repeat>
+										
+										<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_bc]}">
+										<tr class="fso bcTotal {!totalitems.id} dn" ocls="{!totalitems.id}">
+											<td class="trh cw_fix  dTabbg1"></td>
+											<td class="tl trh  border_l border_r  fwb hd" onclick="ck_leftCell(this, 'bcTotal{!totalitems.id}', 'bcTotal', false)">
+												<div class="p_r trh lineh border_b pd_0_0">
+													<b class="imgce subp expand oaftsubcell" col=" " exp=" "> </b> 
+													{!totalitems.rsmName}
+												</div>
+											</td>
+										</tr>
+												<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+										<tr class=" bcTotal{!totalitems.id} bcTotal {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+											<td class="trh cw_fix  dTabbg1  "></td>
+											<td class="tl trh  border_l border_r ">
+												<div class="trh lineh border_b {!drf.clsName} opl">{!drf.fieldName}</div>
+											</td>
+										</tr>
+												</apex:repeat>
+											
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+							<!-- END C TOTAL -->
+						</div>
+						<!-- END C TABLE -->
+					</div>
+				</div>
+				<!-- END left tab -->
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				<!-- START right tab -->
+				<div id="rCellScroll" class="noTabCell rCellw " style="overflow: scroll; ">
+					<div id="rcellbody" style=" width: 100%; position: relative; ">
+						<table id="rTabDataId" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+							<tbody id="rTabId">
+								<apex:variable var="indexc" value="{!0}" />
+								<apex:repeat var="cItems" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_a]}">
+								<tr managerfc="{!cItems.managerfc}" pmfc="{!cItems.pmfc}" findcls="for_{!indexc}" class="acls aacls faTab findTab aidx{!cItems.id} aTab" ocls="aidx{!cItems.id}" gsmname="{!cItems.name}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!cell.fYear}_{!cell.fMonth}_c {!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b {!cell.type2} pd_r" old="null">
+										<apex:outputPanel rendered="{!cell.isInput}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+										<apex:inputText rendered="{!and(cell.isInput)}" value="{!inputVal}" styleClass="inputcls tr" />
+									</td>
+									</apex:repeat>
+								</tr>
+								
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr ocls="a{!field.clsName}{!cItems.id}" class="{!field.clsParent} acls aTab{!cItems.id} a{!field.clsName}{!cItems.id} dn">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td old="null" billing="null" class="tr trh border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+								
+									<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+								<tr repeatdef=" {!clist.map_defKey_listDefs[clist.defItemKey]} " pmfc="{!clist.prevManagerFc}" classification="{!clist.classification}" category="{!clist.category}" region="{!clist.region}" categoryexclude="{!clist.categoryExclude}" categoryinclude="{!clist.categoryInclude}" pcenter="{!clist.profitCenter}" managerfc="{!clist.managerFc}" ocls="{!clist.id}" class="fn_aidx{!cItems.id} acls fso {!clist.id} aTab{!cItems.id} dn for_{!indexc}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td old="null"  class="{!cell.fYear}_{!cell.fMonth} tr trh border_r border_b  {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr ocls="{!clist.id}_{!drf.clsParent}" class="acls aTab{!clist.id} dn sbcell aTab{!cItems.id} {!clist.id}_{!drf.clsParent} each{!clist.id} {!drf.clsField}" fn="{!drf.clsField}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td old="null" billing="null" c1="null" c2="null" c3="null" c4="null" class="tr trh border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>	
+										</apex:repeat>
+									</apex:repeat>
+								<apex:variable var="indexc" value="{!1+indexc}" />	
+								</apex:repeat>
+							
+							<!-- START A total -->
+								<tr class="atotal fwb not_total ftsize" id="faTabId" idx="a_1">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+									</apex:repeat>				 
+								</tr>
+								
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr class="a{!field.clsName} ft_{!field.clsParent} aTotal fwb dn" ocls="a{!field.clsName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+
+								<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_a]}">
+								<tr class="a_1 aTotal fwb {!totalitems.id} fso dn t_fso" ocls="{!totalitems.id}" region="{!totalitems.rsmName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr class="tfmt_{!drf.clsField} fwb aTotal aTotal{!totalitems.id} {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										</apex:repeat>
+								</apex:repeat>
+							<!-- END A total -->
+								
+								
+								<apex:variable var="indexc" value="{!0}" />
+								<apex:repeat var="cItems" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_b]}">
+								<tr managerfc="{!cItems.managerfc}" pmfc="{!cItems.pmfc}" findcls="for_{!indexc}" class="bcls bbcls fbTab findTab aidx{!cItems.id} bTab" ocls="aidx{!cItems.id}" gsmname="{!cItems.name}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!cell.fYear}_{!cell.fMonth}_c {!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b   {!cell.type2} pd_r" old="null">
+										<apex:outputPanel rendered="{!cell.isInput}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+										<apex:inputText rendered="{!and(cell.isInput)}" value="{!inputVal}" styleClass="inputcls tr" />
+									</td>
+									</apex:repeat>
+								</tr>
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr ocls="a{!field.clsName}{!cItems.id}" class="{!field.clsParent} bcls bTab{!cItems.id} a{!field.clsName}{!cItems.id} dn">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="tr trh  border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+								
+									<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+								<tr repeatdef=" {!clist.map_defKey_listDefs[clist.defItemKey]} " pmfc="{!clist.prevManagerFc}" classification="{!clist.classification}" category="{!clist.category}" region="{!clist.region}" categoryexclude="{!clist.categoryExclude}" categoryinclude="{!clist.categoryInclude}" pcenter="{!clist.profitCenter}" managerfc="{!clist.managerFc}" ocls="{!clist.id}" class="fn_aidx{!cItems.id} bcls {!clist.id} fso bTab{!cItems.id} dn for_{!indexc}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td old="null" class="{!cell.fYear}_{!cell.fMonth} tr trh border_r border_b   {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr ocls="{!clist.id}_{!drf.clsParent}" class="bcls bTab{!clist.id} dn sbcell bTab{!cItems.id} {!clist.id}_{!drf.clsParent} each{!clist.id} {!drf.clsField}" fn="{!drf.clsField}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" old="null" c1="null" c2="null" c3="null" c4="null" class="tr trh  border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>	
+										</apex:repeat>
+									</apex:repeat>
+								<apex:variable var="indexc" value="{!1+indexc}" />	
+								</apex:repeat>
+							
+								
+								
+							<!-- START B TOTAL -->		
+								<tr class="btotal fwb not_total ftsize" id="fbTabId" idx="b_1">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null"> </td>
+									</apex:repeat>
+								</tr>
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr class="b{!field.clsName} ft_{!field.clsParent} bTotal fwb dn" ocls="b{!field.clsName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+
+								<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_b]}">
+								<tr class="b_1 bTotal fwb {!totalitems.id} fso t_fso dn" ocls="{!totalitems.id}" region="{!totalitems.rsmName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr class="tfmt_{!drf.clsField} bTotal{!totalitems.id} bTotal fwb {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										</apex:repeat>
+								</apex:repeat>
+								
+								
+								<tr class="abtotal fwb not_total ftsize" id="abTotalId" idx="ab_1">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null"> </td>
+									</apex:repeat>
+								</tr>
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr class="ab{!field.clsName} ft_{!field.clsParent} dn abTotal fwb " ocls="ab{!field.clsName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+								
+								<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_ab]}">
+								<tr class="ab_1 abTotal fwb dn {!totalitems.id} fso t_fso" ocls="{!totalitems.id}" region="{!totalitems.rsmName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr class="tfmt_{!drf.clsField} abTotal{!totalitems.id} dn abTotal fwb {!totalitems.id}_{!drf.clsParent} sbcell" ocls="{!totalitems.id}_{!drf.clsParent}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh  border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										</apex:repeat>
+								</apex:repeat>
+								
+							<!-- END B TOTAL -->	
+								
+								
+								
+								<apex:variable var="indexc" value="{!0}" />
+								<apex:repeat var="cItems" value="{!pageCtrl.map_category_list_gsmItems[pageCtrl.category_channel]}">
+								<tr managerfc="{!cItems.managerfc}" pmfc="{!cItems.pmfc}" findcls="for_{!indexc}" class="ccls cccls fcTab findTab aidx{!cItems.id} cTab" ocls="aidx{!cItems.id}" gsmname="{!cItems.name}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="{!cell.fYear}_{!cell.fMonth}_c {!if(cell.isInput, 'inputtrbg', '')} tr trh border_r border_b   {!cell.type2} pd_r" old="null">
+										<apex:outputPanel rendered="{!cell.isInput}">
+                                            <img alt="comment"  src="/s.gif" class="cmtimg" onclick="showComment(this, '{!cell.fYear}-{!cell.fMonth}', '{!cItems.id}')"/>
+                                            <span></span>
+                                        </apex:outputPanel>
+										<apex:inputText rendered="{!and(cell.isInput)}" value="{!inputVal}" styleClass="inputcls tr" />
+									</td>
+									</apex:repeat>
+								</tr>
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr ocls="a{!field.clsName}{!cItems.id}" class="{!field.clsParent} ccls cTab{!cItems.id} a{!field.clsName}{!cItems.id} dn">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="tr trh   border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+								
+									<apex:repeat var="clist" value="{!cItems.list_gsmDefinitions}">
+								<tr repeatdef=" {!clist.map_defKey_listDefs[clist.defItemKey]} " pmfc="{!clist.prevManagerFc}" classification="{!clist.classification}" category="{!clist.category}" region="{!clist.region}" categoryexclude="{!clist.categoryExclude}" categoryinclude="{!clist.categoryInclude}" pcenter="{!clist.profitCenter}" managerfc="{!clist.managerFc}" ocls="{!clist.id}" class="fn_aidx{!cItems.id} ccls {!clist.id} fso cTab{!cItems.id} dn for_{!indexc}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td old="null" c1="null" c2="null" c3="null" c4="null" class="{!cell.fYear}_{!cell.fMonth} tr trh border_r border_b   {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr ocls="{!clist.id}_{!drf.clsParent}" class="ccls cTab{!clist.id} dn sbcell cTab{!cItems.id} {!clist.id}_{!drf.clsParent} each{!clist.id} {!drf.clsField}" fn="{!drf.clsField}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" old="null" class="tr trh   border_b border_r {!cell.type2} pd_r"></td>
+									</apex:repeat>
+								</tr>	
+										</apex:repeat>
+									</apex:repeat>
+								<apex:variable var="indexc" value="{!1+indexc}" />		
+								</apex:repeat>
+								
+								
+								
+								
+							<!-- START C TOTAL -->			
+								<tr class="ctotal fwb not_total ftsize" id="fcTabId" idx="c_1">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr class="c{!field.clsName} ft_{!field.clsParent} cTotal fwb dn" ocls="c{!field.clsName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+									
+								<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_channel]}">
+								<tr class="c_1 cTotal fwb {!totalitems.id} fso t_fso dn" ocls="{!totalitems.id}" region="{!totalitems.rsmName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr class="tfmt_{!drf.clsField} cTotal{!totalitems.id} cTotal fwb {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										</apex:repeat>
+								</apex:repeat>
+								
+								<tr class="alltotal fwb not_total ftsize" id="bcTotalId" idx="bc_1">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b tr {!cell.type2} {!cell.type3} pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								
+								<apex:repeat var="field" value="{!pageCtrl.DefinitionTotalField}">
+								<tr class="bc{!field.clsName} ft_{!field.clsParent} bcTotal fwb dn" ocls="bc{!field.clsName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+								</apex:repeat>
+
+								<apex:repeat var="totalitems" value="{!pageCtrl.map_total_list_gsmDefItems[pageCtrl.category_bc]}">
+								<tr class="bc_{!indexc} bcTotal fwb {!totalitems.id} fso t_fso dn" ocls="{!totalitems.id}" region="{!totalitems.rsmName}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="trh border_r border_b {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										<apex:repeat var="drf" value="{!pageCtrl.DefinitionRegionField}">
+								<tr class="tfmt_{!drf.clsField} bcTotal{!totalitems.id} bcTotal fwb {!totalitems.id}_{!drf.clsParent} sbcell dn" ocls="{!totalitems.id}_{!drf.clsParent}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td billing="null" class="trh   border_b border_r {!cell.type2} tr pd_r" old="null" > </td>
+									</apex:repeat>
+								</tr>
+										</apex:repeat>
+										
+								</apex:repeat>
+							<!-- START C TOTAL -->
+								
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- END right tab -->
+				
+			</div>
+		</div>
+		
+		
+	</div>
+</apex:component>

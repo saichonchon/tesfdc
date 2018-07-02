@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Object used to Organize Users into Customer Focus Teams (Teams specific to Large A&amp;B Customers) for DataComm and Industrial GIBUs.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Global_Account_Lkp__c</fullName>
+        <externalId>false</externalId>
+        <label>Global Account</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Grouped Accounts</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Customer Focus Team</relationshipLabel>
+        <relationshipName>Customer_Focus_Team_Members</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Global_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Global Account</label>
+        <referenceTo>Global_Account__c</referenceTo>
+        <relationshipLabel>Customer Focus Team Members</relationshipLabel>
+        <relationshipName>Customer_Focus_Team_Members</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text( Salesforce_User_Name__r.Region__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Role_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the role this user plays on the Account team</inlineHelpText>
+        <label>Role Name</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Account Manager (AM)</fullName>
+                    <default>false</default>
+                    <label>Account Manager (AM)</label>
+                </value>
+                <value>
+                    <fullName>Customer Service</fullName>
+                    <default>false</default>
+                    <label>Customer Service</label>
+                </value>
+                <value>
+                    <fullName>Distribution Application Engineer (DAE)</fullName>
+                    <default>false</default>
+                    <label>Distribution Application Engineer (DAE)</label>
+                </value>
+                <value>
+                    <fullName>Distribution Market Manager (DMM)</fullName>
+                    <default>false</default>
+                    <label>Distribution Market Manager (DMM)</label>
+                </value>
+                <value>
+                    <fullName>Engineering</fullName>
+                    <default>false</default>
+                    <label>Engineering</label>
+                </value>
+                <value>
+                    <fullName>Executive</fullName>
+                    <default>false</default>
+                    <label>Executive</label>
+                </value>
+                <value>
+                    <fullName>Field Engineer (FE)</fullName>
+                    <default>false</default>
+                    <label>Field Engineer (FE)</label>
+                </value>
+                <value>
+                    <fullName>Global Account Manager (GAM)</fullName>
+                    <default>false</default>
+                    <label>Global Account Manager (GAM)</label>
+                </value>
+                <value>
+                    <fullName>Industry Development</fullName>
+                    <default>false</default>
+                    <label>Industry Development</label>
+                </value>
+                <value>
+                    <fullName>Logistics</fullName>
+                    <default>false</default>
+                    <label>Logistics</label>
+                </value>
+                <value>
+                    <fullName>Pricing</fullName>
+                    <default>false</default>
+                    <label>Pricing</label>
+                </value>
+                <value>
+                    <fullName>Product Management</fullName>
+                    <default>false</default>
+                    <label>Product Management</label>
+                </value>
+                <value>
+                    <fullName>Quality</fullName>
+                    <default>false</default>
+                    <label>Quality</label>
+                </value>
+                <value>
+                    <fullName>Sales Engineer (SE)</fullName>
+                    <default>false</default>
+                    <label>Sales Engineer (SE)</label>
+                </value>
+                <value>
+                    <fullName>Sales Manager</fullName>
+                    <default>false</default>
+                    <label>Sales Manager</label>
+                </value>
+                <value>
+                    <fullName>Core Team Leader (CTL)</fullName>
+                    <default>false</default>
+                    <label>Core Team Leader (CTL)</label>
+                </value>
+                <value>
+                    <fullName>Relay Field Engineer</fullName>
+                    <default>false</default>
+                    <label>Relay Field Engineer</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Salesforce_User_Name__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Salesforce User Name</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Customer_Focus_Team_Members</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TE_Network_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Salesforce_User_Name__r.EmployeeNumber</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>TE Network ID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TE_Network_User_Id__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The users TE Network Id (US082082 for example)</inlineHelpText>
+        <label>TE Network User Id</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id,IMAGE(&quot;/img/icon/tasks16.gif&quot;,&quot;View&quot;),&quot;_parent&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>View</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Customer Focus Team Member</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CFTID-{00000}</displayFormat>
+        <label>ID Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Customer Focus Team Members</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,144 @@
+<apex:page extensions="CAMPAIGNCAL.ccEdit" standardStylesheets="true" showHeader="false" sidebar="false" standardController="Campaign" tabStyle="Campaign">
+  <apex:styleSheet value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'bootstrap/css/bootstrap.min.css')}" />
+  <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/jquery-1.11.1.min.js')}" />
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+        if ({!closeDialog}) {
+            parent.resetEvents=true;
+            if(parent.planningViewPage == true){
+                parent.$j('#campaign-modal').modal('hide');
+                parent.loadAndRenderWithDelay('The campaign has been created, reloading...');
+            }
+            else
+            {
+                parent.loadText = 'The campaign has been created, reloading...';
+                parent.$j('#campaign-modal').modal('hide');
+                parent.$j('#blccCalendar').fullCalendar('refetchEvents');
+            }
+        }
+        parent.$j('.ui-dialog-content').unmask();
+    </script>
+
+    <style type="text/css">
+        .cc-bs .bPageTitle{
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .bPageBlock{
+            background-color: white !important;
+            border: none !important;
+        }
+        body{
+            margin:0 10px !important;
+        }
+
+        .bPageBlock .detailList tr td, .bPageBlock .detailList tr th,
+        .hoverDetail .bPageBlock .detailList tr td,
+        .hoverDetail .bPageBlock .detailList tr th{
+            border-bottom: 1px solid #ECECEC !important; /*Can't figure out why this isn't overriding the earlier stylesheets. Ah well. Code Karma-- */
+        }
+        .modal-footer {
+          padding: 14px 15px 15px;
+          margin-bottom: 0;
+          text-align: right;
+          background-color: transparent;
+          border-top: 1px solid transparent !important;
+        }
+        .modal-footer:before,
+        .modal-footer:after {
+          display: table;
+          content: "";
+        }
+        .modal-footer:after {
+          clear: both;
+        }
+        body .bPageTitle .ptBody .pageType{
+            margin-left: 20px;
+            display:inline-block;
+            width: 100%;
+        }
+        body .bPageTitle .ptBody .pageDescription {
+            margin-left: 20px;
+            display:inline-block;
+            margin-top: 0;
+        }
+
+        .pageTitleIcon{
+            display: none !important;
+        }
+        .pageDescription:hover{
+            text-decoration: underline;
+        }
+        .dataCol input[type="checkbox"]{
+            margin-top:6px;
+        }
+        .dataCol span span{
+            /*margin-top:6px;*/
+            display: inline-block;
+        }
+        body .bEditBlock .pbBody .pbSubheader, body .bWizardBlock .pbBody .pbSubheader{
+            background-image: none !important;
+            background-color: white !important;
+            border: none !important;
+        }
+
+        .cc-bs .labelCol label{
+            margin-bottom: 0;
+            margin-top: 2px;
+        }
+    </style>
+
+
+    <!-- Page layout supports record types and field sets. Ken Hua -->
+    <div class="campaignTab cc-bs" style="padding: 5px 15px 15px 15px;">
+
+   <apex:sectionHeader title="Campaign Details" subtitle="New Campaign"/>
+    <apex:pageMessages />
+    <apex:form rendered="{!NOT(isRecordTypeEnabled)}" target="_self"> <!-- Rendered if record types are not enabled -->
+    <apex:pageBlock title="" mode="edit">
+        <apex:pageBlockSection showHeader="false" title="" columns="2">
+            <apex:repeat value="{!$ObjectType.Campaign.FieldSets.CAMPAIGNCAL__Campaign_Calendar}" var="f">
+                <apex:inputField value="{!myCampaign[f]}" required="{!f.Required}"/>
+            </apex:repeat>
+        </apex:pageBlockSection>
+        <div class="modal-footer">
+            <apex:commandLink styleClass="btn btn-primary" action="{!saveAndClose}">Save</apex:commandLink>
+            <apex:commandLink styleClass="btn btn-default" action="{!cancel}" onclick="parent.$j('.modal').modal('hide');return false;">Cancel</apex:commandLink>
+        </div>
+    </apex:pageBlock>
+    </apex:form>
+    <!-- Rendered if record types are enabled -->
+    <apex:form rendered="{!isRecordTypeEnabled}" target="_self">
+    <apex:pageBlock title="" mode="edit" id="thePageBlock">
+        
+        <apex:pageBlockSection showHeader="true" columns="1" rendered="{!(NOT(isSecondForm) && countOfRecordTypes > 1)}">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Select Record Type" />
+                <c:ccRecordTypeList value="{!lookupValue}" sObjectType="Campaign"></c:ccRecordTypeList>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>    
+                  
+        <apex:pageBlockSection showHeader="false" title="" columns="1" rendered="{!(NOT(isSecondForm) && countOfRecordTypes > 1)}">
+            <apex:inputField required="true" value="{!Campaign.Name}" />
+            <apex:inputField required="true" value="{!Campaign.StartDate}"/>
+            <apex:inputField required="true" value="{!Campaign.EndDate}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection showHeader="false" title="" columns="2" rendered="{!isSecondForm}">
+            <apex:repeat value="{!$ObjectType.Campaign.FieldSets.CAMPAIGNCAL__Campaign_Calendar}" var="f">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!f.label}" />
+                    <apex:inputField value="{!myCampaign[f]}" required="{!f.required}"/>
+                </apex:pageBlockSectionItem>
+            </apex:repeat>          
+        </apex:pageBlockSection>
+        <div class="modal-footer">
+            <apex:commandLink styleClass="btn btn-primary" action="{!next}" rendered="{!NOT(isSecondForm)}">Next</apex:commandLink>
+                <apex:actionSupport event="onclick" rerender="thePageBlock"/>
+            <apex:commandLink styleClass="btn btn-primary" action="{!saveAndClose}" rendered="{!isSecondForm}">Save</apex:commandLink>
+            <apex:commandLink styleClass="btn btn-default" action="{!cancel}" onclick="parent.$j('.modal').modal('hide');return false;">Cancel</apex:commandLink>     
+        </div>
+    </apex:pageBlock>
+    </apex:form>    
+    </div>
+</apex:page>

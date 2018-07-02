@@ -1,0 +1,88 @@
+<apex:page standardcontroller="Case" extensions="DTCRequestPageExt" action="{!redirectToPage}">
+
+<apex:messages />
+    <apex:sectionheader title="{!$ObjectType.Case.label} Edit" subtitle="{!IF(ISNULL(Case.CaseNumber), 'New Case',Case.CaseNumber)}"/>
+    <apex:form >
+        <apex:pageblock title="{!$ObjectType.Case.label} Edit" id="block1">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Save" action="{!Save}"/>
+                <apex:commandbutton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockbuttons>
+                <apex:pageblocksection title="PLEASE READ BEFORE COMPLETING FORM!!!" showheader="true" columns="1" collapsible="false">
+                    <apex:inputfield value="{!Case.DTC_Instructions__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="REQUIRED" showheader="true" columns="2" collapsible="false">
+                    <apex:outputfield value="{!Case.OwnerId}"/>
+                    <apex:inputfield value="{!Case.Status}" required="true"/>
+                    <apex:inputfield value="{!Case.Requesting_for__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.DTC_Account_Manager_s_Supervisor_Manager__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.DTC_Request_Type__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Subject}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.User_Region__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.DTC_Change_Effective_Date__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="SECTION 1: Sales Hierarchy Requests (Please enter a selection and description)" showheader="true" id="section1" columns="2">
+                    <apex:inputfield value="{!Case.A_Code_Request__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Account_Assignment_Reassignment__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Org_Level_Change_Request__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputtextarea value="{!Case.Sales_Hierarchy_Request_Description__c}" cols="60" rows="7" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="SECTION 2: Salesforce.com Requests (Please enter a selection and description)" showheader="true" id="section2" columns="2">
+                    <apex:inputfield value="{!Case.New_User__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Leads_Eloqua__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Deactivate_User__c}" required="false"/>
+                    <apex:inputfield value="{!Case.New_Feature_Enhancement__c}" required="false"/>
+                    <apex:inputfield value="{!Case.New_Report_or_Dashboard__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Opportunity_and_or_Contacts_Reassignment__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Existing_Dashboard_or_Report_Change__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputtextarea value="{!Case.Salesforce_com_Request_Description__c}" cols="60" rows="7" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="SECTION 3: CMPOS/Allocation Requests (Please enter a selection and description)" showheader="true" id="section3" columns="2">
+                    <apex:inputfield value="{!Case.New_Allocation__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Retroactive_Adjustment_of_Allocation__c}" required="false"/>
+                    <apex:inputtextarea value="{!Case.CMPOS_Allocation_Request_Description__c}" cols="60" rows="7" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="SECTION 4: SECTION 4: Other Sales/Revenue Requests (Please enter a description)" showheader="true" id="section4" columns="2">
+                    <apex:inputfield value="{!Case.Existing_ideas_requests_under_review__c}" required="false"/>
+                    <apex:inputtextarea value="{!Case.Other_Sales_Revenue_Request_Description__c}" cols="60" rows="7" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="ADMIN ONLY" showheader="true" columns="2" collapsible="true" id="section5">
+                    <apex:inputfield value="{!Case.Assigned_to__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Priority}" required="false"/>
+                    <apex:inputfield value="{!Case.DTC_Due_Date__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Description}" required="false"/>
+                    <apex:inputfield value="{!Case.LOE__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Admin_Notes__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Case Information" showheader="true" collapsible="true" columns="2" id="section6">
+                    <apex:inputfield value="{!Case.Origin}" required="false"/>
+                    <apex:inputfield value="{!Case.Case_Age_In_Business_Hours__c}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedEmail}" required="false"/>
+                    <apex:inputfield value="{!Case.ContactId}" required="false"/>
+                </apex:pageblocksection>
+                <script>
+                    twistSection(document.getElementById('{!$Component.block1.section1}').getElementsByTagName('img')[0])
+                    twistSection(document.getElementById('{!$Component.block1.section2}').getElementsByTagName('img')[0])
+                    twistSection(document.getElementById('{!$Component.block1.section3}').getElementsByTagName('img')[0])
+                    twistSection(document.getElementById('{!$Component.block1.section4}').getElementsByTagName('img')[0])
+                    twistSection(document.getElementById('{!$Component.block1.section5}').getElementsByTagName('img')[0])
+                    twistSection(document.getElementById('{!$Component.block1.section6}').getElementsByTagName('img')[0])
+                </script>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,61 @@
+<apex:page standardController="TEACstmrProfile__BU_Customer_Plan__c">
+<script>
+      function deleteAction() {
+          return confirm("Are you sure?");
+      } 
+</script>
+    <!-- <apex:sectionHeader title="{!$ObjectType.TEACstmrProfile__BU_Customer_Plan__c.label}" subtitle="{!BU_Customer_Plan__c.name}"/> -->
+    <apex:pageBlock title="{!$ObjectType.TEACstmrProfile__BU_Customer_Plan__c.label}" mode="maindetail" tabStyle="BU_Customer_Plan__c">
+        <apex:pageBlockButtons >
+        <apex:form >
+            <apex:commandButton action="{!edit}" value="Edit"/>
+            <apex:commandButton action="{!delete}" value="Delete" onclick="return deleteAction()"/>
+            <apex:commandButton action="{!URLFOR($Action.BU_Customer_Plan__c.Clone,BU_Customer_Plan__c.id)}" value="Clone"/>
+            <apex:commandButton action="{!URLFOR($Action.BU_Customer_Plan__c.Share,BU_Customer_Plan__c.id)}" value="Sharing"/>
+        </apex:form>
+        </apex:pageBlockButtons>
+        <br/>
+        <apex:pageBlockSection showHeader="false" columns="1">
+            <apex:pageBlockSectionItem dataStyle="{font-weight:bold; vertical-align: bottom;}" >            
+                <apex:outputLabel value="Business Unit" style="vertical-align: bottom;"/>
+                <apex:outputText ><font color="0073AE" size="2px"><b>{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Business_Unit__c}</b></font></apex:outputText>
+            </apex:pageBlockSectionItem> 
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Plan_Year__c}"/>
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Industry_Summary__c}"/>
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Market_Trends__c}"/>
+            <!-- <apex:outputField value="{!BU_Customer_Plan__c.Momentum__c}"/> 
+            <apex:outputField value="{!BU_Customer_Plan__c.Disappointments_Challenges__c}"/>
+            <apex:outputField value="{!BU_Customer_Plan__c.Competitor_Information__c}"/>-->
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Forecast_Assumptions__c}"/>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection showHeader="false" columns="2">
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Content_Owner__c}"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Owner"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.OwnerId}"/>&nbsp;
+                    <apex:outputLink value="/{!TEACstmrProfile__BU_Customer_Plan__c.id}/a?retURL={!TEACstmrProfile__BU_Customer_Plan__c.id}">[Change]</apex:outputLink>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Editor__c}"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Created By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.CreatedById}"/>,&nbsp;
+                    <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.CreatedDate}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.TEACstmrProfile__Approval_Status__c}"/>
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Last Modified By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.LastModifiedById}"/>,&nbsp;
+                    <apex:outputField value="{!TEACstmrProfile__BU_Customer_Plan__c.LastModifiedDate}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection> 
+    </apex:pageBlock>
+    
+    <apex:relatedList list="Business_Unit__r" />
+    
+</apex:page>

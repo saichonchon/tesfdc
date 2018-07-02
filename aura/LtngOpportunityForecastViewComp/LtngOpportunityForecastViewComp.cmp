@@ -1,0 +1,186 @@
+<aura:component controller="LtngOpportunityForecastCtrl">
+    
+    <ltng:require scripts="{!join(',', $Resource.LtngOppyForecastJS)}" afterScriptsLoaded="{!c.jsLoaded}"/>
+    
+    <aura:attribute name="originalId" 						type="String" />
+    <aura:attribute name="originalName" 					type="String" />
+    <aura:attribute name="message" 							type="String" default=""/>
+	<aura:attribute name="list_forecastYear"				type="List" />
+    <aura:attribute name="list_parts"						type="List" />
+    <aura:attribute name="target"							type="Object" />
+
+    <aura:attribute name="map_forecast" 					type="Map" />
+    <aura:attribute name="map_totalForecast" 				type="Map" />
+    
+    <aura:registerEvent name="modeEvent" type="c:LtngOpportunityForecastModeEvt"/>    
+    <aura:registerEvent name="vfPageEvent"	type="c:LtngOpportunityForecastVfPageEvt"/> 
+
+    <div aura:id="notifyAlert" class="slds-notify_container slds-hide" style=" position: relative;">
+        <div class="slds-notify slds-notify--toast slds-theme--alert-texture slds-theme--error" style="width:95%;" role="alert">
+            <span class="slds-assistive-text">Error</span>
+            <div class="slds-notify__content slds-grid">
+                <lightning:icon iconName="utility:info" size="small" class="slds-button__icon icon-btn-info-fill"/>
+                <div class="slds-col slds-align-middle" style="margin-left: 20px;">
+                    <h2 class="slds-text-heading--small" aura:id="notifyMessage">Please add parts to opportunity first.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <aura:if isTrue="{!and(!v.target.isMED, v.target.isAPL)}">
+    <div style="border-bottom: 1px solid #ececec; padding: 5px; font-weight: bold;">
+	    <h1>APL Forecast Weights Vs Confidence: Weak=25%, 50/50=50%, Likely=75%, Commit=90%, Won=100%</h1>
+    </div>
+    </aura:if>
+    <div id="viewFcBody" aura:id="viewFcBody" class="custom-fc_body hide">
+        <table style="width:0; margin-bottom: 10px">
+            <tr>
+                <td style="position: relative;vertical-align: top;">
+                    <div>
+                        <div aura:id="spinner_left" class=" slds-spinner_container custom-spinner_container">
+                            <div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                        <table id="leftTab" aura:id="alTab" class="slds-table--fixed-layout custom-table-padding" style="width: 0;">
+                            <col style="width:20px;" />
+                            <col style="width:123px;" />
+                            <col style="width:150px;" />
+                            <col style="width:80px;" />
+                            	<aura:if isTrue="{!!v.target.isIND}">
+                            <col style="width:150px;" />
+                            	</aura:if>
+                            <col style="width:90px;" data-dnd="{!v.target.isIND}" />
+                            <tfoot id="leftTfoot" class="custom-tfoot slds-hide"></tfoot>
+                            <thead id="leftThead">
+                                <tr>
+                                    <th style="padding: 0; text-align: center;" colspan="{!v.target.isIND ? 4 : 5}" class="slds-border-bottom-transparent">
+                                    	<div>
+                                            <div class="message">{!v.message}&nbsp;</div>
+                                            <button aura:id="editBtn" onclick="{!c.event_edit_click}" style="line-height: 1.2rem;" class="slds-button slds-button--neutral">
+                                                <lightning:icon iconName="utility:edit" size="xx-small" class="slds-button__icon icon-btn-fill"/>
+                                                <span style="margin-left:5px; margin-top:2px; vertical-align: middle;">Edit</span>
+                                            </button>
+                                            <button aura:id="screenBtn" onclick="{!c.event_fullscreen_click}" style="line-height: 1.2rem;" class="slds-button slds-button--neutral">
+                                                
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="custom-text_ac custom-border-tb custom-border-lr custom-table-title-bg custom-table-th-font">
+                                        <span class="slds-grid--align-spread">
+                                            <span class="slds-truncate">Forecast</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="padding:0; text-align: center;" class="custom-border-b">
+                                        <div class="slds-checkbox--add-button custom-checkbox--add-button">
+                                            <input onclick="{!c.event_displayfc_click}" id="total" type="checkbox" class="slds-assistive-text" />
+                                            <label for="total" class="slds-checkbox--faux custom-label-ba">
+                                                <span class="slds-assistive-text"></span>
+                                            </label>
+                                        </div>
+                                    </th>
+                                    <th colspan="{!(v.target.isIND ? 3 : 4)}" class="custom-border-b"></th>
+                                    <th class="custom-text_ar custom-border-lr custom-border-b">
+                                        <span class="slds-grid--align-spread">
+                                            <span class="slds-truncate">Revenue</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                                <!-- START each forecast level -->
+                                <c:LtngOpportunityForecastViewLevelTotalLeftComp colspan="{!(v.target.isIND ? 4 : 5)}" isBom="{!v.target.isBom}" isExp="{!v.target.isExp}" levelType="{!v.target.opportunity.Level__c}" uniqueId="total"/>
+                                <!-- END each forecast level -->
+                            </thead>
+                            <tbody>
+                                <c:LtngOpportunityForecastLeftHeadComp isIND="{!!(v.target.isIND)}"/>
+                                <!-- START left data -->
+                                <aura:iteration items="{!v.list_parts}" var="fc" >
+                                    <tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="custom-table-tr-over custom-line_data_color custom-table-left">
+                                        <td class="custom-border-b custom-border-l" style="padding:0; text-align: center;">
+                                            <div class="slds-checkbox--add-button custom-checkbox--add-button">
+                                                <input onclick="{!c.event_displayfc_click}" id="{!fc.part.Id}" type="checkbox" class="slds-assistive-text" />
+                                                <label for="{!fc.part.Id}" class="slds-checkbox--faux custom-label-ba">
+                                                    <span class="slds-assistive-text"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="custom-text_ac custom-border-b">
+                                            <div class="slds-truncate" title="{!fc.part.Part__r.Name}">{!fc.part.Part__r.Name}&nbsp;</div>
+                                        </td>
+                                        <td class="custom-border-b">
+                                            <div class="slds-truncate" title="{!fc.part.New_Part_Description__c}">{!fc.part.New_Part_Description__c}&nbsp;</div>
+                                        </td>
+                                        <td class="custom-border-b custom-text_ac" >
+                                            <div class="slds-truncate" title="{!fc.part.Status__c}">{!fc.part.Status__c}</div>
+                                        </td>
+                                        	<aura:if isTrue="{!!v.target.isIND}">
+                                        <td class="custom-border-b custom-text_ac" >
+                                            <div class="slds-truncate" title="{!fc.part.Process_Status__c}">{!fc.part.Process_Status__c}</div>
+                                        </td>
+                                        	</aura:if>
+                                        <td class="custom-text_ar custom-border-b custom-border-lr " >
+                                            <div class="slds-truncate">{!(v.target.isBom ? fc.part.Quantity__c : '')}</div>
+                                        </td>
+                                    </tr>
+                                    <c:LtngOpportunityForecastViewLevelLeftComp colspan="{!(v.target.isIND ? 4 : 5)}" isExp="{!fc.isView}" levelType="{!v.target.opportunity.Level__c}" uniqueId="{!fc.part.Id}"/>    
+                                </aura:iteration>
+                                <!-- END left data -->
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+                <td style="position: relative; vertical-align: top;">
+                    <div>
+                        <div aura:id="spinner_right" class=" slds-spinner_container custom-spinner_container custom-spinner_hide">
+                            <div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                        <div id="rigthScroll" class="custom-right-scroll" style="">
+                            <table class="slds-table--fixed-layout custom-table-padding custom-table-data-th-w custom-table-right" style="width: 0;">
+                                <thead>
+                                    <tr>
+                                        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                            <th scope="col" class="custom-text_ac custom-border-b custom-border-tr custom-table-title-bg custom-table-th-font">
+                                                <div class="slds-is-relative">
+                                                    <div class="slds-truncate">{!year}</div>
+                                                </div>
+                                            </th>
+                                        </aura:iteration>
+                                    </tr>
+                                    <tr>
+                                        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                            <c:LtngOpportunityForecastTotalColumnBlankComp opp="{!v.target.opportunity}" list_part="{!v.list_parts}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="total"/>
+                                        </aura:iteration>
+                                    </tr>
+                                    <c:LtngOpportunityForecastViewLevelTotalRightComp opp="{!v.target.opportunity}" list_part="{!v.list_parts}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" list_forecastYear="{!v.list_forecastYear}" isBom="{!v.target.isBom}" isExp="{!v.target.isExp}" levelType="{!v.target.opportunity.Level__c}" uniqueId="total"/>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                            <td class="custom-text_ac custom-border-r custom-border-b custom-table-title-bg custom-table-th-font" >
+                                                <div class="slds-truncate">{!year}</div>
+                                            </td>
+                                        </aura:iteration>
+                                    </tr>
+                                    <!-- START right data -->
+                                    <aura:iteration items="{!v.list_parts}" var="fc" >
+                                        <tr  onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="custom-table-tr-over custom-line_data_color">
+                                            <aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                                <c:LtngOpportunityForecastColumnBlankComp map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!fc.part.Id}" />
+                                            </aura:iteration>
+                                        </tr>
+                                        <c:LtngOpportunityForecastViewLevelRightComp map_forecast="{!v.map_forecast}" list_forecastYear="{!v.list_forecastYear}" isBom="{!v.target.isBom}" isExp="{!fc.isView}" levelType="{!v.target.opportunity.Level__c}" uniqueId="{!fc.part.Id}"/>
+                                        <!-- END right data -->
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</aura:component>

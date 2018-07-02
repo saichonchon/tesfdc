@@ -1,0 +1,151 @@
+<apex:page title="DND ODM View" sidebar="false" controller="CSD_CtrlODMViewForecast" id="thePage" applyBodyTag="true" docType="html-5.0">
+<head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CSD_CtrlODMViewForecastCSS}" />
+       
+        <style type="text/css">
+            .reload_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+            }
+            .pin{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/jQueryUI/images/ui-icons_228ef1_256x240.png')}');
+                background-position:-145px -146px;
+            }
+            .helpIcon{
+                background: transparent url(/img/alohaSkin/help_orange.png) no-repeat; position: absolute; margin-left: -29px; margin-top: -1px;
+            }
+        </style>
+       
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+       
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+        <script type="text/javascript" src="{!$Resource.CSD_CtrlODMViewForecastJS}"></script>
+
+        <script type="text/javascript">
+           var GLOBAL = {'DJSON': JSON.parse('{!jsonAttention}')};
+           function setFocusOnLoad() {}
+           addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+
+        <div id="contentallid" class="tc">
+        
+            <apex:form id="theForm">
+
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                
+                <apex:outputPanel id="groupingAllOP" layout="block">
+                    
+                    <div class="csd_menu_div">
+                        <input value="Back" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.href='/apex/CSD_CtrlLinkManage';"/>
+                        <input value="Refresh" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.reload();"/>
+                    </div>
+                    
+                    <div id="forecastdiv_id" style="min-width:800px; visibility: hidden;" class="mgauto">
+                        
+                        <c:CSD_CompForecastCalendar pageCtrl="{!this}">
+                        </c:CSD_CompForecastCalendar>
+                        
+                        
+                        <c:CSD_CompForecastContent >
+                            <c:CSD_CompForecastContentLeft >
+                                <c:CSD_CompForecastLeft pageCtrl="{!this}" 
+                                                        listData="{!this['list_RegionData']}" 
+                                                        listColumns="{!this['list_RegionColumns']}" />
+                            </c:CSD_CompForecastContentLeft>
+                            <c:CSD_CompForecastContentRight >
+                                <c:CSD_CompForecastRight pageCtrl="{!this}" 
+                                                        listData="{!this['list_RegionData']}" 
+                                                        listColumns="{!this['list_RegionColumns']}" 
+                                                        listDate="{!this['list_allDateItems']}"/>
+                            </c:CSD_CompForecastContentRight>
+
+                        </c:CSD_CompForecastContent>
+                        
+                    </div>
+                </apex:outputPanel>
+                
+            </apex:form>
+        </div>
+        
+    <c:CSD_CompForecastViewTemplate pageCtrl="{!this}" 
+                                    listColumns2="{!list_SoldToColumns}" 
+                                    listColumns3="{!list_OEMColumns}" 
+                                    listColumns4="{!list_PartColumns}" />
+
+    <div class="popup_main" id="popupmain" style="display: none;"></div>
+    
+    <span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+        <span id="innerData" class="innerdata"></span>
+    </span>
+    
+    <input type="hidden" value="{!jsonmonthspercent}" id="hidd_percent" />
+    <input type="hidden" value="{!pageConf.refStartDate}" id="hidd_start" />
+    <input type="hidden" value="{!pageConf.refEndDate}" id="hidd_end" />    
+    <input type="hidden" value="{!pageConf.str_futureMonthMap}" id="hidd_futuremonthmap" /> 
+    
+    <script type="text/javascript">
+        ;function existObject_js(){ return '{!$RemoteAction.CSD_CtrlODMViewForecast.existCSDsObject}';}
+        ;function getRefData_js(){ return '{!$RemoteAction.CSD_CtrlODMViewForecast.getRefData}';}
+        ;function getBacklogRefData_js(){ return '{!$RemoteAction.CSD_CtrlODMViewForecast.getBacklogRefData}';}
+        ;function getTotalBillingData_js(){ return '{!$RemoteAction.CSD_CtrlODMViewForecast.getTotalBillingData}';}
+        
+        
+;function appendElement_Level3(data, callBack, callBackEnd){
+
+    asyncEachSeries_Original(data['list_result'], function(item, call){
+        var $lClone=data['$left_template'].clone(true), $rClone=data['$right_template'].clone(true);
+        $lClone.addClass( (data['pid']+'_level2 '+item['id']+'_level3 '+data['sid']+'_level1') )
+                .eq(0).attr({'id': item['id'], 'data-sid': data['sid'], 'data-pid': data['pid'], 'data-number': data['number'], 'data-regionname': data['region']})
+                .find('span.namecell').html(item['name']);
+
+        $rClone.addClass('rlevel3').eq(0).find('td').each(function(){
+            var $this=$(this), attr = { 'data-old': 0 };
+            if(item['csFC'] && item['csFC'].hasOwnProperty( data['cellMonth'][this.cellIndex] )){
+                attr['data-old'] = (item['csFC'][data['cellMonth'][this.cellIndex]]);   
+            }
+            $this.attr(attr).html( Globalize.format(attr['data-old'], DECIMAL_POINT['n0']) );
+        });
+
+        setFieldValue($rClone.eq(1).find('td:gt('+(data['ftCell']-1)+')'), data, item['pmFC']);
+        setFieldValue($rClone.eq(2).find('td:gt('+(data['ftCell']-1)+')'), data, item['dcFC']);
+
+        data['$left'].after($lClone);
+        data['$right'].after($rClone);
+        
+    }, function(err){
+        callBackEnd(callBack, data);
+    }, 150);
+    
+    ;function setFieldValue($rCell, data, fc){
+        $rCell.each(function(){
+            var attr = { 'data-old': 0 };
+            if(fc && fc.hasOwnProperty( data['cellMonth'][this.cellIndex] )){
+                attr['data-old'] = (fc[data['cellMonth'][this.cellIndex]]); 
+            }
+            $(this).attr(attr).html( Globalize.format(attr['data-old'], DECIMAL_POINT['n0']) );
+        });
+    }
+}
+
+
+
+
+        
+    </script>
+    
+    </body>
+</apex:page>

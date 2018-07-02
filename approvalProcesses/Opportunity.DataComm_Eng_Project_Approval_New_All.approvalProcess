@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Review by Product Manager or Opportunity Champion before G0 Committee, or for approval if it is only a Extension / Cable Project.</description>
+        <label>Review by Product Manager / Opp Champion</label>
+        <name>Review_by_Product_Manager_Opp_Champion</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>dagriese@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>ebsnyder@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>raymond.boyer@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>Unanimous</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approval by the HS Copper G0 Committee</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Request_Type__c</field>
+                <operation>equals</operation>
+                <value>New Development</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Defined_CBC3s__c</field>
+                <operation>contains</operation>
+                <value>30212</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>G0 Review - HS Copper</label>
+        <name>G0_Review_HS_Copper</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>t.hultermans@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>Unanimous</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approval by the Fiber G0 Committee</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Request_Type__c</field>
+                <operation>equals</operation>
+                <value>New Development</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Defined_CBC3s__c</field>
+                <operation>contains</operation>
+                <value>30051</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>G0 Review - Fiber</label>
+        <name>G0_Review_Fiber</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Industry_Code__c</field>
+            <operation>equals</operation>
+            <value>DataComm,EMS</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Count_of_Rejection</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>StageName_to_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>DataComm Eng Project Approval - New All</label>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

@@ -1,0 +1,369 @@
+<apex:component layout="block" id="compmenu">
+	<apex:attribute name="pageCtrl" type="CtrlRSMChangeScreen" required="true" description="the root page controller reference" />
+	
+
+<div class="mgauto" id="compbodyall" style=" min-width: 800px; ">	
+	
+	<div class="mainTabFix" style=" margin-bottom: 0.2px;"><!-- START head table -->
+		<div class="compwp tabRowFix">
+			<div id="lcellhead" class="tabCellFix lCellw" style="vertical-align: bottom;">
+				<div class="trhfix ">
+				<table class="ftsize tl border_l border_t border_b border_r" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed; width: 100%; height: 100%;" >
+					<tbody>
+						<tr>
+							<th class="left_bg hd" id="allLeftCell" style="padding-left: 8px;">
+								<div class="p_r">
+									<b class="imgce expandall" style="margin-top: 1px;"> </b>
+									<span style="margin-left: 8px;" exp="All Collapse" col="All Expand">All Expand</span>
+								</div>
+							</th>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+			
+			<div id="rcellhead" class="noTabCell rCellw " style="overflow:hidden;">
+				<table border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+					<tbody>
+						<tr id="rsmcolspanid">
+							<apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+								<apex:outputText value="{!dateItems.type1}" escape="false"/>
+							</apex:repeat>
+						</tr>
+						<tr id="rsmHeadId">
+						<apex:repeat var="dateItems" value="{!pageCtrl.list_dateItems}">
+							<apex:repeat var="dSubItems" value="{!pageCtrl.map_dateItems[dateItems.itemName]}">
+							<td class="{!dSubItems.type} tl trhfix pd_r border_t border_b headbg" workingdays="{!dSubItems.workingDays}" fmonth="{!dSubItems.fMonth}" fyear="{!dSubItems.fYear}">
+								<div class="{!dSubItems.type1} fwb p_r tc">
+									<span>
+										<apex:outputText value="{!dSubItems.itemName}" escape="false"/>
+									</span>
+								</div>
+							</td>
+							</apex:repeat>
+						</apex:repeat>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div><!-- END head table -->
+	
+	<div class="mainTabFix" ><!-- START body table -->
+		<div class="compwp tabRowFix" id="datadivid">
+			<!-- START left tab-->
+				<div class="fol ov">
+					<div id="lcellbody" class="db ov">
+						<table class="lCellw" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;">
+							<tbody id="leftTbody">
+							<!-- START TOTAL -->
+								<tr class="not_total">
+									<td class="tl trh border_b border_r border_l pd_0_0 dTabbg">
+<!-- 										<img src="/s.gif" class="imgce expand" onclick="ck_leftCell(this, 'aatotal', 'leftTbody', true)"/> -->
+										{!$Label.rsm_change_total}
+									</td>
+								</tr>
+								<!-- 
+								<tr ovid="pmfcatotal" class="dn aatotal pmfcatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Previous_Month_Forecast}</td>
+								</tr>
+								<tr ovid="cpfcatotal" class="dn aatotal cpfcatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.FinancialPlan_CalFcProposal}</td>
+								</tr>
+								<tr ovid="bpbatotal" class="dn aatotal bpbatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Budget_Planning_Baseline}</td>
+								</tr>
+								<tr ovid="billatotal" class="dn aatotal billatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Billings}</td>
+								</tr>
+								<tr ovid="btbatotal" class="dn aatotal btbatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</td>
+								</tr>
+								<tr ovid="blogatotal" class="dn aatotal blogatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Backlog}</td>
+								</tr>
+								<tr ovid="oblogatotal" class="dn aatotal oblogatotal">
+									<td class="tl trh border_b pd_l_2">{!$Label.rsm_Order_Backlog}</td>
+								</tr>
+								<tr ovid="sablogatotal" class="dn aatotal sablogatotal">
+									<td class="tl trh border_b pd_l_2">{!$Label.rsm_Scheduling_Agreements}</td>
+								</tr>
+								<tr ovid="curatotal" class="dn aatotal curatotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_Currency}</td>
+								</tr>
+								<tr ovid="a2matotal" class="dn aatotal a2matotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</td>
+								</tr>
+								<tr ovid="a6matotal" class="dn aatotal a6matotal">
+									<td class="tl trh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</td>
+								</tr>
+								<tr ovid="qaatotal" class="dn aatotal qaatotal">
+									<td class="tl trh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</td>
+								</tr>
+								 -->
+							<!-- END TOTAL -->
+							
+									<apex:repeat var="ac" value="{!pageCtrl.list_asmItem}">
+								<tr ovid="{!ac.id}" class="{!ac.id}">
+									<td class="tl trh  border_l border_r  hd left_titlebg" onclick="ck_thLeftCell(this, 'a{!ac.id}', 'leftTbody', true)">
+<!-- 										<img src="/s.gif" class="imgce expand" onclick="ck_leftCell(this, 'a{!ac.id}', 'leftTbody', true)"/> -->
+										<div class="p_r trh lineh border_b pd_0_0">
+											<b class="imgce expand" style="float: left;"> </b>
+											<span style="margin-left: 8px;">{!ac.name}</span>
+										</div>
+									</td>
+								</tr>
+								<tr ovid="pmfc{!ac.id}" class="dn a{!ac.id} pmfc{!ac.id}">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Previous_Month_Forecast}</div>
+									</td>
+								</tr>
+								<tr ovid="cpfc{!ac.id}" class="dn a{!ac.id} cpfc{!ac.id}">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.FinancialPlan_CalFcProposal}</div>
+									</td>
+								</tr>
+								<tr ovid="bpb{!ac.id}" class="dn a{!ac.id} bpb{!ac.id}">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Budget_Planning_Baseline}</div>
+									</td>
+								</tr>
+								<tr ovid="bill{!ac.id}" class="dn a{!ac.id} bill{!ac.id} shippedcls">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Shipped}</div>
+									</td>
+								</tr>
+								<tr ovid="btb{!ac.id}" class="dn a{!ac.id} btb{!ac.id}">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Book_to_Bill}</div>
+									</td>
+								</tr>
+								<tr ovid="blog{!ac.id}" class="dn a{!ac.id} blog{!ac.id}  demandopencls">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Demand_Open}</div>
+									</td>
+								</tr>
+								<tr ovid="oblog{!ac.id}" class="dn a{!ac.id} oblog{!ac.id} ordercls">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_2">{!$Label.rsm_orders}</div>
+									</td>
+								</tr>
+								<tr ovid="sablog{!ac.id}" class="dn a{!ac.id} sablog{!ac.id} schedulingagr">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_2">{!$Label.rsm_Scheduling_Agreements}</div>
+									</td>
+								</tr>
+								<tr ovid="cur{!ac.id}" class="dn a{!ac.id} cur{!ac.id}">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_Currency}</div>
+									</td>
+								</tr>
+								<tr ovid="a2m{!ac.id}" class="dn a{!ac.id} a2m{!ac.id}">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_2M_Accuracy}</div>
+									</td>
+								</tr>
+								<tr ovid="a6m{!ac.id}" class="dn a{!ac.id} a6m{!ac.id}">
+									<td class="eve tl trh  border_r border_l ">
+										<div class="trh lineh border_b pd_l_1">{!$Label.rsm_6M_Accuracy}</div>
+									</td>
+								</tr>
+								<tr ovid="qa{!ac.id}" class="dn a{!ac.id} qa{!ac.id}">
+									<td class="tl trh  border_r border_l ">
+										<div class="trh lineh border_b1 pd_l_1">{!$Label.rsm_Quarterly_Accuracy}</div>
+									</td>
+								</tr>
+									</apex:repeat>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<!-- END left tab-->
+		
+			<!-- START right tab-->
+				<div id="rCellScroll" class="noTabCell rCellw " style="overflow: scroll; ">
+					<div id="rcellbody" style=" width: 100%; position: relative; ">
+						<table id="rTabDataId" border="0" cellspacing="0" cellpadding="0" style=" table-layout: fixed;" >
+							<tbody id="rTabId">
+							<!-- START TOTAL  -->
+								<tr class="not_total" id="rTotalid">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class="tr trh border_r border_b {!cell.type2} {!cell.type3} pd_r ftsize" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+							<!-- 
+								<tr ovid="pmfcatotal" class="dn aatotal pmfcatotal" fn="pmforecast">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="cpfcatotal" class="dn aatotal cpfcatotal" fn="cpforecast">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="bpbatotal" class="dn aatotal bpbatotal" fn="budgetplanning">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="billatotal" class="dn aatotal billatotal" fn="billings">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="btbatotal" class="dn aatotal btbatotal" fn="booktobill">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="blogatotal" class="dn aatotal blogatotal" fn="backlog">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="oblogatotal" class="dn aatotal oblogatotal" fn="orderbacklog">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="sablogatotal" class="dn aatotal sablogatotal" fn="schedulingagreements">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="curatotal" class="dn aatotal curatotal" fn="currencyex">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="a2matotal" class="dn aatotal a2matotal" fn="accuracy2m">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="a6matotal" class="dn aatotal a6matotal" fn="accuracy6m">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="qaatotal" class="dn aatotal qaatotal" fn="accuracyqty">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}" >
+									<td class=" tr trh  border_b1 {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+							 -->
+							<!-- END TOTAL  -->
+
+							<!-- START ac list -->
+									<apex:repeat var="ac" value="{!pageCtrl.list_asmItem}">
+								<tr ovid="{!ac.id}" class="{!ac.id} findTab"  bm0="null" bm1="null" bm2="null" bm3="null" cm1="null" cm2="null" cm3="null" cm4="null">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh border_r border_b {!cell.type2} pd_r" old="null">
+										<apex:outputPanel rendered="{!cell.isInput}" styleClass="hd" onclick="comment_ck('{!ac.id}', {!cell.fYear}, {!cell.fMonth})">
+											<img alt="comment"  src="/s.gif" class="cmtimg "/>
+											<span></span>
+										</apex:outputPanel>
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="pmfc{!ac.id}" class="dn innobg a{!ac.id} pmfc{!ac.id}" fn="pmforecast">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="cpfc{!ac.id}" class="dn innobg a{!ac.id} cpfc{!ac.id} cpforecastcls" oid="{!ac.id}" fn="cpforecast">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="bpb{!ac.id}" class="dn a{!ac.id} bpb{!ac.id}" fn="budgetplanning">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="bill{!ac.id}" class="dn a{!ac.id} bill{!ac.id}  shippedcls" fn="billings">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td biling="null" class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="btb{!ac.id}" class="dn a{!ac.id} btb{!ac.id} bookbillcls" fn="booktobill">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} border_r pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="blog{!ac.id}" class="dn innobg a{!ac.id} blog{!ac.id} blogcls demandopencls" fn="backlog" sid="{!ac.id}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} border_r pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="oblog{!ac.id}" class="dn innobg a{!ac.id} oblog{!ac.id} ordercls" fn="orderbacklog">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} border_r pd_r" b0="null" b1="null" b2="null" b3="null" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="sablog{!ac.id}" class="dn innobg a{!ac.id} sablog{!ac.id} scheduling schedulingagr" fn="schedulingagreements">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b {!cell.type2} border_r pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="cur{!ac.id}" class="dn innobg a{!ac.id} cur{!ac.id} currency" fn="currencyex">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td c1="null" c2="null" c3="null" c4="null" class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="a2m{!ac.id}" class="dn a{!ac.id} a2m{!ac.id} percent" fn="accuracy2m" sid="{!ac.id}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="a6m{!ac.id}" class="dn a{!ac.id} a6m{!ac.id} percent" fn="accuracy6m" sid="{!ac.id}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}">
+									<td class=" tr trh  border_b border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+								<tr ovid="qa{!ac.id}" class="dn a{!ac.id} qa{!ac.id} percent" fn="accuracyqty" sid="{!ac.id}">
+									<apex:repeat var="cell" value="{!pageCtrl.list_allDateItems}" >
+									<td class=" tr trh  border_b1 border_r {!cell.type2} pd_r" old="null">
+									</td>
+									</apex:repeat>
+								</tr>
+									</apex:repeat>
+						<!-- END ac list -->								
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<!-- END right tab-->
+		</div>
+	</div>
+	
+</div>
+
+</apex:component>

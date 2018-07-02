@@ -1,0 +1,213 @@
+<apex:page standardController="Case" language="{!vlg}" extensions="WebToCaseContExtML,PICMLanguage" action="{!init}" standardStylesheets="true" sidebar="false" showHeader="false" showChat="false">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="keywords" content=""/>
+        <meta http-equiv="description" content="The world counts on connectivity.  See how we're
+            leveraging innovation across industries and disciplines to take connectivity places never imagined before."/>   
+        <meta name="author" content="Tyco Electronics, TE Connectivity" />
+        <meta name="copyright" content="Tyco Electronics Corporation, a TE Connectivity Ltd Company, Copyright 1995-2012,http://www.te.com/aboutus/copyright.asp" />
+        <meta name="distribution" content="Global" />
+        <meta http-equiv="imagetoolbar" content="no" />
+        <meta name="mssmarttagspreventparsing" content="TRUE" />
+        <meta name="doc-class" content="Completed" />
+        <meta name="rating" content="general" />
+        <title>Email Us</title>
+        <link href="{!URLFOR($Resource.FooterFiles, 'images/favicon.ico')}" rel="shortcut icon" />
+        <link href ="http://www.te.com/en/about-te/news/new-products.rss" rel="alternate" type="application/rss+xml" title="TE Connectivity RSS News Feed" />
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.FooterFiles, 'stylesheets/te-global.css')}" /> 
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.FooterFiles, 'stylesheets/te-brand.css')}" />
+        <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="stylesheets/te-global-ie6.css" /><![endif]-->
+        <!--[if IE 7]><link rel="stylesheet" type="text/css" href="stylesheets/te-global-ie7.css" /><![endif]-->
+        <!-- YOUR STYLESHEET GOES HERE, BETWEEN THE OTHER STYLESHEETS WE PROVIDED AND MASTER.CSS -->
+        <link rel="stylesheet" type="text/css" href="path/to/your/stylesheet.css" />
+        <!-- MASTER.CSS MUST COME LAST, EVEN AFTER YOUR STYLESHEET!!!!!!!!  OTHERWISE YOUR SITE WILL BREAK -->
+        <link rel="stylesheet" type="text/css" href="stylesheets/master.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    </head>
+    <body><a href="#content" id="TE_SkipToContent" style="display: none;">Skip to content</a>
+    <div id="TE_outerDiv">
+        <div id="te-page">
+            <div id="rn_Navigation" style="margin: 0px 0px 0px 0px;font-family: Verdana, Arial, sans-serif;font-size: 8.5pt;position: relative; height: 30px;">
+    
+</div>
+                <div id="TE_mainBody"  style="background: white;border: 1px solid #DDD;text-align: left;width: 99%;position: relative;">
+                <a name="content"  style="display: none;"></a>
+                    <apex:stylesheet value="{!URLFOR($Resource.TE_Site, 'style.css')}"/>
+    <style>
+    .requiredBlock{
+        display: none;
+    }
+    </style>
+    
+    <apex:form id="form" style="margin: 20px 0px;">
+    <apex:actionRegion immediate="true"> 
+        <apex:actionFunction name="checkEmail" action="{!checkEmail}" rendered="true" reRender="msgs,EnterBlock,ContactFoundBlockSection,ContactFillInBlockSection"   status="ldg"/>
+          <apex:image url="{!URLFOR($Resource.TE_Site, 'img/te_connectivity_logo.png')}" width="190" height="75" styleClass="teLogoImg" style="display: none;"/><br/>
+        <apex:pageMessages id="msgs"/>
+
+        <apex:outputPanel id="mainBlock" rendered="{!renderMain}" styleClass="mainBlock" layout="block">
+            <apex:outputText value="{!vPICLan.E_Submit_a_question_to_our_support_team__c}" styleClass="headerText"/>
+            <!--<apex:outputtext value="{!caseInstance.SuppliedEmail}"/>-->
+            <apex:outputPanel id="EnterBlock" rendered="{!renderEnterBlock}" layout="block">
+                <apex:outputText value="{!vPICLan.E_Email_Address__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField onkeydown="preventSubmit(event)" id="emailEnterInput" value="{!caseInstance.SuppliedEmail}" onblur="checkEmail();"  required="true" rendered="{!vinputType}" styleClass="inputText"/>
+              <apex:inputtext onkeydown="preventSubmit(event)" id="emailEnterInput2" value="{!caseInstance.SuppliedEmail}" onblur="checkEmail();" required="true"  disabled="ture" rendered="{!vOutputType}" styleClass="inputText"/>
+                  <apex:actionStatus id="ldg">
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                   Verifying Email &nbsp;&nbsp;&nbsp;&nbsp; <apex:image value="https://te-enterprise--quoting.cs16.my.salesforce.com/img/loading32.gif"  title="Please Wait..." width="20px" height="20px"/>
+                                </apex:outputPanel>
+                            </apex:facet>
+        </apex:actionStatus>
+                 <script>
+                     
+                    function preventSubmit(e){
+                       
+                        if( e.which == 13 ){
+                            e.preventDefault();
+                            $("input[id*='inputSubject']").focus();
+                                                    
+                        }
+                    }  
+         
+          </script>            
+          <!--<apex:inputhidden value="{!conEmail}" id="theHiddenInput"/>-->          
+          </apex:outputPanel>
+           <apex:outputPanel id="ContactFoundBlockSection">
+            <apex:outputPanel id="ContactFoundBlockSection1" rendered="{!renderContactFoundBlockSection}" layout="block" styleClass="ContactFoundBlockSection">
+                <apex:outputText value="{!vPICLan.E_Welcome_Back__c}" styleClass="descriptionText"/><br/>
+                
+                <apex:outputText value="{!vPICLan.E_First_Name_Existing_Contact__c}" styleClass="descriptionText"/>
+                <apex:outputField value="{!contactInstance.FirstName}" styleClass="descriptionText"/>
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Last_Name_Existing_Contact__c}" styleClass="descriptionText"/>
+                <apex:outputField value="{!contactInstance.LastName}" styleClass="descriptionText"/>
+            </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel id="ContactFillInBlockSection">
+            <apex:outputPanel id="ContactFillInBlockSection1" rendered="{!renderContactFillInBlockSection}" layout="block">
+            
+                <apex:outputText value="{!vPICLan.E_Please_fill_in_Additional__c}" styleClass="descriptionText" style="margin: 20px;"/><br/>
+                <br/>
+                <apex:outputText value="{!vPICLan.E_First_Name__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.Web_Supplied_First_Name__c}" id="inputfName" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Last_Name__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.Web_Supplied_Last_Name__c}" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Company_Name__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.SuppliedCompany}" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Address__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.Address__c}" styleClass="inputText"  style="width: 470px;height: 100px;"/>
+                <br/>
+                <apex:outputText value="{!vPICLan.E_City__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputText value="{!caseInstance.City__c}" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_State__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.State__c}" styleClass="inputText"  style="width: 470px;height: 17px;"/>
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Zip__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.Zip_Code__c}" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Phone__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputText value="{!caseInstance.Phone__c}" styleClass="inputText" />
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Country__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <!--<apex:inputField value="{!caseInstance.Country__c}" styleClass="inputText" required="true"/>-->
+                <apex:selectList id="country" value="{!caseInstance.Country__c}" size="1" multiselect="false" style="margin: 7px 0;width: 476px;">
+                    <apex:selectOptions value="{!countryOptions}"></apex:selectOptions>
+                </apex:selectList>
+                <br/>
+                <apex:outputText value="{!vPICLan.E_Type_Of_Customer__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:selectList id="ProductContact" value="{!caseInstance.Type_of_Customer__c}" size="1" multiselect="false" style="margin: 7px 0;width: 476px;">
+                    <apex:selectOptions value="{!typeOfCustomerOptions}"></apex:selectOptions>
+                </apex:selectList>
+            </apex:outputPanel>
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel id="CaseBlockSection" rendered="true" layout="block">
+                <apex:outputText value="{!vPICLan.E_Subject__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField id="inputSubject" value="{!caseInstance.Subject}" styleClass="inputText" />
+                <br/>
+                
+                <apex:outputText value="{!vPICLan.E_Question__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:inputField value="{!caseInstance.Description}" styleClass="inputText"  style="width: 470px;height: 100px;"/>
+                <br/>
+                <apex:inputhidden value="{!caseInstance.Product_from_web__c}" />
+                <!--<apex:outputText value="{!vPICLan.E_Product__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:selectList id="Product" value="{!caseInstance.Product_Category__c}" size="1" multiselect="false" style="margin: 7px 0;width: 476px;">
+                    <apex:selectOptions value="{!productOptions}"></apex:selectOptions>
+                </apex:selectList>
+                <br/>-->
+                
+                <apex:outputText value="{!vPICLan.E_Category__c}" styleClass="lableText"/>
+                <apex:outputText value=" *" styleClass="requiredStar"/><br/>
+                <apex:selectList id="Category" value="{!caseInstance.Category__c}" size="1" multiselect="false" style="margin: 7px 0;width: 476px;">
+                    <apex:selectOptions value="{!categoryOptions}"></apex:selectOptions>
+                </apex:selectList>
+                <br/>
+                
+                <apex:outputText value="{!vPICLan.E_Competitor_Part__c}" styleClass="lableText"/><br/>
+                <apex:inputText value="{!caseInstance.Competitor_Part__c}" styleClass="inputText"/>
+                <br/>
+                
+                <apex:outputText value="{!vPICLan.E_Competitor_Name__c}" styleClass="lableText"/><br/>
+                <apex:inputText value="{!caseInstance.Competitor_Name__c}" styleClass="inputText"/>
+                <br/>
+                
+                <apex:outputText value="{!vPICLan.E_Part_Number__c}" styleClass="lableText"/><br/>
+                <apex:inputText value="{!caseInstance.Part_Number__c}" styleClass="inputText"/>
+                <br/>
+            </apex:outputPanel>
+        </apex:outputPanel>
+     
+        <apex:outputPanel id="StyleBlock" rendered="{!renderSubmittedBlock}">
+            <style>
+                .UploadBlock{
+                    display: none;
+                }
+            </style>
+        </apex:outputPanel>
+    </apex:actionRegion>
+    <div class="UploadBlock" style="margin: 7px 50px">            
+        <apex:outputText value="{!vPICLan.E_Attach_Document__c}" styleClass="lableText" style="margin: 7px 0px;"/><br/>
+        <apex:inputFile value="{!fileBody}" filename="{!attachment.name}" id="file" style="border: solid 1px #B1B1B1;margin: 7px 0px; width: 476px;"/><br/>
+        <apex:outputText value="{!vPICLan.E_Note_for_Attachment__c}" styleClass="descriptionText" style="margin-top: 10px;"/><br/>
+        <apex:commandButton value="{!vPICLan.E_Continue__c}" action="{!saveCase}" styleClass="submitButton" style="margin: 20px 0;"/><br/>
+        <apex:outputText styleClass="inputText">
+            {!vPICLan.E_Note__c}
+        </apex:outputText>
+    </div>
+
+    </apex:form>
+                </div>
+            </div>
+            
+        <script type="text/javascript" src="scripts/TE_search.js"></script>
+        <script type="text/javascript" src="http://www.te.com/_TEincludes/TEscripts/s_code.js"></script>
+        <script type="text/javascript" src="http://www.te.com/_TEincludes/TEscripts/TE_sitecatalyst_H.js"></script>
+        <!-- Set SiteCatalyst variables here!! -->
+        <script type="text/javascript">
+         var s_code=s.t(); if(s_code)document.write(s_code)
+         </script>
+        <noscript><a href="http://www.omniture.com" title="Web Analytics"><img src="//tycoeglobal.112.2O7.net/b/ss/tycoeglobal/1/H.20.3--NS/0" height="1" width="1" border="0" alt="" /></a></noscript>
+   </div> </body>
+</html>
+</apex:page>

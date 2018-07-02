@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <formFactors>Small</formFactors>
+    <formFactors>Medium</formFactors>
+    <formFactors>Large</formFactors>
+    <label>Sales</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>standard-WaveHomeLightning</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-Quote</tabs>
+    <tabs>standard-Lead</tabs>
+    <tabs>standard-Task</tabs>
+    <tabs>standard-File</tabs>
+    <tabs>standard-ContentNote</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Campaign</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>standard-Feed</tabs>
+    <tabs>standard-CollaborationGroup</tabs>
+    <tabs>standard-Event</tabs>
+    <tabs>standard-OtherUserProfile</tabs>
+    <tabs>standard-Case</tabs>
+    <tabs>standard-News</tabs>
+    <tabs>ZSD_DMM_SAP__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

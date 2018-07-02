@@ -1,0 +1,61 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_View_Customer_Page_ctrl" tabStyle="ACP_TE_Supplier_Evaluation__c" standardStylesheets="true" showHeader="true" sidebar="false" >
+   <style>
+  
+   </style>
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+  
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+      <apex:form >
+         <apex:pageBlock mode="maindetail" >
+            <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:outputText value="{!$Label.ACP_TE_Suppliers_Rating}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+               <div class = "col-md-12">
+                  <div class="panel panel-default">
+                     <div class="panel-heading">{! $Label.ACP_Create_Rating}</div>
+                     <div class ="panel-body">
+                    <div class ="informationBar" >{! $Label.ACP_TE_Suppliers_Rating_Information}</div>
+                     <br/>
+                        <div class ="col-md-6">
+                       
+                           <div class="form-group">
+                              <label><font style="color:red">*</font>{! $Label.ACP_SR_Year}</label>
+                             <apex:inputField value="{!NewSuppliersRating.ACP_Year__c}" required="true" html-placeholder="Select year" styleClass="form-control"/>
+                           </div>
+                         
+                           <div class="form-group">
+                              <label>{! $Label.ACP_SR_RelationshipRating}</label>
+                             <apex:inputField value="{!NewSuppliersRating.ACP_Relationship_Rating__c}" html-placeholder="Select Relationship Rating" styleClass="form-control"/>
+                           </div>
+                          
+                        </div>
+                        
+                        <div class ="col-md-6">                          
+                             <div class="form-group">
+                              <label>{! $Label.ACP_Comments}</label>
+                              <apex:inputField value="{!NewSuppliersRating.ACP_Comments__c}" html-placeholder="Enter Supplier rating comments" styleClass="form-control" />
+                          
+                        </div> 
+                     </div></div>
+                       <div class = "panel-footer">
+                        <div align ="right" style="">
+                         <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="rating" />
+                         </apeX:commandLink>&nbsp;
+                         
+                           <apex:commandButton action="{!SaveNewSuppliersRating}" value="{!$Label.ACP_Save_New}" styleClass="btn btn-default" disabled="{!IF(suppliersRatingList.size < evalrec.ACP_No_Of_Records__c-1, false, true)}"  />&nbsp;
+                         <apex:commandButton action="{!saveSuppliersRating}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary"  /></div>
+                       
+                  </div>
+               
+            </div></div></div>
+         </apex:pageBlock>
+      </apex:form>
+  </div>
+  </div>
+</apex:page>

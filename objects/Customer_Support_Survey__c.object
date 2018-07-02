@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Captures Agent Satisfaction Survey from Survey Gizmo. Associates to the Case Contact, Case and Account.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.AccountNumber</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The Account that the case/survey is related to.</description>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Customer Surveys</relationshipLabel>
+        <relationshipName>Customer_Surveys</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Additional_Comments__c</fullName>
+        <description>If you would like to provide any additional comments regarding your experience, please use comment field below:</description>
+        <externalId>false</externalId>
+        <label>Additional Comments</label>
+        <length>2000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>CSR_Dissatisfaction_Reason__c</fullName>
+        <description>You stated that you were dissatisfied with the TE Customer Care Representative that assisted you. Please let us know where you think we can improve:</description>
+        <externalId>false</externalId>
+        <inlineHelpText>You stated that you were dissatisfied with the TE Customer Care Representative that assisted you. Please let us know where you think we can improve:</inlineHelpText>
+        <label>CSR Dissatisfaction Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Was not professional and courteous.</fullName>
+                    <default>false</default>
+                    <label>Was not professional and courteous.</label>
+                </value>
+                <value>
+                    <fullName>Did not provide prompt resolution.</fullName>
+                    <default>false</default>
+                    <label>Did not provide prompt resolution.</label>
+                </value>
+                <value>
+                    <fullName>Did not demonstrate knowledge of my business and requirements.</fullName>
+                    <default>false</default>
+                    <label>Did not demonstrate knowledge of my business and requirements.</label>
+                </value>
+                <value>
+                    <fullName>Did not demonstrate knowledge of TE products and services.</fullName>
+                    <default>false</default>
+                    <label>Did not demonstrate knowledge of TE products and services.</label>
+                </value>
+                <value>
+                    <fullName>Other Reason (specify in comments)</fullName>
+                    <default>false</default>
+                    <label>Other Reason (specify in comments)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CSR_Satisfaction_Level__c</fullName>
+        <description>How satisfied were you with the TE Customer Care Representative who assisted you?</description>
+        <externalId>false</externalId>
+        <label>CSR Satisfaction Level</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Very Satisfied</fullName>
+                    <default>false</default>
+                    <label>Very Satisfied</label>
+                </value>
+                <value>
+                    <fullName>Satisfied</fullName>
+                    <default>false</default>
+                    <label>Satisfied</label>
+                </value>
+                <value>
+                    <fullName>Neutral</fullName>
+                    <default>false</default>
+                    <label>Neutral</label>
+                </value>
+                <value>
+                    <fullName>Dissatisfied</fullName>
+                    <default>false</default>
+                    <label>Dissatisfied</label>
+                </value>
+                <value>
+                    <fullName>Very Dissatisfied</fullName>
+                    <default>false</default>
+                    <label>Very Dissatisfied</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CSR__c</fullName>
+        <description>Case Owner for this survey</description>
+        <externalId>false</externalId>
+        <label>CSR</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The case that this survey is related to.</description>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Customer Surveys</relationshipLabel>
+        <relationshipName>Customer_Surveys</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Comment_Category__c</fullName>
+        <description>Task sent to Text-Mining team to Categorize Comments into these selections for reporting purposes</description>
+        <externalId>false</externalId>
+        <label>Comment Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Delivery</fullName>
+                    <default>false</default>
+                    <label>Delivery</label>
+                </value>
+                <value>
+                    <fullName>Lead Time</fullName>
+                    <default>false</default>
+                    <label>Lead Time</label>
+                </value>
+                <value>
+                    <fullName>Response Time</fullName>
+                    <default>false</default>
+                    <label>Response Time</label>
+                </value>
+                <value>
+                    <fullName>Customer Care/TAC Engg</fullName>
+                    <default>false</default>
+                    <label>Customer Care/TAC Engg</label>
+                </value>
+                <value>
+                    <fullName>Pricing</fullName>
+                    <default>false</default>
+                    <label>Pricing</label>
+                </value>
+                <value>
+                    <fullName>Product</fullName>
+                    <default>false</default>
+                    <label>Product</label>
+                </value>
+                <value>
+                    <fullName>Inquiry</fullName>
+                    <default>false</default>
+                    <label>Inquiry</label>
+                </value>
+                <value>
+                    <fullName>Suggestion</fullName>
+                    <default>false</default>
+                    <label>Suggestion</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>9</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Comment_Sentiment_Type__c</fullName>
+        <description>Task created for Text-Mining team to categorize the Open Text Comments into these categories.</description>
+        <externalId>false</externalId>
+        <label>Comment Sentiment Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Positive</fullName>
+                    <default>false</default>
+                    <label>Positive</label>
+                </value>
+                <value>
+                    <fullName>Negative</fullName>
+                    <default>false</default>
+                    <label>Negative</label>
+                </value>
+                <value>
+                    <fullName>Neutral</fullName>
+                    <default>false</default>
+                    <label>Neutral</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <description>If you would like to provide any additional comments regarding your experience, please use the comment field below.</description>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>2000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Customer Surveys</relationshipLabel>
+        <relationshipName>Customer_Surveys</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Customer_Effort_Required__c</fullName>
+        <description>How much effort did you personally have to put forth in order to resolve your request?</description>
+        <externalId>false</externalId>
+        <label>Customer Effort Required</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Very Low Effort</fullName>
+                    <default>false</default>
+                    <label>Very Low Effort</label>
+                </value>
+                <value>
+                    <fullName>Low Effort</fullName>
+                    <default>false</default>
+                    <label>Low Effort</label>
+                </value>
+                <value>
+                    <fullName>Moderate Effort</fullName>
+                    <default>false</default>
+                    <label>Moderate Effort</label>
+                </value>
+                <value>
+                    <fullName>High Effort</fullName>
+                    <default>false</default>
+                    <label>High Effort</label>
+                </value>
+                <value>
+                    <fullName>Very High Effort</fullName>
+                    <default>false</default>
+                    <label>Very High Effort</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Customer_Mgr_Contact__c</fullName>
+        <description>Survey Gizmo Survey: A Customer Care Manager may reach out to you. Please indicate if you do not want to be contacted.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Survey Gizmo Survey: Can a Customer Care Manager reach out to you?</inlineHelpText>
+        <label>Can a Customer Care Manager Contact?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Date_Submitted_legacy__c</fullName>
+        <description>This is for the legacy survey data upload, only pertains to records from 10/2012 and prior</description>
+        <externalId>false</externalId>
+        <label>Date Submitted_legacy</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Dissatisfied_Summary__c</fullName>
+        <description>For use of TAC Manager to summarize any dissatisfied customer ratings, used in reporting</description>
+        <externalId>false</externalId>
+        <label>Dissatisfied Summary</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Operations</fullName>
+                    <default>false</default>
+                    <label>Operations</label>
+                </value>
+                <value>
+                    <fullName>Customer Error</fullName>
+                    <default>false</default>
+                    <label>Customer Error</label>
+                </value>
+                <value>
+                    <fullName>Other TE Organization</fullName>
+                    <default>false</default>
+                    <label>Other TE Organization</label>
+                </value>
+                <value>
+                    <fullName>Account Manager</fullName>
+                    <default>false</default>
+                    <label>Account Manager</label>
+                </value>
+                <value>
+                    <fullName>Customer Service</fullName>
+                    <default>false</default>
+                    <label>Customer Service</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Effort_Score__c</fullName>
+        <description>Effort Score captured from SG</description>
+        <externalId>false</externalId>
+        <inlineHelpText>On a scale of 1 to 5(1 being lowest and 5 being highest), How much effort did you personally have to put forth to handle your request</inlineHelpText>
+        <label>Effort Score</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Time_Contacted_Check__c</fullName>
+        <description>Need the to create a report Requested by Nauman where we need to calculate first contact resolution percentage.</description>
+        <externalId>false</externalId>
+        <formula>if(Times_contacted_to_resolve_Issue_Formula__c ==1,1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>First Time Contacted Check</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interaction_Dissatisfaction_Reason__c</fullName>
+        <description>You stated that you were dissatisfied with the interaction. Was it because:</description>
+        <externalId>false</externalId>
+        <inlineHelpText>You stated that you were dissatisfied with the interaction. Was it because:</inlineHelpText>
+        <label>Interaction Dissatisfaction Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No resolution to my pre-sales question</fullName>
+                    <default>false</default>
+                    <label>No resolution to my pre-sales question</label>
+                </value>
+                <value>
+                    <fullName>No resolution to my post-sale question</fullName>
+                    <default>false</default>
+                    <label>No resolution to my post-sale question</label>
+                </value>
+                <value>
+                    <fullName>My question wasn&apos;t answered promptly</fullName>
+                    <default>false</default>
+                    <label>My question wasn&apos;t answered promptly</label>
+                </value>
+                <value>
+                    <fullName>My question wasn&apos;t completely answered</fullName>
+                    <default>false</default>
+                    <label>My question wasn&apos;t completely answered</label>
+                </value>
+                <value>
+                    <fullName>Other Reason (specify in comments)</fullName>
+                    <default>false</default>
+                    <label>Other Reason (specify in comments)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Interaction_Satisfaction_Level__c</fullName>
+        <description>How Satisfied were you with this Interaction?</description>
+        <externalId>false</externalId>
+        <label>Interaction Satisfaction Level</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Very Satisfied</fullName>
+                    <default>false</default>
+                    <label>Very Satisfied</label>
+                </value>
+                <value>
+                    <fullName>Satisfied</fullName>
+                    <default>false</default>
+                    <label>Satisfied</label>
+                </value>
+                <value>
+                    <fullName>Neutral</fullName>
+                    <default>false</default>
+                    <label>Neutral</label>
+                </value>
+                <value>
+                    <fullName>Dissatisfied</fullName>
+                    <default>false</default>
+                    <label>Dissatisfied</label>
+                </value>
+                <value>
+                    <fullName>Very Dissatisfied</fullName>
+                    <default>false</default>
+                    <label>Very Dissatisfied</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Issue_Resolved__c</fullName>
+        <externalId>false</externalId>
+        <label>Issue Resolved?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Mgr_Supv_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Mgr/Supv Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>No_of_Times_Contacted_Resolve_Issue__c</fullName>
+        <description>How many times did you have to contact TE to get your inquiry resolved?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>How many times did you have to contact TE to get your inquiry resolved?</inlineHelpText>
+        <label>No. of times contacted to resolve Issue</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>1 time</fullName>
+                    <default>false</default>
+                    <label>1 time</label>
+                </value>
+                <value>
+                    <fullName>2 times</fullName>
+                    <default>false</default>
+                    <label>2 times</label>
+                </value>
+                <value>
+                    <fullName>3 times or more</fullName>
+                    <default>false</default>
+                    <label>3 times or more</label>
+                </value>
+                <value>
+                    <fullName>Not Ressolved</fullName>
+                    <default>false</default>
+                    <label>Not Ressolved</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Reason_Code_legacy__c</fullName>
+        <description>this is for legacy survey data only pertains to records dated 10/2012 and earlier</description>
+        <externalId>false</externalId>
+        <label>Reason Code_legacy</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Interaction_legacy__c</fullName>
+        <description>this is for legacy survey data only pertains to records dated 10/2012 and earlier</description>
+        <externalId>false</externalId>
+        <label>SAP Interaction &amp;_legacy</label>
+        <length>8</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Satisfied_with_Resolution_Timeframe__c</fullName>
+        <description>Was this interaction resolved within an acceptable amount of time?</description>
+        <externalId>false</externalId>
+        <label>Satisfied with Resolution Timeframe?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Survey_Age__c</fullName>
+        <externalId>false</externalId>
+        <formula>NOW()- CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Survey Age</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Survey Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Customer_Surveys</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Survey Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Manual</fullName>
+                    <default>false</default>
+                    <label>Manual</label>
+                </value>
+                <value>
+                    <fullName>Automated</fullName>
+                    <default>false</default>
+                    <label>Automated</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TE_Fiscal_Month_legacy__c</fullName>
+        <description>this is for legacy survey data only pertains to records dated 10/2012 and earlier</description>
+        <externalId>false</externalId>
+        <label>TE Fiscal Month_legacy</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Times_contacted_to_resolve_Issue_Formula__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( No_of_Times_Contacted_Resolve_Issue__c , &apos;1 time&apos;) , 1, IF(ISPICKVAL( No_of_Times_Contacted_Resolve_Issue__c , &apos;2 times&apos;) , 2, IF(ISPICKVAL( No_of_Times_Contacted_Resolve_Issue__c , &apos;3 times or more&apos;) ,3,IF(ISPICKVAL( No_of_Times_Contacted_Resolve_Issue__c , &apos;Not Resolved&apos;) , 4,null))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Times contacted to resolve Issue-Formula</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>What_is_an_acceptable_amount_of_time__c</fullName>
+        <description>You stated that your interaction was not answered within an acceptable amount of time. What do you view as acceptable?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>You stated that your interaction was not answered within an acceptable amount of time. What do you view as acceptable?</inlineHelpText>
+        <label>What is an acceptable amount of time?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Within 1 hour</fullName>
+                    <default>false</default>
+                    <label>Within 1 hour</label>
+                </value>
+                <value>
+                    <fullName>Within 4 hours</fullName>
+                    <default>false</default>
+                    <label>Within 4 hours</label>
+                </value>
+                <value>
+                    <fullName>Within one business day</fullName>
+                    <default>false</default>
+                    <label>Within one business day</label>
+                </value>
+                <value>
+                    <fullName>Within two business days</fullName>
+                    <default>false</default>
+                    <label>Within two business days</label>
+                </value>
+                <value>
+                    <fullName>Other Reason (specify in comments)</fullName>
+                    <default>false</default>
+                    <label>Other Reason (specify in comments)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Customer Survey</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>Case__c</columns>
+        <columns>Contact__c</columns>
+        <columns>Account__c</columns>
+        <columns>Additional_Comments__c</columns>
+        <columns>Effort_Score__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CS-{0000}</displayFormat>
+        <label>Support Survey</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Customer Surveys</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Customer_Care_Survey</fullName>
+        <active>true</active>
+        <description>Captures SurveyGizmo data</description>
+        <label>Customer Care Survey</label>
+        <picklistValues>
+            <picklist>CSR_Dissatisfaction_Reason__c</picklist>
+            <values>
+                <fullName>Did not demonstrate knowledge of TE products and services%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Did not demonstrate knowledge of my business and requirements%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Did not provide prompt resolution%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Reason %28specify in comments%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Was not professional and courteous%2E</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CSR_Satisfaction_Level__c</picklist>
+            <values>
+                <fullName>Dissatisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Neutral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very Dissatisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very Satisfied</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Comment_Category__c</picklist>
+            <values>
+                <fullName>Customer Care%2FTAC Engg</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Delivery</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inquiry</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lead Time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pricing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Response Time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Suggestion</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Comment_Sentiment_Type__c</picklist>
+            <values>
+                <fullName>Negative</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Neutral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Positive</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Customer_Effort_Required__c</picklist>
+            <values>
+                <fullName>High Effort</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low Effort</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Moderate Effort</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very High Effort</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very Low Effort</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Customer_Mgr_Contact__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Dissatisfied_Summary__c</picklist>
+            <values>
+                <fullName>Account Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Customer Error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Customer Service</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Operations</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other TE Organization</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Interaction_Dissatisfaction_Reason__c</picklist>
+            <values>
+                <fullName>My question wasn%27t answered promptly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>My question wasn%27t completely answered</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No resolution to my post-sale question</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No resolution to my pre-sales question</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Reason %28specify in comments%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Interaction_Satisfaction_Level__c</picklist>
+            <values>
+                <fullName>Dissatisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Neutral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very Dissatisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Very Satisfied</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Issue_Resolved__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>No_of_Times_Contacted_Resolve_Issue__c</picklist>
+            <values>
+                <fullName>1 time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 times</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 times or more</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not Ressolved</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Satisfied_with_Resolution_Timeframe__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>What_is_an_acceptable_amount_of_time__c</picklist>
+            <values>
+                <fullName>Other Reason %28specify in comments%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Within 1 hour</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Within 4 hours</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Within one business day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Within two business days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

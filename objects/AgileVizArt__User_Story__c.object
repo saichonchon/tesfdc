@@ -1,0 +1,3450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to manage issues, bugs and user requirements or stories.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AgileVizArt__Assigned_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Assigned user working on this story or task</inlineHelpText>
+        <label>Assigned To</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Assigned_Tasks</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Created_by__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Required because CreatedBy is not a valid user to send email alerts.</description>
+        <externalId>false</externalId>
+        <label>Created by</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>User_Stories</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Current_User_Is_Raised_By__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AgileVizArt__Raised_By__c =  $User.Id, &quot;true&quot;, &quot;false&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current User Is Raised By</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Defective_User_Story__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select user story that describes the feature or business functionality which is related to this defect.</inlineHelpText>
+        <label>Defective User Story</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>AgileVizArt__User_Story__c.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Requirement</value>
+            </filterItems>
+            <filterItems>
+                <field>AgileVizArt__User_Story__c.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__User_Story__c</referenceTo>
+        <relationshipLabel>Defects</relationshipLabel>
+        <relationshipName>Defects</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Delegated_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter a delegate contact which delivers input for this user story.</inlineHelpText>
+        <label>Delegated To</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Delegated User Stories</relationshipLabel>
+        <relationshipName>Delegated_User_Stories</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Deployed_Instances__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select in which instances this story is already deployed</inlineHelpText>
+        <label>Deployed Instances</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>DEV</fullName>
+                    <default>false</default>
+                    <label>DEV</label>
+                </value>
+                <value>
+                    <fullName>UAT</fullName>
+                    <default>false</default>
+                    <label>UAT</label>
+                </value>
+                <value>
+                    <fullName>PROD</fullName>
+                    <default>false</default>
+                    <label>PROD</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Deployment_Instructions__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>List Apex classes, Visualforce pages, custom objects, workflow rules to be deployed to activate this story</inlineHelpText>
+        <label>Deployment Instructions</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Deployment_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Deployment Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>false</default>
+                    <label>Open</label>
+                </value>
+                <value>
+                    <fullName>Doing</fullName>
+                    <default>false</default>
+                    <label>Doing</label>
+                </value>
+                <value>
+                    <fullName>Review</fullName>
+                    <default>false</default>
+                    <label>Review</label>
+                </value>
+                <value>
+                    <fullName>Done</fullName>
+                    <default>false</default>
+                    <label>Done</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Description_No_HTML__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in board to display only text without HTML tags. This field is automatically populated by a workflow rule.</inlineHelpText>
+        <label>Description (without HTML)</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Doing_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date when story has been set to doing. This is used to generate burn-charts based on weighted status.</description>
+        <externalId>false</externalId>
+        <label>Doing Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Done_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date when story has been completed without deployment, but including development and testing</inlineHelpText>
+        <label>Done Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Due_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Effort_Points__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Effort Points</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>0.5</fullName>
+                    <default>false</default>
+                    <label>0.5</label>
+                </value>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                    <label>1</label>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                    <label>2</label>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                    <label>3</label>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                    <label>5</label>
+                </value>
+                <value>
+                    <fullName>8</fullName>
+                    <default>false</default>
+                    <label>8</label>
+                </value>
+                <value>
+                    <fullName>13</fullName>
+                    <default>false</default>
+                    <label>13</label>
+                </value>
+                <value>
+                    <fullName>20</fullName>
+                    <default>false</default>
+                    <label>20</label>
+                </value>
+                <value>
+                    <fullName>40</fullName>
+                    <default>false</default>
+                    <label>40</label>
+                </value>
+                <value>
+                    <fullName>100</fullName>
+                    <default>false</default>
+                    <label>100</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Epic_Story_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Epic_Story__r.Name</formula>
+        <label>Epic Story Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Epic_Story__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Epic Story</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>AgileVizArt__Epic_Story__c.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__Epic_Story__c</referenceTo>
+        <relationshipLabel>User Stories</relationshipLabel>
+        <relationshipName>User_Stories</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Global_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <displayFormat>GSI-{0}</displayFormat>
+        <externalId>false</externalId>
+        <inlineHelpText>Provides an unique id for this user story across all projects. Use this number to find user stories uniquely.</inlineHelpText>
+        <label>Global Id</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Is_Closed__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CASE( AgileVizArt__Status__c,
+&apos;Done&apos;, &apos;true&apos;,
+&apos;Closed&apos;, &apos;true&apos;,
+&apos;false&apos;)</formula>
+        <inlineHelpText>Flag identifies all closed user stories = Closed, Done</inlineHelpText>
+        <label>Is Closed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Is_Current_User__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AgileVizArt__Assigned_To__c =  $User.Id, &quot;true&quot;, &quot;false&quot;)</formula>
+        <inlineHelpText>Evaluates if Assigned To is equal to current user.</inlineHelpText>
+        <label>Is Current User</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Is_Duplicate__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF( OR(ISBLANK(AgileVizArt__Master__c) ,    NOT(ISPICKVAL(AgileVizArt__Status__c, &quot;Duplicate&quot;))  ),  &quot;false&quot;, &quot;true&quot;)</formula>
+        <inlineHelpText>Indicates if user story is not a duplicate</inlineHelpText>
+        <label>Is Duplicate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Is_Open__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CASE( AgileVizArt__Status__c,
+&apos;On Hold&apos;, &apos;false&apos;,
+&apos;Open&apos;, &apos;true&apos;,
+&apos;Doing&apos;, &apos;true&apos;,
+&apos;Review&apos;, &apos;true&apos;,
+&apos;Done&apos;, &apos;false&apos;,
+&apos;Closed&apos;, &apos;false&apos;,
+&apos;Rejected&apos;, &apos;false&apos;,
+&apos;Duplicate&apos;, &apos;false&apos;,
+&apos;false&apos;)</formula>
+        <inlineHelpText>Flag shows if user story is in one of the open status = Open, Doing, Review</inlineHelpText>
+        <label>Is Open</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Languages__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select languages to be translated for this story</inlineHelpText>
+        <label>Languages</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>English</fullName>
+                    <default>false</default>
+                    <label>English</label>
+                </value>
+                <value>
+                    <fullName>German</fullName>
+                    <default>false</default>
+                    <label>German</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__LastChangedFields__c</fullName>
+        <deprecated>false</deprecated>
+        <description>to record the name of fields from last update</description>
+        <externalId>false</externalId>
+        <label>LastChangedFields</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Last_Comment_Update__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Last Comment Update</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Master__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>You can link user story to a master story to indicate it&apos;s a child user story</inlineHelpText>
+        <label>Master</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>AgileVizArt__User_Story__c.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__User_Story__c</referenceTo>
+        <relationshipLabel>Children</relationshipLabel>
+        <relationshipName>Duplicates</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Open_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date when story has been set to open. This is used to generate burn-charts based on weighted status.</description>
+        <externalId>false</externalId>
+        <label>Open Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Ordered_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used to display status order for related lists and list views only.</description>
+        <externalId>false</externalId>
+        <formula>CASE(AgileVizArt__Status__c,
+&quot;On Hold&quot;, &quot;0. On Hold&quot;,
+&quot;Open&quot;, &quot;1. Open&quot;,
+&quot;Doing&quot;, &quot;2. Doing&quot;,
+&quot;Review&quot;, &quot;3. Review&quot;,
+&quot;Done&quot;, &quot;4. Done&quot;,
+&quot;Closed&quot;, &quot;5. Closed&quot;,
+&quot;Duplicate&quot;, &quot;6. Duplicate&quot;,
+&quot;Rejected&quot;, &quot;7. Rejected&quot;,
+&quot;1. Open&quot;)</formula>
+        <label>Stage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Override_Priority__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Override importance of your epic story for this user story using MoSCoW method</inlineHelpText>
+        <label>Priority</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Must</fullName>
+                    <default>false</default>
+                    <label>Must</label>
+                </value>
+                <value>
+                    <fullName>Should</fullName>
+                    <default>false</default>
+                    <label>Should</label>
+                </value>
+                <value>
+                    <fullName>Could</fullName>
+                    <default>false</default>
+                    <label>Could</label>
+                </value>
+                <value>
+                    <fullName>Would</fullName>
+                    <default>false</default>
+                    <label>Would</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Points__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>VALUE(TEXT(AgileVizArt__Effort_Points__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Points</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Priority_Severity_Urgency__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used in list views to combine priority for requirements, severity for defects and urgency for issues in one field.</description>
+        <externalId>false</externalId>
+        <formula>CASE($RecordType.DeveloperName,
+&quot;Issue&quot;,  TEXT(AgileVizArt__Urgency__c),
+&quot;Defect&quot;, TEXT(AgileVizArt__Severity__c),
+&quot;Requirement&quot;,  CASE(AgileVizArt__Override_Priority__c,
+&quot;Must&quot;, &quot;1. Must&quot;,
+&quot;Should&quot;, &quot;2. Should&quot;,
+&quot;Could&quot;, &quot;3. Could&quot;,
+&quot;Would&quot;, &quot;4. Would&quot;,
+&quot;4. Would&quot;)
+,&quot;n/a&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Priority/Severity/Urgency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Priority__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(AgileVizArt__Epic_Story__r.AgileVizArt__Priority__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Shows priority of related epic story.</inlineHelpText>
+        <label>Epic Priority</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Process_Stage__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CASE(AgileVizArt__Status__c,
+&quot;On Hold&quot;, &quot;0. On Hold&quot;,
+&quot;Open&quot;, &quot;1. Open&quot;,
+&quot;Doing&quot;, &quot;2. Doing&quot;,
+&quot;Review&quot;, &quot;3. Review&quot;,
+&quot;Done&quot;, &quot;4. Done&quot;,
+&quot;Closed&quot;, &quot;4. Done&quot;,
+&quot;Duplicate&quot;, &quot;5. Duplicate&quot;,
+&quot;Rejected&quot;, &quot;6. Rejected&quot;,
+&quot;1. Open&quot;)</formula>
+        <inlineHelpText>Groups done and closed into one status. Used for process analysis.</inlineHelpText>
+        <label>Process Stage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Project_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into master detail relationship lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Project__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Project__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>AgileVizArt__Project__c</referenceTo>
+        <relationshipLabel>User Stories</relationshipLabel>
+        <relationshipName>Stories</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Raised_By__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter user that has registered</inlineHelpText>
+        <label>Raised By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Raised_Tasks</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Rank_ReadOnly__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used only to prevent administrators to edit it.</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Rank__c</formula>
+        <inlineHelpText>Defines rank of user stories within product backlog</inlineHelpText>
+        <label>Rank</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Rank__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Only used in background. Do not provide to end-users</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Use this to rank user stories within backlog</inlineHelpText>
+        <label>Rank</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Related_Risk__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Link related risk if defect or issue are escalated or related to a risk</inlineHelpText>
+        <label>Related Risk</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>AgileVizArt__Risk__c.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__Risk__c</referenceTo>
+        <relationshipLabel>User Stories</relationshipLabel>
+        <relationshipName>User_Stories</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Reporting_Urgency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(AgileVizArt__Urgency__c, &quot;1. Show Stopper&quot;), &quot;0. Show Stopper&quot;,
+   IF(AgileVizArt__Top__c, &quot;1. Top Issue&quot;, TEXT(AgileVizArt__Urgency__c))
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reporting Urgency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Review_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date when story has been set to review. This is used to generate burn-charts based on weighted status.</description>
+        <externalId>false</externalId>
+        <label>Review Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Severity__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Critical production issue affecting all users, including system unavailability and data integrity issues with no workaround available.
+
+Major functionality is impacted or significant performance degradation is experienced.  Issue is persistent and affects many users and/or major functionality.  No reasonable workaround available.  Also includes time-sensitive requests such as requests for feature activation or a data export. 
+
+System performance issue or bug affecting some but not all users.  Short-term workaround is available, but not scalable.  
+
+Inquiry regarding a routine technical issue; information requested on application capabilities, navigation, installation or configuration; bug affecting a small number of users.  Reasonable workaround available.  Resolution required as soon as reasonably practicable.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Level 1: Critical production issue affecting all users with no workaround
+Level 2: Major functionality impacted, no reasonable workaround
+Level 3: Bug effecting some users, short-term workaround
+Level 4: Routine inquiry, reasonable workaround</inlineHelpText>
+        <label>Severity</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Level 1 – Critical</fullName>
+                    <default>false</default>
+                    <label>Level 1 – Critical</label>
+                </value>
+                <value>
+                    <fullName>Level 2 – Urgent</fullName>
+                    <default>false</default>
+                    <label>Level 2 – Urgent</label>
+                </value>
+                <value>
+                    <fullName>Level 3 – High</fullName>
+                    <default>false</default>
+                    <label>Level 3 – High</label>
+                </value>
+                <value>
+                    <fullName>Level 4 – Medium</fullName>
+                    <default>false</default>
+                    <label>Level 4 – Medium</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Show_Master__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if user story should be still displayed in scrumboard and iteration planning when it has children assigned to it. Applies in conjunction with master lookup. You need to set this flag only on master story.</inlineHelpText>
+        <label>Show Master</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Sprint_Assignment_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sprint Assignment Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Sprint_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used mainly in background to pass into lookups</description>
+        <externalId>false</externalId>
+        <formula>AgileVizArt__Sprint__r.Name</formula>
+        <label>Sprint Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Sprint_Rank__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Only used in background. Do not provide to end-users</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to rank user stories within Sprint</inlineHelpText>
+        <label>Sprint Rank</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Sprint__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sprint</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>AgileVizArt__Sprint__c.AgileVizArt__Release__r.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__Sprint__c</referenceTo>
+        <relationshipLabel>User Stories</relationshipLabel>
+        <relationshipName>Stories</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>On Hold</fullName>
+                    <default>false</default>
+                    <label>On Hold</label>
+                </value>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>true</default>
+                    <label>Open</label>
+                </value>
+                <value>
+                    <fullName>Doing</fullName>
+                    <default>false</default>
+                    <label>Doing</label>
+                </value>
+                <value>
+                    <fullName>Review</fullName>
+                    <default>false</default>
+                    <label>Review</label>
+                </value>
+                <value>
+                    <fullName>Done</fullName>
+                    <default>false</default>
+                    <label>Done</label>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <default>false</default>
+                    <label>Closed</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+                <value>
+                    <fullName>Duplicate</fullName>
+                    <default>false</default>
+                    <label>Duplicate</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Story_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK(AgileVizArt__Story_Number__c)), LEFT($RecordType.DeveloperName, 1) &amp; &quot;-&quot; &amp;  TEXT(AgileVizArt__Story_Number__c), &quot;&quot;)</formula>
+        <inlineHelpText>Unique user story identifier by project: D=Defect, I=Issue, R=Requirement</inlineHelpText>
+        <label>Story #</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Story_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id, AgileVizArt__Story_Id__c &amp; &quot; &quot; &amp;  Name, &quot;_top&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Story Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Story_Number_Text__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Populated by workflow to enable global search by story number</description>
+        <externalId>false</externalId>
+        <label>Story Number Text</label>
+        <length>100</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Story_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Only used in background. Do not provide to end-users</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines a unique story number by project</inlineHelpText>
+        <label>Story Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Sync_Priority__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows if priority of related epic story is synched on user story level. Check to sync with epic story, uncheck to override</inlineHelpText>
+        <label>Sync Priority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Top__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Identifies an issue or defect as relevant for status calls or other reviews as being an top user story to watch.</inlineHelpText>
+        <label>Top</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Translated_Instances__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select in which instances this story is already deployed</inlineHelpText>
+        <label>Translated Instances</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>DEV</fullName>
+                    <default>false</default>
+                    <label>DEV</label>
+                </value>
+                <value>
+                    <fullName>UAT</fullName>
+                    <default>false</default>
+                    <label>UAT</label>
+                </value>
+                <value>
+                    <fullName>PROD</fullName>
+                    <default>false</default>
+                    <label>PROD</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Translation_Instructions__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>List fields, picklist values and other topics to translate</inlineHelpText>
+        <label>Translation Instructions</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Translation_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Translation Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>false</default>
+                    <label>Open</label>
+                </value>
+                <value>
+                    <fullName>Doing</fullName>
+                    <default>false</default>
+                    <label>Doing</label>
+                </value>
+                <value>
+                    <fullName>Review</fullName>
+                    <default>false</default>
+                    <label>Review</label>
+                </value>
+                <value>
+                    <fullName>Done</fullName>
+                    <default>false</default>
+                    <label>Done</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Urgency__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Recommendation for issues to manage or prioritize them.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Prioritize issues by urgency you expect resolving, rather importance. Use following suggestions:
+Show Stopper:  ~1 day
+High: ~2-3 days
+Medium: ~1 week
+Normal: ~2 weeks
+Low: ~4 weeks
+Long-term: ~3 months
+Idea: Reminder bucket with no urgency</inlineHelpText>
+        <label>Urgency</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1. Show Stopper</fullName>
+                    <default>false</default>
+                    <label>1. Show Stopper</label>
+                </value>
+                <value>
+                    <fullName>2. High</fullName>
+                    <default>false</default>
+                    <label>2. High</label>
+                </value>
+                <value>
+                    <fullName>3. Medium</fullName>
+                    <default>false</default>
+                    <label>3. Medium</label>
+                </value>
+                <value>
+                    <fullName>4. Normal</fullName>
+                    <default>true</default>
+                    <label>4. Normal</label>
+                </value>
+                <value>
+                    <fullName>5. Low</fullName>
+                    <default>false</default>
+                    <label>5. Low</label>
+                </value>
+                <value>
+                    <fullName>6. Long-term</fullName>
+                    <default>false</default>
+                    <label>6. Long-term</label>
+                </value>
+                <value>
+                    <fullName>7. Idea</fullName>
+                    <default>false</default>
+                    <label>7. Idea</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__User_Story__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Select a related user story which can be requirement or defect</inlineHelpText>
+        <label>User Story</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>AgileVizArt__User_Story__c.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Requirement, Defect</value>
+            </filterItems>
+            <filterItems>
+                <field>$Source.AgileVizArt__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.AgileVizArt__Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>AgileVizArt__User_Story__c</referenceTo>
+        <relationshipLabel>Issues</relationshipLabel>
+        <relationshipName>Issues</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Version__c</fullName>
+        <defaultValue>1</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used for optimistic concurrency handling</description>
+        <externalId>false</externalId>
+        <label>Version</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>New_Defect__c</fullName>
+        <description>This formula field allows users to create new defects directly from a User Story List View.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/a0k/e?RecordType=&quot; &amp; $Label.User_Story_Defect_Record_Type &amp;  $Label.Connecting_To_Sales_Project_Id_Name  ,  &quot;Create New Defect&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Defect</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Open_Related_Training_Material__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK(Related_Content_Id__c)), HYPERLINK(&quot;/&quot; &amp; Related_Content_Id__c, &quot;Open Related Training Material&quot;, &quot;_blank&quot;), &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Open Related Training Material</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Related_Content_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Content Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <description>This field defines the start date.</description>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>User Story</label>
+    <listViews>
+        <fullName>AgileVizArt__All</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>AgileVizArt__Last_Comment_Update__c</columns>
+        <columns>LAST_ACTIVITY</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Story_Id__c</field>
+            <operation>startsWith</operation>
+            <value>D</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>equals</operation>
+            <value>Connecting to sales</value>
+        </filters>
+        <label>open defects Phase 1</label>
+    </listViews>
+    <listViews>
+        <fullName>AgileVizArt__My_Open_Issues</fullName>
+        <columns>AgileVizArt__Project_Name__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Top__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>AgileVizArt__Effort_Points__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>On Hold,Rejected,Duplicate,Done,Closed</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Requirement,AgileVizArt__User_Story__c.AgileVizArt__Defect</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Is_Current_User__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Urgency__c</field>
+            <operation>notEqual</operation>
+            <value>1. Show Stopper</value>
+        </filters>
+        <label>My Open Issues</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>AgileVizArt__My_Open_Issues_Defects</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>AgileVizArt__Epic_Story_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Klaus Klein</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Defect,AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II C2S</value>
+        </filters>
+        <label>My Open Issues/Defects/Requirements</label>
+    </listViews>
+    <listViews>
+        <fullName>AgileVizArt__My_Raised_User_Stories</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Sprint__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Done_Date__c</columns>
+        <columns>AgileVizArt__Priority_Severity_Urgency__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Current_User_Is_Raised_By__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </filters>
+        <label>My Raised Stories</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Defects_acc</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Defect,AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>equals</operation>
+            <value>Connecting to Sales</value>
+        </filters>
+        <label>All Open Stories phase I</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Issues_acc1</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4</booleanFilter>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Requirement,AgileVizArt__User_Story__c.AgileVizArt__Defect</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Urgency__c</field>
+            <operation>equals</operation>
+            <value>2. High,1. Show Stopper</value>
+        </filters>
+        <label>Open Stories tb closed before training</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Issues_acc_II</fullName>
+        <columns>AgileVizArt__Project_Name__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>equals</operation>
+            <value>Connecting to sales</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>equals</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>All Open Stories phase II</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Issues_no_requirements</fullName>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>AgileVizArt__Sprint__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>All Open Issues (no requirements)</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Open_Defects</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Defect</value>
+        </filters>
+        <label>All Open Defects</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Open_Requirements</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <label>All Open Requirements</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Open_Stories</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Defect,AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <label>All Open Stories</label>
+    </listViews>
+    <listViews>
+        <fullName>Channel_Open_Requirements</fullName>
+        <booleanFilter>(1 AND 2) AND (3 OR 4)</booleanFilter>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Created_by__c</field>
+            <operation>equals</operation>
+            <value>Stephen Bolton</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Created_by__c</field>
+            <operation>equals</operation>
+            <value>William madara</value>
+        </filters>
+        <label>Channel Open Requirements</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>ITBconsult_All_Issues</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <label>ITBconsult - All Issues</label>
+        <sharedTo>
+            <group>ITBconsult185221</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ITBconsult_Defects</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Steffen Lerm,Maic Stohr,Frederic Faisst,Marc G. Vliinger,Anders Damkier</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Defect</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <label>ITBconsult - Defects</label>
+        <sharedTo>
+            <group>ITBconsult185221</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ITBconsult_Issues</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Steffen Lerm,Maic Stohr,Frederic Faisst,Marc G. Vliinger,Anders Damkier</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <label>ITBconsult - Issues</label>
+        <sharedTo>
+            <group>ITBconsult185221</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ITBconsult_Open_Requirements</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Sprint__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open</value>
+        </filters>
+        <label>ITBconsult - all Open Requirements</label>
+        <sharedTo>
+            <group>ITBconsult185221</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ITBconsult_Requirements</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Due_Date__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Steffen Lerm,Maic Stohr,Frederic Faisst,Marc G. Vliinger,Anders Damkier</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <label>ITBconsult - Requirements</label>
+        <sharedTo>
+            <group>ITBconsult185221</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Issues_For_Review</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Sprint__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Review</value>
+        </filters>
+        <label>Issues For Review</label>
+    </listViews>
+    <listViews>
+        <fullName>Lead_user_stories</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Defect,AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>equals</operation>
+            <value>Lead Management</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>equals</operation>
+            <value>Connecting to Sales</value>
+        </filters>
+        <label>Lead user stories</label>
+    </listViews>
+    <listViews>
+        <fullName>My_Open_Issues_Defects_JLU</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Project__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Issue,AgileVizArt__User_Story__c.AgileVizArt__Defect,AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Jason Lucas</value>
+        </filters>
+        <label>My Open Issues/Defects/Requirements Jaso</label>
+    </listViews>
+    <listViews>
+        <fullName>NPS_Project</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Duplicate</value>
+        </filters>
+        <label>NPS Project All open</label>
+    </listViews>
+    <listViews>
+        <fullName>NPS_Project_ALL</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <label>NPS Project All</label>
+    </listViews>
+    <listViews>
+        <fullName>NPS_Project_FFaist</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>On Hold,Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>contains</operation>
+            <value>Faisst</value>
+        </filters>
+        <label>NPS Project Frederic Faisst</label>
+    </listViews>
+    <listViews>
+        <fullName>NPS_Project_JBreskot</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>On Hold,Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>contains</operation>
+            <value>Breskot</value>
+        </filters>
+        <label>NPS Project Judith Breskot</label>
+    </listViews>
+    <listViews>
+        <fullName>NPS_Project_MKrauss</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Story_Number__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>On Hold,Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>contains</operation>
+            <value>Krauss</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>NPS Project Marc Krauss</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_BinYu</fullName>
+        <columns>AgileVizArt__Project_Name__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Bin Yu</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>notEqual</operation>
+            <value>NPS Project</value>
+        </filters>
+        <label>Open Stories Bin Yu</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Channel</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Raised_By__c</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Story_Name__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Cornelia Jager,Mauli Tikkiwal</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold,Open,Doing,Review</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Created_by__c</field>
+            <operation>equals</operation>
+            <value>Stephen Bolton,William Madara</value>
+        </filters>
+        <label>Open Stories Channel</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Cornelia</fullName>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Raised_By__c</columns>
+        <columns>AgileVizArt__Story_Name__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>contains</operation>
+            <value>Ver,Mathur,Shaik,Darode,Khalasi,Parate,Jager</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <label>Open Stories Cornelia</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Freddy</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Frederic Faisst</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Frederic Faisst</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_JasmineVer</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Jasmine Ver</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Jasmine Ver</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Jason_Lucas</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Jason Lucas</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Jason Lucas</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Klaus</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Klaus Klein</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Klaus Klein</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_MaicStohr</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Maic Stohr</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Maic Stohr</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_Others</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7 AND 8</booleanFilter>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Michael Ludwig</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Jasmine Ver</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Frederic Faisst</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Stephen Daily</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Steffen Lerm</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>notEqual</operation>
+            <value>Klaus Klein</value>
+        </filters>
+        <label>Open Stories OTHERS</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_SteffenLerm</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Steffen Lerm</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Steffen Lerm</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Stories_SteveDaily</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Stephen Daily</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <label>Open Stories Steve Daily</label>
+    </listViews>
+    <listViews>
+        <fullName>Reporting_Issues</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Epic_Story__c</field>
+            <operation>contains</operation>
+            <value>Report</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>equals</operation>
+            <value>Open,Doing,Review</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>contains</operation>
+            <value>NPS</value>
+        </filters>
+        <label>Reporting Issues</label>
+    </listViews>
+    <listViews>
+        <fullName>Requirements_Frederic_Faisst</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Frederic Faisst</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__User_Story__c.AgileVizArt__Requirement</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>notEqual</operation>
+            <value>NPS Project</value>
+        </filters>
+        <label>Requirements Frederic Faisst</label>
+    </listViews>
+    <listViews>
+        <fullName>Showstoppers</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Urgency__c</field>
+            <operation>equals</operation>
+            <value>1. Show Stopper</value>
+        </filters>
+        <label>Showstoppers</label>
+    </listViews>
+    <listViews>
+        <fullName>User_Stories_ITB</fullName>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Bin Yu,Frederic Faisst</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>notEqual</operation>
+            <value>NPS Project</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Deployment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Doing</value>
+        </filters>
+        <label>User Stories - ITB</label>
+    </listViews>
+    <listViews>
+        <fullName>User_Stories_Offline</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <columns>AgileVizArt__Epic_Story__c</columns>
+        <columns>AgileVizArt__Status__c</columns>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Story_Id__c</columns>
+        <columns>AgileVizArt__Description__c</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Urgency__c</columns>
+        <columns>AgileVizArt__Override_Priority__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AgileVizArt__Assigned_To__c</field>
+            <operation>equals</operation>
+            <value>Bin Yu,Frederic Faisst</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Status__c</field>
+            <operation>notEqual</operation>
+            <value>Done,Closed,Rejected,Duplicate,On Hold</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Epic_Story_Name__c</field>
+            <operation>notEqual</operation>
+            <value>Phase II</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project_Name__c</field>
+            <operation>notEqual</operation>
+            <value>NPS Project</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Deployment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Doing</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Offline</value>
+        </filters>
+        <label>User Stories - Offline</label>
+    </listViews>
+    <listViews>
+        <fullName>User_Stories_for_CSD</fullName>
+        <columns>NAME</columns>
+        <columns>AgileVizArt__Assigned_To__c</columns>
+        <columns>AgileVizArt__Created_by__c</columns>
+        <columns>AgileVizArt__Ordered_Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>csd,cosumer</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Created_by__c</field>
+            <operation>contains</operation>
+            <value>alan</value>
+        </filters>
+        <label>User Stories for CSD</label>
+    </listViews>
+    <nameField>
+        <label>Subject</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>User Stories</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>true</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>AgileVizArt__Defect</fullName>
+        <active>true</active>
+        <description>User story to log bugs or application defects</description>
+        <label>Defect</label>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployed_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployment_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Effort_Points__c</picklist>
+            <values>
+                <fullName>0%2E5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>13</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>8</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Languages__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>German</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Override_Priority__c</picklist>
+            <values>
+                <fullName>Could</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Must</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Should</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Would</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Severity__c</picklist>
+            <values>
+                <fullName>Level 1 %E2%80%93 Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Level 2 %E2%80%93 Urgent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Level 3 %E2%80%93 High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Level 4 %E2%80%93 Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Status__c</picklist>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Duplicate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translated_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translation_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Urgency__c</picklist>
+            <values>
+                <fullName>1%2E Show Stopper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2%2E High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3%2E Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4%2E Normal</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>5%2E Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6%2E Long-term</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>7%2E Idea</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>AgileVizArt__Issue</fullName>
+        <active>true</active>
+        <description>User story to manage project issues that are not defects (bugs)</description>
+        <label>Issue</label>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployed_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployment_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Effort_Points__c</picklist>
+            <values>
+                <fullName>0%2E5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>13</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>8</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Languages__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>German</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Override_Priority__c</picklist>
+            <values>
+                <fullName>Could</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Must</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Should</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Would</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Status__c</picklist>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Duplicate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translated_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translation_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Urgency__c</picklist>
+            <values>
+                <fullName>1%2E Show Stopper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2%2E High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3%2E Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4%2E Normal</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>5%2E Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6%2E Long-term</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>7%2E Idea</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>AgileVizArt__Requirement</fullName>
+        <active>true</active>
+        <description>User story to define new business requirements or feature requests</description>
+        <label>Requirement</label>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployed_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Deployment_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Effort_Points__c</picklist>
+            <values>
+                <fullName>0%2E5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>13</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>8</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Languages__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>German</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Override_Priority__c</picklist>
+            <values>
+                <fullName>Could</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Must</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Should</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Would</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Status__c</picklist>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Duplicate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translated_Instances__c</picklist>
+            <values>
+                <fullName>DEV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PROD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UAT</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Translation_Status__c</picklist>
+            <values>
+                <fullName>Doing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AgileVizArt__Urgency__c</picklist>
+            <values>
+                <fullName>1%2E Show Stopper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2%2E High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3%2E Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4%2E Normal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5%2E Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6%2E Long-term</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>7%2E Idea</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>AgileVizArt__Story_Id__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Project__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>RECORDTYPE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Ordered_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Due_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Effort_Points__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Assigned_To__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AgileVizArt__Sprint__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>AgileVizArt__Story_Id__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>RECORDTYPE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AgileVizArt__Sprint__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AgileVizArt__Epic_Story__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AgileVizArt__Assigned_To__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>AgileVizArt__Epic_Story__c</searchFilterFields>
+        <searchFilterFields>AgileVizArt__Project__c</searchFilterFields>
+        <searchResultsAdditionalFields>AgileVizArt__Story_Id__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Top__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Epic_Story__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Urgency__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AgileVizArt__Assigned_To__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>AgileVizArt__Enforce_Project_matches_for_Risks</fullName>
+        <active>true</active>
+        <description>Only risks from the same project should be related. As we&apos;ve reached the limit of 5 filtered required lookups, we&apos;ll need an additional validation rule.</description>
+        <errorConditionFormula>IF(ISBLANK(AgileVizArt__Related_Risk__c), false, AgileVizArt__Related_Risk__r.AgileVizArt__Project__c !=  AgileVizArt__Project__c)</errorConditionFormula>
+        <errorDisplayField>AgileVizArt__Related_Risk__c</errorDisplayField>
+        <errorMessage>You can only select risks from the same project.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>AgileVizArt__Collapse_Expand</fullName>
+        <availability>online</availability>
+        <description>Expands/Collapses all sections</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Collapse</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>//================================= 
+// START: Get Collapse Buttons
+//=================================
+var buttons = document.getElementsByName(&apos;agilevizart__collapse_expand&apos;);
+var on=true;
+var collapseButtons = new Array();
+
+for (i=0; i &lt; buttons.length; i++) {
+   if (buttons[i].type == &quot;button&quot;) {
+      collapseButtons.push(buttons[i]);
+      if (buttons[i].value == &quot;Collapse&quot;) { // We have up to two buttons: top and bottom
+         on=false;
+      }
+   }
+}
+
+//================================= 
+// END: Get Collapse Buttons
+//=================================
+
+
+//================================= 
+// START: Walk through all sections
+//=================================
+
+for (var i = 0; i &lt; registeredSections.length; i++) {
+      var obj = registeredSections[i];
+      var img;
+      img = document.getElementById(&apos;img_&apos; + obj.headerId);
+
+      if (img.name != &quot;n/a&quot;) { // Leave section untouched
+
+         var parentDiv = img.parentNode;
+         var div = parentDiv.nextSibling; 
+
+         if (div.style.display != &apos;none&apos; &amp;&amp; !on || (div.style.display == &apos;&apos; || div.style.display == &apos;none&apos;) &amp;&amp; on) { 
+            twistSection(img);
+         }
+     }
+ }
+
+//================================= 
+// END: Walk through all sections
+//=================================
+
+//================================= 
+// START: Change button title
+//=================================
+
+for (i=0; i &lt; collapseButtons.length; i++) {
+      if (on) {
+          collapseButtons[i].value = &quot;Collapse&quot;;
+      }
+      else {
+           collapseButtons[i].value = &quot;Expand&quot;;
+       }
+}
+
+//================================= 
+// END: Change button title
+//=================================</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Child_Story</fullName>
+        <availability>online</availability>
+        <description>Used to create new child requirement user story from user story page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Child Story</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__User_Story__c.Id}&amp;recordTypeName=Requirement&amp;URL_UserStory.SprintName={!AgileVizArt__User_Story__c.AgileVizArt__Sprint_Name__c}&amp;URL_UserStory.SprintId={!AgileVizArt__User_Story__c.AgileVizArt__SprintId__c}&amp;URL_UserStory.ProjectName={!AgileVizArt__User_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__User_Story__c.AgileVizArt__ProjectId__c}&amp;URL_UserStory.MasterUserStoryName
+={!AgileVizArt__User_Story__c.Name}&amp;URL_UserStory.MasterUserStoryId={!AgileVizArt__User_Story__c.Id}&amp;URL_UserStory.EpicStoryName={!AgileVizArt__User_Story__c.AgileVizArt__Epic_Story_Name__c}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__User_Story__c.AgileVizArt__Epic_StoryId__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Defect_EpicStory</fullName>
+        <availability>online</availability>
+        <description>Used to create new defect user story from epic story page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Defect</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Epic_Story__c.Id}&amp;recordTypeName=Defect&amp;URL_UserStory.EpicStoryName={!AgileVizArt__Epic_Story__c.Name}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__Epic_Story__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Epic_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Epic_Story__c.AgileVizArt__ProjectId__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Defect_Project</fullName>
+        <availability>online</availability>
+        <description>Used to create new defect story from project page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Defect</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Defect&amp;URL_UserStory.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_UserStory.ProjectId={!AgileVizArt__Project__c.Id}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Defect_Sprint</fullName>
+        <availability>online</availability>
+        <description>Used to create new defect user story from sprint page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Defect</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Sprint__c.Id}&amp;recordTypeName=Defect&amp;URL_UserStory.SprintName={!AgileVizArt__Sprint__c.Name}&amp;URL_UserStory.SprintId={!AgileVizArt__Sprint__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Sprint__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Sprint__c.AgileVizArt__Project_Id__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Defect_UserStory</fullName>
+        <availability>online</availability>
+        <description>Used to create new defect user story from user story page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Defect</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__User_Story__c.Id}&amp;recordTypeName=Defect&amp;URL_UserStory.SprintName={!AgileVizArt__User_Story__c.AgileVizArt__Sprint_Name__c}&amp;URL_UserStory.SprintId={!AgileVizArt__User_Story__c.AgileVizArt__SprintId__c}&amp;URL_UserStory.ProjectName={!AgileVizArt__User_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__User_Story__c.AgileVizArt__ProjectId__c}&amp;URL_UserStory.DefectiveUserStoryName
+={!AgileVizArt__User_Story__c.Name}&amp;URL_UserStory.DefectiveUserStoryId={!AgileVizArt__User_Story__c.Id}&amp;URL_UserStory.EpicStoryName={!AgileVizArt__User_Story__c.AgileVizArt__Epic_Story_Name__c}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__User_Story__c.AgileVizArt__Epic_StoryId__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Issue_EpicStory</fullName>
+        <availability>online</availability>
+        <description>Used to create new issue user story from epic story page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Issue</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Epic_Story__c.Id}&amp;recordTypeName=Issue&amp;URL_UserStory.EpicStoryName={!AgileVizArt__Epic_Story__c.Name}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__Epic_Story__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Epic_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Epic_Story__c.AgileVizArt__ProjectId__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Issue_Project</fullName>
+        <availability>online</availability>
+        <description>Used to create a new issue user story from project page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Issue</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Issue&amp;URL_UserStory.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_UserStory.ProjectId={!AgileVizArt__Project__c.Id}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Issue_Sprint</fullName>
+        <availability>online</availability>
+        <description>Used to create new issue user story from sprint page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Issue</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Sprint__c.Id}&amp;recordTypeName=Issue&amp;URL_UserStory.SprintName={!AgileVizArt__Sprint__c.Name}&amp;URL_UserStory.SprintId={!AgileVizArt__Sprint__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Sprint__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Sprint__c.AgileVizArt__Project_Id__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Issue_UserStory</fullName>
+        <availability>online</availability>
+        <description>Used to create new issue user story from user story page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Issue</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__User_Story__c.Id}&amp;recordTypeName=Issue&amp;URL_UserStory.SprintName={!AgileVizArt__User_Story__c.AgileVizArt__Sprint_Name__c}&amp;URL_UserStory.SprintId={!AgileVizArt__User_Story__c.AgileVizArt__SprintId__c}&amp;URL_UserStory.ProjectName={!AgileVizArt__User_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__User_Story__c.AgileVizArt__ProjectId__c}&amp;URL_UserStory.EpicStoryName={!AgileVizArt__User_Story__c.AgileVizArt__Epic_Story_Name__c}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__User_Story__c.AgileVizArt__Epic_StoryId__c}&amp;URL_UserStory.UserStoryName={!AgileVizArt__User_Story__c.Name}&amp;URL_UserStory.UserStoryId={!AgileVizArt__User_Story__c.Id}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Requirement_EpicStory</fullName>
+        <availability>online</availability>
+        <description>Used to create new requirement user story from epic story</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Requirement</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Epic_Story__c.Id}&amp;recordTypeName=Requirement&amp;URL_UserStory.EpicStoryName={!AgileVizArt__Epic_Story__c.Name}&amp;URL_UserStory.EpicStoryId={!AgileVizArt__Epic_Story__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Epic_Story__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Epic_Story__c.AgileVizArt__ProjectId__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Requirement_Project</fullName>
+        <availability>online</availability>
+        <description>Used to create new requirement story from project page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Requirement</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Requirement&amp;URL_UserStory.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_UserStory.ProjectId={!AgileVizArt__Project__c.Id}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Requirement_Sprint</fullName>
+        <availability>online</availability>
+        <description>Used to create new requirement user story from sprint page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Requirement</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Sprint__c.Id}&amp;recordTypeName=Requirement&amp;URL_UserStory.SprintName={!AgileVizArt__Sprint__c.Name}&amp;URL_UserStory.SprintId={!AgileVizArt__Sprint__c.Id}&amp;URL_UserStory.ProjectName={!AgileVizArt__Sprint__c.AgileVizArt__Project_Name__c}&amp;URL_UserStory.ProjectId={!AgileVizArt__Sprint__c.AgileVizArt__Project_Id__c}&amp;obj=User_Story__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__Open_Related_Stories</fullName>
+        <availability>online</availability>
+        <description>Shows all child requirements, issues, and defects for the given parent user story</description>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Open Related Stories</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!requireScript(&quot;/soap/ajax/22.0/connection.js&quot;)}
+
+// Query Report
+var result = sforce.connection.query(&quot;select Id from Report where NamespacePrefix = &apos;AgileVizArt&apos; and DeveloperName = &apos;Open_Related_User_Stories&apos;&quot;);
+var records = result.getArray(&quot;records&quot;);
+
+// Get Report Id
+
+var url = records[0].Id;
+
+// Append URL parameters
+url = &quot;/&quot; + url + &quot;?pv0={!AgileVizArt__User_Story__c.Id}&amp;pv1={!AgileVizArt__User_Story__c.Id}&amp;pv2={!AgileVizArt__User_Story__c.Id}&quot;;
+
+// Open Window
+window.open (url);</url>
+    </webLinks>
+</CustomObject>

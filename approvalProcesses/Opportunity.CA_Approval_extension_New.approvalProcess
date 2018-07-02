@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Define_CTL_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>t.hultermans@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approval by Fiber Manager</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Cable_Assembly_Fiber__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Approval by Fiber Manager</label>
+        <name>Approval_by_Fiber_Manager</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Define_CTL_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>CCAO_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approval by CCAOMANAGER</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Cable_Assembly_Non_Fiber__c</field>
+                <operation>greaterThan</operation>
+                <value>0</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Approval by CCAOMANAGER</label>
+        <name>Approval_by_CCAOMANAGER</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Assign a CTL if project needs setting up in PLM, otherwise re-assign to yourself for final approval</description>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.CTL_Approval__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>Assign a CTL if project needs setting up in PLM, otherwise re-assign to yourself for final approval</label>
+        <name>CTL_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Approval process for Cable Assembly Extensions</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND( 
+$RecordType.DeveloperName =&quot;IND_Engineering_project&quot;, 
+ISPICKVAL(Request_Type__c ,&quot;Cable Assembly - Extension&quot;), 
+NOT( 
+OR( 
+ISPICKVAL( StageName, &quot;Won&quot;), 
+ISPICKVAL( StageName, &quot;Production&quot;), 
+ISPICKVAL( StageName, &quot;On Hold&quot;))), 
+Amount &gt; 0, 
+
+OR(
+	ISPICKVAL(Approval_Status_PMV__c, &quot;G0 Rejected&quot;),
+	ISPICKVAL(Approval_Status_PMV__c, &quot;New&quot;)),
+NOT( 
+AND( 
+Cable_Assembly_Fiber__c &gt; 0, 
+Cable_Assembly_Non_Fiber__c &gt;0 
+) 
+) 
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_Approval_Date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_WF_Health_Check</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_WF_Health_Check_Comment</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Set_approval_status_PMV_G0_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_Initial_submission_date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>IND Cable Assembly extension approval_Ne</label>
+    <recallActions>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_to_New</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

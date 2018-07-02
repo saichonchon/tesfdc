@@ -1,0 +1,348 @@
+<apex:component controller="CompUploadSensitiveAttachment" allowDML="true">
+	<apex:attribute name="extUploadSensitiveAttachment"
+		assignTo="{!extUploadSensitiveAttachment}"
+		description="Attachment standard controller extension"
+		type="ExtUploadSensitiveAttachment" required="true" />
+	<apex:messages />	
+	<apex:form id="uploadForm">
+<!-- ***********************************************************************  New *************************************************************************-->
+<!-- ***********************************************************************  New *************************************************************************-->	
+		<apex:outputPanel rendered="{!extUploadSensitiveAttachment.showMode ='new'}">
+			<apex:pageBlock title="{!$Label.UploadNewAttachment}" rendered="{!!extUploadSensitiveAttachment.isUpload}" mode="maindetail">
+				<apex:pageBlockSection id="newAttachmentSection" columns="2" >
+					<!--<apex:pageBlockSectionItem labelStyle="width:30%;vertical-align:middle;" dataStyle="width:8%;">
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Attachment_Name__c.label}" for="Name" />
+						<apex:inputField id="Name"
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}" />
+					</apex:pageBlockSectionItem>
+					-->
+<!--					<apex:pageBlockSectionItem labelStyle="width:12%;vertical-align:middle;" dataStyle="width:7%;">-->
+					<apex:pageBlockSectionItem labelStyle="width:33%;vertical-align:middle;" dataStyle="width:20%;">
+						<apex:outputLabel value="{!$Label.File}" for="attachment2upload" />
+						<apex:inputFile id="attachment2upload" lang="en-US"
+							value="{!extUploadSensitiveAttachment.Attachment.Body}"
+							fileName="{!extUploadSensitiveAttachment.Attachment.Name}"
+							contentType="{!extUploadSensitiveAttachment.Attachment.ContentType}"/>
+					</apex:pageBlockSectionItem>
+
+				</apex:pageBlockSection>
+				<apex:pageBlockButtons id="actions" location="bottom" rendered="{!!extUploadSensitiveAttachment.isUpload}">
+						<apex:commandButton value="{!$Label.UploadButton}"
+							onclick="showAnimation();"
+							action="{!extUploadSensitiveAttachment.uploadSensitiveAttachment}" 
+							/>
+						<script type="text/javascript">
+							function showAnimation() {
+								var imgElement = document
+										.getElementById('{!$Component.loadingAnimation}');
+								imgElement.style.display = 'inline';
+							}
+						</script>
+						<apex:commandButton value="{!$Label.CancelButton}"
+							action="{!extUploadSensitiveAttachment.cancel}" immediate="true" />
+						<apex:outputPanel id="loadingAnimation" style="display:none"
+							layout="inline">
+							<img src="/img/loading.gif" />
+							<span class="waitingDescription">{!$Label.Loading}...</span>
+						</apex:outputPanel>
+				</apex:pageBlockButtons>
+			</apex:pageBlock>
+			
+			<apex:pageBlock title="{!$Label.UploadNewAttachment}" rendered="{!extUploadSensitiveAttachment.isUpload}" mode="maindetail" id="newpageblock">
+				<apex:pageBlockSection columns="3" >
+				
+					<apex:pageBlockSectionItem labelStyle="width:30%;vertical-align:middle;" dataStyle="width:8%;">
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Attachment_Name__c.label}" for="Name" />
+						<apex:outputField id="Name"
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}" />
+					</apex:pageBlockSectionItem>
+					
+					<apex:pageBlockSectionItem labelStyle="width:12%;vertical-align:middle;" dataStyle="width:7%;" >
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Send_to_PLM__c.label}" for="SendToPLM"  rendered="{!IF(extUploadSensitiveAttachment.mode == 'Opportunity',true,false)}"/>
+						<apex:inputField id="SendToPLM" rendered="{!IF(extUploadSensitiveAttachment.mode == 'Opportunity',true,false)}" 
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Send_to_PLM__c}" />	
+					</apex:pageBlockSectionItem>
+					
+				</apex:pageBlockSection>
+				<apex:pageBlockButtons id="actions" location="bottom" rendered="{!extUploadSensitiveAttachment.isUpload}">
+					<apex:commandButton value="{!$Label.SaveButton}"
+						onclick="showAnimation();"
+						action="{!extUploadSensitiveAttachment.save}" />
+					<script type="text/javascript">
+						function showAnimation() {
+							var imgElement = document
+									.getElementById('{!$Component.loadingAnimation}');
+							imgElement.style.display = 'inline';
+						}
+					</script>
+					<apex:commandButton value="{!$Label.CancelButton}"
+						action="{!extUploadSensitiveAttachment.cancel}" immediate="true" />
+	
+					<apex:outputPanel id="loadingAnimation" style="display:none"
+						layout="inline">
+						<img src="/img/loading.gif" />
+						<span class="waitingDescription">{!$Label.Loading}...</span>
+					</apex:outputPanel>
+				</apex:pageBlockButtons>
+						            
+				<apex:pageBlockSection title="{!$ObjectType.User.label}" columns="1" rendered="{!extUploadSensitiveAttachment.isUpload}"> 
+					<apex:pageBlockTable value="{!extUploadSensitiveAttachment.list_user2Show}" var="u"  id="userlistnew">
+					    <apex:column id="theCol">           
+		                    <apex:facet name="header"><input type="checkbox" id="allcheck"  onclick="goAllCheck();"/></apex:facet>                
+		                    <apex:inputCheckbox value="{!u.isSelected}" id="check" styleClass="userlistnew" onclick="allCheckVal('userlistnew');" /> 
+	               		</apex:column>
+						<apex:column value="{!u.user.FirstName}"/>
+						<apex:column value="{!u.user.LastName}"/>
+						<apex:column value="{!u.user.Email}"/>
+						<apex:column value="{!u.user.Country}"/>
+						<apex:column headerValue="{!$Label.Role}" value="{!u.role}"/>
+						<apex:column value="{!u.user.CompanyName}"/>
+						<apex:column value="{!u.user.Department}"/>
+						<apex:column value="{!u.user.GIBU__c}"/>
+				 		<apex:column headerValue="{!extUploadSensitiveAttachment.isSharedUserColumnTitle}">
+				       		<apex:inputCheckbox value="{!u.isShareUser}" styleClass="userlistnew" disabled="true" /> 
+						</apex:column>   
+					</apex:pageBlockTable>	
+				</apex:pageBlockSection>
+				<apex:pageBlockSection title="{!$Label.Add_additional_users}" columns="4">
+					<apex:pageBlockSectionItem labelStyle="width:50%;vertical-align:middle;" dataStyle="width:16%;">
+						<apex:inputField label="{!$ObjectType.User.label}" required="false"  id="User" value="{!extUploadSensitiveAttachment.contact.OwnerId}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:5%;vertical-align:middle;" dataStyle="width:7%;">
+						<apex:commandButton value="{!$Label.Add}" action="{!extUploadSensitiveAttachment.userAdded}" rerender="newpageblock" status="addingnew"/>
+						<apex:actionStatus stopText="" id="addingnew">
+	        				<apex:facet name="start">&nbsp;<img src="/img/loading.gif"/></apex:facet>
+		   				</apex:actionStatus> 
+					</apex:pageBlockSectionItem>				
+				</apex:pageBlockSection> 
+	   		</apex:pageBlock>					
+		</apex:outputPanel>
+<!-- ***********************************************************************  New *************************************************************************-->
+<!-- ***********************************************************************  New *************************************************************************-->	
+
+
+
+<!-- ***********************************************************************  Edit *************************************************************************-->
+<!-- ***********************************************************************  Edit *************************************************************************-->	
+	   	<apex:outputPanel rendered="{!extUploadSensitiveAttachment.showMode ='edit'}">	
+	   		<apex:pageBlock title="{!$Label.UploadNewVersion}" mode="maindetail" id="editpageblock">
+				<apex:pageBlockButtons id="actions" location="bottom" >
+					<apex:commandButton value="{!$Label.SaveButton}"
+						onclick="showAnimation();"
+						action="{!extUploadSensitiveAttachment.save}" />
+					<script type="text/javascript">
+						function showAnimation() {
+							var imgElement = document
+									.getElementById('{!$Component.loadingAnimation}');
+							imgElement.style.display = 'inline';
+						}
+					</script>
+					<apex:commandButton value="{!$Label.CancelButton}"
+						action="{!extUploadSensitiveAttachment.cancel}" immediate="true" />
+	
+					<apex:outputPanel id="loadingAnimation" style="display:none"
+						layout="inline">
+						<img src="/img/loading.gif" />
+						<span class="waitingDescription">{!$Label.Loading}...</span>
+					</apex:outputPanel>
+				</apex:pageBlockButtons>	
+					   		
+				<apex:pageBlockSection id="newAttachmentSection" columns="3" >
+					<apex:pageBlockSectionItem labelStyle="width:30%;vertical-align:middle;" dataStyle="width:8%;">
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Attachment_Name__c.label}" for="Name" />
+						<apex:outputField id="Name"
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:2%;vertical-align:middle;" dataStyle="width:7%;">
+						<apex:outputLabel value="{!$Label.File}" for="attachment2upload" />
+						<apex:inputFile id="attachment2upload" lang="en-US"
+							value="{!extUploadSensitiveAttachment.Attachment.Body}"
+							fileName="{!extUploadSensitiveAttachment.Attachment.Name}"
+							contentType="{!extUploadSensitiveAttachment.Attachment.ContentType}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:2%;vertical-align:middle;" dataStyle="width:7%;">
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:30%;vertical-align:middle;" dataStyle="width:7%;" >
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Send_to_PLM__c.label}" for="SendToPLM"  rendered="{!IF(extUploadSensitiveAttachment.mode == 'Opportunity',true,false)}"/>
+						<apex:inputField id="SendToPLM" rendered="{!IF(extUploadSensitiveAttachment.mode == 'Opportunity',true,false)}" 
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Send_to_PLM__c}" />	
+					</apex:pageBlockSectionItem>
+					
+				</apex:pageBlockSection>
+				<apex:actionRegion >	
+				<apex:pageBlockSection title="{!$ObjectType.User.label}" columns="1" rendered="{!extUploadSensitiveAttachment.list_user2Edit.size > 0}"> 
+					<apex:pageBlockTable value="{!extUploadSensitiveAttachment.list_user2Edit}" var="u" id="userlistedit">
+					    <apex:column id="theCol">           
+		                    <apex:facet name="header"><input type="checkbox" id="allcheck"  onclick="goAllCheck();"/></apex:facet>                
+		                    <apex:inputCheckbox value="{!u.isSelected}" id="check" styleClass="userlistedit" onclick="allCheckVal('userlistedit');" /> 
+	               		</apex:column>
+						<apex:column value="{!u.user.FirstName}"/>
+						<apex:column value="{!u.user.LastName}"/>
+						<apex:column value="{!u.user.Email}"/>
+						<apex:column value="{!u.user.Country}"/>
+						<apex:column headerValue="{!$Label.Role}" value="{!u.role}"/>
+						<apex:column value="{!u.user.CompanyName}"/>
+						<apex:column value="{!u.user.Department}"/>
+						<apex:column value="{!u.user.GIBU__c}"/>
+						<apex:column headerValue="{!extUploadSensitiveAttachment.isSharedUserColumnTitle}">
+				       		<apex:inputCheckbox value="{!u.isShareUser}"  styleClass="userlistnew" disabled="true" /> 
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection> 
+
+				<apex:pageBlockSection title="{!$Label.Add_additional_users}" columns="4">
+					<apex:pageBlockSectionItem labelStyle="width:50%;vertical-align:middle;" dataStyle="width:16%;">
+						<apex:inputField label="{!$ObjectType.User.label}" required="false" id="edituseradd" value="{!extUploadSensitiveAttachment.contact.OwnerId}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:5%;vertical-align:middle;" dataStyle="width:7%;">
+						<apex:commandButton value="{!$Label.Add}" action="{!extUploadSensitiveAttachment.userAdded}" rerender="editpageblock"  status="addingedit" />
+						<apex:actionStatus stopText="" id="addingedit">
+        					<apex:facet name="start">&nbsp;<img src="/img/loading.gif"/></apex:facet>
+	   					</apex:actionStatus>  
+					</apex:pageBlockSectionItem>				
+				</apex:pageBlockSection> 
+				</apex:actionRegion>				
+			</apex:pageBlock>	
+		</apex:outputPanel>
+<!-- ***********************************************************************  Edit *************************************************************************-->
+<!-- ***********************************************************************  Edit *************************************************************************-->	
+
+
+<!-- ***********************************************************************  View *************************************************************************-->
+<!-- ***********************************************************************  View *************************************************************************-->	
+	   	<apex:outputPanel rendered="{!extUploadSensitiveAttachment.showMode ='view'}">	
+	   		<apex:pageBlock title="{!$Label.AttachmentDetails}" mode="maindetail" id="viewpageblock">
+		   		<apex:pageBlockSection columns="2">
+						<apex:outputField value="{!extUploadSensitiveAttachment.sensitiveAttachment.OwnerId}"/>
+						<apex:outputField value="{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}"/>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$Label.Download}" for="download" />
+							<apex:outputLink id="download" value="/servlet/servlet.FileDownload?file={!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Id__c}" target="_blank" >{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}</apex:outputLink>
+						</apex:pageBlockSectionItem>
+						<apex:outputField value="{!extUploadSensitiveAttachment.sensitiveAttachment.CreatedById}"/>
+						<apex:outputField value="{!extUploadSensitiveAttachment.sensitiveAttachment.LastModifiedById}"/>
+				</apex:pageBlockSection>
+			
+				<apex:pageBlockButtons id="actions" location="bottom" >
+					<apex:commandButton value="{!$Label.Back}"
+						action="{!extUploadSensitiveAttachment.cancel}" immediate="true" />
+				</apex:pageBlockButtons>	
+					   		
+				<apex:actionRegion >	
+				<apex:pageBlockSection title="{!$ObjectType.User.label}" columns="1" rendered="{!extUploadSensitiveAttachment.list_user2View.size > 0}"> 
+					<apex:pageBlockTable value="{!extUploadSensitiveAttachment.list_user2View}" var="u">
+						<apex:column value="{!u.user.FirstName}"/>
+						<apex:column value="{!u.user.LastName}"/>
+						<apex:column value="{!u.user.Email}"/>
+						<apex:column value="{!u.user.Country}"/>
+						<apex:column headerValue="{!$Label.Role}" value="{!u.role}"/>
+						<apex:column value="{!u.user.CompanyName}"/>
+						<apex:column value="{!u.user.Department}"/>
+						<apex:column value="{!u.user.GIBU__c}"/>
+						<apex:column headerValue="{!extUploadSensitiveAttachment.isSharedUserColumnTitle}">
+				       		<apex:inputCheckbox value="{!u.isShareUser}" styleClass="userlistnew" disabled="true" /> 
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection> 
+
+				</apex:actionRegion>				
+			</apex:pageBlock>	
+		</apex:outputPanel>
+<!-- ***********************************************************************  View *************************************************************************-->
+<!-- ***********************************************************************  View *************************************************************************-->	
+
+
+<!-- ***********************************************************************  Only upload new version *************************************************************************-->
+<!-- ***********************************************************************  Only upload new version *************************************************************************-->
+	   	<apex:outputPanel rendered="{!extUploadSensitiveAttachment.showMode ='uploadnew'}">	
+	   		<apex:pageBlock title="{!$Label.UploadNewVersion}" mode="maindetail">
+				<apex:pageBlockButtons id="actions" location="bottom">
+					<apex:commandButton value="{!$Label.SaveButton}"
+						onclick="showAnimation();"
+						action="{!extUploadSensitiveAttachment.save}" />
+					<script type="text/javascript">
+						function showAnimation() {
+							var imgElement = document
+									.getElementById('{!$Component.loadingAnimation}');
+							imgElement.style.display = 'inline';
+						}
+					</script>
+					<apex:commandButton value="{!$Label.CancelButton}"
+						action="{!extUploadSensitiveAttachment.cancel}" immediate="true" />
+	
+					<apex:outputPanel id="loadingAnimation" style="display:none"
+						layout="inline">
+						<img src="/img/loading.gif" />
+						<span class="waitingDescription">{!$Label.Loading}...</span>
+					</apex:outputPanel>
+				</apex:pageBlockButtons>	
+					   		
+				<apex:pageBlockSection id="newAttachmentSection" columns="3" >
+					<apex:pageBlockSectionItem labelStyle="width:30%;vertical-align:middle;" dataStyle="width:8%;">
+						<apex:outputLabel value="{!$ObjectType.Sensitive_Attachment__c.fields.Attachment_Name__c.label}" for="Name" />
+						<apex:outputField id="Name"
+							value="{!extUploadSensitiveAttachment.sensitiveAttachment.Attachment_Name__c}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem labelStyle="width:12%;vertical-align:middle;" dataStyle="width:7%;">
+						<apex:outputLabel value="{!$Label.File}" for="attachment2upload" />
+						<apex:inputFile id="attachment2upload" lang="en-US"
+							value="{!extUploadSensitiveAttachment.Attachment.Body}"
+							fileName="{!extUploadSensitiveAttachment.Attachment.Name}"
+							contentType="{!extUploadSensitiveAttachment.Attachment.ContentType}"/>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				
+			</apex:pageBlock>	
+		</apex:outputPanel>
+<!-- ***********************************************************************  Only upload new version *************************************************************************-->
+<!-- ***********************************************************************  Only upload new version *************************************************************************-->
+
+
+
+<!-- ***********************************************************************  Script *************************************************************************-->
+<!-- ***********************************************************************  Script *************************************************************************-->			
+        <script language="javascript">
+            function goAllCheck(){              
+                var checked = document.getElementById("allcheck").checked;
+                var list_check = document.getElementsByTagName("input");        
+                if(checked){
+                    for(var i=0; i<list_check.length; i++){
+                        if(list_check[i].type=="checkbox" && list_check[i].id!="allcheck" ){
+                            list_check[i].checked = true;
+                        }
+                    }               
+                }
+                else {
+                    for(var i=0; i<list_check.length; i++){
+                        if(list_check[i].type=="checkbox" && list_check[i].id!="allcheck" ){
+                            list_check[i].checked = false;
+                        }                       
+                    }
+                }               
+            }
+            function allCheckVal(cName){
+                var ckFlag = 0;             
+                var list_check = document.getElementsByTagName("input");            
+                var checked = document.getElementById("allcheck");
+                for(var i=0; i<list_check.length; i++){ 
+                        if(list_check[i].type=="checkbox" && list_check[i].id!="allcheck" && list_check[i].className == cName ){
+                            if(!list_check[i].checked){
+	                            checked.checked = false;
+	                            ckFlag = 1;     
+                            }
+                        }                   
+                }
+                if(ckFlag == 0) checked.checked = true;             
+            }
+
+                        
+        </script>
+<!-- ***********************************************************************  Script *************************************************************************-->
+<!-- ***********************************************************************  Script *************************************************************************-->
+   		<apex:actionFunction action="{!extUploadSensitiveAttachment.userAdded}" name="userAddedNew" rerender="userlistnew" status="addingnew">
+   		</apex:actionFunction>
+   		<apex:actionFunction action="{!extUploadSensitiveAttachment.userAdded}" name="userAddedEdit" rerender="userlistedit" status="addingedit">
+   		</apex:actionFunction>		
+	</apex:form>	
+</apex:component>

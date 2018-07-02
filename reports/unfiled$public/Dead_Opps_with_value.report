@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$StageName</field>
+    </columns>
+    <columns>
+        <field>Opportunity$RecordType</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Amount.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Opps lost or dead but showing a value</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Dead,Lost,Lost/Dead - closed,Rejected - Closed,Lost - Closed,Dead - Closed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Amount</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>USD 0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Dead Opps with value</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Opportunity__c</reportType>
+    <roleHierarchyFilter>x100078_Worldwide_CIS</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$LastModifiedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

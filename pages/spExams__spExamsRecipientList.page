@@ -1,0 +1,239 @@
+<apex:page controller="spExams.SPExamsRecipientListCtrl" sideBar="false">
+    
+    <apex:includeScript value="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'js/jquery-1.8.0.min.js')}" />
+    
+    <head>
+	    <style>
+	        
+	        body{
+	            background-color: white;
+	        }
+	        
+	        body a:hover {
+	            text-decoration: none;
+	            color: '';
+	        }
+	        
+	        .hasMotif{
+	            margin: 0;
+	        }
+	        
+	        .noSidebarCell, .sidebarCell .fixed {
+	            padding: 0px;
+	        }
+	
+	        .waiting{
+	            width: 100%;
+	            height: 100%;
+	            background-color: white;
+	            opacity: 0.85;
+	            position: absolute;
+	            z-index: 50;
+	        }
+	        
+	        .waiting img{
+	            position: absolute;
+	            left: 48%;
+	            top: 16%;
+	        }
+	        
+	        .bodyDiv{
+	            border-top: 0px;
+	        }
+	        
+	        .bPageHeader, .bPageFooter, .topNavTab, .lastItem,
+	        .x-grid3-hd.x-grid3-cell.x-grid3-td-ACTION_COLUMN, 
+	        .x-grid3-col.x-grid3-cell.x-grid3-td-ACTION_COLUMN {
+	            display: none;
+	        }
+	        
+	        .no-button-found{
+	            width: 100%;
+	            height: 100%;
+	            background-color: white;
+	            position: absolute;
+	            z-index: 1000;
+	            text-align: center;
+	            color: #CCCCCC;
+	            font-size: 16px;
+	            font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+	            padding-top: 7%;
+	        }
+	        
+	        .no-button-found img, .no-button-found a{
+	            display: list-item;
+	            margin: auto;
+	        }
+	        
+	        .no-button-found a{
+	            font-size: 13px;
+	            color: #015ba7;
+	            cursor: pointer;
+	            margin-top: 15px;
+	            cursor: default;
+	        }
+	        
+	        .hide{
+	            display: none;
+	        }
+	        
+	    </style>
+    </head>
+    
+    <div class="waiting">
+        <img src="{!URLFOR($Resource.Bootstrap_Newer, 'img/loading.gif')}"/>
+    </div>
+    
+    <div id="no-button-found-container">
+	    <div class="no-button-found hide">
+	        <img src="{!URLFOR($Resource.SkyExam, 'img/stop.jpg')}" width="75px"/>
+	        No Custom Button Found
+	        <a>In order to attach <b>{!ObjectPluralLabel}</b> you must create the Attach Recipients button and add it to the list buttons.</a>
+	        
+	    </div>
+    </div>
+    
+    <div class="enhancedList">
+        <apex:enhancedList type="{!ObjectType}" height="1000" rowsPerPage="200" customizable="false" oncomplete="setUpUI();" />
+    </div>  
+	
+    <script>  
+    
+	    var timeOut = 0;  
+	    var selectorVariableButtons_already = false;
+	    var selectorVariableButtons = '.listButtons input.btn:not([value="Attach Recipients"])';
+	    var selectorVariableActions = '.x-grid3-hd.x-grid3-cell.x-grid3-td-ACTION_COLUMN, .x-grid3-col.x-grid3-cell.x-grid3-td-ACTION_COLUMN, .x-grid-empty, .x-grid3-col.x-grid3-cell a[href]';
+	    var GLOBAL_eid				= '';
+	    
+	    $(window).load(function() {
+	        GLOBAL_eid = '{!HTMLENCODE(ExamId)}';
+	        startTimeOut();	 
+	    });
+	    
+	    function wait()
+	    {
+	        setTimeout(function(){
+	            timeOut = timeOut + 1;  
+	            startTimeOut(); 
+	        },100);
+	    }
+	    
+	    function startTimeOut()
+	    {   
+	    	var v_found = found();
+	    	
+	        if(v_found || timeOut == 100) 
+	        {
+	            setUpUI();
+	            timeOut = 0;
+	            manageLoading('Hide');      
+	            return false;
+	        }
+	        else 
+	        {
+	            // Continue Waiting...
+	            wait();
+	        }
+	    }
+	    
+	    function found()
+	    {   
+	        if(($(selectorVariableButtons).length >= 1 || selectorVariableButtons_already == true)  && $(selectorVariableActions).length > 2) 
+	        {
+	        	selectorVariableButtons_already = false;
+	            return true;
+	        } 
+	        else
+	            return false;   
+	    }
+	    
+	    function setUpUI()
+	    {   
+	        if($('input.btn[value="Attach Recipients"]').length == 0)
+	        {
+	        	$('body').css({'overflow' : 'hidden'});
+	            manageButtonNoFound('Show');
+	        } 
+	        else
+	        {
+	        	if($(selectorVariableButtons).length > 0)
+	        	{	
+	        		selectorVariableButtons_already = true;
+	            	$(selectorVariableButtons).remove();
+	            }	
+	            $('.listButtons li').css('border', 0);
+	            $('.x-grid3-col.x-grid3-cell a[href]').removeAttr('href');
+	            
+	            $('[onclick]').click(function(){
+	                startTimeOut();
+	                manageLoading('Show'); 
+	            });
+	            
+	            $('.x-grid3-hd.x-grid3-cell:not(".x-grid3-td-checkbox")').click(function(){
+	            	startTimeOut();
+	                manageLoading('Show'); 
+	            });
+	            
+	            $('.rolodex a').click(function(){
+	            	startTimeOut();
+	                manageLoading('Show'); 
+	            });
+	            
+	            $('.controls select').change(function(){
+	            	startTimeOut();
+					manageLoading('Show'); 
+	            });
+	            
+	            setExamIdParam();
+	        }   
+	        manageLoading('Hide');
+	    }
+	        
+	    function setExamIdParam()
+	    {   
+	    	var link = '';
+	    	var newLink = '';
+	    	var pageInsideDomain = '{!HTMLENCODE(PageInsideDomain)}';
+	        setTimeout(function(){
+	            try
+	            {
+	            	if(pageInsideDomain == '1')
+	                	link = ($('.btn[value="Attach Recipients"]').attr('onclick'));
+	                else if(pageInsideDomain == '0')
+	                	link = ($('.btn[value="Attach Recipients"]').attr('onclick')).replace(/\/{!HTMLENCODE(OrganizationPrefix)}/g, '/{!HTMLENCODE(NativeDomain)}');	
+	                newLink = link.replace("\';", "&eId=" + GLOBAL_eid + "\';");
+	                $('.btn[value="Attach Recipients"]').attr('onclick', newLink);
+	            }
+	            catch(err){}
+	        },1000);
+	    }
+	    
+	    function manageLoading(action)
+	    {   
+	        switch(action)
+	        {
+	         case 'Show' :
+	            $('.waiting').fadeIn(100);
+	            break;
+	         case 'Hide' :
+	            $('.waiting').fadeOut(500);
+	            break;
+	        }           
+	    }
+	    
+	    function manageButtonNoFound(action)
+	    {   
+	        switch(action)
+	        {
+	         case 'Show' :
+	            $('.no-button-found').fadeIn(1);
+	            break;
+	         case 'Hide' :
+	            $('.no-button-found').fadeOut(500);
+	            break;
+	        }           
+	    }
+	    
+	</script>
+    
+</apex:page>

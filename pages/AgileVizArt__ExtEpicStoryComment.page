@@ -1,0 +1,30 @@
+<apex:page standardController="AgileVizArt__Epic_Story__c" sidebar="false" showHeader="false" extensions="AgileVizArt.ExtEpicStoryComment">
+<script>
+	hideLoading();
+	function hideLoading(){
+		parent.document.getElementById('loading').style.display = "none";
+	}
+	
+	function bgColorChange(did, color){
+		document.getElementById(did).style.bgColor = color;
+		
+	}
+</script>
+    <apex:sectionHeader title="{!AgileVizArt__Epic_Story__c.AgileVizArt__Epic_Story_Id__c}  {!AgileVizArt__Epic_Story__c.Name}"/>
+    	
+   	<apex:pageBlock mode="mainDetail">	 
+   		<chatter:feedWithFollowers entityId="{!AgileVizArt__Epic_Story__c.Id}" ></chatter:feedWithFollowers>	
+   		<br/>
+   		<apex:pageBlockSection columns="2">
+        	<apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Project__c}"/>
+            <apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Parent_Epic_Story__c}"/>
+            <apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Effort_Points__c}"/>
+            <apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Priority__c}"/>
+            <apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Task__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Description" columns="1" collapsible="false">
+            <apex:outputField value="{!AgileVizArt__Epic_Story__c.AgileVizArt__Description__c}"/>
+        </apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:page>

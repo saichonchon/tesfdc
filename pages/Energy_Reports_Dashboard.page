@@ -1,0 +1,580 @@
+<apex:page controller="Fetch_Records" sidebar="false">     
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
+        <head>
+            <title>Reports Dashboard Configuration</title>
+            <apex:includeScript value="https://code.jquery.com/jquery-1.12.3.min.js" />            
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
+            <!-- Latest compiled and minified JavaScript -->
+            <apex:includeScript value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" />
+            <!-- **************************** including Datatable**************************** -->
+            <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" ></apex:includescript>
+            <apex:stylesheet value="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css" />
+            <style>  
+                
+                .table-bordered > tbody > tr > td.noBorder{
+                border-bottom : none !important;
+                }
+                
+                table th{
+                /*background-color : #7f8c8d;color : #bdc3c7;*/
+                background-color : #ea8300 !important;
+                color : #FFFFFF;
+                }
+                .sorting_desc{
+                /*background-color : #0066A1 !important;*/
+                background-color : #EA8300 !important;
+                }
+                .table.dataTable thead .sorting{
+                background : none;
+                }
+                .table.dataTable thead .sorting_desc{
+                background : none;
+                }
+                .evenRow {
+                background-color: #dfe7f2;
+                }
+                .panel-info{
+                /* OLD CSS 
+                border-color : #bce8f1;
+                OLD CSS */
+                /*border-color : #cc8400 !important;*/
+                border-color : #0066a1 !important;
+                }
+                .panel{
+                background-color : #fff;
+                border-radius : 4px;
+                box-shadow : 0 1px 1px rgba(0, 0, 0, 0.05);
+                margin-bottom : 20px;
+                }
+                .panel.with-nav-tabs .panel-heading{
+                padding : 5px 5px 0;                
+                }
+                .panel-info > .panel-heading{
+                /* OLD CSS 
+                background-color : #d9edf7;
+                color : #31708f;
+                border-color : #bce8f1;
+                OLD CSS */
+                
+                /* NEW CSS */
+                /*background-color : #ffae19;*/
+                background-color : #0066A1;
+                background-image : none !important;
+                color : #000000;
+                /*border-color : #cc8400 !important;*/
+                border-color : #0066A1 !important
+                /* NEW CSS */
+                
+                }
+                .nav-tabs > li > a{
+                border : 1px solid transparent;
+                border-radius : 4px 4px 0 0 ;
+                line-height : 1.42857 ;
+                margin-right : 2px;
+                }
+                .nav > li > a{
+                display : block;
+                padding : 10px 30px;
+                position : relative;
+                /*color : #000000 !important;*/
+                color : #FFFFFF !important;
+                font-weight : bold;
+                }
+                .nav-tabs>li.active>a{ /* Active Tabs */ 
+                border : 1px solid #0066A1;
+                border-bottom : none;
+                background-color : #E6E6FA !important;
+                color : #000000 !important;
+                }
+                .nav-tabs{
+                border-bottom : none !important;
+                color : #FFFFFF !impotant;
+                }
+                .buLink{
+                color : blue;
+                }
+                .usertypeTab{
+                align : right;
+                float : right !important;
+                }
+                .usertypeclass{
+                height:40px !important;
+                border:none;
+                padding:0px 5px 0px 5px;    
+                }
+                .regionCellClass{
+                width : 15% !important;
+                }
+                .reportsCellClass{
+                width : 45% !important;
+                }
+                .DashboardsCellClass{
+                width : 45% !important;
+                }
+                .DescriptionCellClass{
+                width : 40% !important;
+                }
+                .tab-content{
+                min-height:300px !important;
+                }
+            </style>
+            <script type="text/javascript">
+            function loading(val) {
+                if (val) {
+                    document.getElementById('contentLoading').style.display = 'block';
+                    document.getElementById('contentLoaded').style.display = 'none';
+                }
+                else {
+                    document.getElementById('contentLoading').style.display = 'none';
+                    document.getElementById('contentLoaded').style.display = 'block';
+                }
+            }
+            $(function() {                
+                /* Dashboard Table */
+                var initialCellValue = '';
+                var startRow = 0;
+                var endRow = 0;
+                var rowSpanAmount = 0;
+                
+                var totalDashboardCount = document.getElementById('dashboard').rows.length;
+                for(var dashCntr = 1;dashCntr < totalDashboardCount;dashCntr++){
+                    var cellValue = document.getElementById('dashboard').rows[dashCntr].cells[0].innerHTML;
+                    if(initialCellValue != '' && initialCellValue != cellValue){ 
+                        for(var startEndCntr=(startRow+1);startEndCntr<=endRow;startEndCntr++){ 
+                            //document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';
+                            //document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                            //document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none';
+                            if((startEndCntr > 40) && ((startEndCntr % 40) == 1)){
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = initialCellValue;   
+                            }else{
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                            document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none';
+                        }
+                        rowSpanAmount = 0;
+                        startRow = dashCntr;
+                        endRow = dashCntr;                        
+                        initialCellValue = cellValue;
+                    }
+                    if(initialCellValue != '' && initialCellValue == cellValue){
+                        //rowSpanAmount++;
+                        //endRow = dashCntr;
+                        rowSpanAmount++;
+                        endRow = dashCntr;
+                        if(totalDashboardCount == (dashCntr+1)){ 
+                            for(var startEndCntr=(startRow+1);startEndCntr<=endRow;startEndCntr++){ 
+                                if((startEndCntr > 40) && ((startEndCntr % 40) == 1)){
+                                    document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = initialCellValue;
+                                }else{
+                                    document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                        
+                    }
+                    if(initialCellValue == ''){
+                        initialCellValue = cellValue;     
+                        startRow = dashCntr;                        
+                        rowSpanAmount++;
+                        endRow = dashCntr;
+                    }
+                }
+                /* Dashboard Table */
+                
+                /* Report Table */
+                var initialCellValueRep = '';
+                var startRowRep = 0;
+                var endRowRep = 0;
+                var rowSpanAmountRep = 0;
+                var totalDashboardCountRep = document.getElementById('report').rows.length;
+                for(var dashCntrRep = 1;dashCntrRep < totalDashboardCountRep;dashCntrRep++){
+                    var cellValueRep = document.getElementById('report').rows[dashCntrRep].cells[0].innerHTML;                    
+                    if(initialCellValueRep != '' && initialCellValueRep != cellValueRep){  
+                        for(var startEndCntrRep=(startRowRep+1);startEndCntrRep<=endRowRep;startEndCntrRep++){ 
+                            if((startEndCntrRep > 40) && ((startEndCntrRep % 40) == 1)){
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = initialCellValueRep;   
+                            }else{
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('report').rows[startEndCntrRep].style.borderStyle = 'none';
+                            document.getElementById('report').rows[startEndCntrRep].cells[0].style.borderStyle = 'none';
+                        }                        
+                        rowSpanAmountRep = 0;
+                        startRowRep = dashCntrRep;
+                        endRowRep = dashCntrRep;                        
+                        initialCellValueRep = cellValueRep;     
+                    }
+                    if(initialCellValueRep != '' && initialCellValueRep == cellValueRep){
+                        rowSpanAmountRep++;
+                        endRowRep = dashCntrRep;
+                        if(totalDashboardCountRep == (dashCntrRep+1)){ 
+                            for(var startEndCntrRep=(startRowRep+1);startEndCntrRep<=endRowRep;startEndCntrRep++){ 
+                                if((startEndCntrRep > 40) && ((startEndCntrRep % 40) == 1)){
+                                    document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = initialCellValueRep;
+                                }else{
+                                    document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('report').rows[startEndCntrRep].style.borderStyle = 'none';
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                    }
+                    if(initialCellValueRep == ''){
+                        initialCellValueRep = cellValueRep;     
+                        startRowRep = dashCntrRep;                        
+                        rowSpanAmountRep++;
+                        endRowRep = dashCntrRep;
+                    }
+                }
+                /* Report Table */
+                
+                /* Analytics Table */
+                
+                var initialCellValueAnly = '';
+                var startRowAnly = 0;
+                var endRowAnly = 0;
+                var rowSpanAmountAnly = 0;
+                var totalDashboardCountAnly = document.getElementById('analytics').rows.length;
+                for(var dashCntrAnly = 1;dashCntrAnly < totalDashboardCountAnly;dashCntrAnly++){
+                    var cellValueAnly = document.getElementById('analytics').rows[dashCntrAnly].cells[0].innerHTML;                    
+                    if(initialCellValueAnly != '' && initialCellValueAnly != cellValueAnly){  
+                        for(var startEndCntrAnly=(startRowAnly+1);startEndCntrAnly<=endRowAnly;startEndCntrAnly++){ 
+                            if((startEndCntrAnly > 40) && ((startEndCntrAnly % 40) == 1)){
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = initialCellValueAnly;   
+                            }else{
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('analytics').rows[startEndCntrAnly].style.borderStyle = 'none';
+                            document.getElementById('analytics').rows[startEndCntrAnly].cells[0].style.borderStyle = 'none';
+                        }                        
+                        rowSpanAmountAnly = 0;
+                        startRowAnly = dashCntrAnly;
+                        endRowAnly = dashCntrAnly;                        
+                        initialCellValueAnly = cellValueAnly;     
+                    }
+                    if(initialCellValueAnly != '' && initialCellValueAnly == cellValueAnly){
+                        rowSpanAmountAnly++;
+                        endRowAnly = dashCntrAnly;
+                        if(totalDashboardCountAnly == (dashCntrAnly+1)){ 
+                            for(var startEndCntrAnly=(startRowAnly+1);startEndCntrAnly<=endRowAnly;startEndCntrAnly++){ 
+                                if((startEndCntrAnly > 40) && ((startEndCntrAnly % 40) == 1)){
+                                    document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = initialCellValueAnly;
+                                }else{
+                                    document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('analytics').rows[startEndCntrAnly].style.borderStyle = 'none';
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                    }
+                    if(initialCellValueAnly == ''){
+                        initialCellValueAnly = cellValueAnly;     
+                        startRowAnly = dashCntrAnly;                        
+                        rowSpanAmountAnly++;
+                        endRowAnly = dashCntrAnly;
+                    }
+                }
+                /* Analytics Table */
+                var usertypevalue = $('#userType').val();
+                $('#userType').on('change', function(){
+                    var usertypevalue = $('#userType').val();
+                    //intializeTable();
+                });
+            });
+            
+            $(document).ready( function () {
+                intializeTable();
+            });
+            function intializeTable(){
+                /* Dashboard Table */
+                var initialCellValue = '';
+                var startRow = 0;
+                var endRow = 0;
+                var rowSpanAmount = 0;
+                
+                var totalDashboardCount = document.getElementById('dashboard').rows.length;
+                for(var dashCntr = 1;dashCntr < totalDashboardCount;dashCntr++){
+                    var cellValue = document.getElementById('dashboard').rows[dashCntr].cells[0].innerHTML;
+                    if(initialCellValue != '' && initialCellValue != cellValue){ 
+                        for(var startEndCntr=(startRow+1);startEndCntr<=endRow;startEndCntr++){ 
+                            //document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';
+                            //document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                            //document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none';
+                            if((startEndCntr > 40) && ((startEndCntr % 40) == 1)){
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = initialCellValue;   
+                            }else{
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                            document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none';
+                        }
+                        rowSpanAmount = 0;
+                        startRow = dashCntr;
+                        endRow = dashCntr;                        
+                        initialCellValue = cellValue;
+                    }
+                    if(initialCellValue != '' && initialCellValue == cellValue){
+                        rowSpanAmount++;
+                        endRow = dashCntr;
+                        if(totalDashboardCount == (dashCntr+1)){ 
+                            for(var startEndCntr=(startRow+1);startEndCntr<=endRow;startEndCntr++){ 
+                                if((startEndCntr > 40) && ((startEndCntr % 40) == 1)){
+                                    document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = initialCellValue;
+                                }else{
+                                    document.getElementById('dashboard').rows[startEndCntr].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('dashboard').rows[startEndCntr].style.borderStyle = 'none';
+                                document.getElementById('dashboard').rows[startEndCntr].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                        
+                    }
+                    if(initialCellValue == ''){
+                        initialCellValue = cellValue;     
+                        startRow = dashCntr;                        
+                        rowSpanAmount++;
+                        endRow = dashCntr;
+                    }
+                }
+                /* Dashboard Table */
+                
+                /* Report Table */
+                var initialCellValueRep = '';
+                var startRowRep = 0;
+                var endRowRep = 0;
+                var rowSpanAmountRep = 0;
+                var totalDashboardCountRep = document.getElementById('report').rows.length;
+                for(var dashCntrRep = 1;dashCntrRep < totalDashboardCountRep;dashCntrRep++){
+                    var cellValueRep = document.getElementById('report').rows[dashCntrRep].cells[0].innerHTML;                    
+                    if(initialCellValueRep != '' && initialCellValueRep != cellValueRep){  
+                        for(var startEndCntrRep=(startRowRep+1);startEndCntrRep<=endRowRep;startEndCntrRep++){ 
+                            if((startEndCntrRep > 40) && ((startEndCntrRep % 40) == 1)){
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = initialCellValueRep;   
+                            }else{
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('report').rows[startEndCntrRep].style.borderStyle = 'none';
+                            document.getElementById('report').rows[startEndCntrRep].cells[0].style.borderStyle = 'none';
+                        }                        
+                        rowSpanAmountRep = 0;
+                        startRowRep = dashCntrRep;
+                        endRowRep = dashCntrRep;                        
+                        initialCellValueRep = cellValueRep;     
+                    }
+                    if(initialCellValueRep != '' && initialCellValueRep == cellValueRep){
+                        rowSpanAmountRep++;
+                        endRowRep = dashCntrRep;
+                        if(totalDashboardCountRep == (dashCntrRep+1)){ 
+                            for(var startEndCntrRep=(startRowRep+1);startEndCntrRep<=endRowRep;startEndCntrRep++){ 
+                                if((startEndCntrRep > 40) && ((startEndCntrRep % 40) == 1)){
+                                    document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = initialCellValueRep;
+                                }else{
+                                    document.getElementById('report').rows[startEndCntrRep].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('report').rows[startEndCntrRep].style.borderStyle = 'none';
+                                document.getElementById('report').rows[startEndCntrRep].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                    }
+                    if(initialCellValueRep == ''){
+                        initialCellValueRep = cellValueRep;     
+                        startRowRep = dashCntrRep;                        
+                        rowSpanAmountRep++;
+                        endRowRep = dashCntrRep;
+                    }
+                }
+                /* Report Table */
+                
+                /*Analytics Table */
+                
+                 var initialCellValueAnly = '';
+                var startRowAnly = 0;
+                var endRowAnly = 0;
+                var rowSpanAmountAnly = 0;
+                var totalDashboardCountAnly = document.getElementById('analytics').rows.length;
+                for(var dashCntrAnly = 1;dashCntrAnly < totalDashboardCountAnly;dashCntrAnly++){
+                    var cellValueAnly = document.getElementById('analytics').rows[dashCntrAnly].cells[0].innerHTML;                    
+                    if(initialCellValueAnly != '' && initialCellValueAnly != cellValueAnly){  
+                        for(var startEndCntrAnly=(startRowAnly+1);startEndCntrAnly<=endRowAnly;startEndCntrAnly++){ 
+                            if((startEndCntrAnly > 40) && ((startEndCntrAnly % 40) == 1)){
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = initialCellValueAnly;   
+                            }else{
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = '';        
+                            } 
+                            document.getElementById('analytics').rows[startEndCntrAnly].style.borderStyle = 'none';
+                            document.getElementById('analytics').rows[startEndCntrAnly].cells[0].style.borderStyle = 'none';
+                        }                        
+                        rowSpanAmountAnly = 0;
+                        startRowAnly = dashCntrAnly;
+                        endRowAnly = dashCntrAnly;                        
+                        initialCellValueAnly = cellValueAnly;     
+                    }
+                    if(initialCellValueAnly != '' && initialCellValueAnly == cellValueAnly){
+                        rowSpanAmountAnly++;
+                        endRowAnly = dashCntrAnly;
+                        if(totalDashboardCountAnly == (dashCntrAnly+1)){ 
+                            for(var startEndCntrAnly=(startRowAnly+1);startEndCntrAnly<=endRowAnly;startEndCntrAnly++){ 
+                                if((startEndCntrAnly > 40) && ((startEndCntrAnly % 40) == 1)){
+                                    document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = initialCellValueAnly;
+                                }else{
+                                    document.getElementById('analytics').rows[startEndCntrAnly].cells[0].innerHTML = '';        
+                                } 
+                                document.getElementById('analytics').rows[startEndCntrAnly].style.borderStyle = 'none';
+                                document.getElementById('analytics').rows[startEndCntrAnly].cells[0].style.borderStyle = 'none'; 
+                            }
+                        }
+                    }
+                    if(initialCellValueAnly == ''){
+                        initialCellValueAnly = cellValueAnly;     
+                        startRowAnly = dashCntrAnly;                        
+                        rowSpanAmountAnly++;
+                        endRowAnly = dashCntrAnly;
+                    }
+                }
+                /* Analytics table */
+                $('[id$="report"]').DataTable({      
+                    "order": [],
+                    "lengthMenu": [ -1 ],
+                    "bLengthChange": false,
+                    "pageLength": 40
+                    
+                }); 
+                $('[id$="dashboard"]').DataTable({      
+                    "order": [],
+                    "lengthMenu": [ -1 ],
+                    "bLengthChange": false,
+                    "pageLength": 40
+                });   
+                
+                 $('[id$="analytics"]').DataTable({      
+                    "order": [],
+                    "lengthMenu": [ -1 ],
+                    "bLengthChange": false,
+                    "pageLength": 40
+                });   
+                
+            }
+            </script>
+        </head>
+        <body>             
+            <apex:form id="Details">
+                <apex:actionStatus id="status" onstart="loading(true)" onstop="loading(false)" />  
+                <div class="container-fluid" >
+                    <!-- Page Name Heading -->
+                    <div class="row">
+                        <div class="page-header">
+                            <h4>Reports , Dashboards And Analytics</h4>
+                        </div>
+                    </div> 
+                    <!-- Page Name Heading -->
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="panel with-nav-tabs panel-info"> 
+                                <div class="panel-heading">
+                                    <ul class="nav nav-tabs">
+                                        <!--<li class="active"><a href="#tab2info" data-toggle="tab">Dashboards</a></li>-->
+                                        <li class="active"><a href="#tab2info" data-toggle="tab">Dashboards</a></li>
+                                        <li><a href="#tab1info" data-toggle="tab">Reports</a></li>
+                                        <li><a href="#tab3info" data-toggle="tab">Analytics</a></li>
+                                        <li class="dropdown usertypeTab"> View by&nbsp;: &nbsp; 
+                                            <apex:selectList id="countries" value="{!userType}"  styleclass="usertypeclass" size="1" required="true">
+                                                <apex:selectOptions value="{!UserTypes}"/>
+                                                <apex:actionSupport event="onchange" reRender="Details" action="{!changeUsertype}" oncomplete="intializeTable();" status="status"/>
+                                            </apex:selectList>                                            
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="panel-body" >                            
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade in" id="tab1info">                        
+                                            <table class="table table-bordered" id="report">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="regionCellClass">Region</th>
+                                                        <!--<th>Name</th>-->
+                                                        <th class="reportsCellClass">Reports</th>
+                                                        <th class="DescriptionCellClass" >Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!listReport}" var="report">
+                                                        <tr>
+                                                            <td class="noBorder" style="background-color:#808080;color:#FFFFFF;font-weight:bold;border-right:none;border-left:none;">{!report.User_Region__c}</td>
+                                                            <!--<td>{!report.Name}</td>-->
+                                                            <td><span class="buLink"><a href="/{!report.Dashboard_Report_Link__c}" target="_blank">{!report.Dashboard_Report_Link_Label__c}</a></span></td>  
+                                                            <td><apex:outputText value="{!report.Dashboard_Report_Description__c}" escape="false"></apex:outputText></td>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div id="contentLoading" style="display:none;">
+                                            <div style="text-align: center;">
+                                                <img src="/img/loading.gif" alt="Loading graphic" />
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane active" id="tab2info">                        
+                                            <table class="table table-bordered" id="dashboard">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="regionCellClass">Region</th>
+                                                        <!--<th>Name</th>-->
+                                                        <th class="DashboardsCellClass">Dashboards</th>
+                                                        <th class="DescriptionCellClass">Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!listDashboard}" var="dashboard"> 
+                                                        <tr>
+                                                            <td class="noBorder" style="background-color:#808080;color:#FFFFFF;font-weight:bold;border-right:none;border-left:none;">{!dashboard.User_Region__c}</td>
+                                                            <!--<td>{!dashboard.Name}</td>-->
+                                                            <td><span class="buLink"><a href="/{!dashboard.Dashboard_Report_Link__c}" target="_blank">{!dashboard.Dashboard_Report_Link_Label__c}</a></span></td>  
+                                                            <td><apex:outputText value="{!dashboard.Dashboard_Report_Description__c}" escape="false"></apex:outputText></td>                                                            
+                                                        </tr>
+                                                    </apex:repeat>                                                
+                                                </tbody>
+                                            </table>
+                                        </div> 
+                                         <div id="contentLoading" style="display:none;">
+                                            <div style="text-align: center;">
+                                                <img src="/img/loading.gif" alt="Loading graphic" />
+                                            </div>
+                                        </div>                                        
+                                            <div class="tab-pane active" id="tab3info">                        
+                                            <table class="table table-bordered" id="analytics">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="regionCellClass">Region</th>
+                                                        <!--<th>Name</th>-->
+                                                        <th class="DashboardsCellClass">Analytics</th>
+                                                        <th class="DescriptionCellClass">Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!listAnalytics}" var="analytics"> 
+                                                        <tr>
+                                                            <td class="noBorder" style="background-color:#808080;color:#FFFFFF;font-weight:bold;border-right:none;border-left:none;">{!analytics.User_Region__c}</td>
+                                                            <!--<td>{!dashboard.Name}</td>-->
+                                                            <td><span class="buLink"><a href="/apex/AnalyticsVFPage?analyticsLink={!analytics.Dashboard_Report_Link__c}" target="_blank">{!analytics.Dashboard_Report_Link_Label__c}</a></span></td>  
+                                                            <td><apex:outputText value="{!analytics.Dashboard_Report_Description__c}" escape="false"></apex:outputText></td>                                                            
+                                                        </tr>
+                                                    </apex:repeat>                                                
+                                                </tbody>
+                                            </table>
+                                        </div>                   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </apex:form>            
+        </body>  
+    </html>
+</apex:page>

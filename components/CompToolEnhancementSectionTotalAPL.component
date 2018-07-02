@@ -1,0 +1,120 @@
+<apex:component layout="none">
+	
+	<apex:attribute name="pageCtrl" type="CtrlOppyForecastToolEnhancementAPL" required="true" description="the root page controller reference" />
+	
+	<apex:outputPanel layout="block" style="ition: relative;" rendered="{!pageCtrl.co.map_sectionConfig['total']}"> 
+	<div id="section_total"  class="slds-section slds-section-total {!if(pageCtrl.cookieTotal = 'true', 'slds-is-open', '')}">
+		<h3 class="slds-section__title">
+			<button onclick="event_sectionTotal_click(this)" aria-controls="expando-total-unique-id" aria-expanded="true" class="slds-button slds-section__title-action slds-section-total-btn" type="button">
+				<svg class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+					<use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#switch')}" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+				</svg>
+				<span class="slds-truncate" title="Section Title">Summary (Current Territory Only)</span>
+			</button>
+		</h3>
+		<div aria-hidden="false" class="slds-section__content" id="expando-total-unique-id">
+			<div style="padding: 10px;" >
+				<table id="totalTable" style="width: 100%; background-color: transparent;" class="slds-table-total slds-table_fixed-layout slds-table slds-table_bordered slds-none-top--bordered slds-no-row-hover slds-table-total slds-table_col-bordered ">
+					<thead>
+						<tr>
+							<th style="border: transparent; background: #fff;"></th>
+							<th style="border: transparent; background: #fff;"></th>
+							<th style="border-top: 1px solid #ededed;background: #272727; font-weight: 700;text-align: center;color:#ffffff;border-top-left-radius: 5px;border-top-right-radius: 5px;" class="slds-text-align_right">
+								<div class=" ">Current Fiscal Year Impact</div></th>
+							<th style="border-top: 1px solid #ededed;background: #aec700; font-weight: 700;text-align: center;color:#ffffff;border-top-left-radius: 5px;border-top-right-radius: 5px;" class="slds-text-align_right">
+								<div class=" ">Next Fsical Year Impact</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="e-top-left slds-border-left "><div class="slds-truncate">Exsiting Business Lost/Dead/EOL/Transfer Out</div></td>
+							<td class="e-top-left"><div class="slds-truncate">Current FY Lost/Dead/EOL/Transfer Out</div></td>
+							<td class="e-top slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="businessCurrent">N/A</div>
+							</td>
+							<td class="e-top-right slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="businessCurrentNext">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="e-left slds-border-left slds-td-transparent"></td>
+							<td class="e-bottom-left slds-border-top-transparent"><div class="slds-truncate">Previous FY Lost/Dead/EOL/Transfer Out</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent slds-border-top-transparent">
+								<div class="slds-truncate" id="businessPreviousCurrent">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent slds-border-top-transparent">
+								<div class="slds-truncate" id="businessPreviousNext">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="e-bottom-left slds-border-left slds-td-transparent"></td>
+							<td class="e-bottom-left bgBlue"><div class="slds-truncate">Total</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent bgBlue">
+								<div class="slds-truncate" id="businessCurrentTotal">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent bgBlue">
+								<div class="slds-truncate" id="businessNextTotal">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td  class="e-left slds-border-left"><div class="slds-truncate">New Project Win</div></td>
+							<td class="e-left"><div class="slds-truncate">Current FY Won</div></td>
+							<td class="slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="otherCurrent">N/A</div>
+							</td>
+							<td class="e-right slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="otherNext">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="e-left slds-border-left slds-td-transparent"></td>
+							<td class="e-bottom-left slds-border-top-transparent"><div class="slds-truncate">Previous FY Won</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent slds-border-top-transparent">
+								<div class="slds-truncate" id="otherPreviousCurrent">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent slds-border-top-transparent">
+								<div class="slds-truncate" id="otherPreviousNext">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="e-bottom-left slds-border-left slds-td-transparent"></td>
+							<td class="e-bottom-left bgBlue"><div class="slds-truncate">Total</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent bgBlue">
+								<div class="slds-truncate" id="otherCurrentTotal">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent bgBlue">
+								<div class="slds-truncate" id="otherNextTotal">N/A</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4"></td>
+						</tr>
+						<tr>
+							<td class="e-left slds-border-left"><div class="slds-truncate">Balanced</div></td>
+							<td class="e-bottom-left"><div class="slds-truncate">Estimated Increase Current Fiscal Year</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="currentAllTotal">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate"></div>
+							</td>
+						</tr>
+						<tr>
+							<td class="e-bottom-left slds-border-left slds-td-transparent"></td>
+							<td class="e-bottom-left"><div class="slds-truncate">Estimated Increase Next Fiscal Year</div></td>
+							<td class="e-bottom slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate" id="nextAllTotal">N/A</div>
+							</td>
+							<td class="e-bottom-right slds-text-align_right slds-border-left-transparent">
+								<div class="slds-truncate"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</apex:outputPanel>
+	
+</apex:component>

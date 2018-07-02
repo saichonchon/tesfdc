@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <processMetadataValues>
+            <name>emailAlertSelection</name>
+            <value>
+                <stringValue>big_deal_alert_template_For_Americas</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>myRule_1_A1</name>
+        <label>Email to Dia Siraki and Jeff Glahn</label>
+        <locationX>100</locationX>
+        <locationY>200</locationY>
+        <actionName>Opportunity.big_deal_alert_template_For_Americas</actionName>
+        <actionType>emailAlert</actionType>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <processMetadataValues>
+            <name>emailAlertSelection</name>
+            <value>
+                <stringValue>big_deal_alert_template_For_All</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>myRule_2_A1</name>
+        <label>Email to Dia only</label>
+        <locationX>200</locationX>
+        <locationY>200</locationY>
+        <actionName>Opportunity.big_deal_alert_template_For_All</actionName>
+        <actionType>emailAlert</actionType>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <decisions>
+        <name>myDecision</name>
+        <label>Primary Decision</label>
+        <locationX>100</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_1</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_A1</targetReference>
+            </connector>
+            <label>For Americas</label>
+        </rules>
+        <rules>
+            <name>myRule_2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_2</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_2_A1</targetReference>
+            </connector>
+            <label>For All Countries except Americas</label>
+        </rules>
+    </decisions>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>AND(
+(
+ISCHANGED([Opportunity].Amount ) || 
+ISCHANGED([Opportunity].Current_Opportunity_Status__c  ) ||
+ISNEW()
+),
+( [Opportunity].Amount&gt;=1000000 ),
+([Opportunity].Customer_Region__c ==&apos;North America&apos; || [Opportunity].Customer_Region__c ==&apos;South America&apos;),
+[Opportunity].RecordType.Name == &apos;DND Opportunity&apos;
+) </stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_1</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+(
+ISCHANGED({!myVariable_current.Amount} ) || 
+ISCHANGED({!myVariable_current.Current_Opportunity_Status__c}  ) ||
+ISNEW()
+),
+( {!myVariable_current.Amount}&gt;=1000000 ),
+({!myVariable_current.Customer_Region__c} ==&apos;North America&apos; || {!myVariable_current.Customer_Region__c} ==&apos;South America&apos;),
+{!myVariable_current.RecordType.Name} == &apos;DND Opportunity&apos;
+)</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>AND(
+(
+ISCHANGED([Opportunity].Amount ) || 
+ISCHANGED([Opportunity].Current_Opportunity_Status__c  ) ||
+ISNEW()
+),
+( [Opportunity].Amount&gt;=1000000 ),
+[Opportunity].RecordType.Name == &apos;DND Opportunity&apos;
+) </stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_2</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+(
+ISCHANGED({!myVariable_current.Amount} ) || 
+ISCHANGED({!myVariable_current.Current_Opportunity_Status__c}  ) ||
+ISNEW()
+),
+( {!myVariable_current.Amount}&gt;=1000000 ),
+{!myVariable_current.RecordType.Name} == &apos;DND Opportunity&apos;
+)</expression>
+    </formulas>
+    <interviewLabel>Big_Deal_Alerts-2_Opportunity</interviewLabel>
+    <label>Big Deal Alerts</label>
+    <processMetadataValues>
+        <name>ObjectType</name>
+        <value>
+            <stringValue>Opportunity</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>ObjectVariable</name>
+        <value>
+            <elementReference>myVariable_current</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OldObjectVariable</name>
+        <value>
+            <elementReference>myVariable_old</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>TriggerType</name>
+        <value>
+            <stringValue>onAllChanges</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Workflow</processType>
+    <startElementReference>myDecision</startElementReference>
+    <variables>
+        <name>myVariable_current</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Opportunity</objectType>
+    </variables>
+    <variables>
+        <name>myVariable_old</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Opportunity</objectType>
+    </variables>
+</Flow>

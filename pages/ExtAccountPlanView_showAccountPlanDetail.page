@@ -1,0 +1,1174 @@
+<apex:page standardController="Account_Plan__c" extensions="ExtAccountPlanView" sideBar="true" showHeader="true"
+ title="{!$ObjectType.Account_Plan__c.label}" >
+    <apex:stylesheet value="{!URLFOR($Resource.ITB_Table_Style)}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.css')}" />
+    <script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+    <script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/24.0/apex.js" type="text/javascript"></script>
+    <style> 
+        div#chart_div.jqplot-target { color: #FFFFFF; }
+        div#regionChart_div.jqplot-target { color: #FFFFFF; }
+        .jqplot-title {   
+            top: 0px; left: 0px; padding-bottom: 0.5em;
+            font-size: 1.2em; color:black; font-weight: bold;  
+        }
+        .h2 {text-align:center;}
+        .loadchartdiv{
+            text-align:center;width: 600px; height: 400px;display:block;background-color:#FFF;opacity:0.5;position:static;z-index:1000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');
+        }
+        .chartbtn{width: 120px; height: 30px; font-size: 17px;}
+        .chartcls{width: 600px; height: 400px; display:none; z-index: 2000; position: absolute;}
+        .chartparentcls{height: 405px; position: relative;}
+        .errorcls{ color: red;margin-left: 160px; margin-top: 185px;}
+    </style>
+    <apex:sectionHeader title="{!$ObjectType.Account_Plan__c.label}" subtitle="Detail"/>
+             
+<div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');" title="Please Wait..."></div>
+        
+    <apex:form id="theForm">    
+        <apex:actionStatus startText="" stopText="" id="searchbynumberLOOKUP" >
+<!--         <apex:actionFunction name="checkSnapshot" action="{!checkSnapshot}" oncomplete="checkSnapshotComplete()" reRender="checksnapshoturl" /> -->
+        <input type="hidden" value="{!CheckSnapshot}" id="checksnapshoturl" />
+         <apex:facet name="start">
+            <div id="pageStartLoading" style="text-align:center;width:99%;height:99%;display:block;background-color:#FFF;opacity:0.50;position:absolute;z-index:8000;filter:alpha(opacity=85);">
+                <div class="loadingDiv" style="width:40px;margin-left:48%;margin-top:48%;position:absolute;">
+                    <img src="/img/loading.gif"/>
+                </div>
+            </div>
+         </apex:facet>  
+        </apex:actionStatus>
+        <apex:pageMessages />
+        <apex:pageBlock id="theBlock" mode="detail"><!-- tabStyle="Account_Plan__c" -->
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!Edit}" value="{!$Label.Edit}" status="searchbynumberLOOKUP"  rendered="{!if(and(!isSnapshot, accountPlan.Approval_Status__c != 'Pending'), true, false)}"/><!--disabled="{!!isSnapshot && accountPlan.Approval_Status__c == 'Pending'}" rendered="{!writeAccess}" disabled="{!approvalLock && canBeApproveled}"-->
+                <apex:commandButton action="{!delete}" value="{!$Label.Delete}" onclick="if(!confirm('{!$Label.Are_You_Sure}')){return false;}" rendered="{!if(and(!isSnapshot, accountPlan.Approval_Status__c != 'Pending'), true, false)}"/><!-- disabled="{!!isSnapshot && accountPlan.Approval_Status__c == 'Pending'} rendered="{!writeAccess}" disabled="{!approvalLock && canBeApproveled}" rendered="{!!isSnapshot && (accountPlan.Approval_Status__c != 'Pending' || accountPlan.Approval_Status__c != 'Approved')}"-->
+                <!--  added lili zhao 2014.03.26 add the button to view the pdf page only for appliances BU begin -->
+                <apex:outputPanel rendered="{!or(isAppliancesBU, isINDBU)}">
+                    <input onclick="document.getElementById('loading-curtain-div').style.display = ''; window.location.href='/apex/ExtAccountPlanView_controlPDF?id={!Account_Plan__c.id}';" value="{!$Label.PDF}" type="button" class="btn"/>
+                </apex:outputPanel>
+                
+<!--                <apex:commandButton action="{!Pdf}" value="{!$Label.PDF}" status="searchbynumberLOOKUP"  rendered="{!isAppliancesBU}"/> -->
+                <!--  added lili zhao 2014.03.26 add the button to view the pdf page only for appliances BU end -->
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection showHeader="false" title="{!$Label.Fields}" columns="2" collapsible="true">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value=" "/>
+                    <apex:outputPanel >
+                        <input type="button" value="{!$Label.Upload_Company_Logo}" onclick="uploadLogo();"/>
+                        <apex:outputPanel rendered="{!hasCompanyLogo}">
+                            <input type="button" value="{!$Label.Delete}" onclick="deleteLogo('company');"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value=" "/>
+                    <apex:outputPanel >
+                        <input type="button" value="{!$Label.Upload_Manager_Logo}" onclick="uploadphoto();"/>
+                        <apex:outputPanel rendered="{!hasManagerLogo}">
+                            <input type="button" value="{!$Label.Delete}" onclick="deleteLogo('manager');"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>  
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Company_Logo_Id__c)}"/>
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Company_Logo__c.Label}" rendered="{!Not(IsNull(accountPlan.Company_Logo_Id__c))}">
+                        
+                        </apex:outputLabel>
+                    </apex:outputPanel>
+                    
+                    
+                    <apex:outputField value="{!accountPlan.Company_Logo__c}"/>
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!$ObjectType.Account_Plan__c.Fields.Account_Manager__c.Label}" rendered="{!Not(IsNull(accountPlan.Account_Manager_Id__c))}"/>
+                        <apex:outputLabel value="{!$Label.Not_loaded}" rendered="{!IsNull(accountPlan.Account_Manager_Id__c)}"/>
+                    </apex:outputPanel>
+                    <apex:outputField value="{!accountPlan.Account_Manager__c}"/>
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem />
+                <apex:outputField value="{!accountPlan.Account_Manager_Approver__c}"/>
+             </apex:pageBlockSection>
+        
+            <apex:pageBlockSection showHeader="false" columns="2" id="theCustomerId">
+                
+                <apex:pageBlockSectionItem dataStyle="{font-weight:bold; vertical-align: bottom;}" >            
+                    <apex:outputLabel value="{!$Label.Customer}" style="vertical-align: bottom;"/>
+                    <apex:outputText ><font color="0073AE" size="4px"><b>{!Account_Plan__c.Customer__r.Name}</b></font></apex:outputText>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.Customer_Type}"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accountPlan.Customer_Type__c}"/> 
+                        <apex:outputText rendered="{!accountPlan.Replicate_to_Central_Org__c != true}"><br/>{!$Label.Profile_dont_be_sent_to_Dashboard} </apex:outputText>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                             
+                <apex:outputField value="{!accountPlan.Business_Unit__c}"/>
+                <apex:outputField value="{!accountPlan.Approval_Status__c}"/>                    
+                           
+                <apex:outputField value="{!accountPlan.Plan_Year__c}"/> 
+                <apex:outputField value="{!accountPlan.Active__c}"/>
+                <!-- field TE_Inside_Account_Plan__c added by Mrunal for R-1468 -->
+                <apex:outputField value="{!accountPlan.TE_Inside_Account_Plan__c}" rendered="{!chkLoggedInUser}"/>
+               
+                                         
+                <apex:outputField value="{!accountPlan.GAM_Code__c}"/>
+                <apex:outputField value="{!accountPlan.Account_Definition__c}" rendered="{!accountPlan.Customer_Type__c='A'}"/>
+                
+                <apex:pageBlockSectionItem >            
+                    <apex:outputLabel value="{!$Label.Type}"/>
+                    <apex:outputField value="{!accountPlan.RecordType.Name}"/>
+                </apex:pageBlockSectionItem>
+                                                   
+                
+                <apex:outputField value="{!accountPlan.Sales_Figures_Makeup__c}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.Created_By}"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accountPlan.CreatedById}"/>,&nbsp;
+                        <apex:outputField value="{!accountPlan.CreatedDate}"/> 
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>   
+                            
+                <apex:pageBlockSectionItem dataStyle="vertical-align:middle">
+                    <apex:outputLabel value="{!$Label.Voice_Overview}"/>
+                    <apex:outputPanel >
+                        <a href="/servlet/servlet.FileDownload?file={!voiceId}">
+                            <apex:image url="{!$Resource.Speaker}" width="25" height="25" title="{!$Label.Voice_Overview_exists}" rendered="{!displayVoice}"/>
+                        </a>
+                        <apex:outputLabel style="color:grey" value="{!$Label.Not_loaded}" rendered="{!Not(displayVoice)}"/>&nbsp;&nbsp;                                       
+                    </apex:outputPanel>                                
+                </apex:pageblockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.Last_Modified_By}"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accountPlan.LastModifiedByID}"/>,&nbsp;
+                        <apex:outputField value="{!accountPlan.LastModifiedDate}"/> 
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- add lili 2014.3.5 for link the Related Account Planning begin-->
+            <!--
+             <apex:pageBlockSection title="Related Account Planning" rendered="{!OR(isGAMLink, isKAMLink)}" columns="1">   
+                 <apex:pageBlockSectionItem rendered="{!OR(isGAMLink, isKAMLink)}" >
+                    <apex:outputPanel Id="relPlan">
+                        <apex:outputLabel value="{!$Label.Global_Account_Planning}" rendered="{!isGAMLink}" styleClass="labelCol" />
+                        <apex:outputLabel value="{!$Label.B_Account_Planning}" rendered="{!isKAMLink}" styleClass="labelCol"/>&nbsp;&nbsp;&nbsp;&nbsp;                 
+                       <apex:outputLink value="{!strLink}" id="theLink">{!accPlanName}</apex:outputLink>   
+                    </apex:outputPanel>                                        
+                </apex:pageBlockSectionItem>
+             </apex:pageBlockSection>  
+             -->
+             <!-- add lili 2014.3.5 for link the Related Account Planning end-->      
+            <apex:pageBlockSection title="Snapshot" rendered="{!hasSnapshot}" columns="1">
+                    <apex:repeat value="{!list_snapshot}" var="snap">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLink value="/apex/ExtAPSnapShotView_showAPSnapshot?id={!snap.Id}" target="_Blank">{!snap.dateString}</apex:outputLink>
+                        </apex:pageBlockSectionItem>
+                    </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="overviewSection" title="{!$Label.Customer_Overview}" columns="1">
+                <apex:pageBlockSectionItem id="overviewItem" >
+                    <apex:outputPanel >
+                        <apex:outputPanel id="overviewPanel" rendered="{!list_overview.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th colspan="1" align="center"><apex:outputText value="{!$Label.All_figures_in_Millions}"/></th>
+                                        <th colspan="5" align="center"><apex:outputText value="{!$Label.Customer_Revenue}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color: lightblue">
+                                        <td width="25%" ><b><apex:outputText value="{!$Label.Category}"/></b></td>
+                                        <td width="15%" ><apex:outputText value="{!planYearMinus3}"/></td>
+                                        <td width="15%" ><apex:outputText value="{!planYearMinus2}"/></td>
+                                        <td width="15%" ><apex:outputText value="{!$Label.YoY_Variance}"/></td>
+                                        <td width="15%" ><apex:outputText value="{!planYearMinus1}"/></td>
+                                        <td width="15%" ><apex:outputText value="{!$Label.YoY_Variance}"/></td>
+                                    </tr>
+                                    
+                                    <apex:repeat value="{!list_overview}" var="item">
+                                    <tr>
+                                        <td width="25%" ><apex:outputText value="{!item.name}"/></td>
+                                        <td width="15%" >
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear3}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" >
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear2}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" ><apex:outputText value="{!item.yoVariante2}" rendered="{!NOT(ISNULL(item.yoVariante2))}"/></td>
+                                        <td width="15%" >
+                                            <apex:outputText value="{0, number, ###.000}">
+                                                <apex:param value="{!item.sumYear1}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td width="15%" ><apex:outputText value="{!item.yoVariante1}" rendered="{!NOT(ISNULL(item.yoVariante1))}"/></td>
+                                    </tr>
+                                       
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_overview.size == 0}">
+                            <b><apex:outputLabel value="{!$Label.No_overview}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+                
+                
+                <apex:pageBlockSectionItem id="segment">
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Industry_Segment__c))}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th align="center"><apex:outputText value="{!$Label.Industry_Segment}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><apex:outputText value="{!accountPlan.Industry_Segment__c}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(accountPlan.Industry_Segment__c)}">
+                            <apex:outputText ><b>{!$Label.No_Industry_Segment}</b></apex:outputText>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="keyAccount" >
+                    <apex:outputPanel >
+                        <apex:outputPanel id="keyAccountPanel" rendered="{!list_keyProduct.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th ><apex:outputText value="{!$Label.key_Products}"/> </th>                    
+                                        <th colspan="2"><apex:outputText value="{!accountPlan.Key_Product_Percent_Title__c}"/></th>
+                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_keyProduct}" var="item">
+                                        <tr>
+                                            <td> <apex:outputText value="{!item.name}"/></td>
+                                            <td> <apex:outputText value=" {!item.productPct}" />&nbsp;<apex:image value="{!URLFOR($Resource.Graphics, item.productOutlook + '.jpg')}" title="{!item.productOutlook}" rendered="{!NOT(ISNULL(item.productOutlook))}"/></td>                                                            
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_keyProduct.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Key_Product}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="tePerformanceSection" title="{!$Label.TE_Performance_Overview}" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel >
+                        <apex:outputPanel >
+                            <table>
+                               <tr><td width="70%" align="left"><b><font color="DE8703" size="3px">{!$Label.TE_Performance}:</font></b>&nbsp;&nbsp;<apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.TE_Performance_Status__c+ '.jpg')}" 
+                                                                title="{!accountPlan.TE_Performance_Status__c}" rendered="{!NOT(ISNULL(accountPlan.TE_Performance_Status__c))}" />&nbsp;{!accountPlan.TE_Performance_Status__c}</td>
+                                </tr>
+                            </table>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel id="performancePanel" rendered="{!list_tePerformance.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th colspan="1" ><i><apex:outputText value="{!$Label.All_figures_in_Millions}"/></i></th>
+                                        <th colspan="1" ><apex:outputText value="{!$Label.Actual}"/></th>
+                                        <th colspan="2" ><apex:outputText value="{!$Label.Forecast} ({!planYear})"/></th>
+                                        <th colspan="7" ><apex:outputText value="{!$Label.Annual_Plan}"/></th>
+                                    </tr>
+                                    <tr style="background-color: lightblue">
+                                        <td><i><apex:outputText value="{!$Label.Fiscal_Years}"/></i></td>
+                                        <td><apex:outputText value="{!planYearMinus1}"/></td>
+                                        <td><apex:outputText value="{!$Label.YTD_Actuals}"/></td>
+                                        
+                                        <td ><apex:outputText value="{!$Label.Adjusted_Forecast}"/></td>
+                                        <td ><apex:outputText value="{!planYear}"/></td>
+                                        <td ><apex:outputText value="{!$Label.YoY}"/></td>
+                                        <td ><apex:outputText value="{!planYearPlus1}"/></td>
+                                        <td ><apex:outputText value="{!$Label.YoY}"/></td>
+                                        <td ><apex:outputText value="{!planYearPlus4}"/></td>
+                                        <td ><apex:outputText value="{!$Label.YoY}"/></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_tePerformance}" var="item">
+                                        <tr>
+                                            <td><apex:outputText value="{!item.Name}"/></td>
+                                            <td><apex:outputText value="{!item.actualValue}"/></td>  
+                                            <td><apex:outputText value="{!item.ytdActualValue}"/></td>
+                                            <td><apex:outputText value="{!item.forecastValue}"/></td>
+                                            
+                                            <td><apex:outputText value="{!item.apValue1}"/></td>
+                                            <td><apex:outputText value="{!item.yoyValue1}"/></td>
+                                            <td><apex:outputText value="{!item.apValue2}"/></td>
+                                            <td><apex:outputText value="{!item.yoyValue2}"/></td>
+                                            <td><apex:outputText value="{!item.apValue3}"/></td>
+                                            <td><apex:outputText value="{!item.yoyValue3}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                            <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Revenue_Section_Last_Updated_By__c))}">
+                                <i>{!$Label.TE_Revenue_Section_Last_Updated_By}&nbsp;<apex:outputfield Value="{!accountPlan.Revenue_Section_Last_Updated_By__c}"/>&nbsp;on&nbsp;<apex:outputfield Value="{!accountPlan.Revenue_Section_Last_Updated__c}"/></i>
+                            </apex:outputPanel>       
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_tePerformance.size == 0}">
+                            <b><apex:outputLabel value="{!$Label.Nothing_To_View}"/></b>
+                        </apex:outputPanel>
+                        
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!--  added by leijun Miao 2013-04-22 begin -->
+            <apex:outputPanel id="lineChartPanel" style="margin-top:20px; margin-left:20px;">
+                <div class="chartparentcls">
+                    <div id="chart2" class="chartcls"></div>
+                    <div id="chart2Loading" class="loadchartdiv"></div>
+                </div>
+            </apex:outputPanel> 
+            <!--  added by leijun Miao 2013-04-22 end   --> 
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                <apex:outputPanel id="CBC3Panel" >
+                    <apex:outputPanel >
+                        <table>
+                           <tr>
+                                <td>
+                                    <div class="chartparentcls">
+                                        <div id="chart_div" class="chartcls"></div>
+                                        <div id="chartDivLoading" class="loadchartdiv"></div>
+                                    </div>
+                                </td>
+                           </tr>
+                        </table>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                               
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputPanel id="regionPanel">
+                    <apex:outputPanel >
+                        <table>
+                           <tr><td >
+                                <div class="chartparentcls">
+                                    <div id="regionChart_div" class="chartcls"></div>
+                                    <div id="regionChartDivLoading" class="loadchartdiv"></div>
+                                </div>
+                            
+                           </td></tr>
+                        </table>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem id="competItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Competitors}" /></font></h2><br/>
+                        <apex:outputPanel id="competPanel" rendered="{!list_competitor.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th width="25%" ><apex:outputText value="{!$Label.Competitors}"/></th>
+                                        <th width="50%" ><apex:outputText value="{!$Label.Market_Share}"/></th>
+                                        <th width="25%" ><apex:outputText value="{!$Label.Comments}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_competitor}" var="item">
+                                        <tr>
+                                            <td width="25%" ><apex:outputLink value="/{!item.compId}" target="_Blank">{!item.name}</apex:outputLink></td>
+                                            <td width="50%" ><apex:outputText value="{!item.marketShare}"/>&nbsp;<apex:image Value="{!URLFOR($Resource.Graphics, item.tendend+ '.jpg')}" title="{!item.tendend}" rendered="{!NOT(ISNULL(item.tendend))}"/></td>
+                                            <td width="25%" ><apex:outputText value="{!item.comment}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_competitor.size == 0}">
+                            <b><apex:outputLabel value="{!$Label.No_Competitor}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="relationItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Relationships}" /></font></h2><br/>
+                        <apex:outputPanel id="relationPanel">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr class="headerrow" style="background-color: lightblue"><th colspan="4">{!$Label.Relationships}</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{!$ObjectType.Account_Plan__c.fields.Executive_Relationship__c.label}:</td>
+                                        <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Executive_Relationship__c+ '.jpg')}" title="{!accountPlan.Executive_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Executive_Relationship__c))}" /></td>
+                                        <td><apex:outputText value="{!accountPlan.Executive_Relationship__c}"/></td>
+                                        <td width="50%"><apex:outputText value="{!accountPlan.Executive_Relationship_Comments__c}"/></td>                
+                                    </tr>                
+                                    <tr>
+                                        <td>{!$ObjectType.Account_Plan__c.fields.Purchasing_Relationship__c.label}:</td>
+                                        <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Purchasing_Relationship__c+ '.jpg')}" title="{!accountPlan.Purchasing_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Purchasing_Relationship__c))}" /></td>
+                                        <td><apex:outputText value="{!accountPlan.Purchasing_Relationship__c}"/></td>
+                                        <td><apex:outputText value="{!accountPlan.Purchasing_Relationship_Comments__c}"/></td>
+                                    </tr>                
+                                    <tr>
+                                        <td>{!$ObjectType.Account_Plan__c.fields.Engineering_Relationship__c.label}:</td>
+                                        <td><apex:image Value="{!URLFOR($Resource.Graphics, accountPlan.Engineering_Relationship__c+ '.jpg')}" title="{!accountPlan.Engineering_Relationship__c}" rendered="{!NOT(ISNULL(accountPlan.Engineering_Relationship__c))}" /></td>
+                                        <td><apex:outputText value="{!accountPlan.Engineering_Relationship__c}"/></td>
+                                        <td><apex:outputText value="{!accountPlan.Engineering_Relationship_Comments__c}"/></td>
+                                    </tr>
+                                </tbody>
+                           </table>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="straSection" title="{!$Label.Strategies}">
+                <apex:pageBlockSectionItem id="straItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Strategies}" /></font></h2><br/>
+                        <apex:outputPanel id="straPanel" rendered="{!list_strategies.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Strategic_Account_Objectives}"/></th>
+                                        <th><apex:outputText value="Location"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_strategies}" var="item">
+                                        <tr>
+                                            <td><apex:outputText value="{!item.objective}"/></td>
+                                             <td><apex:outputText value="{!item.location}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_strategies.size == 0}">
+                            <b><apex:outputText value="{!$Label.no_stategies}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="straplanItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Strategic_Initiatives_Penetration_Plan}" /></font></h2><br/>
+                        <apex:outputPanel id="straplanPanel" rendered="{!list_strategiesInitiativesPenetrationPlan.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Strategic_Initiatives_Penetration_Plan}"/></th>
+                                        <th><apex:outputText value="{!$Label.Target}"/></th>
+                                        <th><apex:outputText value="{!$Label.Status}"/></th>
+                                        <th><apex:outputText value="{!$Label.Owner}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_strategiesInitiativesPenetrationPlan}" var="item">
+                                        <tr>
+                                            <td><apex:outputText value="{!item.plan}"/></td>
+                                            <td><apex:outputText value="{!item.target}"/></td>
+                                            <td><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/></td>
+                                            <td><apex:outputText value="{!item.owner}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_strategiesInitiativesPenetrationPlan.size == 0}">
+                            <b><apex:outputText value="{!$Label.no_stategies}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="breakSection" title="{!$Label.Breakthrough_Programs}" columns="2">
+                <apex:pageBlockSectionItem id="breakItem">
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Breakthrough_Programs}" /></font></h2><br/>
+                        <apex:outputPanel id="breackPanel" rendered="{!list_BreakthroughProgram.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Breakthrough_Programs}"/></th>
+                                        <th><apex:outputText value="{!$Label.Status}"/></th>
+                                        <th><apex:outputText value="{!$Label.Comments}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_BreakthroughProgram}" var="item">
+                                        <tr>
+                                            <td><apex:outputText value="{!item.name}"/></td>
+                                            <td><apex:image Value="{!URLFOR($Resource.Graphics, item.status + '.jpg')}" title="{!item.status}" rendered="{!NOT(ISNULL(item.status))}"/><apex:outputText value="{!item.status}"/></td>
+                                            <td><apex:outputText value="{!item.comments}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_BreakthroughProgram.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Breakthrough_Program}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="keyProjectItem" >
+                    
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Key_Projects_Opportunities}" /></font></h2><br/>
+                        <apex:outputPanel id="keyProjectPanel" rendered="{!list_keyProjects.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Key_Projects_Opportunities}"/></th>
+                                        <th><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                        <th><apex:outputText value="{!$Label.Start_Date}"/></th>
+                                        <th><apex:outputText value="{!$Label.Type}"/></th>
+                                        <th><apex:outputText value="{!$Label.Master_Programm}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_keyProjects}" var="item">
+                                        <tr>
+                                            <td><apex:outputLink value="/{!item.keyProjectId}" target="_Blank">{!item.name}</apex:outputLink></td>
+                                            <td><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                            <td><apex:outputText value="{!item.startDate}"/></td>
+                                            <td><apex:outputText value="{!item.proTyp}"/></td>
+                                            <td><apex:outputLink value="/{!item.masterProjectId}" target="_Blank">{!item.masterProgramm}</apex:outputLink></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_keyProjects.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Projects_Opportunities}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="winlosSection" title="{!$Label.Recent_Wins_Losses}">
+                <apex:pageBlockSectionItem id="winItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Recent_Big_Wins}" /></font></h2><br/>
+                        <apex:outputPanel id="recentWinsPanel" rendered="{!list_wins.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Recent_Big_Wins}"/></th>
+                                        <th><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                        <th><apex:outputText value="{!$Label.Date_Won}"/></th>
+                                        <th><apex:outputText value="{!$Label.Comments}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_wins}" var="item">
+                                        <tr>
+                                            <td><apex:outputLink value="/{!item.oppId}" target="_Blank">{!item.Name}</apex:outputLink></td>
+                                            <td><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                            <td><apex:outputText value="{!item.dateValue}"/></td>
+                                            <td><apex:outputText value="{!item.comments}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_wins.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Recent_Big_Wins}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="lossesItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Recent_Losses}" /></font></h2><br/>
+                        <apex:outputPanel id="lossesPanel" rendered="{!list_losses.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Recent_Losses}"/></th>
+                                        <th><apex:outputText value="{!$Label.X5_Yr_Value_M}"/></th>
+                                        <th><apex:outputText value="{!$Label.Date_Lost}"/></th>
+                                        <th><apex:outputText value="{!$Label.Comments}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_losses}" var="item">
+                                        <tr>
+                                            <td><apex:outputLink value="/{!item.oppId}" target="_Blank">{!item.Name}</apex:outputLink></td>
+                                            <td><apex:outputText Value="{!$Label.Dollar_Sign}" rendered="{!NOT(ISNULL(item.yearsValue))}"/>{!item.yearsValue}</td>
+                                            <td><apex:outputText value="{!item.dateValue}"/></td>
+                                            <td><apex:outputText value="{!item.comments}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_losses.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Losses}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="obsteclesAndScorcardSection" title="{!$Label.Obstecles_And_Scorcard}">
+                <apex:pageBlockSectionItem id="obsteclesItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$Label.Obstacles}" /></font></h2><br/>
+                        <apex:outputPanel id="obsteclesPanel" rendered="{!list_obstecles.size > 0}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$Label.Obstacle_Headwind}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!list_obstecles}" var="item">
+                                        <tr>
+                                            <td><apex:outputText value="{!item}"/></td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!list_obstecles.size == 0}">
+                            <b><apex:outputText value="{!$Label.No_Obstecles}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="Scorcard" >
+                    <apex:outputPanel > 
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}" /></font></h2><br/>
+                        <apex:outputPanel id="ScorcardPanel" rendered="{!NOT(ISNULL(accountPlan.Customer_Scorecard__c))}">
+                            <table class="itb-table-style-01">
+                                <thead>
+                                    <tr style="background-color: lightblue">
+                                        <th><apex:outputText value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}"/></th>
+                                        <th><apex:outputText value="{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard_Comments__c.label}"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><a href="http://{!accountPlan.Customer_Scorecard__c}" target="_Blank"><apex:outputText value="{!accountPlan.Customer_Scorecard__c}"/></a></td>
+                                        <td><apex:outputText value="{!accountPlan.Customer_Scorecard_Comments__c}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(accountPlan.Customer_Scorecard__c)}">
+                            <b><apex:outputText value="{!$Label.No_Customer_Scorecard}"/></b>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+             
+            <apex:pageBlockSection id="updateSection" title="{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}" columns="1">
+                <apex:pageBlockSectionItem id="updateItem" >
+                    <apex:outputPanel >
+                        <h2><font color="DE8703" size="4px" ><apex:outputLabel value="{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}" /></font></h2><br/>
+                        <apex:outputPanel id="updatePanel" layout="block" rendered="{!NOT(ISNULL(accountPlan.Monthly_Update__c))}">
+                            <apex:outputField id="editor_update" value="{!accountPlan.Monthly_Update__c}"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISNULL(accountPlan.Monthly_Update_Last_Updated_By__c))}">
+                            <i>&nbsp;&nbsp;&nbsp;{!$ObjectType.Account_Plan__c.fields.Monthly_Update_Last_Updated_By__c.label}&nbsp;<apex:outputfield Value="{!accountPlan.Monthly_Update_Last_Updated_By__c}"/>&nbsp;on&nbsp;<apex:outputfield Value="{!accountPlan.Monthly_Update_Last_Updated__c}"/></i>      
+                            <br/><br/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:form >
+        <apex:pageBlock mode="edit" title="Notes & Attachments">        
+            <apex:pageBlockButtons location="top">            
+                    <apex:commandButton value="New Note" action="/apex/ExtNote_newEditEntryPage?parentId={!accountPlanId}&retURL=/apex/ExtAccountPlanView_showAccountPlanDetail?id={!accountPlanId}"/>
+                    <apex:commandButton value="Attach File" action="/apex/CtrlAccountPlanAttachment_generateAttach?id={!accountPlanId}&parentname={!accountPlan.Name}"/>
+             </apex:pageBlockButtons>
+             <table class="list" cellspacing="0" cellpadding="0" border="0">
+                <tr class="headerRow">
+                    <th class="actionColumn" scope="col">Action</th>
+                    <th class="" scope="col">Type</th>
+                    <th class="" scope="col">Name</th>
+                    <th class="" scope="col">Title</th>
+                    <th class="" scope="col">Author</th>
+                    <th class="" scope="col">Last Modified</th>
+                    <th class="" scope="col">Created By</th>
+                    <th class="" scope="col">Send To Executive Dashboard</th>
+                </tr>
+                <apex:repeat value="{!list_apaAttachment}" var="att">
+                    <tr class="dataRow even first" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}">
+                        <td class="actionColumn">
+                            <apex:outputLink value="/{!att.Id}/e?retURL=/apex/ExtAccountPlanView_showAccountPlanDetail?id={!accountPlanId}" styleClass="actionLink" rendered="{!(att.Type__c == 'Attachment')}">Edit</apex:outputLink>
+                            <apex:outputLink value="/{!att.AttachmentId__c}/e?retURL=/apex/ExtAccountPlanView_showAccountPlanDetail?id={!accountPlanId}" styleClass="actionLink" rendered="{!(att.Type__c == 'Note')}">Edit</apex:outputLink><apex:outputText >&nbsp;|&nbsp;</apex:outputText>
+                            <apex:outputLink value="/servlet/servlet.FileDownload?file={!att.AttachmentId__c}" target="_blank" styleClass="actionLink"  rendered="{!(att.Type__c == 'Attachment')}">View</apex:outputLink><apex:outputText rendered="{!(att.Type__c == 'Attachment')}">&nbsp;|&nbsp;</apex:outputText>
+                            <apex:outputLink value="" styleClass="actionLink" onclick="deleteAttachment('{!att.AttachmentId__c}');">{!$Label.Delete}</apex:outputLink>
+                        </td>
+                        <th class=" dataCell " scope="row">{!att.Type__c}</th>
+                        <td class=" dataCell">
+                        <apex:outputPanel rendered="{!(att.Type__c == 'Attachment')}"><a href="/{!att.Id}">             {!att.Name}</a></apex:outputPanel>
+                        <apex:outputPanel rendered="{!(att.Type__c == 'Note')}">      <a href="/{!att.AttachmentId__c}">{!att.Name}</a></apex:outputPanel>
+                        </td>
+                        <td class=" dataCell ">{!att.Title__c}</td>
+                        <td class=" dataCell ">{!att.Author__c}</td>
+                        <td class=" dataCell "><apex:outputText value="{0,date, M/d/yyyy HH:mm}"><apex:param value="{!att.LastModifiedDate}"/></apex:outputText></td>                                                               
+                        <td class=" dataCell ">
+                        <a href="/{!att.CreatedById}">{!att.CreatedBy.Name}</a>
+                        </td>
+                        <td><apex:outputPanel rendered="{!(att.Type__c == 'Attachment')}"><apex:image styleClass="checkImg" width="21" height="16" title="checked" url="/img/checkbox_checked.gif" rendered="{!att.Send_Attachment_to_Executive_Dashboard__c}"/>
+                            <apex:image styleclass="checkImg" width="21" height="16" title="Not Checked" url="/img/checkbox_unchecked.gif" rendered="{!Not(att.Send_Attachment_to_Executive_Dashboard__c)}"/></apex:outputPanel></td>
+                    </tr>           
+                </apex:repeat>
+            </table>        
+        </apex:pageBlock>   
+        <span id="chartId">
+            <input type="hidden" value="{!chartPeriodSql}" id="StrChartPeriodSql"/>
+            <input type="hidden" value="{!chartCBC3Sql}" Id="StrChartCBC3Sql"/>
+            <input type="hidden" value="{!chartRegionSql}" Id="StrChartRegionSql"/>
+        </span>
+        <span id="StrPeriod">
+            <input type="hidden" value="{!listPerStr}" />
+        </span>
+    </apex:form>
+    <apex:relatedList list="ProcessSteps" ></apex:relatedList>
+    <script src="{!URLFOR($Resource.TEJqueryMiNi)}"></script>
+    <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+    
+    <!-- added by leijun 2013-04-22 begin -->
+    <script src="{!URLFOR($Resource.Jqplot,'dist/excanvas.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.pieRenderer.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.categoryAxisRenderer.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasTextRenderer.min.js')}" ></script>
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasAxisLabelRenderer.min.js')}" ></script>
+    
+    <!-- added by leijun 2013-04-22 end  -->
+    <!--
+    <script src="{!URLFOR($Resource.ExtAccountPlanViewTestJS)}" />
+    -->
+    <script>
+    
+        function uploadLogo(){
+            window.location.href="/apex/Itbpicture__ExtPicture_UniversalUploadPage_Flex?pictureFieldName=Company_Logo_Id__c&objectType=Account_Plan__c&objectId={!accountPlan.Id}&noverride=1&defWidth=275";
+        }
+        
+        function uploadphoto(){  
+            window.location.href="/apex/Itbpicture__ExtPicture_UniversalUploadPage_Flex?pictureFieldName=Account_Manager_Id__c&objectType=Account_Plan__c&objectId={!accountPlan.Id}&noverride=1&defWidth=162";
+        }
+        function deleteLogo(choice){
+            if (confirm("Do you really want to delete the picture?")) 
+            {
+                sforce.connection.sessionId = '{!$Api.Session_ID}'; 
+                var getCon = sforce.connection.query("SELECT Id, Company_Logo_Id__c, Account_Manager_Id__c FROM Account_Plan__c Where Id = '{!accountPlan.Id}'");
+                
+                var conRecord = getCon.getArray("records");
+                
+                if(choice == 'company'){
+                    try{
+                        if(conRecord[0].Company_Logo_Id__c != null){
+                            var getPicAtt = sforce.connection.query("SELECT Id FROM Attachment Where Id = '" + conRecord[0].Company_Logo_Id__c + "'");
+                            var attRecord = getPicAtt.getArray("records");
+                            var temp = [];
+                            
+                            var result = sforce.connection.deleteIds([attRecord[0].Id]); 
+                        }
+                    }
+                    catch(err){}
+                    conRecord[0].Company_Logo_Id__c = null;
+                
+                }
+                else{
+                    try{
+                        if(conRecord[0].Account_Manager_Id__c != null){
+                            var getPicAtt = sforce.connection.query("SELECT Id FROM Attachment Where Id = '" + conRecord[0].Account_Manager_Id__c + "'");
+                            var attRecord = getPicAtt.getArray("records");
+                            var result = sforce.connection.deleteIds([attRecord[0].Id]); 
+                        }
+                    }
+                    catch(err){}
+                    conRecord[0].Account_Manager_Id__c = null;
+                
+                    
+                }
+                
+            var saveResults = sforce.connection.update(conRecord);
+            window.location.reload();
+        }
+    }
+    
+    function deleteAttachment(attId){
+        if (confirm("Do you really want to delete this attachment?")) {
+            sforce.connection.sessionId = '{!$Api.Session_ID}'; 
+            var getCon = sforce.connection.query("SELECT Id FROM Attachment Where Id = '" + attId + "'");
+            
+            var conRecord = getCon.getArray("records");
+            
+            var result = sforce.connection.deleteIds([conRecord[0].Id]); 
+                
+            window.location.reload();
+        }
+    }    
+    addListener(window, 'load', initDocument, {});
+    ;function initDocument(){
+        var t = $.trim($('#checksnapshoturl').val());
+        if(t == ''){
+            document.getElementById('loading-curtain-div').style.display = 'none';
+            setTimeout(function(){
+                loadLineChart();
+            }, 400);
+            setTimeout(function(){
+                loadPieCBCChart();
+            }, 500);
+            setTimeout(function(){
+                loadPieRegionChart();
+            }, 600);
+        }
+    }
+    $(document).ready(function () {
+        var t = $.trim($('#checksnapshoturl').val());
+        if(t != ''){ window.location.href= t; }
+    });
+
+    function loadLineChart() {
+        Visualforce.remoting.Manager.invokeAction(
+            "{!$RemoteAction.ExtAccountPlanView.loadLineChart}",
+            {"Id":"{!accountPlanId}"},
+            function(result, event) {
+                var $chart=$('#chart2').html('');
+                if (event.status) {
+                    drawLineChart(result);     
+                }  else{
+                    var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadLineChart\', \'chart2\')" /><br/><br/>'+event['message']+'</div>';
+                    $chart.append(el_div).show();
+                }
+                /*
+                else if (event.type === 'exception') {
+                    if (window.console){
+                        console.log(event);
+                    }
+                } else {
+                    if (window.console){
+                        console.log(event);
+                    }
+                //    alert("communication error");
+                }
+                */
+            }   
+        );
+    }
+    function loadPieCBCChart() {
+        Visualforce.remoting.Manager.invokeAction(
+            "{!$RemoteAction.ExtAccountPlanView.loadPieCBCChart}",
+            {"Id":"{!accountPlanId}"},
+            function(result, event) {
+                var $chart=$('#chart_div').html('');
+                if (event.status) {
+                    drawPieCBCChart(result);    
+                } else{
+                    var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadPieCBCChart\', \'chart_div\')" /><br/<br/>'+event['message']+'</div>';
+                    $chart.append(el_div).show();
+                }
+                /*
+                else if (event.type === 'exception') {
+                    if (window.console){
+                        console.log(event);
+                    }
+                } else {
+                    if (window.console){
+                        console.log(event);
+                    }
+                //    alert("communication error");
+                }
+                */
+            }       
+        );
+    }
+    function loadPieRegionChart() {
+        Visualforce.remoting.Manager.invokeAction(
+            "{!$RemoteAction.ExtAccountPlanView.loadPieRegionChart}", {"Id":"{!accountPlanId}"},
+            function(result, event) {
+                var $chart=$('#regionChart_div').html('');
+                if (event.status) {
+                    drawPieRegionChart(result);
+                } else{
+                    var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadPieRegionChart\', \'regionChart_div\')" /><br/<br/>'+event['message']+'</div>';
+                    $chart.append(el_div).show();
+                }
+                
+                /*
+                else if (event.type === 'exception') {
+                    if (window.console){
+                        console.log(event);
+                    }
+                } else {
+                    if (window.console){
+                        console.log(event);
+                    }
+                //    alert("communication error");
+                }
+                */
+            }   
+        );
+    }
+    
+    ;function reLoadChart(callBack, targetId){
+        $('#'+targetId).html('');
+        window[callBack]();
+    }
+    
+    function makeUpList(result){
+        var list_result = [], data;
+        for(data in result) {
+            if(result.hasOwnProperty(data)) {
+                list_result.push({cust:data,total:result[data]});
+            }
+        }
+        return list_result;
+    }
+    
+    function drawLineChart(result){        
+        var xData,yData,i,amt,m,list_result = [],list_sort = []; 
+        xData = '';           
+        var res = new Array();
+        
+        for(i in result) {
+            if(result.hasOwnProperty(i)){
+                list_sort.push(i);                  
+                list_result.push({des:i,amt:result[i]});
+            }
+        }
+        list_result.sort(function(a,b){
+            if(a.des > b.des) return 1;
+            if(a.des < b.des) return -1;
+            return 0;
+        });
+        list_sort.sort();
+        xData = list_sort;
+        for(m=0; m<list_result.length; m++){
+                res.push([m+1,list_result[m]['amt']]);
+        }
+        hideChart2Loading();
+        showChart2();
+        plot2 = $.jqplot('chart2', [res], {
+            axes: {
+                xaxis: {
+                    ticks:xData,  
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    label: 'Sales Period',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {
+                        fontWeight: '200'
+                    }   
+                },
+                yaxis:{
+                    label: 'Sum of Bill Amount - USD',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {            
+                        fontWeight: '200'
+                    }
+                }
+            }
+        });
+    }
+    
+    function drawPieCBCChart(result) {      
+        hideChartDivLoading();
+        showChartDiv();
+        var i,j,map_CBC3Des_amount = {},item,list_result = [];
+        list_result = makeUpList(result);
+        for(i=0,j=list_result.length;i<j;i++){
+            item = list_result[i];
+            if(item['cust'] in map_CBC3Des_amount)
+            map_CBC3Des_amount[item['cust']] += (parseFloat(item['total'])||0);
+            else map_CBC3Des_amount[item['cust']] = (parseFloat(item['total'])||0);
+        }
+        if(j > 0){              
+            var pie = $.jqplot('chart_div',[getPieParams(map_CBC3Des_amount)],
+                      {
+                          title:'CBC 3 Breakdown',  
+                          seriesColors:['#3366CC','#DC3912','#FF9900','#109618','#990099'],
+                          series:[{
+                              renderer:$.jqplot.PieRenderer,
+                              rendererOptions:{
+                                  diameter:250,
+                                  sliceMargin:1,
+                                  showDataLabels:true,
+                                  dataLabelThreshold: 0,
+                                  dataLabelFormatString: '%.1f%%',
+                                  dataLabelNudge:35,
+                                  lineWidth:5
+                              }
+                          }],
+                          legend:{
+                              show:true
+                          }
+                      });
+        } 
+    }
+    
+    function drawPieRegionChart(result) {
+        hideRegionChartDivLoading();
+        showRegionChartDiv();
+        var i,j,map_RegionDes_amount = {},item, list_result = [];
+        list_result = makeUpList(result);
+        for(i=0,j=list_result.length;i<j;i++){
+            item = list_result[i];
+            if(item['total'] != null) {
+                if(item['cust'] in map_RegionDes_amount)
+                map_RegionDes_amount[item['cust']] += (parseFloat(item['total'])||0);
+                else map_RegionDes_amount[item['cust']] = (parseFloat(item['total'])||0);
+            }           
+        } 
+        if(j > 0){          
+            var pie = $.jqplot('regionChart_div',[getPieParams(map_RegionDes_amount)],
+             {
+                 title:'Region Breakdown',  
+                 seriesColors:['#3366CC','#DC3912','#FF9900','#109618','#990099'],
+                 series:[{
+                     renderer:$.jqplot.PieRenderer,
+                     rendererOptions:{
+                         diameter:250,
+                         sliceMargin:1,
+                         showDataLabels:true,
+                         dataLabelThreshold: 0,
+                      dataLabelFormatString: '%.1f%%',
+                         dataLabelNudge:35,
+                         lineWidth:5
+                     }
+                 }],
+                 legend:{
+                     show:true
+                 }
+             });
+        }        
+    }
+   
+    function getPieParams(map_des_amt){
+        var i,j,count = 0,amt,sum = 0,list_sort = [],result = [],percent,total;
+        for(i in map_des_amt){
+            if(map_des_amt.hasOwnProperty(i)){
+                list_sort.push({des:i,amt:map_des_amt[i]});
+            }
+        }
+        list_sort.sort(function(a,b){
+            if(a.amt > b.amt) return 1;
+            if(a.amt < b.amt) return -1;
+            return 0;
+        });
+        j=list_sort.length;
+        for(i = j-1;i>=0;i--){
+            count ++;
+            amt = list_sort[i]['amt'];
+            sum += amt;
+            if(count < 5)
+                result.push(list_sort[i]);
+            else if(count == 5){
+                result.push({des:'Others',amt:list_sort[i]['amt']});
+            }else{
+                result[result.length -1]['amt'] += list_sort[i]['amt'];
+            }
+        }
+        j=result.length;
+        list_sort = new Array(j);
+        total = 100;
+        for(i=0;i<j;i++){
+            percent = Math.round(1000*result[i]['amt'] / sum)/10;
+            if(i != j-1)total -= percent;
+            list_sort[i] = [result[i]['des'],percent];
+        }
+        list_sort[j-1][1] = total;
+        return list_sort;
+    }
+    ;function hideRegionChartDivLoading() {
+        $("#regionChartDivLoading").hide();
+    }
+    
+    ;function hideChartDivLoading() {
+        $("#chartDivLoading").hide();
+    }
+    
+    ;function hideChart2Loading() {
+        $("#chart2Loading").hide();
+    }
+    
+    ;function showRegionChartDiv() {
+        $("#regionChart_div").show();
+    }
+    
+    ;function showChartDiv() {
+        $("#chart_div").show();
+    }
+    
+    ;function showChart2() {
+        $("#chart2").show();
+    }
+
+////////////
+j$ = $;
+        function noenter(e){
+            var key;     
+            if(window.event)
+                key = window.event.keyCode; //IE
+            else
+                key = e.which; //firefox
+            if(key == 13) {
+               window.event.keyCode = 9;
+            }     
+            return (key != 13);
+        }
+        
+        function checkAccountActiveLength (obj){
+            if($('.accActive:checked').length > 5){
+                alert("The selected quantity is not greater than 5");
+                $(obj).attr('checked',false);
+            } 
+        }
+        function checkStrategicActiveLength(obj) {
+            if($('.strategicActive:checked').length > 10){
+                alert("The selected quantity is not greater than 10");
+                $(obj).attr('checked',false);
+            }
+        }
+        
+        ;function addListener (element, event, fn, params) {
+            var eventHandler = ( params ? function(){ fn.call(params); } : fn );
+            if (window.attachEvent) {
+                element.attachEvent('on' + event, eventHandler);
+            } else {
+                element.addEventListener(event, eventHandler, false);
+            }
+        }
+    </script>
+</apex:page>

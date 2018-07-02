@@ -1,0 +1,19 @@
+<apex:component layout="none">
+	
+	<apex:attribute name="var" type="String" description="The variable to represent a single."/>
+	<apex:attribute name="jsfun" type="String" description="The variable to save function"/>
+	<apex:attribute name="isShow" type="Boolean" required="true" description="The variable to show save button"/>
+	
+	<div class="csd_menu_div">
+		<apex:outputPanel rendered="{!isShow}">
+			<apex:componentBody >
+				<input value="Back" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.href='/apex/CSD_CtrlLinkManage';"/>
+				<input value="Refresh" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.reload();"/>
+				<input value="SAVE" class="btn btncls" type="button" onclick="{!jsfun}(this)"/>
+		    </apex:componentBody>
+		</apex:outputPanel>
+	</div>
+	
+	
+	
+</apex:component>

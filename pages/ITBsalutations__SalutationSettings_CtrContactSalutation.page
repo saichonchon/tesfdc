@@ -1,0 +1,241 @@
+<apex:page controller="ITBsalutations.CtrContactSalutation" tabstyle="Definitions__tab">
+	<script type="text/javascript">
+	function changeCollapse() {
+		//================================= 
+		// START: Get Collapse Buttons
+		//=================================
+		var buttons = document.getElementsByName('collapse_expand');
+		var expanded=true;
+		var collapseButtons = new Array();
+		
+		for (i=0; i < buttons.length; i++) {
+			if (buttons[i].type == "button") {
+				collapseButtons.push(buttons[i]);
+				if (buttons[i].value == "Expand") { // We have up to two buttons: top and bottom
+					expanded=false;
+				}
+			}
+		}
+		
+		//================================= 
+		// END: Get Collapse Buttons
+		//=================================
+		
+		//================================= 
+		// START: Walk through all sections
+		//=================================
+		
+		if(expanded) {
+			collapseAll();
+		}
+		else {
+			expandAll();
+		}
+		
+		//================================= 
+		// END: Walk through all sections
+		//=================================
+		
+		//================================= 
+		// START: Change button title
+		//=================================
+		
+		for (i=0; i < collapseButtons.length; i++) {
+			if (expanded) {
+				collapseButtons[i].value = "Expand";
+			}
+			else {
+				collapseButtons[i].value = "Collapse";
+			}
+		}
+		
+		//================================= 
+		// END: Change button title
+		//=================================
+	}
+	
+	function collapseAll() {
+		var imgs = document.getElementsByTagName('img');
+		for (var i = 0; i < imgs.length; i++) {
+			var img = imgs[i];
+			if(img.className == 'hideListButton'){
+				img.className ='showListButton';
+				img.alt = img.title = 'Show Section - ' + img.name;
+			}
+		}
+		
+		var divs = document.getElementsByClassName('pbSubsection');
+		for (var i = 0; i < divs.length; i++) {
+			var div = divs[i];
+			div.style.display = 'none';
+		}	
+
+	}
+	
+	
+	function expandAll() {
+		var imgs = document.getElementsByTagName('img');
+		for (var i = 0; i < imgs.length; i++) {
+			var img = imgs[i];
+			if(img.className == 'showListButton'){
+				img.className ='hideListButton';
+				img.alt = img.title = 'Hide Section - ' + img.name;
+			}
+		}
+		
+		var divs = document.getElementsByClassName('pbSubsection');
+		for (var i = 0; i < divs.length; i++) {
+			var div = divs[i];
+			div.style.display = 'block';
+		}
+	}
+	</script>
+	<apex:form id="form">
+		<c:CompLoadingPopup />
+		
+		<div id="pageblock">
+		<apex:pageBlock title="Active Objects" id="salutObject" rendered="{!mode!='recalculate'}">
+			<apex:pageMessage summary="{!currentMsg}" severity="error" rendered="{!mode='notEnoughKeys'}"/>
+			<apex:pageMessages />
+			<apex:pageBlockButtons location="top">
+                <input type="button" name="collapse_expand" value="Collapse" title="Collapse" class="btn" onclick="changeCollapse();"/>
+					
+                <apex:commandButton action="{!Edit}" value="Edit" rendered="{!mode='view'}" onclick="showLoading()" oncomplete="endLoading()"  rerender="form"/>
+                <apex:commandButton action="{!Save}" value="Save" rendered="{!mode='edit'}" onclick="showLoading()" oncomplete="endLoading()" rerender="form"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" rendered="{!mode='edit'}" />
+                <apex:commandButton action="{!EditControllingKey}" value="Edit Controlling Keys" rendered="{!mode!='edit'}"/>
+                <apex:commandButton action="{!EditMappingField}" value="Edit Mapping Fields" rendered="{!mode!='edit'}"/>
+                <apex:commandButton action="{!GenerateDefaults}" value="Generate Defaults" onclick="return confirm('{!$Label.ITBsalutations__Setup_Generate_Defaults}');"   rendered="{!mode='view'}"/>
+                <apex:commandButton action="{!Recalculate}" value="Recalculate" rendered="{!mode='view'}" disabled="{!AND(!onContact, !onLead)}" />
+                <apex:commandButton action="{!MarkAllAsCustom}" value="Mark All as Custom" onclick="return confirm('{!$Label.ITBsalutations__Setup_Mark_All_As_Custom}');"  rendered="{!mode='view'}" disabled="{!AND(!onContact, !onLead)}"/>
+                <apex:actionStatus startText=" Loading... " stopText="" id="statusImg">
+				    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Generating Defaults...</span></apex:facet>
+				</apex:actionStatus>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title=" " columns="2">
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="Apply on Contact"/>
+            		<apex:inputCheckbox value="{!onContact}" disabled="{!mode!='edit'}"/>
+            	</apex:pageBlockSectionItem>
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="Apply on Lead" title="Please be sure, the same Controlling Keys and Mapping Fields exist on Lead."/>
+            		<apex:inputCheckbox value="{!onLead}" disabled="{!mode!='edit'}" title="Please be sure, the same Controlling Keys and Mapping Fields exist on Lead."/>
+            	</apex:pageBlockSectionItem>         	
+            
+            	<!--Start added by Guanyun Chen 2012-06-04 -->
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="Default Language"/>
+            		<apex:SelectList size="1" value="{!selectedLanguage}" disabled="{!mode!='edit'}">
+            			<apex:SelectOptions value="{!list_keyOptions}"/>
+            		</apex:SelectList>
+            	</apex:pageBlockSectionItem>
+            	<!--End added by Guanyun Chen 2012-06-04 -->
+				<!--Comment by Xia Tong 2012-06-12 -->
+<!--            	<apex:pageBlockSectionItem >-->
+<!--            		<apex:outputLabel value="Need Copy Fields"/>-->
+<!--            		<apex:inputCheckbox value="{!copyFields}" disabled="{!mode!='edit'}"/>-->
+<!--            	</apex:pageBlockSectionItem>-->
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+		
+		
+		<apex:pageBlock title="Definitions" id="salutAll" rendered="{!mode!='recalculate'}">
+			<apex:pageMessage summary="{!currentMsg}" severity="info" rendered="{!mode='edit'}"/>
+			<apex:pageBlockButtons location="bottom">
+                <input type="button" name="collapse_expand" value="Collapse" title="Collapse" class="btn" onclick="changeCollapse();"/>
+					
+                <apex:commandButton action="{!Edit}" value="Edit" rendered="{!mode='view'}" onclick="showLoadingBottom()" oncomplete="endLoading()"/>
+                <apex:commandButton action="{!Save}" value="Save" rendered="{!mode='edit'}" onclick="showLoadingBottom()" oncomplete="endLoading()"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" rendered="{!mode='edit'}"/>
+            </apex:pageBlockButtons>
+            
+			<apex:repeat value="{!list_salutCombis}" var="sc" rendered="{!mode='view'}">
+				<apex:pageBlockSection title="{!sc.title}" columns="1">
+					<apex:pageBlockTable value="{!sc.cons}" var="item">
+						<apex:column StyleClass="actionColumn">
+							<apex:facet name="header">{!$Label.ITBsalutations__Setup_Action}</apex:facet>
+							<apex:commandLink action="{!DeleteOne}" onclick="confirm('{!$Label.ITBsalutations__Setup_Confirm_AreYouSure}');showLoading();" rendered="{!item.LastName!='0'}"  oncomplete="endLoading()">
+								<apex:image value="{!URLFOR($Resource.ITBsalutations__Icon_Delete)}" ismap="true" title="Delete" />
+								<apex:param name="Key" value="{!sc.firstKeyValue}" assignTo="{!theKey}" />
+								<apex:param name="Identifier" value="{!item.LastName}" assignTo="{!theIdentifier}" />
+							</apex:commandLink>
+						</apex:column>
+						<apex:repeat value="{!list_fieldMappingShow}" var="fm">
+							<apex:column >
+								<apex:facet name="header">{!$ObjectType.Contact.Fields[fm].label}</apex:facet>
+								<apex:outputField value="{!item[fm]}" rendered="{!item.LastName!='0'}"/>
+							</apex:column>
+						</apex:repeat>
+						<apex:repeat value="{!list_fieldMappingOnContact}" var="fmc">
+							<apex:column >
+								<apex:facet name="header">{!$ObjectType.Contact.Fields[fmc].label}</apex:facet>
+								<apex:outputField value="{!item[fmc]}"/>
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:repeat>
+            
+			<apex:repeat value="{!list_salutCombis}" var="sc" rendered="{!mode='edit'}">
+				<apex:pageBlockSection title="{!sc.title}" columns="1" id="salutEdit">
+					<apex:outputPanel >
+						<apex:selectList value="{!sc.numberOfAdd}" size="1">
+							<apex:selectOptions value="{!NumberAddOptions}"/>
+						</apex:selectList>
+						&nbsp;
+						<apex:commandButton action="{!Add}" value="Add" status="statusImg" rerender="salutEdit" onclick="showLoading()" oncomplete="endLoading()">
+							<apex:param name="Test" value="{!sc.firstKeyValue}" assignTo="{!theKey}" />
+						</apex:commandButton>
+						&nbsp;
+						<apex:actionStatus startText=" Loading... " stopText="" id="statusImg">
+						    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription">Loading...</span></apex:facet>
+						</apex:actionStatus>
+					</apex:outputPanel>
+					
+					<apex:pageBlockTable value="{!sc.cons}" var="item">
+						<apex:repeat value="{!list_fieldMappingShow}" var="fm">
+							<apex:column >
+								<apex:facet name="header">{!$ObjectType.Contact.Fields[fm].label}</apex:facet>
+								<apex:inputField value="{!item[fm]}" rendered="{!item.LastName!='0'}"/>
+							</apex:column>
+						</apex:repeat>
+						<apex:repeat value="{!list_fieldMappingOnContact}" var="fmc">
+							<apex:column >
+								<apex:facet name="header">{!$ObjectType.Contact.Fields[fmc].label}</apex:facet>
+								<apex:inputTextarea value="{!item[fmc]}"/>
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:repeat>
+			
+		</apex:pageBlock>
+		
+		<apex:pageBlock title="Recalculate Definitions" id="salutRecalc" rendered="{!mode='recalculate'}">
+			<apex:pageMessage summary="{!currentMsg}" severity="info"/>
+			<apex:pageMessages />
+			<apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!DoRecalculate}" value="Recalculate" oncomplete="endLoading()" onclick="alert('Recalculation runs in batch mode asynchronously, Email(s) will be sent to you after completing batch processing.');showLoading();"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" />
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection >
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="Filter" title="Filter records, on which recalculation will be applied, based on first controlling key."/>
+					<apex:selectList value="{!list_keySelection}" multiselect="true" size="10">
+						<apex:selectOptions value="{!list_keyOptions}"/>
+					</apex:selectList>
+            	</apex:pageBlockSectionItem>
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="Apply on Custom" title="With this option, the recalculation will apply also on customized salutations, which will be overridden with defaults."/>
+            		<apex:inputCheckbox value="{!recalcAll}" 
+            							onclick="if(this.checked) {alert('Please be sure, the recalculation will apply also on customized salutations, which will be overridden with defaults.');}" 
+            							selected="false" 
+            		/>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+		</div>
+	</apex:form>
+</apex:page>

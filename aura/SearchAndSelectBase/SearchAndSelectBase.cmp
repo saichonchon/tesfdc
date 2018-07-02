@@ -1,0 +1,25 @@
+<aura:component extensible="true" controller="APXTConga4.sObjectRecordController" extends="BaseStep">
+  <ltng:require scripts="{!$Resource.APXTConga4__LightningUtils}" />
+  <aura:registerEvent name="stepEvent" type="APXTConga4:StepEvent" />
+  <aura:set attribute="showNav" value="false" />
+  <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+  <aura:attribute name="enabled" type="Boolean" default="False" />
+  <aura:attribute name="searchStr" type="String"/>
+  <aura:attribute name="items" type="Array"/>
+  <aura:attribute name="searchedItems" type="Array"/>
+  <aura:attribute name="itemsToShow" type="Integer" default="100" />
+  <aura:attribute name="showItems" type="Boolean" default="False"/>
+
+  <div class="slds-form-element slds-lookup slds-is-open" data-select="single">
+
+    <div class="slds-form-element">
+    	<lightning:input type="search" label="Sample Record" name="searchInput" aura:id="searchInput" placeholder="Search" onchange="{!c.searchKeyChange}" 
+    	value="{!v.searchStr}" required="true" disabled="{!!v.enabled}" maxlength="80" onfocus="{!c.handleFocus}" onblur="{!c.handleBlur}"/>
+    </div>
+    
+     <!-- contents of the sub component -->
+    <div>{!v.body}</div>
+
+  </div>
+
+</aura:component>

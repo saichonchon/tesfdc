@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Account_Owner__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>(1 OR 2) AND 3 AND 4</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>equals</operation>
+                <value>0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>notEqual</operation>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Account.Territory_L4_code__c</field>
+                <operation>equals</operation>
+                <value>100380,101650,103246</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>notEqual</operation>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>AM Approval</label>
+        <name>AM_Approval</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>adam.duncan@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR (3 AND 4) OR 5) AND 6</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>35</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterThan</operation>
+                <value>USD 0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Account.Territory_L4_code__c</field>
+                <operation>equals</operation>
+                <value>101650,103246</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Regional Approval - AU</label>
+        <name>Regional_Approval_AU</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>mike.frater@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR (3 AND 4) OR 5) AND 6</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>35</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterThan</operation>
+                <value>USD 0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Account.Territory_L4_code__c</field>
+                <operation>equals</operation>
+                <value>100380</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Regional Approval - NZ</label>
+        <name>Regional_Approval_NZ</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>energy_prj_deployment_user@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR (3 AND 4) OR 5) AND 6</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>35</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterThan</operation>
+                <value>&quot;USD 100,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Product_Line_Group__c</field>
+                <operation>equals</operation>
+                <value>Cable Accessories,Connectors &amp; Fittings</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Andrew Thompson Approval</label>
+        <name>Andrew_Thompson_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>royer.zuleta@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR (3 AND 4) OR 5) AND 6</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>35</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterThan</operation>
+                <value>&quot;USD 100,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Product_Line_Group__c</field>
+                <operation>equals</operation>
+                <value>Insulation &amp; Protection</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Royer Zuleta Approval</label>
+        <name>Royer_Zuleta_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>chris.page@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>(1 AND 2) OR (3 AND 4) OR 5</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>35</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterThan</operation>
+                <value>&quot;USD 250,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Chris Page Approval</label>
+        <name>Chris_Page_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>fdrumm@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR 3) AND 4</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Product_Line_Group__c</field>
+                <operation>equals</operation>
+                <value>Cable Accessories</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Frank Drumm Approval</label>
+        <name>Frank_Drumm_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>mark.westen@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR 3) AND 4</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Product_Line_Group__c</field>
+                <operation>equals</operation>
+                <value>Insulation &amp; Protection</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Mark Westen Approval</label>
+        <name>Mark_Westen_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>alan.tse@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>((1 AND 2) OR 3) AND 4</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Product_Line_Group__c</field>
+                <operation>equals</operation>
+                <value>Connectors &amp; Fittings</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Alan Tse Approval</label>
+        <name>Alan_Tse_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>vera.zhang@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>(1 AND 2) OR (3 AND 4) OR 5</booleanFilter>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>lessThan</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>lessThan</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Margin__c</field>
+                <operation>greaterOrEqual</operation>
+                <value>15</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 500,000&quot;</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Vera Zhang</label>
+        <name>Vera_Zhang</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>adam.hinton@te.com.c2s</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Opportunity.Amount</field>
+                <operation>greaterOrEqual</operation>
+                <value>&quot;USD 1,000,000&quot;</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>Adam Hinton Approval</label>
+        <name>Adam_Hinton_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <emailTemplate>Energy_Emails/PRICING_approval_sent_from_SFDC</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>1 AND 2 AND (3 OR 5) AND 4 AND 6</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.Margin__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Account.Territory_L4_code__c</field>
+            <operation>equals</operation>
+            <value>100380,101650,103246</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Status__c</field>
+            <operation>equals</operation>
+            <value>Rejected,Approval Required</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordType</field>
+            <operation>equals</operation>
+            <value>Energy - Sales,Energy - Tender</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Approval_Status__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approved_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_Approval_Date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Your_SFDC_Opportunity_Approval_Approved</name>
+            <type>Alert</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Approval_Status_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Your_SFDC_Opportunity_Approval_Rejected</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>ENG_Approval_Status_Awaiting_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>ENG - DOA - ANZ - old</label>
+    <recallActions>
+        <action>
+            <name>Set_Approval_Status_to_Req</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

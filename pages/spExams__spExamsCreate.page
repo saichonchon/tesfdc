@@ -1,0 +1,886 @@
+<apex:page standardController="spExams__Exam__c" extensions="spExams.SPExamsCreate"> 
+    
+    <c:spExamsCreation_Resources />
+    <c:LookupComponentResources />
+    <c:RaphaelResources />
+    
+    <div id="salesforce_bootstrap">
+        <apex:outputPanel id="apex-message" styleClass="apex-message">
+        	<apex:messages ></apex:messages>
+        </apex:outputPanel>    
+        <div class="container">
+            <div class="container-header hero-unit header-title">
+                <apex:outputPanel id="exam-title-header">
+                	<h4>{!IF(NOT(ISNULL(Exam)), Exam.spExams__Title__c, 'New Exam')}</h4>
+                </apex:outputPanel>
+            </div>
+        </div>
+        
+        <div class="container">
+            <apex:form id="container-form">
+                <apex:actionFunction name="getQuestionsByTopicFromRandom" 
+                                     action="{!getQuestionsByTopic}"
+                                     rerender="apex-message, randomQuestionsPanel">
+                    <apex:param name="topicId" value="" />
+                    <apex:param name="titleSubstring" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="getQuestionsByTopicFromManual" 
+                                     action="{!getQuestionsByTopic}"
+                                     rerender="apex-message, manualQuestionsPanel"
+                                     oncomplete="afterGetQuestionsByTopicFromManual();">
+                    <apex:param name="topicId" value="" />
+                    <apex:param name="titleSubstring" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="setExamInfo"
+                                     action="{!setExamInfo}" 
+                                     rerender="apex-message, exam-info-panel, exam-title-header, recipients-buttons-panel, questions-buttons-panel,  users-exam-panel"
+                                     oncomplete="afterSetExamInfo();">
+                    <apex:param name="admin_Id" value="" />
+                    <apex:param name="exam_title" value="" />
+                    <apex:param name="description" value="" />
+                    <apex:param name="passing_Score" value="" />
+                    <apex:param name="exam_Duration" value="" />
+                    <apex:param name="expiration_date" value="" />
+                    <apex:param name="save_before_next" value="" />
+                    <apex:param name="show_result" value="" />
+                    <apex:param name="exam_type" value="" />
+                    <apex:param name="exam_questions" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="cloneExam" 
+                                     action="{!cloneExam}" 
+                                     oncomplete="afterCloneExam()"
+                                     rerender="apex-message, exam-info-panel, examQuestionsPanel, examQuestionsPanelInModal , recipients-buttons-panel, users-exam-panel">
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="deleteExam" 
+                                     action="{!deleteExam}" 
+                                     oncomplete="afterDeleteExam();"
+                                     rerender="apex-message, exam-title-header, container-form, objects-panel">
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="addRandomQuestion" 
+                                     action="{!addRandomQuestion}" 
+                                     rerender="apex-message, exam-info-panel, randomQuestionsPanel, manualQuestionsPanel, added-question-select-all, examQuestionsPanel, 
+                                               examQuestionsPanelInModal, questions-buttons-panel, questions-buttons-panel-modal, recipients-buttons-panel"
+                                     oncomplete="afterRandomQuestionsAdded();"> 
+                    <apex:param name="topicId" value="" />
+                    <apex:param name="titleSubstring" value="" />                
+                    <apex:param name="randomizerTotalValue" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="addManualQuestion" 
+                                     action="{!addManualQuestion}" 
+                                     rerender="apex-message, exam-info-panel, manualQuestionsPanel, added-question-select-all, examQuestionsPanel, examQuestionsPanelInModal, questions-buttons-panel, 
+                                               questions-buttons-panel-modal, recipients-buttons-panel"
+                                     oncomplete="afterManualQuestionsAdded();">
+                    <apex:param name="manualQuestionsIds" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="addPersonalizedQuestion" 
+                                     action="{!addPersonalizedQuestion}" 
+                                     rerender="apex-message, exam-info-panel, answer-inserted, question-type,  added-question-select-all, examQuestionsPanel, examQuestionsPanelInModal, questions-buttons-panel, 
+                                               questions-buttons-panel-modal, recipients-buttons-panel"
+                                     oncomplete="afterPersonalizedQuestionAdded();">
+                    <apex:param name="questionObjectSerialized" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="deleteSelectedQuestions" 
+                                     action="{!deleteSelectedQuestions}" 
+                                     rerender="apex-message, exam-info-panel, randomQuestionsPanel, manualQuestionsPanel, added-question-select-all, examQuestionsPanel, examQuestionsPanelInModal, 
+                                               questions-buttons-panel, questions-buttons-panel-modal, exam-type-panel, recipients-buttons-panel, users-exam-panel"
+                                     oncomplete="afterDeleteSelectedQuestionAdded()">
+                    <apex:param name="selectedQuestionsIds" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="checkSite" 
+                                     action="{!checkSite}" 
+                                     rerender="apex-message, siteStatusPanel"
+                                     oncomplete="afterCheckSite();">
+                    <apex:param name="answerContent" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="sendEmail" 
+                                     action="{!sendEmail}" 
+                                     rerender="apex-message, apex-message, users-exam-panel"
+                                     oncomplete="afterSendEmail();">
+                    <apex:param name="answerContent" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="getUserExamList" 
+                                     action="{!getUserExamList}" 
+                                     oncomplete="apex-message, adjustTableHeader(); getRecipientsStatus();"
+                                     rerender="recipients-buttons-panel, users-exam-panel">
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="getObjectsNamePagesRecipientExist" 
+                                     action="{!getObjectsNamePagesRecipientExist}" 
+                                     rerender="apex-message, objects-panel">
+                    <apex:param name="ObjectEnhancedNameParam" value="" />                    
+                </apex:actionFunction>
+                
+                <div class="container-body hero-unit header-title">
+                    <div class="form-horizontal well">
+                        <h3>Exam Information</h3><hr class="hr-small"/>
+                        <div id="exam-information-msg" class="alert hide">
+                            <button type="button" class="close" onclick="$('#exam-information-msg').fadeOut()">&times;</button>
+                            <div>Information</div>
+                        </div>
+                        <div class="span12"> 
+                            <div class="control-group">
+                                <label class="control-label">Exam Manager
+                                    <a class="icon-info"  onmouseover="manageTooltip($(this), GLOBAL_messages[32], GLOBAL_messages[33], '-30px')" onmouseout="manageTooltip($(this), 'Close', null, null);">
+                                        <i class="icon-info-sign"></i>
+                                    </a>
+                                </label>
+                                
+                                <div class="controls">
+                                    <c:LookupComponent columnToSelect="Name"
+                                                       columnsToShowParameter="Name"
+                                                       columnsToShowHeadersParameter="Name"
+                                                       objectTypeParameter="User" 
+                                                       columnsToFilterParameter="Name"
+                                                       value="{!Exam.spExams__Admin__c}"
+                                                       text="{!Exam.Admin__r.Name}"
+                                                       hideHeader="true" 
+                                                       uniqueLookupId="exam-admin-input"
+                                                       styleClass="input-xlarge"
+                                                       onChange="GLOBAL_selectedUserId = this.value" />
+                                </div>
+                            </div>
+                        </div>
+                        <apex:outputPanel id="exam-info-panel">
+                            <div class="span12"> 
+                                <div class="control-group">
+                                    <label class="control-label">Title</label>
+                                    <div class="controls">
+                                        <input id="exam-title-input" class="input-xlarge" placeholder="Title" type="text" value="{!exam.Title__c}" maxlength="255"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span12"> 
+                                <div class="control-group">
+                                    <label class="control-label">Description</label>
+                                    <div class="controls">
+                                        <textarea id="exam-description" placeholder="Description" type="text" value="{!exam.Description__c}">{!exam.Description__c}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="span3"> 
+                                <div class="control-group">
+                                    <label class="control-label">Passing Score</label>
+                                    <div class="input-append">
+                                        <input id="passing-score" type="text" maxlength="3" value="{!exam.Passing_Score__c}"/>
+                                        <span class="add-on">%</span>
+                                    </div>
+                                </div>  
+                            </div>
+                            
+                            <div class="span4"> 
+                                <div class="control-group">
+                                    <label class="control-label">Duration</label>
+                                    <div class="input-append">
+                                        <input id="exam-duration" type="text" maxlength="3" value="{!exam.Exam_Duration__c / 60}"/>
+                                        <span class="add-on">min</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label">Expiration Date</label>
+                                    <div class="controls">
+                                    <apex:outputText styleClass="expiration-date-hiden hide" value="{0,date,MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!exam.spExams__Expiration_Date__c}" /> 
+                                    </apex:outputText>
+                                        <input id="expiration-date" class="date span2" type="text" data-date-format="yyyy-mm-dd" value="{!exam.spExams__Expiration_Date__c}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ***************************  Show Results ************************ -->
+                            
+                           	<div class="span2"> 
+                                <div class="control-group controls-relative">
+                                    <label id="show-result" class="checkbox">
+                                        <input type="checkbox" value="{!exam.Show_Results_Upon_Submission__c}"/> Show Results
+                                        <a class="icon-info" onmouseover="manageTooltip($(this), 'Show Results', GLOBAL_messages[43], '-51px')" onmouseout="manageTooltip($(this), 'Close', null, null)">
+                                            <i class="icon-info-sign"></i>
+                                        </a>
+                                    </label>
+                                    <script>
+										var examJS = JSON.parse(JSON.stringify({!ISBLANK(Exam)}));         
+                                        if($('#show-result input').val() == 'true' || examJS == true)
+                                            $('#show-result input').attr('checked', 'checked');
+                                    </script>
+                                </div>
+                            </div>                            
+                            
+                            <div class="span2"> 
+                                <div class="control-group controls-relative">
+                                    <label id="save-before-next" class="checkbox">
+                                        <input type="checkbox" value="{!exam.Save_Before_Next__c}"/> Save Before Next
+                                        <a class="icon-info" onmouseover="manageTooltip($(this), 'Save Before Next', GLOBAL_messages[21], '-31px')" onmouseout="manageTooltip($(this), 'Close', null, null)">
+                                            <i class="icon-info-sign"></i>
+                                        </a>
+                                    </label>
+                                    <script>
+                                        if($('#save-before-next input').val() == 'true')
+                                            $('#save-before-next input').attr('checked', 'checked');
+                                    </script>
+                                </div>
+                            </div>
+                            
+                            <div class="span12"> 
+                                <div class="control-group">
+                                    <a id="btn-save-exam" class="btn pull-right" onclick="setExamInfoJS('Info');">
+                                        <i class="icon-ok"></i> Save
+                                    </a>
+                                    <a id="btn-clone-exam" class="btn pull-right {!IF(ISNULL(Exam) || Exam.Status__c == 'Closed' || ExamQuestionsList.size == 0, 'hide', '')}" onclick="setUpModalAction($(this), GLOBAL_actions[4], GLOBAL_messages[15], GLOBAL_messages[30], 'Clone', 'Cancel');">
+                                        <i class="icon-tags"></i> Clone
+                                    </a>
+                                    <a id="btn-delete-exam" class="btn pull-right {!IF(ISNULL(Exam) || Exam.Status__c == 'Closed', 'hide', '')}" onclick="setUpModalAction($(this), GLOBAL_actions[5], GLOBAL_messages[15], GLOBAL_messages[39], 'Delete', 'Cancel');">
+                                        <i class="icon-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </apex:outputPanel>     
+                    </div>   
+                    
+                    <!-- *************************************** QUESTIONS SECTION ************************************************-->
+                    
+                    <div id="created-questions-container" class="well {!IF(ISNULL(Exam), 'hide', '')}">
+                        <h2 class="question-counter-label">Questions ({!ExamQuestionsList.size})</h2>
+                        <apex:outputPanel id="questions-buttons-panel">
+                            <a id="btn-add-questions" class="btn pull-right {!IF(exam == null, 'disabled', '')}" href="#{!IF(exam != null, 'question-selection', 'x')}" data-toggle="{!IF(Exam != null, 'modal', '')}" exam-created="{!IF(exam == null, 'false', '')}" onclick="GLOBAL_modalStatus = 'Open';">
+                                <i class="icon-list"></i> Add Questions
+                            </a>
+                            <a id="btn-delete-questions" class="btn pull-right disabled disabled" onclick="setUpModalAction($(this), GLOBAL_actions[0], GLOBAL_messages[15], GLOBAL_messages[0], 'Delete', 'Cancel');">
+                                <i class="icon-trash"></i> Delete Selected
+                            </a>
+                        </apex:outputPanel>
+                        <div class="container-inner">
+                            <div class="deleting-question-loading loading">
+                                <table>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle;">
+                                            <img src="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'img/loading.gif')}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <hr class="hr-small"/>
+                            
+                            <apex:outPutPanel id="examQuestionsPanel">
+                                <apex:outputPanel rendered="{!ExamQuestionsList.size == 0}">
+                                    <i>No Questions has been added yet.</i>
+                                </apex:outputPanel>
+                                <div class="exam-questions-body {!IF(ExamQuestionsList.size > 0, '', 'hide')}">
+                                    <apex:outputPanel rendered="{!ExamQuestionsList.size > 0}">
+                                        <c:spExamsQuestions ExamQuestionsListAttr="{!ExamQuestionsList}"/>  
+                                    </apex:outputPanel> 
+                                </div>  
+                            </apex:outPutPanel>
+                        </div>  
+                    </div>
+                    
+                    <!-- *************************************************** EXAM TYPE SECTION *************************************************-->
+                    
+                    <div id="exam-type-panel" class="well {!IF(ISNULL(Exam) || ExamQuestionsList.size == 0, 'hide', '')}">
+                        <apex:outputpanel id="exam-type-panel">
+                            <h3>Exam Type</h3>
+                            <a id="btn-save-exam-type" class="btn pull-right" onclick="setExamInfoJS('Type');">
+                                <i class="icon-ok"></i> Save
+                            </a>
+                            <hr class="hr-small"/>
+                            <div id="exam-type-msg" class="alert hide">
+                                <button type="button" class="close" onclick="$('#exam-type-msg').fadeOut()">&times;</button>
+                                <div>Information</div>
+                            </div>
+                            <div class="controls">
+                                <label id="same-as-questions" class="radio">
+                                    <input type="radio" name="exam-type" onclick="manageExamTypeRadio($(this))"/> All the questions
+                                </label>
+                            </div>  
+                            
+                            <div class="form-inline"> 
+                                <label id="specific-value" class="radio">
+                                    <input type="radio" name="exam-type" onclick="manageExamTypeRadio($(this))"/> A subset of questions
+                                </label>    
+                                <input class="hide" id="exam-question" type="text" maxlength="3" value="{!exam.Exam_Question__c}" num-questions="{!exam.Exam_Question__c}"/>
+                            </div>
+                            <script>
+                            	if(parseInt({!HTMLENCODE(TEXT(ExamQuestionsList.size))})  == 0)
+                            		$('#same-as-questions input, #specific-value input').removeAttr('checked');
+                            	else
+	                            {	
+	                                if({!AND(NOT(ISNULL(Exam)), Exam.Type_According_to_No_of_Question__c == 'Same No')})
+	                                    $('#same-as-questions input').attr('checked', 'checked');
+	                                else if({!AND(NOT(ISNULL(Exam)), Exam.Type_According_to_No_of_Question__c == 'Specific value')})
+	                                {
+	                                    $('#specific-value input').attr('checked', 'checked');
+	                                    $('#exam-question').removeClass('hide');
+	                                }  
+	                            }     
+                                
+                            </script>
+                        </apex:outputpanel>  
+                    </div>
+                    
+                    <!-- *************************************************** RECIPIENTS SECTION *************************************************-->
+                    
+                    <div id="recipients-panel" class="well {!IF(ISNULL(Exam) || ExamQuestionsList.size == 0 || ISNULL(Exam.Type_According_to_No_of_Question__c), 'hide', '')}">
+                        <apex:outputPanel id="recipients-buttons-panel">
+                        	<apex:outputText id="siteStatusPanel" styleClass="siteStatusPanel hide" value="{!SiteStatus}"></apex:outputText>
+                            <h2 class="">Recipients ({!IF(ISNULL(UserExamList), '0', UserExamList.size)})</h2>
+                            <a id="btn-send-emails" class="btn pull-right {!IF(UserExamList.size == 0 || ExamQuestionsList.size == 0, 'disabled', '')}" onclick="checkSiteJS($(this));  /* setUpModalAction($(this), GLOBAL_actions[3], GLOBAL_messages[15], GLOBAL_messages[17], 'Send Email', 'Cancel');*/">
+                                <i class="icon-envelope"></i> Send Email
+                            </a>
+                            <a id="btn-add-recipients" class="btn pull-right {!IF(ISNULL(exam), 'disabled', '')}" onclick="showAddMoreRecipientsModal();">
+                                <i class=" icon-list"></i> Add Recipients
+                            </a>
+                        </apex:outputPanel>
+                        <hr class="hr-small"/>
+                        <div class="alert alert-info msg-inner hide collapsed">
+                            <button class="close" type="button" onclick="manageMsgInner('Hide')">
+                                ×
+                            </button>
+                            <a class="alert-link">Email was sent to each recipient successfully.</a>
+                        </div>
+                        <div class="users-exam">
+                            <apex:outputPanel id="users-exam-panel">
+                                <i class="{!IF(NOT(ISNULL(UserExamList)) && UserExamList.size == 0, '', 'hide')}">No recipients has been added yet.</i>
+                                <div class="dinamic-page table-header  {!IF(UserExamList.size == 0, 'hide', '')}">
+                                    <table class="dinamic-page-table table-header">
+                                        <tr>
+                                            <th width="40%">
+                                                Name
+                                            </th>
+                                            <th width="30%">
+                                                Email
+                                            </th>
+                                            <th width="20%">
+                                                Status
+                                            </th>
+                                            <th width="10%">
+                                                Score
+                                            </th>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="dinamic-page">  
+                                    <table class="dinamic-page-table">
+                                        <apex:repeat value="{!UserExamList}" var="userExam">
+                                            <tr class="object-selected-row item-recipient">
+                                                <td width="40%">
+                                                    <a onclick="window.open('/{!userExam.Id}','_inblank')">{!userExam.First_Name__c + ' ' + userExam.Last_Name__c}</a>
+                                                </td>
+                                                <td width="30%">
+                                                    {!userExam.Email__c}
+                                                </td>
+                                                <td width="20%" class="recipient-status">{!userExam.Status__c}</td>
+                                                <td width="10%" class="recipient-progress">
+                                                    <span class="progress-container">
+                                                        <div class="progress">
+                                                            <span>{!ROUND(userExam.Score__c, 0)}%</span>
+                                                            <div class="bar" style="width: {!ROUND(userExam.Score__c, 0)}%;"></div>
+                                                        </div>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>  
+                                    </table>
+                                </div>
+                            </apex:outputPanel> 
+                        </div>  
+                    </div>
+                </div>
+                
+                <!--  *************************************************** MODALS ********************************************************  -->
+                    
+                <!-- *********************************************  ADD QUESTIONS MODAL *************************************************  -->
+                
+                <div id="question-selection" class="modal fade hide"  aria-hidden="false" data-backdrop="static">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 id="modal-comment-approval-name">Questions</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div id="content">
+                                
+                                <!-- ****************************************** TABS IN CONTENT ****************************************** -->
+                                <div id="tabs-container">
+                                    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                                        <li class="active" onclick="switchTabMode('Help');"><a href="#help-tab" data-toggle="tab">Help  <i class="icon-question-sign"></i></a></li>
+                                        <li onclick="switchTabMode('Personalized');"><a href="#personalized-tab" data-toggle="tab">Create Question</a></li>
+                                        <li onclick="switchTabMode('Manual');"><a href="#manual-tab" data-toggle="tab">Manual</a></li>
+                                        <li onclick="switchTabMode('Random');"><a href="#random-tab" data-toggle="tab">Random</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        
+                                        <!-- ********************************** PERSONALIZED TAB ****************************************** -->
+                                        
+                                        <div class="tab-pane active" id="help-tab">
+                                            <div class="form-horizontal">   
+                                                <h2>Adding Questions Help</h2>
+                                                <hr class="hr-small"/>
+                                                <div class="span8">
+                                                    <li>
+                                                        <b>Create Question</b> 
+                                                    </li>
+                                                        &emsp;&emsp;Use this TAB to create a new question and its answers.<br/><br/>
+                                                    <li>
+                                                        <b>Manual</b> 
+                                                    </li>
+                                                        &emsp;&emsp;Use this TAB to select existing questions with the ability to filter by content or by topic.<br/><br/>
+                                                    <li>
+                                                        <b>Random</b> 
+                                                    </li>
+                                                        &emsp;&emsp;Use this TAB to add random pre-existing questions by topic to the exam.<br/><br/>
+                                                </div>
+                                                <div class="span8"></div>
+                                            </div>
+                                        </div>      
+                                        
+                                        <!-- ********************************** PERSONALIZED TAB ****************************************** -->
+                                        
+                                        <div class="tab-pane" id="personalized-tab">
+                                            <div class="form-horizontal">   
+                                                <h2>Create Custom Questions</h2>
+                                                <hr class="hr-small"/>
+                                                
+                                                <div id="personalized-tab-msg" class="alert hide msg-inner">
+                                                    <button type="button" class="close" onclick="$('#personalized-tab-msg').fadeOut()">&times;</button>
+                                                    <div>Information</div>
+                                                </div>
+                                                
+                                                <div class="span7"> 
+                                                    <div class="control-group">
+                                                        <label class="control-label">Topic</label>
+                                                        <div class="controls">
+                                                            <apex:selectList styleClass="select-topic create-question-select-topic" size="1"> 
+                                                                <apex:selectOptions value="{!TopicSelectOptionList}"/>
+                                                            </apex:selectList>  
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="span12"> 
+                                                    <div class="control-group">
+                                                        <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+                                                            <div class="btn-group">
+                                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="icon-font"></i><b class="caret"></b></a>
+                                                                <ul class="dropdown-menu">
+                                                                    <li><a data-edit="fontName Serif" style="font-family:'Serif'">Serif</a></li>
+                                                                    <li><a data-edit="fontName Sans" style="font-family:'Sans'">Sans</a></li>
+                                                                    <li><a data-edit="fontName Arial" style="font-family:'Arial'">Arial</a></li>
+                                                                    <li><a data-edit="fontName Arial Black" style="font-family:'Arial Black'">Arial Black</a></li>
+                                                                    <li><a data-edit="fontName Courier" style="font-family:'Courier'">Courier</a></li>
+                                                                    <li><a data-edit="fontName Courier New" style="font-family:'Courier New'">Courier New</a></li>
+                                                                    <li><a data-edit="fontName Comic Sans MS" style="font-family:'Comic Sans MS'">Comic Sans MS</a></li>
+                                                                    <li><a data-edit="fontName Helvetica" style="font-family:'Helvetica'">Helvetica</a></li>
+                                                                    <li><a data-edit="fontName Impact" style="font-family:'Impact'">Impact</a></li>
+                                                                    <li><a data-edit="fontName Lucida Grande" style="font-family:'Lucida Grande'">Lucida Grande</a></li>
+                                                                    <li><a data-edit="fontName Lucida Sans" style="font-family:'Lucida Sans'">Lucida Sans</a></li>
+                                                                    <li><a data-edit="fontName Tahoma" style="font-family:'Tahoma'">Tahoma</a></li>
+                                                                    <li><a data-edit="fontName Times" style="font-family:'Times'">Times</a></li>
+                                                                    <li><a data-edit="fontName Times New Roman" style="font-family:'Times New Roman'">Times New Roman</a></li>
+                                                                    <li><a data-edit="fontName Verdana" style="font-family:'Verdana'">Verdana</a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="icon-text-height"></i>&nbsp;<b class="caret"></b></a>
+                                                                <ul class="dropdown-menu">
+                                                                    <li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+                                                                    <li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+                                                                <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <a class="btn" data-edit="bold" title="" data-original-title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
+                                                                <a class="btn" data-edit="italic" title="" data-original-title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
+                                                                <a class="btn" data-edit="strikethrough" title="" data-original-title="Strikethrough"><span class="icon-strikethrough"><s>S</s></span></a>
+                                                                <a class="btn" data-edit="underline" title="" data-original-title="Underline (Ctrl/Cmd+U)"><span class="icon-underline"><u>U</u></span></a>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <a class="btn" data-edit="insertunorderedlist" title="" data-original-title="Bullet list"><i class="icon-list"></i></a>
+                                                                <a class="btn" data-edit="insertorderedlist" title="" data-original-title="Number list"><i class="icon-list-alt"></i></a>
+                                                                <a class="btn" data-edit="outdent" title="" data-original-title="Reduce indent (Shift+Tab)"><i class="icon-indent-left"></i></a>
+                                                                <a class="btn" data-edit="indent" title="" data-original-title="Indent (Tab)"><i class="icon-indent-right"></i></a>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-info" data-edit="justifyleft" title="" data-original-title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"></i></a>
+                                                                <a class="btn" data-edit="justifycenter" title="" data-original-title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"></i></a>
+                                                                <a class="btn" data-edit="justifyright" title="" data-original-title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"></i></a>
+                                                                <a class="btn" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"></i></a>
+                                                            </div>
+                                                            
+                                                            <!--
+                                                            <div class="btn-group">
+                                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="icon-resize-full"></i></a>
+                                                                <div class="dropdown-menu input-append add-url">
+                                                                    <inputclass="span2" placeholder="URL" type="text" data-edit="createLink"/>
+                                                                    <button class="btn" type="button">Add</button>
+                                                                </div>
+                                                                <a class="btn" data-edit="unlink" title="" data-original-title="Remove Hyperlink"><i class="icon-file"></i></a>
+                                                            </div>
+                                                          	-->
+                                                          	
+                                                            <div class="btn-group">
+                                                                <a class="btn" title="" id="pictureBtn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+                                                                <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 41px; height: 30px;"/>
+                                                            </div>
+                                                            <div class="btn-group">
+                                                                <a class="btn" data-edit="undo" title="" data-original-title="Undo (Ctrl/Cmd+Z)"><i class="undo-icon"></i></a>
+                                                                <a class="btn" data-edit="redo" title="" data-original-title="Redo (Ctrl/Cmd+Y)"><i class="redo-icon"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- ***************************************************  END EDITOR TOOLS ***************************************************  -->
+                                                        <div id="editor" class="personalized-question-content" contenteditable="true">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="span5"> 
+                                                    <div class="control-group">
+                                                        <label class="control-label">Question Type</label>
+                                                        <div class="controls">
+                                                            <apex:inputfield id="question-type" styleClass="question-type" value="{!question.spExams__Type__c}" onchange="manageQuestionType($(this).val());"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="span12 table-questions-container"> 
+                                                    <apex:outputPanel id="answer-inserted">
+                                                        <div class="dinamic-page table-header">
+                                                            <table class="dinamic-page-table table-header">
+                                                                <tr>
+                                                                    <th class="th-centered" width="3%">
+                                                                    	
+                                                                    </th>   
+                                                                    <th width="92%">
+                                                                        Answers
+                                                                    </th>
+                                                                    <th width="4%">
+                                                                        
+                                                                    </th>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div class="dinamic-page personalized-table-answers-container">  
+                                                            <table class="dinamic-page-table">
+	                                                            <tr id="tr-new-row-inserted-template" class="tr-new-row-inserted hide">
+	                                                                <th width="3%" class="table-header-th th-centered input-container">
+	                                                                    <input class="correct-answer-selection" name="correct-answer-single" type="radio" value=""/>
+                                                                     	<input class="correct-answer-selection hide" type="checkbox" value=""/>
+	                                                                </th>
+	                                                                <td width="92%" class="td-template-value"></td>
+	                                                                <td class="th-centered th-middle" width="4%">
+	                                                                    <a class="btn btn-danger th-centered" onclick="$(this).closest('tr').remove();">
+	                                                                       <i class="icon-minus icon-white"></i>
+	                                                                    </a>
+                                                                    </td>
+	                                                            </tr>
+	                                                            
+	                                                            <tr class="tr-add-new-row">
+	                                                                <th width="3%" class="table-header-th th-centered th-correct-selection-new-answer">
+	                                                                    <input class="checkbox-question correct-answer-selection" name="correct-answer-single" type="radio"/>
+                                                                    	<input class="checkbox-question correct-answer-selection hide" type="checkbox"/>
+	                                                                </th>
+	                                                                <td>
+	                                                                    <div width="92%" class="control-group new-question-content">
+	                                                                        <textarea id="new-question-content" class="inside-table" rows="1" maxlength="32768"></textarea>
+	                                                                    </div>  
+	                                                                </td>
+	                                                                <td class="th-centered th-middle" width="4%">
+	                                                                    <a class="btn btn-success th-centered" onclick="addNewAnswerHtml();">
+	                                                                        <i class="icon-plus icon-white"></i>
+	                                                                    </a>
+                                                                    </td>
+	                                                            </tr>
+                                                            </table>
+                                                        </div>
+                                                    </apex:outputPanel>     
+                                                </div>
+                                            </div>                                  
+                                        </div>
+                                        
+                                        <!-- ********************************** RANDOM TAB ****************************************** -->
+                                        
+                                        <div class="tab-pane" id="random-tab">
+                                            <div class="form-horizontal">   
+                                                <h2>Select Topic and Number of Questions</h2>
+                                                <hr class="hr-small"/>
+                                                
+                                                <div id="random-tab-msg" class="alert hide msg-inner">
+                                                    <button type="button" class="close" onclick="$('#random-tab-msg').fadeOut()">&times;</button>
+                                                    <div>Information</div>
+                                                </div>
+                                                
+                                                <div class="span7"> 
+                                                    <div class="control-group">
+                                                        <label class="control-label">Topic</label>
+                                                        <div class="controls">
+                                                            <apex:selectList styleClass="select-topic random-select-topic" size="1" onchange="getQuestionsByTopicFromRandom($(this).val(), ''); $('#questions-by-topic').focus();"> 
+                                                                <apex:selectOptions value="{!TopicSelectOptionList}"/>
+                                                            </apex:selectList>  
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="span3"> 
+                                                    <div class="control-group">
+                                                        <label class="control-label">No of Questions</label>    
+                                                        <div class="controls">
+                                                            <input id="questions-by-topic" type="text" maxlength="3"></input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                 <div class="span4"> 
+                                                    <div class="control-group controls-relative">
+                                                        <apex:outputPanel id="randomQuestionsPanel" >
+                                                            <input type="hidden" id="error-random-question" value="{!validRandomQuestion}"/>
+                                                            <label class="control-label remaining-for-this-topic">Left in topic: 
+                                                                <b><apex:outputText styleClass="randomQuestionsPanel" value="{!QuestionsByTopic.size}"/></b>
+                                                                <a class="icon-info"  onmouseover="optimizeParentsForToolTip($(this), true); manageTooltip($(this), GLOBAL_messages[26], GLOBAL_messages[27], '-10px')" onmouseout="manageTooltip($(this), 'Close', null, null); optimizeParentsForToolTip($(this), false);">
+                                                                    <i class="icon-info-sign"></i>
+                                                                </a>
+                                                            </label>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+                                            </div>                                  
+                                        </div>
+                                        
+                                        <!-- ********************************** MANUAL TAB ****************************************** -->
+                                        
+                                        <div class="tab-pane" id="manual-tab">
+                                            <div class="form-horizontal">   
+                                                <h2>Select Topic and Questions</h2>
+                                                <hr class="hr-small"/>
+                                                
+                                                <div id="manual-tab-msg" class="alert hide msg-inner">
+                                                    <button type="button" class="close" onclick="$('#manual-tab-msg').fadeOut()">&times;</button>
+                                                    <div>Information</div>
+                                                </div>
+                                                
+                                                <div class="span4"> 
+                                                    <div class="control-group">
+                                                        <label id="find-label" class="control-label">Find</label>
+                                                        <div class="controls">
+                                                            <input id="find-input" type="text" onkeyup="getQuestionsByTopicFromManual($('.manual-select-topic').val(), $(this).val());"></input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="span9"> 
+                                                    <div class="control-group">
+                                                        <label id="find-topic" class="control-label">Topic</label>
+                                                        <div class="controls">
+                                                            <apex:selectList styleClass="select-topic manual-select-topic" size="1" onchange="getQuestionsByTopicFromManual($(this).val(), $('#find-input').val());">
+                                                                <apex:selectOptions value="{!TopicSelectOptionList}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="span12 table-questions-container">
+                                                    <apex:outputPanel id="manualQuestionsPanel">
+                                                        <input type="hidden" id="error-manual-question" value="{!validManualQuestion}"/>
+                                                        <span class="header-info">{!IF(QuestionsByTopic.size != 0, 'Displaying only questions not added yet to the exam', 'No questions found')}</span>
+                                                        
+                                                        <div class="dinamic-page table-header  {!if(QuestionsByTopic.size == 0, 'hide', '')}">
+                                                            <table class="dinamic-page-table table-header">
+                                                                <tr>
+                                                                    <th width="10px">
+                                                                        <input class="question-selected-all" type="checkbox" onchange="manageSelectAllCheckboxes($(this).parents('.dinamic-page').parent().find('.question-selected'), $(this).attr('checked'), 'Questions Selection');"/>
+                                                                    </th>   
+                                                                    <th width="70%">
+                                                                        Questions
+                                                                    </th>
+                                                                    <th>
+                                                                        Type
+                                                                    </th>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div class="dinamic-page">  
+                                                            <table class="dinamic-page-table">
+                                                                <apex:repeat value="{!QuestionsByTopic}" var="question">
+                                                                    <tr>
+                                                                        <th width="10px" class="table-header-th">
+                                                                            <input class="question-selected" type="checkbox" value="{!question.Id}" select-all-item="question-selected-all" onclick="manageSelectionSelectAll($(this));"/>
+                                                                        </th>
+                                                                        <td width="70%" class="td-questionContent">
+                                                                            <input type="hidden" class="questionContentOutputText" value="{!question.Content__c}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            {!question.spExams__Type__c}
+                                                                        </td>
+                                                                    </tr>
+                                                                </apex:repeat>  
+                                                            </table>
+                                                        </div>
+                                                    </apex:outputPanel> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>    
+                                <!-- ***********************************************************  END TABS CONTENT ***************************************************  -->
+                                
+                                <!-- *****************************************************  CREATED QUESTIONS CONTENT ************************************************  -->
+                                 
+                                <div id="created-questions-container-modal" class="well hide">
+                                    <h2 class="question-counter-label">Questions ({!ExamQuestionsList.size})</h2>
+                                    <apex:outputPanel id="questions-buttons-panel-modal">
+                                        <a id="btn-delete-questions-modal" class="btn pull-right disabled" onclick="setUpModalAction($(this), GLOBAL_actions[0], GLOBAL_messages[15], GLOBAL_messages[0], 'Delete', 'Cancel');">
+                                            <i class="icon-trash"></i> Delete Selected
+                                        </a>
+                                    </apex:outputPanel>
+                                    <div class="container-inner">
+                                        <div class="deleting-question-loading loading">
+                                            <table>
+                                                <tr>
+                                                    <td style="text-align: center; vertical-align: middle;">
+                                                        <img src="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'img/loading.gif')}"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <hr class="hr-small"/>
+                                        <apex:outputPanel id="examQuestionsPanelInModal">
+                                            <apex:outputPanel rendered="{!ExamQuestionsList.size == 0}">
+                                                <i>No Questions has been added yet.</i>
+                                            </apex:outputPanel>
+                                            <div class="exam-questions-body-modal {!IF(ExamQuestionsList.size > 0, '', 'hide')}">
+                                                <c:spExamsQuestions ExamQuestionsListAttr="{!ExamQuestionsList}"/>          
+                                            </div>                              
+                                        </apex:outputPanel>
+                                    </div>      
+                                </div>
+                                <!-- *************************************************** END CREATED QUESTIONS CONTENT *************************************************** -->
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="modal-footer">
+                        <a id="btn-view-created-questions" type="button" class="btn pull-left" onclick="manageViewCreatedQuestions();">
+                            <i class="icon-list"></i>&nbsp;<span>View Created ({!ExamQuestionsList.size})</span>
+                        </a>
+                        <a id="btn-close-create-questions" type="button" class="btn" data-dismiss="modal" onclick="GLOBAL_modalStatus = 'Close';">
+                            <i class="icon-remove"></i><span> Close</span>
+                        </a>
+                        <a id="btn-add-questions-modal" type="button" class="btn" onclick="manageAddQuestions();">
+                            <i class="icon-plus"></i>&nbsp;<span>Add Question</span>
+                        </a>
+                    </div>
+                </div>
+            </apex:form>
+                
+            <!-- ************************************************* END ADD QUESTIONS MODAL *************************************************  -->
+            
+            
+            <!-- *************************************************** CONFIRM ACTION MODAL *************************************************** -->
+                
+            <div class="modal fade" id="confirm-action" data-backdrop="static" action="">
+                <div class="modal-header">
+                   <button class="close" data-dismiss="modal" type="button" onclick="$('#confirm-action').attr('action', 'Cancel');manageModalActionCancel();">&times;</button>
+                   <div class="confirm-action-header"><h4>Confirm Delete</h4></div>
+                </div>
+                
+                <div class="modal-body">
+                    <p id="action-modal-message">
+                        Message
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a id="btn-modal-action-cancel" class="btn" data-dismiss="modal" onclick="$('#confirm-action').attr('action', 'Cancel');manageModalActionCancel();">
+                        Cancel 
+                    </a>
+                    <a id="btn-modal-action-execute" class="btn" onclick="manageModalActionExecute();">
+                        Delete
+                    </a>
+                </div>
+            </div>
+            
+             
+            <!-- ***************************************************  MANAGE RECIPIENTS MODAL ***************************************************  -->
+            
+            <div id="manage-more-recipients" class="modal hide fade">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="getUserExamList()">&times;</button>
+                    <h4>Add Recipients</h4>
+                </div>
+                <div class="modal-body">
+                    <apex:outputPanel id="objects-panel">
+                        <div class="tabbable tabs-left">
+                            <ul class="nav nav-tabs pages-name-object-tab">
+                                <apex:variable value="{!0}" var="objectCounter"/>
+                                <apex:repeat value="{!PageNameObjectMap}" var="PageNameObject">
+                                    <li class="{!IF(PageNameObjectMap[PageNameObject].Name == ObjectEnhancedName || PageNameObjectMap[PageNameObject].Name + '__c' == ObjectEnhancedName, 'active', '')}"><a href="#tab-enhanced-content" data-toggle="tab" value="{!PageNameObjectMap[PageNameObject].Name}" onclick="getObjectsNamePagesRecipientExistJS($(this))">{!PageNameObjectMap[PageNameObject].Label}</a></li>
+                                    <apex:variable value="{!objectCounter + 1}" var="objectCounter"/>
+                                </apex:repeat> 
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab-enhanced-content">
+                                    <apex:outputPanel rendered="{!ObjectEnhancedName != 'No Recipient Page' && ObjectEnhancedName != 'User'}"> 
+                                        <iframe id="iframe-enhanced-objects" src="/apex/SPExamsRecipientList?ot={!ObjectEnhancedName}&ol={!ObjectEnhancedLabel}&eid={!exam.Id}&nd={!OrgDomain}&op={!OrgPrefix}&pp={!IF(PageInsideDomain, '1', '0')}" width="100%" height="350"/>
+                                    </apex:outputPanel> 
+                                    <apex:outputPanel rendered="{!ObjectEnhancedName != 'No Recipient Page' && ObjectEnhancedName == 'User'}">
+                                        <iframe id="iframe-enhanced-user" src="/apex/SPExamsUserlistview?ot={!ObjectEnhancedName}&ol={!ObjectEnhancedLabel}&eid={!exam.Id}&nd={!OrgDomain}&op={!OrgPrefix}&pp={!IF(PageInsideDomain, '1', '0')}" width="100%" height="350"/>
+                                    </apex:outputPanel> 
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel> 
+                </div>
+                <div class="modal-footer">
+                    <a id="btn-close-enhanced-list-modal" href="#" class="btn" data-dismiss="modal" onclick="getUserExamList()"><i class="icon-remove"></i> Close</a>
+                </div>
+            </div>
+            
+            
+            <!-- *************************************************** TOOLTIP ***************************************************  -->
+            <div class="tooptip-container hide">
+                <div class="popover in  bottom" style="display: block;">
+                    <div class="arrow"></div>
+                    <div class="popover-title">
+                        <span>
+                            Title
+                        </span>
+                    </div>
+                    <div class="popover-content">Tooltip</div>
+                </div>
+            </div>
+        </div>
+                
+    </div>
+    <script>
+    	
+    	
+        var GLOBAL_exam = '{!Exam.id}';
+        var GLOBAL_questionsCreated = parseInt({!HTMLENCODE(TEXT(ExamQuestionsList.size))});
+        var GLOBAL_selectedUserId = '{!HTMLENCODE(exam.Admin__c)}';
+        getRecipientsStatus();
+        
+        $(window).load(function () {
+            //getObjectsNamePagesRecipientExist();
+        });
+        
+        $(document).ready(function() {
+        	
+            adjustTableHeader();
+            refreshInfoComponents();
+            if({!AND(NOT(ISNULL(Exam)), Exam.Status__c == 'Closed')})
+                lockExam();
+            deleteSelectOption('.question-type', '--None--');   
+            convertQuestionsTextToHtml();
+        });
+        
+        
+    </script>
+</apex:page>

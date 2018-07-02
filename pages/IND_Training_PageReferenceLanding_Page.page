@@ -1,0 +1,111 @@
+<apex:page standardController="Training__c" extensions="IND_PageReferenceLanding_Pagecontroller" showHeader="false" sidebar="false" action="{!ExamPage}" >
+  
+  
+  
+  
+<script type="text/javascript">
+function confirmsubmit() {
+      return confirm('Are you sure you want to Submit?');
+}
+
+</script>
+
+
+
+<style>
+
+.headerLogo {
+    position:absolute;
+    top:0;
+    right:0;
+    border:none;
+    margin-right:70px;
+    margin-top:10px;
+    
+}
+.header {
+   
+   height:60px;   
+   background:#EEEEEE;
+   background-image: url('http://imageserverdev.tycoelectronics.com/imageserver/tyco/myte/img/header_myTE.jpg'); 
+   width:100%;
+  
+    
+    }
+a.websiteName, a.websiteName:visited {
+    margin-left:30px;
+    font:normal 30px/70px Georgia;
+    color:#006c8b;
+    text-decoration:none;
+}
+
+a.websiteName:hover {
+    color:#006c8b;
+    text-decoration:underline;
+}
+
+
+
+<!--**************************************************************************************************************************************************************************************************************************************************-->
+
+
+
+
+ 
+</style>
+
+
+
+<apex:form >  
+
+
+ 
+ 
+  <apex:panelGrid styleClass="header">
+   <a class="websiteName">Exam Portal for your Active Trainings</a>
+                <a target="_blank" href="http://www.TE.com">
+                   <img class="headerLogo" width="150" height="60" src="{!$Resource.TELogo}"/>
+                    
+                </a>
+  </apex:panelGrid>
+  
+  <apex:panelGrid style="background-color:#58ACFA;width:100%;text-align:center;">
+      <apex:outputLabel value="Hello {!$User.FirstName} {!$User.LastName}, Salesforce Industrial Team Welcomes you to the Exam Portal " style="font-family:aerial;color:#FFFFFF;font-size:20px;text-align:center;" ></apex:outputLabel>
+  </apex:panelGrid>
+    
+ 
+ <apex:panelGrid style="background-color:#FA5858;width:100%; text-align:center;" rendered="{!if(Trid!=null && oldlrr.Number_of_time_Attempted_Exam__c!=null,true,false)}"> <!--oldlrr.Number_of_time_Attempted_Exam__c>2-->
+ <apex:outputLink value="/home/home.jsp" Style="text-align:center;font-style:italic;font-weight:bold;font-size:150%;color:blue" >GO to Salesforce Homepage</apex:outputlink>
+                 
+ </apex:panelGrid>  
+  
+<apex:messages style="color:Blue; font-family:verdana; font-size:220%;"/> 
+
+  <apex:outputPanel id="jsvalues" >
+         
+            <table>
+           <tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr>
+           <tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr>
+           <tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr><tr>&nbsp;</tr>
+           
+           <tr>
+           <div style="text-align:center; color:'blue'; vertical-align:Middle;"  >
+              <apex:outputText value="Maximum attempt for the Exam is 3, We are unable to configure new Exam for you either the training is expired or inactive or your maximum attempt is reached....." Style="font-weight:bold;font-size:200%;" styleClass="aDiff"></apex:outputText> <br/>
+              <center> <img src="{!$Resource.IND_Training_Loadimage}"/></center>
+           </div>
+           </tr> 
+          </table> 
+         </apex:outputPanel>
+
+ 
+
+   
+   
+   
+   
+ <!--///////////////////////////////////////////////////////////Training Without date slots////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->   
+  
+
+ 
+ </apex:form> 
+</apex:page>

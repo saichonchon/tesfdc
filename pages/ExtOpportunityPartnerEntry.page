@@ -1,0 +1,112 @@
+<apex:page standardcontroller="Opportunity_Partner__c" extensions="ExtOpportunityPartnerEntry" title="{!$ObjectType.Opportunity_Partner__c.label}">
+    <apex:sectionHeader title="{!$ObjectType.Opportunity_Partner__c.label}" subtitle="{!subtitle}"/>
+   	<apex:stylesheet value="{!$Resource.OpportunityPartManageCss}"/>
+   	<apex:includeScript value="{!URLFOR($Resource.JQueryIE9)}" />
+	<apex:includeScript value="{!URLFOR($Resource.OpportunityPartManageJS)}" />
+	
+    <apex:form id="partnerform"> 
+      	
+        <apex:PageMessages id="message"/>   
+        
+        <apex:pageBlock title="Opportunity Partner List"> 
+        
+        	<apex:pageBlockButtons location="top">
+        		<apex:selectList value="{!addAmount}" size="1">
+		            <apex:selectOptions value="{!Amounts}"/>
+		        </apex:selectList>
+		        
+		        <apex:commandButton value="{!$Label.Add}" action="{!AddPartners}" status="toStatus" rerender="partnerform"/>
+                <apex:commandButton value="{!$Label.SaveButton}" action="{!SaveAndReturn}" status="toStatus" rerender="partnerform"/>
+                <apex:commandButton value="{!$Label.Save_and_More}" action="{!QuickSave}" status="toStatus" rerender="partnerform" />  
+                <apex:commandButton value="{!$Label.CancelButton}" action="{!cancel}"/>
+                <apex:actionFunction name="checkDuplicatePartner" action="{!checkDuplicatePartner}" rerender="partnerform" status="toStatus">
+                	<apex:param name="selectedIndex" assignTo="{!selectedIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionStatus stopText="" id="toStatus">
+                    <apex:facet name="start">&nbsp;<img src="/img/loading.gif"/></apex:facet>
+                </apex:actionStatus> 
+            </apex:pageBlockButtons>
+            
+            
+            <apex:pageBlockTable value="{!list_oppyPartners}" var="op">
+            
+            	<apex:column headerValue="{!$Label.Delete}" >
+					<apex:commandLink style="border:0px" action="{!DeleteOpportunityPartner}" rerender="partnerform" status="toStatus">
+						 <apex:param name="deletePartnerIndex" value="{!op.index}" assignTo="{!deleteParterIndex}" />
+						 <apex:image url="{!$Resource.iconDelete}" />						
+					</apex:commandLink>
+												
+				</apex:column>
+				
+            	<apex:column headerValue="{!$ObjectType.Opportunity_Partner__c.fields.Account__c.label}" >
+					
+					<apex:inputText disabled="true" id="lookup_Name" value="{!op.accountName}" />
+		   			<apex:inputText id="lookup_Id" value="{!op.opc.Account__c}" style="display:none;" /> 
+										   			
+					<apex:image url="/s.gif" 
+			   			id="lookup"
+			   			styleClass="lookupIcon"  
+			   			onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+			   			onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+			   			title="Search" 
+			   			onclick="OpenAccountLookupPopup('{!op.opc.Id}', this.id, '{!op.index}')"
+		   			/>
+				</apex:column>
+					
+				<apex:column headerValue="{!$ObjectType.Opportunity_Partner__c.fields.Partner_Role__c.label}" >
+<!--					<apex:inputField value="{!op.opc.Partner_Role__c}"></apex:inputField>-->
+					<apex:outputPanel layout="block" styleClass="requiredInput">
+        				<div class="requiredBlock"></div>
+						<apex:inputField value="{!op.opc.Partner_Role__c}"></apex:inputField>
+					</apex:outputPanel>
+					
+				</apex:column>
+						
+				<apex:column StyleClass="actionColumn" headerValue="{!$ObjectType.Opportunity_Partner__c.fields.Primary__c.label}">
+					<apex:inputCheckbox value="{!op.opc.Primary__c}" id="radiocheckbox" onclick="RadioCancelOther(this.id);"/>
+				</apex:column>
+				
+				<apex:column headerValue="{!$ObjectType.Opportunity_Partner__c.fields.Allocation__c.label}" >
+					<apex:inputField value="{!op.opc.Allocation__c}"></apex:inputField>
+				</apex:column>
+				
+			</apex:pageBlockTable>
+			
+			<input type="hidden" id="selectedAccountId" value=""></input>
+        	<input type="hidden" id="selectedAccountName" value=""></input>
+        	<input type="hidden" id="selectedOppyPartnerId" value=""></input>
+        	<input type="hidden" id="selectedIndex" value=""></input>
+        </apex:pageBlock> 
+        
+            
+        <!--
+        <apex:pageBlock title="{!subtitle}"> 
+            <apex:pageBlockSection collapsible="false" columns="1" id="inputform">
+                <apex:inputField value="{!oppPartner.Account__c}" />
+                <apex:inputField value="{!oppPartner.Partner_Role__c}"/>
+                <apex:inputField value="{!oppPartner.Primary__c}"/>
+                <apex:inputField value="{!oppPartner.Allocation__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>   
+   		-->
+	<script>
+	
+		itb_j$=jQuery.noConflict();
+		function closePopUp(){
+			popRemove();
+		}
+		
+		function RadioCancelOther(selfId){
+        	var list_check = document.getElementsByTagName("input"); 
+            for(var i=0; i<list_check.length; i++){
+                if(list_check[i].type=="checkbox" && list_check[i].id != selfId ){
+                    list_check[i].checked = false;
+                }
+            }
+            
+        }	
+	</script>
+	<div id="status_window_account" style="align:center;margin-left:auto;margin-right:auto"> </div>
+    <div id="mask"></div> 
+    </apex:form>
+</apex:page>

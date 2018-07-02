@@ -1,0 +1,968 @@
+<!--
+Author:           Buwen Guo <buwen.guo@capgemini.com>
+Description:      Visualforce page to manage the Opportunity_Part__c records.
+
+Controller class: ExtOppyPartDiscounting
+Test Class:       ExtOppyPartDiscountingTest
+History
+2017-08-11        Buwen Guo <buwen.guo@capgemini.com> created 
+-->
+<apex:page standardController="Opportunity" action="{!init}" extensions="ExtOppyPartDiscounting"  sidebar="false"  showHeader="false" title="Discounting Opportunity Parts" docType="html-5.0">
+    <!-- action="{!init}" -->
+    <apex:includeScript value="{!$Resource.JQ}" />
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS0232, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/base64.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/csv2arr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/jschardet.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.csv2arr,'lib/papaparse.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.ExtOppyPartDiscountingJS)}" /> 
+    <apex:includeScript value="{!URLFOR($Resource.XlsJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.XlsxJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.ShimJS)}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ExtOppyPartDiscountingCSS)}" />
+    
+    <script>
+    var oppyId = "{!oppy.Id}";
+    var str_oppyId = "{!$currentPage.parameters.id}";
+    var list_priceBreak = JSON.parse('{!str_priceBreakJson}');
+    var oppyCurrency = "{!oppy.currencyIsoCode}";
+    var isDisplayEditAndAddButton = "{!displayEditAndAddButton}";
+    var isdisplayNoEditMessage = "{!displayNoEditMessage}";
+    var currentOppyERP = "{!oppy.ERP_For_Pricing__c}";
+    var X = XLS; 
+    var XX = XLSX;
+    var rABS = false;
+    var thousandSep = "{!str_thousandSep}";
+    var decimalSep = "{!str_decimalSep}";
+    var isAmpics = "{!displayAmpicsButton}";
+    var maxSeqNumber = "{!dec_currMaxSeqNumber}";
+    var usdExchangeRate = "{!dec_exchangeRate}";
+    var saveDataLimit = 100;
+    Visualforce.remoting.timeout = 120000; // Set timeout at page level
+    var set_needCalloutPartIds = new Array();
+    
+    function reloadPage() {
+        var isError = $("#input_hidden_ishasError").val();
+        if(isError == 'true'){
+        	hideLoading();
+            return false;
+        }
+
+        parent.location.href='/'+str_oppyId;
+    }
+    
+    function addOppyPartNewOnComplete(){
+    	var isError = $("#input_hidden_isAddError").val();
+    	console.log('addOppyPartNewOnComplete::'+isError);
+    	if (isError == 'success') {
+    		methodsAfterRender();
+    		hideLoading();
+    		//reloadPage();
+    	} else if(isError != null && isError.indexOf('Error:') > -1){
+    		hideLoading();
+        }
+    }
+    
+    function addOppyPartNewNoRefreshOnComplete(){
+    	var isError = $("#input_hidden_isAddError").val();
+    	console.log('addOppyPartNewNoRefreshOnComplete::'+isError);
+    	if (isError == 'success') {
+    		showPopup();
+    	} else if(isError != null && isError.indexOf('Error:') > -1){
+    		hideLoading();
+        }
+    }
+    
+    function remoteActionUpload(str_oppyId,array_data,totalData,isNeedDelete){
+        var str_json = JSON.stringify(array_data);
+        console.log('uploading::',array_data.length);
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ExtOppyPartDiscounting.uploadOppyPartsRemoteAction}',
+            str_oppyId,str_json,isNeedDelete,
+            function(result, event){
+                console.log('result:::',result,event);
+                if (result != null && result.indexOf('success:') > -1) {
+                    var needCalloutIdsJson = result.substring(8);
+                    console.log("Save Success!",needCalloutIdsJson);
+                    var arrayIds = JSON.parse(needCalloutIdsJson);
+                    console.log("Callout Ids::",arrayIds);
+                    for(var i=0; i<arrayIds.length;i++){
+                    	set_needCalloutPartIds.push(arrayIds[i]);
+                    }
+                    if(totalData!= null && totalData.length > 0){
+                        if(totalData.length > saveDataLimit){
+                            var temp_partItems = [];
+                            for(var i=0;i<saveDataLimit;i++) {
+                                temp_partItems.push(totalData[i]);
+                            }
+                            var left_partItems = [];
+                            for(var i=saveDataLimit;i<totalData.length;i++) {
+                                left_partItems.push(totalData[i]);
+                            }
+                            remoteActionUpload(oppyId,temp_partItems,left_partItems,false);
+                        }else{
+                            remoteActionUpload(oppyId,totalData,new Array(),false);
+                        }
+                    }else{
+                        if(set_needCalloutPartIds.length > 0){
+                    		remoteActionCallout();
+                    	}else{
+                        	reloadPage();
+                        }
+                    }
+                } else if(result != null && result.indexOf('Error:') > -1){
+                    showError(result.substring(6));
+                } else {
+                    showError(event.message);
+                }
+            }, 
+            {escape: false, timeout: 120000}
+        );
+    }
+    
+    function remoteActionSave(str_oppyId,array_data,totalData){
+        var str_json = JSON.stringify(array_data);
+        console.log('saving::',array_data.length);
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ExtOppyPartDiscounting.saveOppyPartsRemoteAction}',
+            str_oppyId,str_json,
+            function(result, event){
+                console.log('result:::',result,event);
+                if (result != null && result.indexOf('success:') > -1) {
+                	var needCalloutIdsJson = result.substring(8);
+                    console.log("Save Success!",needCalloutIdsJson);
+                    var arrayIds = JSON.parse(needCalloutIdsJson);
+                    console.log("Callout Ids::",arrayIds);
+                    for(var i=0; i<arrayIds.length;i++){
+                    	set_needCalloutPartIds.push(arrayIds[i]);
+                    }
+                    if(totalData!= null && totalData.length > 0){
+                        if(totalData.length > saveDataLimit){
+                            var temp_partItems = [];
+                            for(var i=0;i<saveDataLimit;i++) {
+                                temp_partItems.push(totalData[i]);
+                            }
+                            var left_partItems = [];
+                            for(var i=saveDataLimit;i<totalData.length;i++) {
+                                left_partItems.push(totalData[i]);
+                            }
+                            remoteActionSave(oppyId,temp_partItems,left_partItems);
+                        }else{
+                            remoteActionSave(oppyId,totalData,new Array());
+                        }
+                    }else{
+                    	if(set_needCalloutPartIds.length > 0){
+                    		remoteActionCallout();
+                    	}else{
+                        	reloadPage();
+                        }
+                    }
+                } else if(result != null && result.indexOf('Error:') > -1){
+                    showError(result.substring(6));
+                } else {
+                    showError(event.message);
+                }
+            }, 
+            {escape: false, timeout: 120000}
+        );
+    }
+    
+    function action_deleteAllParts(){
+        console.log('deleting::',oppyId);
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ExtOppyPartDiscounting.deleteAllParts}',
+            oppyId, 
+            function(result, event){
+                console.log('result:::',result,event);
+                if (result == 'success') {
+                    uploadCsvOppyPartWithRemoteAction2();
+                } else if(result != null && result.indexOf('Error:') > -1){
+                    showError(result.substring(6));
+                } else {
+                    showError(event.message);
+                }
+            }, 
+            {escape: true}
+        );
+    }
+    
+    
+    function remoteActionCallout(){
+        console.log('Callout::',set_needCalloutPartIds);
+        var jsonIds = JSON.stringify(set_needCalloutPartIds);
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ExtOppyPartDiscounting.sendCallout}',
+            oppyId, jsonIds,
+            function(result, event){
+                console.log('result:::',result,event);
+                if (result == 'success') {
+                    reloadPage();
+                } else if(result != null && result.indexOf('Error:') > -1){
+                    showError(result.substring(6));
+                } else {
+                    showError(event.message);
+                }
+            }, 
+            {escape: false}
+        );
+    }
+    
+    </script>
+    
+    <!-- Loading panel start -->
+    <div id="Loading_Panel" style="display:none;z-index:9999 !important;">
+        <div style="position:fixed;" class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--medium" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Loading panel end -->  
+    
+    
+    <apex:form id="myForm">
+    <input type="hidden" id="input_hidden_ishasError" value="{!isSaveHasError}"/>
+    
+    
+    <apex:outputPanel id="message">
+    	<input type="hidden" id="input_hidden_isAddError" value="{!addPartsNewActionResult}"/>
+        <apex:pageMessages id="pagemessages"  /> 
+    </apex:outputPanel>
+
+    
+    <div style="{!IF(hasTerritory == false,'','display:none;')}">
+        <div style="margin-left: auto; margin-right: auto;width: 400px;font-size: 16px;margin-top: 200px;">
+            Please enter the name of the territory owner.<br/>
+            <input type="text" id="input_enteredTerritoryName" value="{!str_searchTerritoryName}"/>
+            <button style="font-size:13px;" onclick="searchSalesHierarchy();return false;">Search</button><br/><br/>
+            
+            <div id="div_select_territory" style="display:none;">
+                Please select a territory.<br/>
+                <select id="select_territoryPicklist" style="height:25px;width:200px;margin-top:1px;" onchange="chooseTerritory(this)">
+                    <apex:repeat value="{!list_territorySearchResult}" var="op">
+                        <option value="{!op.Id}">{!op.name}</option>
+                    </apex:repeat>
+                </select>
+                <button style="font-size:13px;" onclick="saveSalesHierarchy();return false;">Save</button><br/><br/>
+            	<input id="hid_list_territory" type="hidden" value="{!str_listTerritory}"/>
+            </div>
+        </div>  
+        <input type="hidden" id="input_hidden_isSaveTerritoryhasError" value="{!str_SaveTerritoryResult}"/>
+    </div>   
+    
+    <div style="{!IF(hasTerritory == true && hasERPforPricing == false,'','display:none;')}">
+        <div style="margin-left: auto; margin-right: auto;width: 600px;font-size: 16px;margin-top: 200px;">
+            Please select the ERP used for pricing for this opportunity.
+            <br/><br/>
+            <select id="select_ERPforPricingPicklist" style="height:28px;margin-top:1px;">
+                <apex:repeat value="{!set_ERPforPricingPicklistOptions}" var="op">
+                    <option value="{!op}">{!op}</option>
+                </apex:repeat>
+            </select>
+            
+            <button onclick="saveERPforPricingPicklist();return false;">Save</button>
+        </div>
+        <input type="hidden" id="input_hidden_isSaveERPhasError" value="{!str_ERPforPricingResult}"/>
+        <apex:inputHidden value="{!str_ERPforPricingValue}" id="hidden_param_ERPforPricingValue" />
+    </div> 
+    
+    <div style="{!IF(hasTerritory == true && hasERPforPricing == true,'','display:none;')}">
+        <div id="div_quantity_onMousePopupWindow" style="display:none;z-index:2;" class="div_onMousePopupWindow_class pbBody">
+            <div id="div_quantity_infoMessage" style="text-align:center;">
+                
+            </div>
+        </div>
+        
+        <div id="div_onMousePopupWindow" style="display:none;z-index:2;" class="div_onMousePopupWindow_class pbBody">
+            <div id="div_salesprice_errorMessage" style="text-align:center;">
+                
+            </div>
+            <table class="list table_onMousePopupWindow_class table_salesprice_onmousepopup" cellpadding="0" cellspacing="0">
+                <thead class="">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Qty</div>
+                        </th>
+                        <!-- <th class="headerRow" scope="col" colspan="1">
+                            <div>High End</div>
+                        </th>
+                         -->
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Unit Price</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_priceBreak">
+                    <apex:repeat value="{!list_priceBreakForPage}" var="item" id="theRepeatForPriceBreak">
+                        <tr class="dataRow tr_priceBreakForPage_class" dir="{!item.Opportunity_Part__c}" >
+                            <td class="dataCell">
+                                {!item.Quantity_low_end__c}
+                            </td>
+                            <!--<td class="dataCell">
+                                {!item.Quantity_high_end__c}
+                            </td>
+                            -->
+                            <td class="dataCell">
+                                {!item.List_Price__c}
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_pastQuotesWindow" style="display: none;z-index:2;" class="row-actions div_onMousePopupWindow_class pbBody">
+            <span class="span_pastQuotesWindow_close" onclick="hideQuoteLineItem();">X</span>
+            <table class="list table_onMousePopupWindow_class" cellpadding="0" cellspacing="0">
+                <thead class="">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>RFQ #</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Sold To</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>End User</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Qty</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Price</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_pastQuotesWindow">
+                     
+                </tbody>
+            </table>
+        </div>
+        <div id="div_InventoriesWindow" style="display: none;z-index:2;" class="div_onMousePopupWindow_class pbBody">
+            
+            <div id="MOQ_InventoriesWindow" style="font-style: italic;text-align:center;">
+                
+            </div>
+            <div id="leadtime_InventoriesWindow" style="font-style: italic;text-align:center;">
+                
+            </div>
+            <div id="QtyNettable_InventoriesWindow" style="font-style: italic;text-align:center;">
+                
+            </div>
+            <div id="PackQuantity_InventoriesWindow" style="font-style: italic;text-align:center;">
+                
+            </div>
+            <div id="MaxQuantity_InventoriesWindow" style="font-style: italic;text-align:center;">
+                
+            </div>
+            <table class="list table_onMousePopupWindow_class slds-hide" cellpadding="0" cellspacing="0">
+                <thead class="">
+                    <tr class="headerRow">
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Location</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Qty</div>
+                        </th>
+                        <th class="headerRow" scope="col" colspan="1">
+                            <div>Status</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_InventoriesWindow">
+                     
+                </tbody>
+            </table>
+        </div>
+        <apex:pageBlock >
+            <div style="height:390px;overflow-x: hidden;overflow-y: scroll;">
+                <apex:variable value="{!1}" var="rowNum" id="rowNum_index"/>
+                <apex:pageBlockTable id="myTable" columnsWidth="3%,7%,9%,15%,7%,5%,9%,5%,8%,6%,6%,6%,6%,8%" value="{!list_oppyPartItems}" var="oppyPartItem" styleclass="fixme">
+                
+                
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;text-align:center;','text-align:center;')}" dir="{!oppyPartItem.str_partName}">
+                    	<apex:facet name="header">
+                            Del<br/><input type="checkbox" style="margin-left: 3px;" class="checkbox_deleteAll_class" onchange="selectAllCheckbox(this)"/>
+                        </apex:facet>
+                        <a style="display:none;" onclick="delOppyPart(this)" class="delIconCss">x</a>
+                        <input type="checkbox" class="checkbox_delete_class" onchange="delBtnControll()"/>
+                        <input type="hidden" id="listOppyPart_index" value="{!rowNum}" />
+                    </apex:column>
+                    
+                    <!-- 
+                    <apex:column style="display:none;" headerValue="Seq #" dir="{!oppyPartItem.str_partName}">
+                        <span class="outputData_class">{!oppyPartItem.oppyPart.Seq_No__c}</span>
+                        <input class="inputData_class slds-input slds-hide" type="number" style="min-width: 35px;max-width: 50px;padding-left: 0px;padding-right: 0px;" min="0" max="999.99" value="{!oppyPartItem.oppyPart.Seq_No__c}" />
+                    </apex:column>
+                     -->
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}" headerValue="Status">
+                        <span class="outputData_class">{!oppyPartItem.oppyPart.Status__c}</span>
+                        <apex:inputField styleclass="inputData_class slds-input slds-hide selectStatus" style="padding:0px 2px 0px 2px;" value="{!oppyPartItem.oppyPart.Status__c}" />
+                        <input type="hidden" class="initValue" value="{!oppyPartItem.oppyPart.Status__c}"/>
+                    </apex:column>
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}" dir="{!oppyPartItem.str_oppyPartId}" styleClass="td_partNumber_class" onmouseout="hideInventoriesWindow()">
+                        <apex:facet name="header">
+							<apex:outputText value="{!IF($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c,'Part Number<br/>RPN Part Number','Part Number')}" escape="false"></apex:outputText>
+                        </apex:facet>
+                        <!-- <apex:outputText value="{!oppyPartItem.str_partNumber}" /> -->
+                        <apex:outputText value="{!oppyPartItem.str_partName}" /> <br></br>
+                        <apex:outputText value="{!oppyPartItem.oppyPart.Part__r.RPN_Part__c}" rendered="{!$Setup.PartSeracgSettings__c.Enable_Rpn_Search__c}"/>
+                        <div style="display:none;">
+                            <span class="span_moqAndLeadtime_class" data-qtynettable="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','Unknown',oppyPartItem.oppyPart.Availability__c)}" data-line="{!rowNum}" data-moq="{!oppyPartItem.oppyPart.Min_Order_Qty__c}" data-leadtime="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','Unknown',oppyPartItem.oppyPart.Lead_Time__c)}" data-packqty="{!oppyPartItem.oppyPart.Primary_Pack_Quantity__c}" data-maxqty="{!oppyPartItem.oppyPart.Max_Qty_in_Standard_lead_time__c}"></span>
+                            <apex:repeat value="{!oppyPartItem.list_inventories}" var="item" >
+                                <span class="span_listInventories_class" data-line="{!rowNum}" data-moq="{!oppyPartItem.oppyPart.Min_Order_Qty__c}" data-leadtime="{!oppyPartItem.oppyPart.Lead_Time__c}" data-id="{!item.id}" data-name="{!item.Location__c}"  data-quantity="{!item.QOH_Nettable__c}" data-status="{!item.Status__c}"></span>
+                            </apex:repeat>
+                        </div>
+                    </apex:column> 
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}" dir="{!oppyPartItem.oppyPart.Part__c}">
+                        <apex:facet name="header">
+                            Part Name
+                        </apex:facet>
+                        <span>
+                            <a style="{!IF(oppyPartItem.isDisplayComment,'display:none;','')}" href="/{!oppyPartItem.oppyPart.Part__c}" target="_blank">{!oppyPartItem.str_partDescription}</a>
+                        </span>
+                        <input type="hidden" id="oppyPart_Id" value="{!oppyPartItem.str_oppyPartId}"/>
+                        <input type="hidden" id="part_Id" value="{!oppyPartItem.oppyPart.Part__c}"/>
+                        <input type="hidden" id="part_status" value="{!oppyPartItem.oppyPart.Status__c}"/>
+                        <input type="hidden" id="part_Name" value="{!oppyPartItem.oppyPart.Part__r.Name}"/>
+                        <input type="hidden" id="export_Name" value="{!IF(oppyPartItem.isDisplayComment,oppyPartItem.oppyPart.Proposal_Part_Name_Override__c,oppyPartItem.str_partDescription)}"/>
+                        <input type="hidden" id="part_MarginCS75" value="{!oppyPartItem.oppyPart.Margin_CS75__c}"/>
+                        <div style="{!IF(oppyPartItem.isDisplayComment,'','display:none;')}">
+                            <input class="inputData_class slds-input slds-hide" id="part_comments" value="{!IF(oppyPartItem.oppyPart.Proposal_Part_Name_Override__c == null || oppyPartItem.oppyPart.Proposal_Part_Name_Override__c == '',oppyPartItem.str_partDescription,oppyPartItem.oppyPart.Proposal_Part_Name_Override__c)}" style="padding-left: 8px;padding-right: 8px;"/>
+                            <span class="outputData_class needCalcWidth" style="word-break:normal;width:auto;display:block;white-space:pre-wrap;word-wrap:break-word;overflow: hidden;">{!IF(oppyPartItem.oppyPart.Proposal_Part_Name_Override__c == null || oppyPartItem.oppyPart.Proposal_Part_Name_Override__c == '',oppyPartItem.str_partDescription,oppyPartItem.oppyPart.Proposal_Part_Name_Override__c)}</span>
+                        </div>
+                    </apex:column>
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}" styleClass="listPriceCss td_quantity_class" headerValue="Qty" onmouseout="hideQuantityPopupWindow()">
+                        <span class="span_quantity_infoMessage_class" data-message="{!oppyPartItem.oppyPart.Information_Message__c}"></span>
+                        <input type="hidden" class="initValueQty" value="{!oppyPartItem.oppyPart.Quantity__c}"/>
+                        <input type="hidden" class="initValueUOM" value="{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}"/>
+
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.isCostPart == false,true,false)}">
+                            <input class="inputData_class slds-input slds-hide qty" value="{!oppyPartItem.oppyPart.Quantity__c}" data-moq="{!oppyPartItem.oppyPart.Min_Order_Qty__c}" onchange="updateQuantity();" type="number" style="padding-left: 8px;padding-right: 8px;"/>
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.Quantity__c}</span>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.isCostPart == true,true,false)}">
+                            <input class="inputData_class slds-input slds-hide qty" value="1" type="number" disabled="disabled" style="padding-left: 8px;padding-right: 8px;"/>
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.Quantity__c}</span>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.isProposalPart == true && oppyPartItem.isCostPart == false,true,false)}">
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}</span>
+                            <apex:inputField styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}"/>
+                            <!-- 
+                            <apex:selectList styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.NDR_Item_Price_UOM__c}" size="1">
+                                <apex:selectOption itemValue="PC" itemLabel="PC"/>
+                                <apex:selectOption itemValue="MR" itemLabel="MR"/>
+                                <apex:selectOption itemValue="BX" itemLabel="BX"/>
+                                <apex:selectOption itemValue="KG" itemLabel="KG"/>
+                                <apex:selectOption itemValue="M" itemLabel="M"/>
+                                <apex:selectOption itemValue="FT" itemLabel="FT"/>
+                                <apex:selectOption itemValue="EA" itemLabel="EA"/>
+                                <apex:selectOption itemValue="BOX" itemLabel="BOX"/>
+                            </apex:selectList>
+                             --> 
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.isProposalPart == false && oppyPartItem.isCostPart == true,true,false)}" style="display:none;">
+                            <!-- <span class="outputData_class">{!oppyPartItem.oppyPart.NDR_Item_Price_UOM__c}</span> -->
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}</span>
+                            <apex:inputField styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}"/>
+                            <!-- 
+                            <apex:selectList styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}" size="1">
+                                <apex:selectOption itemValue="PC" itemLabel="PC"/>
+                                <apex:selectOption itemValue="MR" itemLabel="MR"/>
+                                <apex:selectOption itemValue="BX" itemLabel="BX"/>
+                                <apex:selectOption itemValue="KG" itemLabel="KG"/>
+                                <apex:selectOption itemValue="M" itemLabel="M"/>
+                                <apex:selectOption itemValue="FT" itemLabel="FT"/>
+                                <apex:selectOption itemValue="EA" itemLabel="EA"/>
+                                <apex:selectOption itemValue="BOX" itemLabel="BOX"/>
+                            </apex:selectList> 
+                             -->
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.isProposalPart == false && oppyPartItem.isCostPart == false,true,false)}" >
+                            <!-- <span class="outputData_class">{!oppyPartItem.oppyPart.NDR_Item_Price_UOM__c}</span> -->
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}</span>
+                            
+                            <apex:selectList disabled="true" styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.Code_for_unit_of_measurement__c}" size="1">
+                                <apex:selectOption itemValue="PC" itemLabel="PC"/>
+                                <apex:selectOption itemValue="MR" itemLabel="MR"/>
+                                <apex:selectOption itemValue="BX" itemLabel="BX"/>
+                                <apex:selectOption itemValue="KG" itemLabel="KG"/>
+                                <apex:selectOption itemValue="M" itemLabel="M"/>
+                                <apex:selectOption itemValue="FT" itemLabel="FT"/>
+                                <apex:selectOption itemValue="EA" itemLabel="EA"/>
+                                <apex:selectOption itemValue="BOX" itemLabel="BOX"/>
+                            </apex:selectList> 
+                            
+                        </apex:outputPanel>
+                    </apex:column>
+                    
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <apex:facet name="header">
+                            Cost
+                        </apex:facet>
+                        <input type="hidden" class="initValueIsDummy" value="{!oppyPartItem.isDummyPart}"/>
+                        <input type="hidden" class="initValueDummy" value="{!oppyPartItem.oppyPart.Standard_Cost__c}"/>
+                        
+                        <span style="{!IF(oppyPartItem.isDummyPart,'','display:none;')}">
+                            <span class="outputData_class">
+                                <apex:outputText styleClass="span_output_cost_class" value="{0, number, 0.00}" >
+                                    <apex:param value="{!IF(oppyPartItem.oppyPart.Standard_Cost__c == null,0,oppyPartItem.oppyPart.Standard_Cost__c)}" />
+                                </apex:outputText>
+                            </span>
+                            <input class="inputData_class slds-input slds-hide dummy" style="padding:0px 2px 0px 2px;" onchange="costInputValidator(this);" value="{!oppyPartItem.oppyPart.Standard_Cost__c}" />
+                        </span>
+                        <span style="{!IF(oppyPartItem.isDummyPart,'display:none;','')}">
+                            <apex:outputText styleClass="span_output_cost_class" value="{0, number, 0.00}" >
+                                <!-- <apex:param value="{!oppyPartItem.dec_priceBookCost}" /> -->
+                                <apex:param value="{!IF(oppyPartItem.oppyPart.Standard_Cost__c == null,0,oppyPartItem.oppyPart.Standard_Cost__c)}" />
+                            </apex:outputText>
+                        </span>
+                    </apex:column>
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}" styleClass="td_listPrice_class" onmouseout="mouseLeave()" dir="{!oppyPartItem.oppyPart.Id}" >
+                        <apex:facet name="header">
+                            Cust Std Price<br/>{!oppy.currencyIsoCode}
+                        </apex:facet>
+                        
+                        <apex:outputPanel style="{!IF(oppyPartItem.oppyPart.ERP_Pricing_Status__c == 'Awaiting Data','','display:none;')}">
+                        	<apex:outputPanel style="{!IF(oppyPartItem.oppyPart.Error_Message__c == null || oppyPartItem.oppyPart.Error_Message__c == '','','display:none;')}">
+                            	<span style="color: red;">---</span>
+                            </apex:outputPanel>
+                            
+                        	<apex:outputPanel style="{!IF(oppyPartItem.oppyPart.Error_Message__c == null || oppyPartItem.oppyPart.Error_Message__c == '','display:none;','')}">
+                            	<span class="span_output_salesPrice_class" style="color: red;">0.00</span>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel style="{!IF(oppyPartItem.oppyPart.ERP_Pricing_Status__c != 'Awaiting Data','','display:none;')}">
+	                        <apex:outputText styleClass="span_output_salesPrice_class" style="{!IF(oppyPartItem.oppyPart.Error_Message__c == null || oppyPartItem.oppyPart.Error_Message__c == '','','display:none;')}" value="{0, number, 0.00}" >
+	                            <apex:param value="{!IF(oppyPartItem.oppyPart.Sales_Price__c == null,0,oppyPartItem.oppyPart.Sales_Price__c)}" />
+	                        </apex:outputText>
+	                        
+	                        <apex:outputPanel style="{!IF(oppyPartItem.oppyPart.Error_Message__c == null || oppyPartItem.oppyPart.Error_Message__c == '','display:none;','')}">
+	                            <span class="span_output_salesPrice_class" style="color: red;">0.00</span>
+	                        </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                        <input type="hidden" id="sales_price"           value="{!oppyPartItem.oppyPart.Sales_Price__c}"/>
+                        <input type="hidden" id="cs75_cost"             value="{!oppyPartItem.dec_priceBookCost}"/>
+                        <input type="hidden" id="competitor_name"       value="{!oppyPartItem.oppyPart.NDR_Competitor_Name__c}"/>
+                        <input type="hidden" id="competitor_partNumber" value="{!oppyPartItem.oppyPart.NDR_Competitor_Part_Number__c}"/>
+                        <input type="hidden" id="competitor_price"      value="{!oppyPartItem.oppyPart.Competitor_Price__c}"/>
+                        <input type="hidden" class="price_error_message"    value="{!oppyPartItem.oppyPart.Error_Message__c}"/>
+                    </apex:column>
+                    
+                    
+                    <apex:column headerValue="Per" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                    	<input type="hidden" class="initValuePer" value="{!oppyPartItem.oppyPart.NDR_Item_Price_Per__c}"/>
+                        <apex:outputPanel style="{!IF(oppyPartItem.isProposalPart == true || oppyPartItem.isCostPart == true,'display:none;','')}">
+                            <span class="outputData_class">{!oppyPartItem.oppyPart.NDR_Item_Price_Per__c}</span>
+
+                            <apex:selectList styleClass="inputData_class slds-input slds-hide" style="padding:0px 0px 0px 0px;" value="{!oppyPartItem.oppyPart.NDR_Item_Price_Per__c}" size="1">
+                                <apex:selectOption itemValue="1" itemLabel="1"/>
+                                <apex:selectOption itemValue="10" itemLabel="10"/>
+                                <apex:selectOption itemValue="100" itemLabel="100"/>
+                                <apex:selectOption itemValue="1000" itemLabel="1000"/>
+                                <apex:selectOption itemValue="10000" itemLabel="10000"/>
+                            </apex:selectList> 
+                            
+                        </apex:outputPanel>
+                        
+                    </apex:column>
+                    
+                    <!-- 
+                    <apex:column rendered="{!displayAmpicsButton}" >
+                        <apex:facet name="header">
+                            Cost<br/>
+                        </apex:facet>
+                        <apex:outputText value="{0, number, 0.00}" >
+                            <apex:param value="{!oppyPartItem.dec_priceBookCost}" />
+                        </apex:outputText>
+                        <input type="hidden" id="sales_price" value="{!oppyPartItem.oppyPart.Sales_Price__c}"/>
+                        <input type="hidden" id="cs75_cost" value="{!oppyPartItem.dec_priceBookCost}"/>
+                    </apex:column>
+                     -->
+                     
+                    <!-- <apex:column styleClass="OfferedPriceCss" style="{!IF(oppyPartItem.isDOAAproved,'color:green',IF(oppyPartItem.isRequestedPriceLower,'color:red','color:green'))}"> -->
+                    <apex:column styleClass="OfferedPriceCss" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <apex:facet name="header">
+                            Target Price<br/>{!oppy.currencyIsoCode}
+                        </apex:facet>
+                        <input type="hidden" class="initValuePrice" value="{!oppyPartItem.partOfferedPrice}"/>
+                        
+                        <!-- Added by Buwen Guo 2017-10-27 from email:Issues point 5(if the OppPart has an RSQ#, then you shouldn't let the user edit the TargetPrice of the OppPart) -->
+                        <!-- Modified by Tangyong Li 2017-12-17 -->
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.str_RFQuoteLineItemId == null,true,false)}" >
+                        <!-- <input data-line="{!rowNum}" class="inputData_class target_inputData_class slds-input slds-hide" value="{!oppyPartItem.oppyPart.Offered_Price__c}" onchange="syncTargetPrice();verifyOfferedPrice();populateOffsetPercentOnBlur(this);" style="padding-left: 8px;padding-right: 8px;"/> -->
+                            <input data-line="{!rowNum}" class="inputData_class target_inputData_class slds-input slds-hide targetPrice" value="{!oppyPartItem.partOfferedPrice}" onchange="targetPriceInputValidator(this);" style="padding-left: 8px;padding-right: 8px;"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(oppyPartItem.str_RFQuoteLineItemId == null,false,true)}" >
+                        <!-- <input data-line="{!rowNum}" class="inputData_class target_inputData_class slds-input slds-hide" disabled="disabled" value="{!oppyPartItem.oppyPart.Offered_Price__c}" onchange="syncTargetPrice();verifyOfferedPrice();populateOffsetPercentOnBlur(this);" style="padding-left: 8px;padding-right: 8px;"/> -->
+                            <input data-line="{!rowNum}" class="inputData_class target_inputData_class slds-input slds-hide targetPrice" disabled="disabled" value="{!oppyPartItem.partOfferedPrice}" onchange="targetPriceInputValidator(this);" style="padding-left: 8px;padding-right: 8px;"/>
+                        </apex:outputPanel>
+                        <apex:outputText styleClass="targetPriceOutputText_class" html-data-line="{!rowNum}" value="{0, number, 0.00}" >
+                            <apex:param value="{!IF(oppyPartItem.oppyPart.Offered_Price__c == null,0,oppyPartItem.oppyPart.Offered_Price__c)}" />
+                        </apex:outputText>
+                        <span data-line="{!rowNum}" class="span_offsetPercent_class" data-bookprice="{!IF(oppyPartItem.oppyPart.ERP_Pricing_Status__c != 'Awaiting Data',oppyPartItem.oppyPart.Sales_Price__c,0)}" data-targetprice="{!oppyPartItem.partOfferedPrice}"></span>
+                    </apex:column>
+                    
+                    <apex:column styleClass="td_totalPrice_class" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <apex:facet name="header">
+                            Target<br/>Total
+                        </apex:facet>
+                        <input type="hidden" class="initValueTotal" value="{!oppyPartItem.oppyPart.Total_Price__c}"/>
+                        <apex:outputText styleClass="span_output_totalPrice" value="{0, number, 0.00}">
+                            <!-- <apex:param value="{!oppyPartItem.oppyPart.Offered_Price__c * oppyPartItem.oppyPart.Quantity__c}" /> -->
+                            <apex:param value="{!oppyPartItem.oppyPart.Total_Price__c}" />
+                        </apex:outputText>
+                    </apex:column>
+                    
+                    <apex:column styleClass="" dir="{!oppyPartItem.str_CBC4Description}" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <apex:facet name="header">
+                            Primary<br/>CBC4
+                        </apex:facet>
+                        <input name="radio_cbc4" type="radio" class="inputData_class slds-hide" value="{!oppyPartItem.str_CBC4Product}" data-oppycbc4="{!oppy.Primary_Product_Hierarchy__c}" style="{!IF(oppyPartItem.isCostPart == true,'display:none;','padding-left: 8px;padding-right: 8px;')}"/>
+                        &nbsp;<apex:outputText styleClass="ridioLabel" value="{!oppyPartItem.str_CBC4Description}"/>
+                    </apex:column>
+
+                    <apex:column styleClass="td_pastQuotes_class" onmouseout="delayHideQuoteLineItem(this)" dir="{!oppyPartItem.hasQuoteLineItems}" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <apex:facet name="header">
+                            Past<br/>Quotes
+                        </apex:facet>
+                        <div class="div_pastQuotes_class">
+                            <a href="#"  style="{!IF(!oppyPartItem.hasQuoteLineItems || oppyPartItem.isDummyPart,'display:none;','')}" class="link_pastQuotes_class" ><img src="{!URLFOR($Resource.PartManagement_QuotesImg)}"/></a>
+                        </div>
+                        <div style="display:none;">
+                            <apex:repeat value="{!oppyPartItem.list_QuoteLineItems}" var="item" >
+                                <span class="span_pastQuotes_class" data-line="{!rowNum}" data-id="{!item.id}" data-quoteid="{!item.Energy_Quote_Name__c}" data-quotelineitemid="{!item.id}" data-currencycode="{!item.CurrencyIsoCode}" data-quotenumber="{!item.Energy_Quote_Name__r.Quote_Number__c}" data-soldto="{!item.Energy_Quote_Name__r.Opportunity_Name__r.Account.name}" data-enduser="{!item.Energy_Quote_Name__r.Opportunity_Name__r.End_Customer__r.name}" data-quantity="{!item.Quantity__c}" data-price="{!item.UnitPrice__c}"></span>
+                            </apex:repeat>
+                        </div>
+                    </apex:column>
+                    
+                    <apex:column styleClass="" headerValue="RSQ#" style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                        <span data-line="{!rowNum}" class="span_rfq_quotenumber_edit_class" style="display:none;"></span>
+                        <span data-line="{!rowNum}" class="span_rfq_quotenumber_default_class"><a href="/{!oppyPartItem.str_RFQuoteId}" target="_blank" class="link_rfq_class" >{!oppyPartItem.str_RFQuoteNumber}</a></span>
+                        <input data-line="{!rowNum}" class="input_rfq_class" style="display:none;" type="text" value="{!oppyPartItem.str_RFQuoteLineItemId}"/>
+                        <apex:variable value="{!rowNum + 1}" var="rowNum"/>
+                    </apex:column>
+                    
+                    
+                    <apex:column style="{!IF(oppyPartItem.oppyPart.Error_Message__c != null && oppyPartItem.oppyPart.Error_Message__c != '','background-color:#ffaa91;','')}">
+                    	<apex:facet name="header">
+                            Internal<br/>Comments
+                        </apex:facet>
+                        <input type="hidden" class="initValueComment" value="{!oppyPartItem.oppyPart.Comments__c}"/>
+                        <span class="outputData_class">{!oppyPartItem.oppyPart.Comments__c}</span>
+                        <input class="inputData_class slds-input slds-hide incomments" type="text" style="padding-left: 1px;padding-right: 1px;" value="{!oppyPartItem.oppyPart.Comments__c}" />
+                    </apex:column>
+                    
+                </apex:pageBlockTable>
+                
+                <div style="height:20px;" class="div_totalAmount_class">
+                    <span id="span_blankWidth" style="height: 15px;display: inline-block;"></span>
+                    <span>
+                        <span style="font-weight: bold;">Total:</span>
+                        <span id="span_totalAmount">{!dec_oppyTotalAmount}</span>
+                        <span id="span_currIsoCode">{!oppy.currencyIsoCode}</span>
+                    </span>
+                    <span style="{!IF(oppy.currencyIsoCode == 'USD','display:none;','')}">
+                        (<span id="span_USDTotalValue">{!dec_oppyTotalAmountUSD}</span> USD)
+                    </span>
+                </div>
+            </div>
+            <div style="padding:5px 0;">
+                <!-- <apex:commandButton action="{!showPopup}" value="Add Part"/> -->
+                <button style="{!IF(displayEditAndAddButton,'','display:none;')}" type="button" onclick="showPopup()" class="btnCss">Add Part</button>
+                
+                <!-- added by Tangyong Li 2017-10-09 -->
+                <button class="slds-hide btnCss" id="delBtn" type="button" onclick="deleteOppPart()">Delete</button>
+                
+                <button class="btnCss" style="{!IF(displayEditAndAddButton,'','display:none;')}" type="button" onclick="checkAllOppPart()">Delete All</button>
+            </div>
+            <div style="width:100%;border-top:solid thin #DFDFDF;text-align:center;padding-top:5px;">
+                <button type="button" class="btnCss" onclick="clickDownload(this)">
+                    Export Parts
+                </button>
+                <button type="button" onclick="showUploadPop()" class="btnCss" style="{!IF(displayEditAndAddButton,'','display:none;')}" >Upload file</button>
+                <!-- <apex:commandButton value="Save"/> -->
+                
+                <!-- <button style="{!IF(displayAmpicsButton,'','display:none;')}" type="button" onclick="window.open('/apex/EditAllforopportunity?id={!oppy.Id}')" class="btnCss">Manage Parts</button> -->
+                <button style="{!IF(displayEditAndAddButton,'','display:none;')}" type="button" onclick="window.open('/apex/EditAllforopportunity?id={!oppy.Id}')" class="btnCss">Manage Parts</button>
+                
+                <button id="btn_Edit" type="button" onclick="openEditMode();editParts()" class="btnCss" style="{!IF(displayEditAndAddButton,'','display:none;')}" >Edit</button>
+                <!--<button type="button" onclick="saveParts()" class="btnCss" style="{!IF(displayEditAndAddButton,'','display:none;')}">Save</button>-->
+                <!-- <button id="btn_Save" type="button" onclick="saveParts();window.location.reload();" class="btnCss" style="display:none;">Save</button> -->
+                <button id="btn_Save" type="button" onclick="savePartsWithRemoteAction();" class="btnCss" style="display:none;">Save</button>
+                <!-- <apex:commandButton value="Cancel"/> -->   
+                <button id="btn_Cancel" type="button" style="display:none;" onclick="reloadPage();" class="btnCss" >Cancel</button>
+                <a href="{!$Label.GPMS}" target="_blank" style="float: right;padding-top: 5px;margin-right: 20px;text-decoration: underline;color: blue;">GPMS</a>
+                <div style="height:15px;">
+	                <a href="{!$Label.CPR}" target="_blank" style="float: right;margin-right: 20px;text-decoration: underline;color: blue;">
+	                	CPR
+	                </a>
+                </div>
+            </div>
+            <div id="div_linkSection_forchrome" style="display:none;"></div>
+        </apex:pageBlock>
+        
+        <apex:outputPanel id="uploadPopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayUploadPopup}"/>
+            <apex:outputPanel styleClass="custPopup" style="height:400px !important;" layout="block" rendered="{!displayUploadPopup}">
+                <apex:pageBlock >
+                    <div style="font-weight:bold;margin:20px;">
+                        <b style="color:red;text-transform:Uppercase;">Uploading parts via excel/csv will replace all the current parts on your opportunity</b><br/><br/>
+                        Please upload a csv/xls/xlsx file with the following column headings in this order<br/>
+                        <ul>
+                            <li>Part Number</li>
+                            <li>Quantity</li>
+                            <li>Target Price</li>
+                            <li>Competitor Name</li>
+                            <li>Competitor Part Number</li>
+                            <li>Competitor Price</li>
+                        </ul>
+                        All other columns will be ignored
+                    </div>
+                    <div style="width:100%;border-bottom:solid thin #EBEBEB;margin:20px 0px;"></div>
+                    <input type="file" id="csv_file_input" onchange="getFileContents(this)" style="margin:0 0 20px 20px;"/>
+                </apex:pageBlock>
+                <div style="margin-top:20px;width:100%;text-align:center;">
+                    <button type="button" onclick="uploadCsvOppyPartWithRemoteAction()" class="btnCss">Upload file</button>
+                    <button type="button" onclick="closeUploadPop()" class="btnCss">Cancel</button>
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="partPopup">
+            <input type="hidden" id="input_hidden_isSearchSetByComma" value="{!isSearchSetByComma}" />
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                <apex:pageBlock title="Search Criteria">
+                    <div style="width:48%;height:80px;overflow:hidden;float:left;">
+                        <p>Search By Part Number:</p>
+                        <apex:inputTextarea id="inputSearchText" styleClass="inputStyle" value="{!str_partNumb}" />
+                    </div>
+                    <div style="width:48%;height:80px;overflow:hidden;float:right;">
+                        <p>Search By Name:</p>
+                        <apex:inputTextarea id="desSearchText" styleClass="inputStyle" value="{!str_partDescription}"  />
+                    </div>
+                    <div style="width:100%;text-align:center;">
+                        <!-- <apex:commandButton value="Search" rerender="partPopup"/> -->
+                        <button type="button" onclick="getPartList()" class="btnCss searchButton_class">Search</button>
+                        <button type="button" onclick="showLoading();getParts2();" class="btnCss searchMoreButton" style="display:none;">Search More</button>
+                        <!-- <apex:commandButton value="Clear" style="padding:4px 3px;margin-left:5px;height:30px;" action="{!clearSearchText}" rerender="partPopup"/> -->
+                        <button type="button" onclick="clearSearch()" class="btnCss">Clear</button>
+                        <!-- <apex:commandButton value="Cancel" action="{!closePopup}" rerender="partPopup"/> -->
+                        <button type="button" onclick="cancelPopup()" class="btnCss">Cancel</button>
+                        
+                    </div>
+                </apex:pageBlock>
+                <div id="div_displayPartSearchError" style="{!IF(displayPartSearchError,'display:block;','display:none;')}">
+                    <div class="message errorM3" role="alert">
+                        <table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">
+                            <tbody><tr valign="top">
+                                <td style="min-width: 24px;">
+                                    <img alt="ERROR" class="msgIcon" src="/s.gif" title="ERROR"></img>
+                                </td>
+                                <td class="messageCell"><div class="messageText"><span style="color:#cc0000">
+                                    <h4>Error:</h4></span>A comma in the search term is interpreted as searching for multiple parts by an exact match of part number.  We were unable to find any matching parts.<br/></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+                <div id="div_displayPartSearchNoResult" style="{!IF(displayPartSearchNoResult,'display:block;','display:none;')}">
+                    <div class="message errorM3" role="alert">
+                        <table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">
+                            <tbody><tr valign="top">
+                                <td style="min-width: 24px;">
+                                    <img alt="ERROR" class="msgIcon" src="/s.gif" title="ERROR"></img>
+                                </td>
+                                <td class="messageCell"><div class="messageText"><span style="color:#cc0000">
+                                    <h4>Error:</h4></span>Parts not found, please review the missing parts tab.<br/></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+                <input id="input_isSearchNoResult" class="input_isSearchNoResult_class" type="hidden" value="{!displayPartSearchNoResult}"/>
+                <apex:pageBlock >
+	                <div style="height:24px;">
+	                	<div style="float:left;width:85px;height:20px;background-Color:transparent;border: 1px solid #b5b5b5;border-radius: 3px;" class="ttestClassButton mainTitle">&nbsp;Parts Found</div>&nbsp;&nbsp;
+	                	<div style="margin-left: 5px;;float:left;width:130px;height:20px;background-Color:#dddddd;border: 1px solid #b5b5b5;border-radius: 3px;" class="ttestClassButton mainTitle">&nbsp;Parts Not Found : {!int_searchNoResultCounter}
+	                	</div>
+	                	<div style="margin-left: 5px;;float:left;width:160px;height:20px;background-Color:#dddddd;border: 1px solid #b5b5b5;border-radius: 3px;" class="ttestClassButton mainTitle">&nbsp;Parts Awaiting Save : <span id="span_virtualPartsCounter"></span>
+	                	</div>
+                	</div>
+                    <div class="ttestClassDiv" style="display:block;min-height:100px;max-height:156px;width:100%;overflow-x: hidden;overflow-y:auto;">
+                    <!--<apex:pageBlockTable headerClass="fixPartListHeader_class" id="partListTable" columnsWidth="6%,20%,24%,13%,26%,11%" value="{!list_parts}" var="partItem"> -->
+                        <apex:pageBlockTable headerClass="fixPartListHeader_class" id="partListTable" columnsWidth="{!If($Setup.PartSeracgSettings__c.Enable_Rpn_Search__c,'6%,20%,20%,24%,10%,26%,11%','6%,20%,24%,13%,26%,11%')}" value="{!list_parts}" var="partItem">
+                            <apex:column style="width:21px;max-width:21px;">
+                                <apex:inputCheckbox id="selectPartId" />
+                                <input type="hidden" value="{!partItem.Id}" />
+                                <input type="hidden" value="{!partItem.Name}" />
+                            </apex:column>
+                            <apex:column headerValue="Part Number" style="width:80px;max-width:80px;text-overflow:ellipsis;">
+                                <apex:facet name="header">Part Number</apex:facet>
+                                <apex:outputField value="{!partItem.Name}" /><br></br>
+                             
+                            </apex:column>
+                             <apex:column headerValue="RPN Number" style="width:60px;max-width:60px;"  rendered="{!$Setup.PartSeracgSettings__c.Enable_Rpn_Search__c}">
+                                <apex:facet name="header">RPN Number</apex:facet>
+                                <apex:outputField value="{!partItem.RPN_Part__c}"  />
+                            </apex:column>
+                            <!-- <apex:column headerValue="RPN Part Number" style="width:80px;max-width:80px;text-overflow:ellipsis;" rendered="{!$Setup.PartSeracgSettings__c.Enable_Rpn_Search__c}">
+                                <apex:outputField value="{!partItem.RPN_Part__c}" />
+                            </apex:column> -->
+                            <apex:column headerValue="Part Name" style="width:170px;max-width:170px;text-overflow:ellipsis;word-break: break-word;">
+                                <apex:outputField value="{!partItem.Description__c}" />
+                            </apex:column>
+                            <apex:column headerValue="GPL" style="width:50px;max-width:50px;text-overflow:ellipsis;">
+                                <apex:outputField rendered="{!IF(partItem.Product_Hierarchy__r.Name == 'Costs' ,false,true)}" value="{!partItem.Product_Hierarchy__r.Name}" />
+                            </apex:column>
+                            <apex:column headerValue="GPL Description"  style="width:160px;max-width:160px;text-overflow:ellipsis;word-break: break-word;">
+                                <apex:outputField rendered="{!IF(partItem.Product_Hierarchy__r.Name == 'Costs' ,false,true)}" value="{!partItem.GPL_Description__c}" />
+                            </apex:column>
+                            <apex:column headerValue="Quantity"  style="width:70px;max-width:70px;text-overflow:ellipsis;">
+                                <apex:inputText html-type="number" disabled="{!IF(partItem.Product_Hierarchy__r.Name == 'Costs',true,false)}" style="width: 50px;max-width: 50px;" value="{!partItem.UNIT_PACKAGING_QTY__c}" />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </div>
+                    <div class="ttestClassDiv" style="display:none;min-height:100px;max-height:156px;width:100%;overflow-x: hidden;overflow-y:auto;">
+                		<apex:repeat var="partName" value="{!set_partNotINSearchResult}">
+                		{!partName}<br/>
+                		</apex:repeat>
+                	</div>
+                	<div class="ttestClassDiv" style="display:none;min-height:100px;max-height:156px;width:100%;overflow-x: hidden;overflow-y:auto;">
+                		<table class="list" id="" border="0" cellpadding="0" cellspacing="0">
+							<colgroup span="3">
+								<col width="5%"/>
+								<col width="50%"/>
+								<col width="45%"/>
+							</colgroup>
+							<thead class="">
+								<tr class="headerRow">
+									<th class="headerRow" scope="col" colspan="1" id="">
+										<div id=""></div>
+									</th>
+									<th class="headerRow" scope="col" colspan="1" id="">
+										<div id="">Part Number</div>
+									</th>
+									<th class="headerRow" scope="col" colspan="1" id="">
+										<div id="">Quantity</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="tbody_virtualParts">
+								
+							</tbody>
+						</table>
+                	</div>
+                </apex:pageBlock>
+                
+                <div style="height:30px;width:100%;padding-top:0px;">
+                    <div style="height:30px;width:320px;margin-left:auto;margin-right:auto;">
+                    	<button type="button" class="btnCss" style="display:none;" onclick="addPartNew()">Quick Add</button>
+                        
+                        <button type="button" class="btnCss" style="" onclick="addPartVirtual()">Add And Search Again</button>
+                        
+                        <button type="button" class="btnCss" onclick="addPart()">Save</button>
+                        
+                        <button type="button" class="btnCss" onclick="selectAll()">Select All</button>
+                        <!-- <apex:commandButton value="Clear All"/> -->
+                        <button type="button" class="btnCss" onclick="clearAll()">Clear All</button>
+                        
+                        <button type="button" class="btnCss" style="display:none;" onclick="addPartNewNoRefresh()">Add And Search Again</button>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:actionFunction action="{!getParts}" name="getParts" reRender="partPopup,message" oncomplete="bindEnterClick(),hideLoading(),IsCheckedNeededValidator(),alignTheFixedHeaderForPartListTable(),changeAddPartSearchTab(),checkIfNeedSecoundSearch()" />
+        <apex:actionFunction action="{!getPartsUsingLike}" name="getParts2" reRender="partPopup,message" oncomplete="bindEnterClick(),hideLoading(),IsCheckedNeededValidator(),alignTheFixedHeaderForPartListTable(),changeAddPartSearchTab(),afterSearch2()" />
+        <!-- <apex:actionFunction action="{!clearSearchText}" name="clearSearchText" rerender="partPopup,message"/> -->
+        <apex:actionFunction action="{!showPopup}" name="showAddPopup" reRender="partPopup" oncomplete="bindEnterClick(),alignTheFixedHeaderForPartListTable(),changeAddPartSearchTab(),hideLoading()" />
+        <apex:actionFunction action="{!closePopup}" name="add_closePopup" rerender="partPopup" oncomplete="hideLoading()"/>
+        <apex:actionFunction action="{!showUploadPopup}" name="showUploadPopup" reRender="uploadPopup" oncomplete="hideLoading()"/>
+        <apex:actionFunction action="{!closeUploadPopup}" name="closeUploadPopup" reRender="uploadPopup" oncomplete="hideLoading()"/>
+        
+        <apex:actionFunction action="{!addParts}" name="addOppyPart" reRender="myTable,partPopup,rowNum_index,message" oncomplete="addCommaSeparatorForEachLine(),savePartsWithRemoteAction()">
+            <apex:param name="firstParam" assignTo="{!str_partIds2AddJsonWithNum}" value="" /> 
+            <!-- <apex:param name="firstParam" assignTo="{!str_partIds2AddJson}" value="" /> -->
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!addPartsNewAction}" name="addOppyPartNew" reRender="myForm" oncomplete="addOppyPartNewOnComplete()">
+            <apex:param name="firstParam" assignTo="{!str_partIds2AddJsonWithNum}" value="" /> 
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!addPartsNewAction}" name="addOppyPartNewNoRefresh" reRender="myForm" oncomplete="addOppyPartNewNoRefreshOnComplete()">
+            <apex:param name="firstParam" assignTo="{!str_partIds2AddJsonWithNum}" value="" /> 
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!deleteOppyPart}" name="deleteOppyPart" reRender="myTable,rowNum_index,partPopup,message" oncomplete="reloadPage()">
+            <apex:param name="firstParam" assignTo="{!oppylist_index}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!saveOppyParts}" name="saveOppyParts" reRender="myForm" oncomplete="reloadPage()">
+            <apex:param name="firstParam" assignTo="{!str_oppyPartJson2Save}" value="" />
+        </apex:actionFunction>
+        
+        <!-- Added by Tangyong Li 2017-10-09 -->
+        <apex:actionFunction action="{!deleteOppyParts}" name="deleteOppyParts" reRender="myForm" oncomplete="reloadPage()">
+            <apex:param name="firstParam" assignTo="{!str_deleteOppyPartIds}" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!upsertOppyPart}" name="uploadCsvFile" oncomplete="reloadPage()">
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!init}" name="initPage" oncomplete="setDefaultRadioChecked();populateOffsetPercent();">
+        </apex:actionFunction>
+        
+        <apex:outputPanel id="theParamsPanel">
+            <apex:inputHidden value="{!str_oppIdPartNumberJson}" id="hidden_param_oppIdPartNumberJson" />
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="theCurrencyTransPanel">
+            <apex:inputHidden value="{!str_currencyFromValue}" id="hidden_param_currencyFromValue" />
+            <apex:inputHidden value="{!str_currencyToValue}" id="hidden_param_currencyToValue" />
+            <apex:inputHidden value="{!str_currencyFromCode}" id="hidden_param_currencyFromCode" />
+            <apex:inputHidden value="{!str_currencyToCode}" id="hidden_param_currencyToCode" />
+        </apex:outputPanel>
+        
+        <apex:actionFunction action="{!transformIsoCode}" name="action_transformCurrency" rerender="theCurrencyTransPanel" oncomplete="getCurrencyCallback()"/>
+        
+        <apex:actionFunction action="{!transformIsoCode}" name="action_transformCurrencyToUSD" rerender="theCurrencyTransPanel" oncomplete="syncTotalPriceUSDCallback()"/>
+        
+        <apex:actionFunction action="{!saveERPforPricing}" name="saveERP" rerender="myForm" oncomplete="saveERPforPricingPicklistOncomplete()">
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!searchSalesHierarchyByName}" name="searchSH" reRender="myForm" oncomplete="showTerritorySelect()">
+            <apex:param name="firstParam" assignTo="{!str_searchTerritoryName}" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!saveTerritoryToOppy}" name="saveTerritory" reRender="myForm" oncomplete="checkSaveTerritoryResult()">
+            <apex:param name="firstParam" assignTo="{!str_selectTerritoryId}" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!showErrorMessage}" name="showError" reRender="myForm" oncomplete="hideLoading()">
+            <apex:param name="firstParam" assignTo="{!str_errorMessage}" value="" />
+        </apex:actionFunction>
+
+        </div>
+    </apex:form>
+    
+   
+</apex:page>

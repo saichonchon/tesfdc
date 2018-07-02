@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Owner</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Comments__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Opp_Status__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Opportunity_Number__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$MED_Estimated_Annual_Sales__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$MED_Loss_Code__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>16 - Other (specify in Comment field)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$CreatedDate</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>2/10/2014 12:00 AM</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$CreatedBy</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Greg Wilson</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$MED_Estimated_Annual_Sales__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>USD 250000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Account.Account_Manager__c.MED_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMEA</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$MED_Product_Family__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>EMEA - Lost due to &quot;Other&quot;</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MED_Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$alert_validation_time__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

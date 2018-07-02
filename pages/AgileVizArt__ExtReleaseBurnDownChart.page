@@ -1,0 +1,20 @@
+<apex:page standardController="AgileVizArt__Release__c" extensions="AgileVizArt.ExtReleaseBurnDownChart">
+	<apex:form >
+		<apex:repeat value="{!recordTypeCheckboxs}" var="type">
+			<apex:outputPanel rendered="{!type.recordTypeName != 'Issue'}">
+				<apex:inputCheckbox value="{!type.checked}" onclick="filterRecordType();"/>&nbsp;
+				<apex:outputText value="{!type.recordTypeName}" />&nbsp;&nbsp;&nbsp;
+			</apex:outputPanel>
+		</apex:repeat>
+		
+		<apex:actionFunction name="filterRecordType" action="{!resetFilter}" onComplete="drawBurnDown();" rerender="burnDownChartDiv" status="statusImg" />
+		<apex:actionStatus startText=" Loading... " stopText="" id="statusImg">
+			<apex:facet name="start">
+				<img src="/img/loading.gif" />
+			</apex:facet>
+		</apex:actionStatus>
+		<apex:outputPanel id="burnDownChartDiv" style="text-align: center">
+			<c:CompVelocity chartValue="{!BurnDownChart}" showChart="{!showChart}" />
+		</apex:outputPanel>
+	</apex:form>
+</apex:page>

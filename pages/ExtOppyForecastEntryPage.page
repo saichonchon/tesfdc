@@ -1,0 +1,754 @@
+<apex:page standardcontroller="Opportunity" extensions="ExtOppyForecastEntryPage" sidebar="false">
+    <apex:stylesheet value="{!$Resource.oppyForecastEntry}"/>
+    <apex:includeScript value="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script src="/soap/ajax/22.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/22.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!URLFOR($Resource.OppyForecastControl)}"/>
+    <style type='text/css'>  
+        body .pbBody table.list tr.headerRow td, body .pbBody table.list tr.headerRow th.headerCenter {
+            background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom white;
+            height: 14px;
+        }      
+        .htlb {
+            background: url({!URLFOR($Resource.iconCollapse)}) no-repeat scroll 0 -0px transparent !important;
+            height:15px;
+            width:10px;
+        }
+        .stlb {/*showTableListButton*/
+            background: url({!URLFOR($Resource.iconExpand)}) no-repeat scroll 0 -0px transparent !important;    
+            height:15px;
+            width:10px;
+        }
+        .selectConfidence{width:75px;} 
+        .selectStatus{width:143px;margin:0 2px;font-family:arial;background-color:#fff;}
+        .rpd{position:relative;}
+        #tipBox{position: absolute;background: #ffc;border: 1px solid #eee;padding: 2px;width: 90px;top: 0px;}
+    </style>
+    <script> 
+    
+        function openAPLWonLookupPopup(partId, status, fieldId,_locale,_isBOM){            
+            var intialBillingDate = document.getElementById(fieldId + 'BillingDate');  
+            var intialOrderDate = document.getElementById(fieldId + 'OrderDate');
+           
+            if(status == 'Production')
+            {                          
+                $("#mask").show();
+                $("#mask").css({
+                    visibility : 'visible'
+                });
+                
+                $(   
+                  '<div id="status_content_window" style="width:100% !important;" >' + '<div id="status_popcontent">'
+                   + '<iframe frameborder="0" id="theIframe" width="100%" height="250px" name="theIframe" src="/apex/CtrlOppyPartDateLookupPage?partId='+ partId + '&status=' + status + '&fieldId=' + fieldId +'"/>'
+                   + '</div>'
+                   + '<div style="background-color:white;text-align:center">'
+                   + '</div></div>').appendTo("#status_window");    
+                $("#status_window").css({
+                    "z-index" : 99999
+                });                                        
+            }
+        }
+        function setFocusOnLoad() {}//to prevent datepicker auto pop up
+        /*
+        function closePopUp(){
+            popRemove();
+        }
+        function onConfidenceSelect(){//example: ('de','BOM')
+            findConfidences();
+            tp(false,false,false);
+        }
+        var gpNubr = -1;
+        function makeGroups(){
+            var j = gSaveStrs.length,
+                limit = 3000;
+            if(j == 1) return 1;
+            var t,l=gSaveStrs[0].data.length;
+            for(var i=1; i<=j; i++){
+                    t = j%i;
+                    if(t > 0)
+                    t = (j+i-t)/i;
+                    else 
+                    t = j/i;
+                    if(t*l <limit)
+                    break;
+                }
+            return t;    
+        }
+        */
+        /*
+        function doSave(){
+            var i,j,k,isEnd,hasData,hasStr;
+            if(!gSaveStrs){
+                //console.log('1');
+                showLoad();
+                setTimeout(function(){hideLoad()},200);
+                return false;
+            }else if(gSaveStrs.length ==0){
+                //console.log('2');
+                gSaveStrs = false;
+                saveForecasts('Completed');
+            }else{
+                
+                if(gpNubr < 0){
+                    gpNubr = makeGroups();
+                }
+                
+                k = [],
+                isEnd = hasData = hasStr = false;
+                for(i=0,j=gSaveStrs.length; i<j; i++){
+                    if(gSaveStrs[i].year && !isNaN(parseInt(gSaveStrs[i].year,10))){
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(!hasData){
+                    //console.log('3');
+                    gSaveStrs = false;
+                    saveForecasts('Completed');
+                }else{
+                    var str = ''
+                    for(var t = 0; t < gpNubr; t ++){
+                         if(i+t < j){
+                             gSaveStrs[i+t].year = false;
+                             if(t ==0){
+                                 str += gSaveStrs[i+t].data.join('#');
+                             }else{
+                                 str += '@@' + gSaveStrs[i+t].data.join('#');
+                             }
+                             if(i+t+1 == j){
+                                 str+= '@@Completed';
+                                 isEnd = true;
+                             }
+                             hasStr = true;
+                         } 
+                    }
+                    
+                            
+                    if(hasStr){
+                        //console.log('4');
+                        saveForecasts(str);
+                        str = null;
+                    }else{
+                        //console.log('5');
+                        gSaveStrs = false;//
+                        saveForecasts('Completed');
+                    } 
+                }
+            }
+            */
+            /*
+            if(hasData && !isEnd && checkGSaveStrs()){
+                doSave();
+            } else{
+                gpNubr = -1;
+            }   
+            */
+        //}
+        
+        /*
+        function checkGSaveStrs(){//if data available,return true
+         if(!gSaveStrs) return false;
+            var isErr = $(document.getElementById('isError')).children('input').val();
+            var errMsg = ''+$(document.getElementById('errorMsg')).children().text();
+            if(errMsg.length>0||isErr == 'true'){
+                return false;
+            }
+            var result = false,flag=0;      
+            for(var i=0,j=gSaveStrs.length; i<j; i++){
+                if(gSaveStrs[i].year && !isNaN(parseInt(gSaveStrs[i].year,10))){
+                    result = true;
+                    break;
+                }
+                else{
+                    gSaveStrs[i].data = null;
+                }
+            }
+            if(result === false||gSaveStrs.length ==0){
+                gSaveStrs = null;
+                result = false;
+            }
+            return result;
+        }
+        */
+        function refreshParentPage(){
+            if(!document.getElementById("{!$Component.oppyPB.messages}") || document.getElementById("{!$Component.oppyPB.messages}").innerHTML == ''){
+                if(window.self ==window.top){
+                    var lc = window.location.href;
+                    lc = lc.replace('mode=edit','mode=view');
+                    window.location.href = lc;
+                }else{
+                    var partnerToken = '';
+                    if(window.location.href.indexOf('/partner/') > -1) {
+                        partnerToken = '/partner';      
+                    }
+                    parent.location.href= partnerToken + '/{!opportunity.id}';
+                }                
+            }      
+        }
+        function showLoad(){
+            var sid = "{!$Component.oppyPB.statusLoad}"+".start";
+            document.getElementById(sid).style.display='inline';            
+        }
+        function hideLoad(){
+            var sid = "{!$Component.oppyPB.statusLoad}"+".start";
+            document.getElementById(sid).style.display='none'; 
+        }
+        function showCurrency(){}//just to holdplace
+
+        //added by Lei tang 2014-3-13 begin
+        //reactive Confidence and Processs status by SPIN 
+        var imgEL;
+        function getReactive(el){
+            imgEL = el;
+            getDefaultConfidenceProcessStatus();
+        }
+        function resetConfidenceAndProcessStatus(){
+            try{    
+                var confidence = $("#defaultConfidence").val();
+                var processStatus = $("#defaultProcessStatus").val();
+                console.log("completed ... with confidence: " + confidence + ":: Processstatus：" + processStatus);
+                var elid = imgEL.id.toString();
+                var idPrefix = elid.lastIndexOf(':') > -1 ? elid.substring(0,elid.lastIndexOf(':')+1) : elid;
+                $(imgEL).hide();
+                $("select[name*='"+idPrefix+"status_']").removeAttr("disabled"); 
+                $("select[name*='"+idPrefix+"processstatus_']").removeAttr("disabled"); 
+                
+                if(confidence != null && confidence != ''){
+                    $("select[name*='"+idPrefix+"status_']").val(confidence);
+                    $("select[name*='"+idPrefix+"status_']").change();
+                }
+                
+                if(processStatus != null && processStatus != ''){
+                    $("select[name*='"+idPrefix+"processstatus_']").val(processStatus);
+                    $("select[name*='"+idPrefix+"processstatus_']").change();
+                }
+                
+                $("select[name*='"+idPrefix+"status_'] option").attr('disabled','disabled');
+                $("select[name*='"+idPrefix+"status_'] option[value='Dead']").removeAttr("disabled");
+                $("select[name*='"+idPrefix+"status_'] option[value='Lost']").removeAttr("disabled");
+            }catch(err){
+                $(imgEL).show();
+                $("select[name*='"+idPrefix+"']").attr('disabled','disabled');
+                console.log(err);
+            }
+        }
+        
+        //Synchronous Confidence and Processs status option
+        function syncstatic(el){
+            var elid = el.id.toString();
+            var idPrefix = elid.lastIndexOf(':') > -1 ? elid.substring(0,elid.lastIndexOf(':')+1) : elid;
+            $("select[name*='"+idPrefix+"hidestatus']").val($(el).val());
+            $("select[name*='"+idPrefix+"hidestatus']").change();
+            
+            
+        }
+        function syncprocessstatic(){
+            var elid = el.id.toString();
+            var idPrefix = elid.lastIndexOf(':') > -1 ? elid.substring(0,elid.lastIndexOf(':')+1) : elid;
+            $("select[name*='"+idPrefix+"hideprocessstatus']").val($(el).val());
+            $("select[name*='"+idPrefix+"hideprocessstatus']").change();
+        }
+        
+        //added by Lei tang 2014-3-13 end
+        /***set proper width according to user's browser***/
+        function setProperWidth(){//ok
+            //added by bin yuan 2014-04-11 due to remove Process status for spin; added for DND on 08-06-15  
+            var isSpin = document.getElementById("hiddenSPINId").value;
+            var isDND = document.getElementById("hiddenDNDId").value;
+            //end 
+            var isHLC = document.getElementById("ReadOnlyHLCId").value;//Added by Mrunal to make Process Status field readonly for Change Channel Opportunities at header level Project
+            var wW=$('body').width(); 
+            var wH=$(window).height();
+            if(wH<600){
+                $('#inlineTable').parent().height(wH-80);
+            }
+            if(wW>500){     
+                var extraWidth=Math.floor((wW-970)/100)*100; 
+                console.log('extraWidth:'+extraWidth);
+                var leftWidth=0,updatedOuterWidth=0,updatedInnerWidth=0;
+                var leftColumnNum=$('#leftTableHeadTr').children().length;
+                //added by bin yuan 2014-04-11 due to remove Process status for spin; added for DND on 08-06-15 
+                console.log('isSpin' + isSpin);
+                // if((isSpin && isSpin == 'true' || isSpin === true)||(isDND && isDND == 'true' || isDND === true)) {
+                if((isSpin && isSpin == 'true' || isSpin === true)) {
+                    leftColumnNum = 4;
+                }
+                //end
+                if(leftColumnNum===3){
+                    leftWidth=265;
+                }else if(leftColumnNum===4){
+                    //added by bin yuan 2014-04-11 due to remove Process status for spin; added for DND  on 08-06-15 
+                    // if((isSpin && isSpin == 'true' || isSpin === true)||(isDND && isDND == 'true' || isDND === true)) {
+                    if((isSpin && isSpin == 'true' || isSpin === true)) {
+                        leftWidth=515;
+                    }
+                    else{
+                        leftWidth=365;
+                    }
+                    //end
+                }else if(leftColumnNum===5){
+                    leftWidth=515;
+                }else if(leftColumnNum===6){
+                    leftWidth=610;
+                }
+                console.log('extraWidth:'+extraWidth+'leftWidth'+leftWidth);
+                //updatedOuterWidth=975+extraWidth;//-- 2012-08-31 by Fuqi revised since page column are added
+                updatedOuterWidth=996+extraWidth;
+                //updatedInnerWidth=990+extraWidth-leftWidth-80;    //945
+                if(leftColumnNum===4){
+                    updatedInnerWidth=895+extraWidth-leftWidth-80;
+                }else if(leftColumnNum===5){
+                    updatedInnerWidth=895+extraWidth-leftWidth-80;  
+                }else if(leftColumnNum===6){
+                    updatedInnerWidth=890+extraWidth-leftWidth-80;
+                }
+                //console.log('updatedInnerWidth:'+updatedInnerWidth);
+                if(updatedOuterWidth>500){
+                    $('#inlineTable').parent().width(updatedOuterWidth);    
+                    $('#innerWidthToSet').width(updatedInnerWidth);     
+                }       
+            }   
+        }
+        Map_Pid_Price = '{!partIdPrice}';
+        
+    </script>  
+    <input type="hidden" value="{!isAdmin}" id="isAdmin"/>
+    <input type="hidden" id="hiddenLocal" value="{!format}"/>
+    <input type="hidden" id="hiddenIsBOM" value="{!Opportunity.Method__c}"/>
+    <input type="hidden" id="hiddenCurrencyCode" value="{!opportunity.CurrencyIsoCode}"/>
+    <input type="hidden" id="forecastingLevelHidden" value="{!opportunity.level__c}"/> 
+    <input type="hidden" id="deleteSrc" value="{!URLFOR($Resource.iconDelete)}"/>
+    <input type="hidden" id="msgAreYouSure" value="{!$Label.Are_You_Sure}"/>
+    <input type="hidden" id="LabelInvalidStartDate" value="{!$Label.ForecastInvalidStartDate}"/>
+    <input type="hidden" id="LabelMsgInvalidYear" value="{!$Label.ForecastInvalidYear}"/>
+    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->
+    <input type="hidden" id="hiddenSPINId" value="{!isSPIN}"/>
+    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy --> 
+    <!-- Added by Michael Cui 2014-06-10 for case 00677873 -->
+    <input type="hidden" id="hiddenAPLId" value="{!isAPL}"/>      
+    <input type="hidden" id="hiddenDNDId" value="{!isDND}"/> <!-- added by nooreen 08-06-15 -->
+    <input type="hidden" id="ReadOnlyHLCId" value="{!isHLC}"/> <!-- added by Mrunal to make Process Status field readonly for Change Channel Opportunities at header level Project -->
+    <input type="hidden" id="hiddenshowedit" value="{!showEdit}"/>
+    <apex:outputPanel id="defaultstatus">
+        <input type="hidden" id="defaultConfidence" value="{!defaultConfidence}"/>
+        <input type="hidden" id="defaultProcessStatus" value="{!defaultProcessStatus}"/>
+    </apex:outputPanel>
+    <!--
+    if - {!IF(!(isSPIN) && !(isDND), true, false)} <br/>
+    and -  {!AND(!(isSPIN),!(isDND))}
+-->
+    <script>
+        isBOM = document.getElementById("hiddenIsBOM").value,
+        locale = document.getElementById("hiddenLocal").value,
+        currencylabel = document.getElementById("hiddenCurrencyCode").value,
+        forecastLevel = document.getElementById("forecastingLevelHidden").value;
+        /////
+        isAppOrIndBu = "{!isAppOrIndBu}";
+        range4Mark = '{!changePercentage}';
+        if(range4Mark != '')range4Mark = parseFloat(range4Mark);
+        tipBuPrev = '{!$Label.FC_BUTip_PreValue}',
+        tipBuNew = '{!$Label.FC_BUTip_NewValue}';
+        reason_options = '{!str_allChangeReasons}';
+        console.log('isDND:'+ document.getElementById("hiddenDNDId").value);
+        //isAPL = "{!isAPL}";
+        /////
+    </script> 
+    <!-- added -->
+    <div id="popCmt" class="hide"></div>
+    <div id="popCtn" class="hide">
+        <div class="titleLine"><div class="icon_close" onclick="cancelSave();">×</div><div class="clear"></div></div>
+        <div class="popReasonBody">
+        <p>{!$Label.FC_Save_AreYouSure}</p>
+        <div><span>{!$Label.FC_ChangeReason}</span><span id="pickReason"></span></div>
+        <div class="pop_btn_div"><input type="button" class="btn" value="Save" onclick="doSave();"/><input type="button" class="btn" value="Cancel" onclick="cancelSave();"/></div>
+        </div>
+    </div>
+    <!-- added -->
+    <apex:pageBlock tabstyle="Opportunity" id="oppyPB" mode="maindetail">                                       
+        <span id="errorMsg"><apex:pageMessages id="messages" /></span> 
+        <apex:actionStatus startText=" Loading... " stopText="" id="statusLoad" onstart="hiddenBlock('{!$Component.oppyPB}');" onstop="showBlock('{!$Component.oppyPB}');" startStyleClass="sStart">
+            <apex:facet name="start">
+                <div id="Loading" style="top:0px;left:0px;text-align: center; width: 100%; height: 100%; display: block; background-color: #FFF; opacity: 0.85; position: fixed; z-index: 8000; filter: alpha(opacity = 85); background-repeat: no-repeat; background-position: center center; background-image: url('/changemgmt/img/spinner24.gif');"/>
+<!--                <img class="deployingImg" src="/changemgmt/img/spinner24.gif" />            -->
+            </apex:facet>
+        </apex:actionStatus>
+        <div style="width:900px;text-align:center;">
+                <!--{!editMode}, {!!hasParts}, {!isProgramLevel}, {!!validOpportunity}-->
+                <input type="button" class="btn" value="Edit" onclick="editForecast();" style="display:{!IF(OR(editMode, !hasParts, isProgramLevel, !validOpportunity), 'none', '')}"/>
+                <input type="button" class="btn" value="Save" onclick="confirmSave()" style="display:{!IF(AND(editMode, hasParts, !isProgramLevel, validOpportunity), 'inline', 'none')}"/>
+                <input type="button" class="btn" value="Cancel" onclick="cancelEdit();" style="display:{!IF(AND(editMode,!isDNDError), '', 'none')}"/>                           
+        </div>
+        <apex:outputPanel layout="block" rendered="{!AND(editMode, hasParts, !isProgramLevel, validOpportunity)}">
+            <table>
+                <tr>
+                    <td><b>{!$Label.Forecasting_Level}</b></td>
+                    <td>
+                        <select id="oppLevel" value="{!opportunity.Level__c}" onchange="if(!confirm('{!$Label.Recalculate_Confirm}')){this.value=forecastLevel;return false;} selectLevel(this.value);">
+                            <apex:repeat value="{!ForecastLevel}" var="opt">
+                                <option value="{!opt.label}">{!opt.value}</option>
+                            </apex:repeat>
+                        </select>
+                    </td>
+                    <td><b>{!$Label.Forecasting_Method}</b></td>
+                    <td>
+                            <select id="oppMethod" value="{!opportunity.Method__c}" onchange="if(!confirm('{!$Label.FCMethod_Confirm}')){this.value=isBOM;return false;} selectMethod();">
+                            <apex:repeat value="{!ForecastMethod}" var="opt">
+                                <option value="{!opt.label}">{!opt.value}</option>
+                            </apex:repeat>
+                        </select>
+                    </td>
+                    <td><b>{!$Label.Move_Start_Date}</b></td>
+                    <td>
+                        <input name="startDate" id="startDate" onchange="pdc(this)" onfocus="DatePicker.pickDate(true, this.id, false)" onkeydown="return false" onpaste="return false" size="12" style="width:65px;" type="text" data-uidsfdc="3"/>
+                    </td>
+                    <td>
+                        <select value="{!oneYear}">
+                            <apex:repeat value="{!list_otherYears}" var="opt">
+                                <option value="{!opt.label}">{!opt.value}</option>
+                            </apex:repeat>
+                        </select>
+                        <button onclick="addYear(this);return false;" id="addYearBtn">Add</button>
+                    </td>
+                    <td></td>
+                </tr>
+             </table>
+        </apex:outputPanel>
+        <span class="hide" id="partIdInfo">
+            <apex:repeat value="{!parts}" var="part"> 
+                <span>{!part.part.Id}</span>
+            </apex:repeat>
+        </span>
+              <div class="{!IF(editMode,'editDiv','viewDiv')}" id="containerPanel" style="width:1970px;max-height:600px;height:auto;overflow-y:auto;overflow-x:hidden;">
+                  <table class="inlineTable {!IF(Opportunity.Method__c=='BOM', 'isBom', 'isManual')}" id="inlineTable">
+                  <tr>
+                  <apex:form >
+                  <span id="reasonInfo"><apex:inputHidden value="{!selectedReason}"/></span>
+                  <span id="buDataInfo"><apex:inputHidden value="{!str_mapPartId_listForecastHistoryStructure}"/></span>
+
+                  <td class="inlineTableTd" id="firstTableTd">
+                    <!-- <apex:form > -->
+                    <apex:actionFunction name="editForecast"  oncomplete="showCurrency('{!format}');" action="{!editOppy}" status="statusLoad" rerender="oppyPB" />  
+                    <apex:actionFunction name="saveForecasts" oncomplete="if(checkGSaveStrs()){doSave()}else{refreshParentPage();}" action="{!saveOppy}" status="statusLoad" rerender="forecastform,messages">
+                        <apex:param assignTo="{!saveString}" value="" name="saveStringParam" />
+                    </apex:actionFunction>
+                    <apex:actionFunction name="cancelEdit"  oncomplete="showCurrency('{!format}')" action="{!cancelToOppy}" status="statusLoad"/>
+                    <apex:actionFunction name="getDefaultConfidenceProcessStatus" action="{!getOppyPartDefaultConfidenceAndProcessStatus}" oncomplete="resetConfidenceAndProcessStatus();" rerender="defaultstatus" status="statusLoad" />
+                    <apex:inputHidden value="{!opportunity.Method__c}" id="oppyMethod" />
+                    <span class="hide" id="isError"><apex:inputHidden value="{!isError}"/></span>
+                        <apex:outputPanel layout="block" rendered="{!AND(hasParts, hasForecasts)}" > 
+                        <table id="list_TableLeft" class="list" cellspacing="0" cellpadding="0" border="0" style="width:515px;border-left-width:0 !important;text-align:center;margin-left:1px;"> 
+                            <thead>
+                                <tr class="headerRow noBorderTr" id="leftTableHeadTr">
+                                    <th class="headerCenter" style="width:10px;"><div></div><span class="iea">|</span></th>
+                                    <th class="headerCenter" style="width:123px;"></th> 
+                                    <th class="headerCenter" style="width:150px;"></th> 
+                                    <th class="headerCenter" style="width:80px;"></th>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                    <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                    <apex:outputPanel rendered="{!AND(!(isSPIN))}">
+                                        <th class="headerCenter" style="width:150px;"></th> 
+                                    </apex:outputPanel>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy --> 
+                                </tr>           
+                            </thead>            
+                            <tbody id="left_Tbody"> 
+                                <tr class="dataRow bomShow noBorderTr" style="display:{!IF(Opportunity.Method__c='Manual', 'none', '')}">
+                                    <td class="dataCell tdTwo"><span class="iea">|</span></td> 
+                                    <td class="dataCell"></td> 
+                                    <td class="dataCell"></td>       
+                                    <td class="dataCell"></td>
+                                     
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                    <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                    <apex:outputPanel rendered="{!AND(!(isSPIN))}">                                   
+                                        <td class="dataCell"></td> 
+                                    </apex:outputPanel>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->                                                                
+                                </tr>    
+                                <tr class="dataRow noBorderTr">
+                                    <td class="dataCell tdTwo">
+                                        <img class="stlb" title="Show" style="cursor:pointer;" onclick="kn(this, this.title,true)" id="opportunityBtn" src="/s.gif"/>
+                                    </td>                                   
+                                    <td class="dataCell"><span class="iea">|</span></td>
+                                    <td class="dataCell"></td> 
+                                    <td class="dataCell"></td>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                     <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                     <apex:outputPanel rendered="{!AND(!(isSPIN))}">                                  
+                                        <td class="dataCell"></td> 
+                                    </apex:outputPanel>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->                                                                                                             
+                                </tr>
+                                                
+                                <apex:repeat value="{!levelLabel}" var="label">
+                                    <tr class="dataRow noBorderTr" style="display:none;">
+                                        <td class="dataCell tdTwo"><span class="iea">|</span></td>        
+                                        <td class="dataCell"></td>   
+                                        <td class="dataCell"></td>
+                                        <td class="dataCell"></td>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 --> 
+                                    <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                    <apex:outputPanel rendered="{!AND(!(isSPIN))}">
+                                        <td class="dataCell"></td> 
+                                    </apex:outputPanel>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->                                                                                                                  
+                                    </tr> 
+                                </apex:repeat>
+                                <tr class="headerRow" id="tr_leftTable">
+                                    <th class="headerCenter" ><span class="iea">|</span></th>
+                                    <th class="headerCenter" >{!$Label.PartNumber}</th>
+                                    <th class="headerCenter" >{!$Label.Part}</th> 
+                                    <th class="headerCenter" >{!$Label.Confidence}</th>
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy ; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                    <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                    <apex:outputPanel rendered="{!AND(!(isSPIN))}"> 
+                                        <th class="headerCenter" >{!$Label.Process_Status}</th>     
+                                    </apex:outputPanel>    
+                                    <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->
+                                </tr>           
+                                <apex:repeat value="{!parts}" var="part">   
+                                    <tr class="dataRow" onmouseOver="om(this,1);" onmouseOut="om(this,0);">
+                                        <td class="dataCell partLabel trleftBorder">
+                                            <img class="stlb" title="Show" style="cursor:pointer;" onclick="kn(this, this.title)" id="{!part.part.Id}Btn" src="/s.gif"/>
+                                        </td>                                                                                                    
+                                        <td class="dataCell controlLongtext">
+                                            <span title="{!part.partNumber}">{!part.partNumber}</span>                                          
+                                        </td>
+                                        <td class="dataCell controlLongtextoppy">
+                                            <span title="{!part.partName}">{!part.partName}</span>                                       
+                                        </td>
+                                        <td class="dataCell"  style="padding:0px; " nowrap="nowrap" align="{! IF(editMode == true,'right','center') }">
+                                            <apex:image id="theImage" value="{!URLFOR($Resource.PMV_Icon_reactive_01)}" width="17" height="17" alt="Reactivate Confidence And Process Status" title="Reactivate Confidence" rendered="{!AND(editMode == true,isSPIN == true,OR(part.part.Status__c == 'Dead',part.part.Status__c == 'Lost',part.part.Status__c == 'On Hold'), isDeadOrLost == false)}" onclick="getReactive(this);" style="cursor: pointer;"/>
+                                            <div class="{!IF(editMode,'hide','show')}">{!part.part.Status__c}</div>
+                                            <apex:inputField value="{!part.part.Status__c}" id="status" styleClass="selectConfidence" onchange="if(checkSelect(this,0)){openLookupPopup('{!part.part.Id}', this.value, this.id,'{!format}','{!Opportunity.Method__c}')} " style="font-family:arial;background-color:#fff;" rendered="{!AND(editMode == true,isSPIN == false)}" />
+                                            <!-- -------------------------------update by weihang 2014-03-11---------------------------------- -->
+                                            <apex:selectList value="{!part.part.Status__c}" id="status_" styleClass="selectConfidence" size="1" rendered="{! AND(editMode == true,isSPIN == true)}" disabled="{!IF(OR(part.part.Status__c == 'Dead',part.part.Status__c == 'Lost',part.part.Status__c == 'On Hold'),true,false)}" onchange="if(checkSelect(this,0)){openLookupPopupOnExtOppForecast('{!part.part.Id}', this.value, this.id,'{!format}','{!Opportunity.Method__c}');} syncstatic(this);"> 
+                                                <apex:selectOptions value="{!ConfidenceItem}"/> 
+                                            </apex:selectList> 
+                                            <apex:inputField value="{!part.part.Status__c}" id="hidestatus" rendered="{! AND(editMode == true,isSPIN == true)}" style="display:none;" />
+                                            <!-- -------------------------------update by weihang 2014-03-11---------------------------------- -->
+                                            <apex:inputHidden value="{!part.oldStatus}" id="statusOldStatus"/>
+                                            <apex:inputHidden value="{!part.part.Lost_Reason__c}" id="statusReason"/>
+                                            <apex:inputHidden value="{!part.part.Lost_Reason_Text__c}" id="statusReasonText"/>
+                                            
+                                            <!-- Prabhanjan: 2016-11-05: Adding shipset field for ADM -->
+                                            <apex:inputText value="{!part.part.ADM_TE_Shipset_Percentage__c}" id="statusSSPerc" style="display:none;"/> 
+                                            <!-- Prabhanjan: 01-June-2015 : Adding one more field to identify available for TAM? -->
+                                            <apex:inputCheckbox value="{!part.part.Available_for_TAM__c}" id="statusTAMchk" style="display:none;"/>
+                                            <apex:inputText value="{!part.part.Competitor__c}" id="statusReasonCompetitor" style="display:none;"/> 
+                                            <input type="text" value="{!isDND}" id="dndid" style="display:none;"/>  
+                                            <input type="text" value="{!admrecordtypeid}" id="admrecordtypeid" style="display:none;"/> 
+                                            <apex:inputHidden value="{!part.part.Won_Reason__c}" id="statusWonReason"/>
+                                        </td>
+                                        <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                        <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                        <apex:outputPanel rendered="{!!isSPIN}"> 
+                                            <td class="dataCell controlLongtextoppy statusTd">
+                                                <div class="{!IF(editMode,'hide','show')}">{!part.part.Process_Status__c}</div>
+                                                <!-- -------------------------------update by weihang 2014-03-11---------------------------------- -->
+    <!--                                            <apex:inputField value="{!part.part.Process_Status__c}" rendered="{!editMode}" styleClass="selectStatus" onchange="checkSelect(this,1)" />-->
+                                                <!--  <apex:inputField value="{!part.part.Process_Status__c}" rendered="{!AND(editMode == true,isSPIN == false)}" styleClass="selectStatus" onchange="checkSelect(this,1)" /> -->                                             
+                                                <!-- <apex:inputField value="{!part.part.Process_Status__c}" rendered="{!AND(editMode == true,isSPIN == false, isAPL == false, isDND == false, isHLC == false)}" styleClass="selectStatus" onchange="checkSelect(this,1)" /> --> <!-- isHLC == false added by Mrunal to make Process Status field readonly for Change Channel Opportunities at header level Project -->
+                                                <apex:inputField value="{!part.part.Process_Status__c}" rendered="{!AND(editMode == true,isSPIN == false, isAPL == false,isDND == false,isHLC == false)}" styleClass="selectStatus" onchange="checkSelect(this,1)" />
+                                                <apex:selectList id="processstatus_" size="1" value="{!part.part.Process_Status__c}" styleClass="selectStatus" rendered="{!AND(editMode == true,isDND == true)}"  onchange="checkSelect(this,1); " disabled="{!IF(OR(part.part.Status__c == 'Dead',part.part.Status__c == 'Lost',part.part.Status__c == 'On Hold'),true,false)}">
+                                                    <apex:selectOptions value="{!ProcessStatusItems}" />  
+                                                </apex:selectList>
+
+                                                <apex:outputText id="processstatus___" value="{!part.part.Process_Status__c}" rendered="{!AND(editMode == true,isHLC == true)}"/> <!-- added by Mrunal to make Process Status field readonly for Change Channel Opportunities at header level Project -->
+
+                                                <!-- -------------------------------update by Michael Cui 2014-06-04---------------------------------- -->
+                                                <!-- <apex:selectList id="processstatus__" size="1" value="{!part.part.Process_Status__c}" styleClass="selectStatus" rendered="{!AND(editMode == true,isAPL == true)}"  onchange="checkSelect(this,1);"> --> 
+                                                <apex:selectList id="processstatus__" size="1" value="{!part.part.Process_Status__c}" styleClass="selectStatus" rendered="{!AND(editMode == true,isAPL == true)}"  onchange="checkSelect(this,1); {openAPLWonLookupPopup('{!part.part.Id}', this.value, this.id,'{!format}','{!Opportunity.Method__c}')} " style="font-family:arial;background-color:#fff;"  >
+                                                <!-- <apex:selectList id="processstatus__" size="1" value="{!part.part.Process_Status__c}" styleClass="selectStatus" rendered="{!AND(editMode == true,isAPL == true)}"  onchange="if(checkSelect(this,1)){openAPLWonLookupPopup('{!part.part.Id}', this.value, this.id,'{!format}','{!Opportunity.Method__c}');}"> -->
+                                                    <apex:selectOptions value="{!ProcessStatusItems}" />  
+                                                </apex:selectList>                                                                                               
+                                                <apex:inputField value="{!part.part.Process_Status__c}" id="hideprocessstatus" style="display:none;" rendered="{!AND(editMode == true,isSPIN == true)}" />
+                                                <!-- -------------------------------update by weihang 2014-03-11---------------------------------- -->
+                                                <input type="hidden" value="{!part.part.opportunity__r.stageName}" class="stageName"/>
+                                                <apex:inputHidden value="{!part.billingDate}" id="processstatus__BillingDate" rendered="{!isAPL}"/>
+                                                <apex:inputHidden value="{!part.orderDate}" id="processstatus__OrderDate" rendered="{!isAPL}"/>                                                
+                                                </td>  
+                                        </apex:outputPanel>
+                                        <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->                     
+                                    </tr>               
+                                    <tr class="dataRow" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;">                         
+                                        <td class="lwidedataCell partLabel trleftBorder"><span class="iea">|</span></td>
+                                        <td class="widedataCell partLabel"></td>
+                                        <td class="widedataCell partLabel"></td>  
+                                        <td class="widedataCell partLabel"></td>
+                                        
+                                        <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                        <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                        <apex:outputPanel rendered="{!AND(!(isSPIN))}">
+                                            <td class="widedataCell partLabel"></td>   
+                                        </apex:outputPanel>
+                                        <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->                           
+                                    </tr>                                
+                                    <apex:repeat value="{!levelLabel}" var="label">
+                                        <tr class="dataRow" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;">                    
+                                            <td class="dataCell partLabel trleftBorder"><span class="iea">|</span></td>
+                                            <td class="dataCell partLabel"></td>
+                                            <td class="dataCell partLabel"></td>
+                                            <td class="dataCell partLabel"></td>
+                                             
+                                            <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy; isDND condition added by Nooreen to remove for DND opportunity on 08-06-15 -->
+                                            <!-- apex:outputPanel rendered="{!AND(!(isSPIN),!(isDND))}" -->
+                                            <apex:outputPanel rendered="{!AND(!(isSPIN))}">
+                                                <td class="dataCell partLabel"></td>     
+                                            </apex:outputPanel>
+                                            <!-- Added by bin yuan 2014-04-11 due to remove  process status for spin oppy -->         
+                                        </tr> 
+                                    </apex:repeat>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                        </apex:outputPanel>                
+                      
+                    </td>
+                    <td class="inlineTableTd">                   
+                    <apex:outputPanel layout="block" styleClass="parts" id="partStructure" rendered="{!AND(hasParts, hasForecasts)}">   
+                    
+                        <table class="list partList" cellspacing="0" cellpadding="0" border="0" style="width:80px !important;border-left-width: 0 !important;" id="partTable"> 
+                            <thead>
+                                <tr class="headerRow partTopBorder">
+                                    <th class="headerCenter">{!$Label.Oppy_Forecast}</th>
+                                </tr>           
+                            </thead>            
+                            <tbody> 
+                                <tr class="widedataRow" onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);" >
+                                    <td class="twidedataCell partLabel tdRight" >{!$Label.Revenue}</td>
+                                </tr>    
+                                <tr class="dataRow bomShow" onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);" style="display:{!IF(Opportunity.Method__c='Manual', 'none', '')}">                              
+                                    <td class="dataCell partLabel tdRight">{!$Label.Quantity}</td>
+                                </tr>                       
+                                <apex:repeat value="{!levelLabel}" var="label">
+                                    <tr class="dataRow Qzone" onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);" style="display:none;">                                              
+                                        <td class="dataCell partLabel tdRight">{!IF(label == 'year', $Label.Quantity_Year, label)}</td>
+                                    </tr> 
+                                </apex:repeat>
+                                <tr class="headerRow">
+                                    <th class="headerCenter">{!$Label.Quantity}</th>
+                                </tr>           
+                                <apex:repeat value="{!parts}" var="part">   
+                                    <tr class="dataRow" onmouseOver="om(this,1);" onmouseOut="om(this,0);">                              
+                                        <td class="dataCell tdTwo">
+                                            <!--  <input type="text" value="{!part.part.Quantity__c}" class="partRate {!IF(editMode,'bomShow','hide')}" onchange="tp(this,false,true,false)"/> -->
+                                            <apex:outputField value="{!part.part.Quantity__c}" rendered="{!AND(!editMode, opportunity.Method__c='BOM')}"/>
+                                            <apex:inputField value="{!part.part.Quantity__c}" styleClass="partRate {!IF(editMode,'bomShow','hide')}" onchange="tp(this,false,true,false)"/>
+                                        </td>
+                                    </tr>               
+                                    <tr class="widedataRow  Qprice" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;" data_pid="{!part.part.Id}">                                  
+                                        <td class="widedataCell partLabel tdRight">{!$Label.Price}</td>
+                                    </tr>                                
+                                    <apex:repeat value="{!levelLabel}" var="label">
+                                        <tr class="dataRow Qzone" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;">
+                                            <td class="dataCell partLabel tdRight">{!IF(label == 'year', $Label.Quantity_Year, label)}</td>                       
+                                        </tr> 
+                                    </apex:repeat>
+                                </apex:repeat>
+                            </tbody>
+                        </table>   
+                                                                                                                                                  
+                    </apex:outputPanel> 
+                 </td>
+                 </apex:form>
+                 <!-- </apex:form>  -->
+                 
+                 <td class="inlineTableTd">                                                                    
+                    <apex:outputPanel layout="block" id="oppyForecastStructures" styleClass="forecastStructures oppforecastdiv" rendered="{!hasForecasts}">                     
+                        <div id="innerWidthToSet" style="width:600px;">
+                        <table cellspacing="0" cellpadding="0" class="yearTablesTable">
+                            <tr id="yearsTableTr">            
+                                <apex:repeat value="{!ForecastStructures}" var="forecastStructure">         
+                                    <td class="Ytd">
+                                            <table class="list tableNoLeftBorder" cellspacing="0" cellpadding="0" border="0" id="{!forecastStructure.year}Table">
+                                                <thead>
+                                                    <tr class="headerRow">              
+                                                        <th class="thyear headerCenter">
+                                                                <img src="{!URLFOR($Resource.iconDelete)}" class="viewHide" onclick="if (!confirm('{!$Label.Are_You_Sure}')) return;else delYear(this);" title="Delete" width="10px" height="10px"/>
+                                                                <span>{!forecastStructure.year}</span>              
+                                                        </th>            
+                                                    </tr>           
+                                                </thead>            
+                                                <tbody> 
+                                                    <tr class="dataRow widedataRow" onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);">
+                                                        <td class="twidedataCell tdTwo"  title="{!forecastStructure.year}">
+                                                            <span></span>
+                                                        </td>                                                                                   
+                                                    </tr>    
+                                                    <tr class="dataRow bomShow" onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);" style="display:{!IF(Opportunity.Method__c='Manual', 'none', '')}">
+                                                        <td class="dataCell tdTwo">
+                                                            <span></span>
+                                                        </td>                                                                                   
+                                                    </tr>                       
+                                                    <apex:repeat value="{!forecastStructure.forecastStructure.editForecasts}" var="fs">
+                                                        <tr class="dataRow Qzone"  onmouseOver="om(this,1,true);" onmouseOut="om(this,0,true);" style="display:none;">                    
+                                                            <td class="dataCell tdTwo">  
+                                                                 <input type="text" value="{!fs.quantity}" class="bomShow" onchange="tp(this,{!forecastStructure.year})"/>
+                                                                 <span class="bomHide">{!fs.quantity}</span>    
+                                                            </td>                               
+                                                        </tr>  
+                                                    </apex:repeat> 
+                                                    <tr class="headerRow"> 
+                                                        <th class="thyear headerCenter">{!forecastStructure.year}</th>           
+                                                    </tr>                           
+                                                    <apex:repeat value="{!forecastStructure.partForecasts}" var="part"> 
+                                                        <tr class="dataRow" onmouseOver="om(this,1);" onmouseOut="om(this,0);"> 
+                                                            <td class="dataCell tdTwo" onmouseover="ov(1,this,'{!forecastStructure.year}');">
+                                                                <!-- to delete after test
+                                                                <apex:outputText value="{!part.totalQuantity}" styleClass="Total"/>
+                                                                -->
+                                                                <apex:outputPanel styleClass="Total">{!part.totalQuantity}</apex:outputPanel><div class="rpd"></div>
+                                                            </td>
+                                                        </tr>                   
+                                                        <tr class="dataRow Qprice" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;">  
+                                                            <td class="dataCell tdTwo">
+                                                               <input type="text" value="{!part.salesPrice}" class="priceInput {!IF(editMode,'show','hide')}" id="price" onchange="ptp(this,{!forecastStructure.year})"/>
+                                                               <apex:outputText value="{!part.salesPrice}" styleClass="inputPrice" rendered="{!!editMode}"/> 
+                                                                                      
+                                                            </td>
+                                                        </tr>                
+                                                        <apex:repeat value="{!part.quantitys}" var="quantity">
+                                                            <tr class="dataRow Qzone" onmouseOver="om(this,1);" onmouseOut="om(this,0);" style="display:none;">
+                                                                <td class="dataCell tdTwo">
+                                                                    <input type="text" value="{!quantity}" class="bomHide" onchange="tp(this,{!forecastStructure.year})"/>
+                                                                    <apex:outputText value="{!quantity}" styleClass="bomShow"/>
+                                                                    
+                                                               </td>                                
+                                                            </tr> 
+                                                        </apex:repeat>
+                                                    </apex:repeat>
+                                                </tbody>
+                                            </table>
+                                    </td>                                
+                                </apex:repeat>      
+                            </tr>
+                        </table>
+                        </div>
+                    </apex:outputPanel>
+                    </td>
+                    </tr></table>
+                    <script type="text/javascript">                   
+                        var isEdit= '{!editMode}';
+                        prepare('{!format}',isEdit!='true');
+                    </script>
+                    </div>
+            <c:CompPartStatusPopUp ></c:CompPartStatusPopUp>
+        </apex:pageBlock> 
+        <div id="tipBox" class="hide"></div> 
+        <script>
+        var isShowEdit = document.getElementById("hiddenshowedit").value;
+        var lc = window.location.href;
+        if(isShowEdit == true || isShowEdit == 'true'){
+            if(!lc.includes('mode=edit') ){
+                editForecast();
+        
+            }
+            else{
+                setTimeout(function(){
+                  document.getElementById("startDate").focus();
+                }, 2000);
+            }
+        }
+        </script>
+</apex:page>

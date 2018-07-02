@@ -1,0 +1,46 @@
+<aura:component >
+	
+    <aura:attribute name="isAPL"							type="Boolean" />
+    <aura:attribute name="isIND"							type="Boolean" />
+    
+    <tr>
+        <c:LtngOpportunityForecastAPLComp isAPL="{!v.isAPL}" tagName="td" checkbox="true" 
+                                          style="padding:0; text-align: center;" class="custom-border-b custom-border-l custom-table-title-bg"/>
+        <td class="custom-border-b custom-border-l custom-table-title-bg" style="padding:0; text-align: center;" >
+            <div class="slds-checkbox--add-button custom-checkbox--add-button">
+                <input onclick="{!c.event_allDisplayfc_click}" id="allExp" type="checkbox" class="slds-assistive-text" />
+                <label for="allExp" class="slds-checkbox--faux custom-label-ba">
+                    <span class="slds-assistive-text"></span>
+                </label>
+            </div>
+        </td>
+        <td class="{!v.isAPL ? 'custom-text_ac custom-border-b isAPL_borderl custom-table-title-bg custom-table-th-font' : 'custom-text_ac custom-border-b custom-border-l custom-table-title-bg custom-table-th-font'}">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Part Number</span>
+            </span>
+        </td>
+        <td class="custom-text_ac custom-border-b custom-border-l custom-table-title-bg custom-table-th-font">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Description</span>
+            </span>
+        </td>
+        <td class="custom-text_ac custom-border-b custom-border-l custom-table-title-bg custom-table-th-font">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Confidence</span>
+            </span>
+        </td>
+        	<aura:if isTrue="{!v.isIND}">
+        <td class="custom-text_ac custom-border-b custom-border-l custom-table-title-bg custom-table-th-font">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Process Status</span>
+            </span>
+        </td>
+        	</aura:if>
+        <td class="custom-text_ac custom-border-b custom-border-lr custom-table-title-bg custom-table-th-font">
+            <span class="slds-grid--align-spread">
+                <span class="slds-truncate">Quantity</span>
+            </span>
+        </td>
+    </tr>
+    
+</aura:component>

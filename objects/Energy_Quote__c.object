@@ -1,0 +1,4884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account Name</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Energy Quotes</relationshipLabel>
+        <relationshipName>Energy_Quotes</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    NOT(
+            ISBLANK(Account_Name__r.AccountNumber)
+        ),  
+            TEXT(VALUE(RIGHT(Account_Name__r.AccountNumber, 6))
+        )
+            , End_Customer__r.CUST__c
+    )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quote Customer Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Actual_Total_Price__c</fullName>
+        <description>for quote reporting</description>
+        <externalId>false</externalId>
+        <label>Actual Total Price</label>
+        <summarizedField>Energy_Quote_Line_Item__c.TotalPrice__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Criteria__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF((Quote_Record_No__c != RSM_Price_Roll_Up__c), &quot;Required Approval&quot;, &quot;Required Approval&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approval Criteria</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approval_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Won</fullName>
+                    <default>false</default>
+                    <label>Won</label>
+                </value>
+                <value>
+                    <fullName>Pending</fullName>
+                    <default>true</default>
+                    <label>Pending</label>
+                </value>
+                <value>
+                    <fullName>Lost</fullName>
+                    <default>false</default>
+                    <label>Lost</label>
+                </value>
+                <value>
+                    <fullName>Superceded</fullName>
+                    <default>false</default>
+                    <label>Superceded</label>
+                </value>
+                <value>
+                    <fullName>In QAD</fullName>
+                    <default>false</default>
+                    <label>In QAD</label>
+                </value>
+                <value>
+                    <fullName>Presented</fullName>
+                    <default>false</default>
+                    <label>Presented</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Rejected</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Auto_Quote_Number__c</fullName>
+        <description>Auto generate quote number</description>
+        <displayFormat>Q{0000}</displayFormat>
+        <externalId>false</externalId>
+        <label>Auto Quote Number</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>BillingAddress__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill To</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BillingName__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill To Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Competitor__c</fullName>
+        <externalId>false</externalId>
+        <label>Competitor</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>3M</fullName>
+                    <default>false</default>
+                    <label>3M</label>
+                </value>
+                <value>
+                    <fullName>ABB</fullName>
+                    <default>false</default>
+                    <label>ABB</label>
+                </value>
+                <value>
+                    <fullName>Basler</fullName>
+                    <default>false</default>
+                    <label>Basler</label>
+                </value>
+                <value>
+                    <fullName>Beede</fullName>
+                    <default>false</default>
+                    <label>Beede</label>
+                </value>
+                <value>
+                    <fullName>Blackburn</fullName>
+                    <default>false</default>
+                    <label>Blackburn</label>
+                </value>
+                <value>
+                    <fullName>Brady</fullName>
+                    <default>false</default>
+                    <label>Brady</label>
+                </value>
+                <value>
+                    <fullName>Brugg</fullName>
+                    <default>false</default>
+                    <label>Brugg</label>
+                </value>
+                <value>
+                    <fullName>Burndy</fullName>
+                    <default>false</default>
+                    <label>Burndy</label>
+                </value>
+                <value>
+                    <fullName>Canadian Shunts</fullName>
+                    <default>false</default>
+                    <label>Canadian Shunts</label>
+                </value>
+                <value>
+                    <fullName>Canusa</fullName>
+                    <default>false</default>
+                    <label>Canusa</label>
+                </value>
+                <value>
+                    <fullName>Central Maloney</fullName>
+                    <default>false</default>
+                    <label>Central Maloney</label>
+                </value>
+                <value>
+                    <fullName>CMC</fullName>
+                    <default>false</default>
+                    <label>CMC</label>
+                </value>
+                <value>
+                    <fullName>Cooper</fullName>
+                    <default>false</default>
+                    <label>Cooper</label>
+                </value>
+                <value>
+                    <fullName>Crompton Greaves</fullName>
+                    <default>false</default>
+                    <label>Crompton Greaves</label>
+                </value>
+                <value>
+                    <fullName>Dark to Light</fullName>
+                    <default>false</default>
+                    <label>Dark to Light</label>
+                </value>
+                <value>
+                    <fullName>Deif</fullName>
+                    <default>false</default>
+                    <label>Deif</label>
+                </value>
+                <value>
+                    <fullName>DMX</fullName>
+                    <default>false</default>
+                    <label>DMX</label>
+                </value>
+                <value>
+                    <fullName>ECO Electrical</fullName>
+                    <default>false</default>
+                    <label>ECO Electrical</label>
+                </value>
+                <value>
+                    <fullName>EHV</fullName>
+                    <default>false</default>
+                    <label>EHV</label>
+                </value>
+                <value>
+                    <fullName>Elastimold</fullName>
+                    <default>false</default>
+                    <label>Elastimold</label>
+                </value>
+                <value>
+                    <fullName>Electic Metering</fullName>
+                    <default>false</default>
+                    <label>Electic Metering</label>
+                </value>
+                <value>
+                    <fullName>Electro-Industries</fullName>
+                    <default>false</default>
+                    <label>Electro-Industries</label>
+                </value>
+                <value>
+                    <fullName>Emelec</fullName>
+                    <default>false</default>
+                    <label>Emelec</label>
+                </value>
+                <value>
+                    <fullName>Empro</fullName>
+                    <default>false</default>
+                    <label>Empro</label>
+                </value>
+                <value>
+                    <fullName>Erico</fullName>
+                    <default>false</default>
+                    <label>Erico</label>
+                </value>
+                <value>
+                    <fullName>G&amp;W</fullName>
+                    <default>false</default>
+                    <label>G&amp;W</label>
+                </value>
+                <value>
+                    <fullName>Green jacket</fullName>
+                    <default>false</default>
+                    <label>Green jacket</label>
+                </value>
+                <value>
+                    <fullName>Homac</fullName>
+                    <default>false</default>
+                    <label>Homac</label>
+                </value>
+                <value>
+                    <fullName>Hoyt</fullName>
+                    <default>false</default>
+                    <label>Hoyt</label>
+                </value>
+                <value>
+                    <fullName>Hubbell</fullName>
+                    <default>false</default>
+                    <label>Hubbell</label>
+                </value>
+                <value>
+                    <fullName>Ilsco</fullName>
+                    <default>false</default>
+                    <label>Ilsco</label>
+                </value>
+                <value>
+                    <fullName>IMS Leviton</fullName>
+                    <default>false</default>
+                    <label>IMS Leviton</label>
+                </value>
+                <value>
+                    <fullName>Inertia REPL</fullName>
+                    <default>false</default>
+                    <label>Inertia REPL</label>
+                </value>
+                <value>
+                    <fullName>Intermatic</fullName>
+                    <default>false</default>
+                    <label>Intermatic</label>
+                </value>
+                <value>
+                    <fullName>ITI</fullName>
+                    <default>false</default>
+                    <label>ITI</label>
+                </value>
+                <value>
+                    <fullName>Jewell</fullName>
+                    <default>false</default>
+                    <label>Jewell</label>
+                </value>
+                <value>
+                    <fullName>Joslyn</fullName>
+                    <default>false</default>
+                    <label>Joslyn</label>
+                </value>
+                <value>
+                    <fullName>Kaddas</fullName>
+                    <default>false</default>
+                    <label>Kaddas</label>
+                </value>
+                <value>
+                    <fullName>LS</fullName>
+                    <default>false</default>
+                    <label>LS</label>
+                </value>
+                <value>
+                    <fullName>Maclean</fullName>
+                    <default>false</default>
+                    <label>Maclean</label>
+                </value>
+                <value>
+                    <fullName>Magna-Core</fullName>
+                    <default>false</default>
+                    <label>Magna-Core</label>
+                </value>
+                <value>
+                    <fullName>Meter Center</fullName>
+                    <default>false</default>
+                    <label>Meter Center</label>
+                </value>
+                <value>
+                    <fullName>Midsun</fullName>
+                    <default>false</default>
+                    <label>Midsun</label>
+                </value>
+                <value>
+                    <fullName>Modutec</fullName>
+                    <default>false</default>
+                    <label>Modutec</label>
+                </value>
+                <value>
+                    <fullName>Multi-tech</fullName>
+                    <default>false</default>
+                    <label>Multi-tech</label>
+                </value>
+                <value>
+                    <fullName>Nexans</fullName>
+                    <default>false</default>
+                    <label>Nexans</label>
+                </value>
+                <value>
+                    <fullName>NKT</fullName>
+                    <default>false</default>
+                    <label>NKT</label>
+                </value>
+                <value>
+                    <fullName>Ohio Brass</fullName>
+                    <default>false</default>
+                    <label>Ohio Brass</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>Panduit</fullName>
+                    <default>false</default>
+                    <label>Panduit</label>
+                </value>
+                <value>
+                    <fullName>PFISTERER</fullName>
+                    <default>false</default>
+                    <label>PFISTERER</label>
+                </value>
+                <value>
+                    <fullName>PML</fullName>
+                    <default>false</default>
+                    <label>PML</label>
+                </value>
+                <value>
+                    <fullName>Precision</fullName>
+                    <default>false</default>
+                    <label>Precision</label>
+                </value>
+                <value>
+                    <fullName>Price Request</fullName>
+                    <default>false</default>
+                    <label>Price Request</label>
+                </value>
+                <value>
+                    <fullName>Prysmian</fullName>
+                    <default>false</default>
+                    <label>Prysmian</label>
+                </value>
+                <value>
+                    <fullName>Rauckman</fullName>
+                    <default>false</default>
+                    <label>Rauckman</label>
+                </value>
+                <value>
+                    <fullName>Redline</fullName>
+                    <default>false</default>
+                    <label>Redline</label>
+                </value>
+                <value>
+                    <fullName>Richards</fullName>
+                    <default>false</default>
+                    <label>Richards</label>
+                </value>
+                <value>
+                    <fullName>Richardson</fullName>
+                    <default>false</default>
+                    <label>Richardson</label>
+                </value>
+                <value>
+                    <fullName>Ripley</fullName>
+                    <default>false</default>
+                    <label>Ripley</label>
+                </value>
+                <value>
+                    <fullName>Salisbury</fullName>
+                    <default>false</default>
+                    <label>Salisbury</label>
+                </value>
+                <value>
+                    <fullName>Schneider Electric</fullName>
+                    <default>false</default>
+                    <label>Schneider Electric</label>
+                </value>
+                <value>
+                    <fullName>Siemens</fullName>
+                    <default>false</default>
+                    <label>Siemens</label>
+                </value>
+                <value>
+                    <fullName>Sifam</fullName>
+                    <default>false</default>
+                    <label>Sifam</label>
+                </value>
+                <value>
+                    <fullName>Simpson</fullName>
+                    <default>false</default>
+                    <label>Simpson</label>
+                </value>
+                <value>
+                    <fullName>Socomec</fullName>
+                    <default>false</default>
+                    <label>Socomec</label>
+                </value>
+                <value>
+                    <fullName>Suntech / Fisher Pierce</fullName>
+                    <default>false</default>
+                    <label>Suntech / Fisher Pierce</label>
+                </value>
+                <value>
+                    <fullName>T&amp;B</fullName>
+                    <default>false</default>
+                    <label>T&amp;B</label>
+                </value>
+                <value>
+                    <fullName>Taihan</fullName>
+                    <default>false</default>
+                    <label>Taihan</label>
+                </value>
+                <value>
+                    <fullName>Texmate</fullName>
+                    <default>false</default>
+                    <label>Texmate</label>
+                </value>
+                <value>
+                    <fullName>Therm-A-Guard</fullName>
+                    <default>false</default>
+                    <label>Therm-A-Guard</label>
+                </value>
+                <value>
+                    <fullName>Tork</fullName>
+                    <default>false</default>
+                    <label>Tork</label>
+                </value>
+                <value>
+                    <fullName>Tork/NSI</fullName>
+                    <default>false</default>
+                    <label>Tork/NSI</label>
+                </value>
+                <value>
+                    <fullName>Triplett</fullName>
+                    <default>false</default>
+                    <label>Triplett</label>
+                </value>
+                <value>
+                    <fullName>WICC</fullName>
+                    <default>false</default>
+                    <label>WICC</label>
+                </value>
+                <value>
+                    <fullName>Yokogawa</fullName>
+                    <default>false</default>
+                    <label>Yokogawa</label>
+                </value>
+                <value>
+                    <fullName>Sicame</fullName>
+                    <default>false</default>
+                    <label>Sicame</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact Name</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Energy Quotes</relationshipLabel>
+        <relationshipName>Energy_Quotes</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Finish_Date__c</fullName>
+        <description>Contract finish date of the initial duration period</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Contract finish date of the initial duration period</inlineHelpText>
+        <label>Contract Finish Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contract</label>
+        <referenceTo>Contract</referenceTo>
+        <relationshipLabel>Energy Quotes</relationshipLabel>
+        <relationshipName>Energy_Quotes</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contract_start_date__c</fullName>
+        <description>For EMEA region</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the date the new Contract will start.</inlineHelpText>
+        <label>Contract start date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Create_By_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>CreatedBy.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Create By Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Currency1__c</fullName>
+        <externalId>false</externalId>
+        <label>Currency</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CAD</fullName>
+                    <default>false</default>
+                    <label>CAD</label>
+                </value>
+                <value>
+                    <fullName>USD</fullName>
+                    <default>false</default>
+                    <label>USD</label>
+                </value>
+                <value>
+                    <fullName>MXN</fullName>
+                    <default>false</default>
+                    <label>MXN</label>
+                </value>
+                <value>
+                    <fullName>COP</fullName>
+                    <default>false</default>
+                    <label>COP</label>
+                </value>
+                <value>
+                    <fullName>PEN</fullName>
+                    <default>false</default>
+                    <label>PEN</label>
+                </value>
+                <value>
+                    <fullName>CLP</fullName>
+                    <default>false</default>
+                    <label>CLP</label>
+                </value>
+                <value>
+                    <fullName>ARS</fullName>
+                    <default>false</default>
+                    <label>ARS</label>
+                </value>
+                <value>
+                    <fullName>BRL</fullName>
+                    <default>false</default>
+                    <label>BRL</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Currency__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(TE_Sales_Office__c, &apos;UNITED STATES&apos;) ,(&apos;USD&apos;),
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;MEXICO&apos;) ,(&apos;MXN&apos;),
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;COLOMBIA&apos;) ,(&apos;COP&apos;),
+
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;PERU&apos;) ,(&apos;PEN&apos;),
+
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;CHILE&apos;) ,(&apos;CLP&apos;),
+
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;ARGENTINA&apos;) ,(&apos;ARS&apos;),
+
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;BRAZIL&apos;) ,(&apos;BRL&apos;),
+IF(ISPICKVAL(TE_Sales_Office__c, &apos;CANADA&apos;) ,(&apos;CAD&apos;),
+
+null
+)
+)))))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Currency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Custom_Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Custom Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Energy Quotes (Custom Opportunity)</relationshipLabel>
+        <relationshipName>Energy_Quotes1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Customer_Ref_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer Ref Number</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_prices_valid__c</fullName>
+        <externalId>false</externalId>
+        <label>Valid For</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>30 Days</fullName>
+                    <default>false</default>
+                    <label>30 Days</label>
+                </value>
+                <value>
+                    <fullName>60 Days</fullName>
+                    <default>false</default>
+                    <label>60 Days</label>
+                </value>
+                <value>
+                    <fullName>90 Days</fullName>
+                    <default>false</default>
+                    <label>90 Days</label>
+                </value>
+                <value>
+                    <fullName>120 Days</fullName>
+                    <default>false</default>
+                    <label>120 Days</label>
+                </value>
+                <value>
+                    <fullName>180 Days</fullName>
+                    <default>false</default>
+                    <label>180 Days</label>
+                </value>
+                <value>
+                    <fullName>1 year</fullName>
+                    <default>false</default>
+                    <label>1 year</label>
+                </value>
+                <value>
+                    <fullName>2 years</fullName>
+                    <default>false</default>
+                    <label>2 years</label>
+                </value>
+                <value>
+                    <fullName>3 years</fullName>
+                    <default>false</default>
+                    <label>3 years</label>
+                </value>
+                <value>
+                    <fullName>4 years</fullName>
+                    <default>false</default>
+                    <label>4 years</label>
+                </value>
+                <value>
+                    <fullName>5 years</fullName>
+                    <default>false</default>
+                    <label>5 years</label>
+                </value>
+                <value>
+                    <fullName>12/31/17</fullName>
+                    <default>false</default>
+                    <label>12/31/17</label>
+                </value>
+                <value>
+                    <fullName>6 months</fullName>
+                    <default>false</default>
+                    <label>6 months</label>
+                </value>
+                <value>
+                    <fullName>12/31/16</fullName>
+                    <default>false</default>
+                    <label>12/31/16</label>
+                </value>
+                <value>
+                    <fullName>12/31/18</fullName>
+                    <default>false</default>
+                    <label>12/31/18</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>32000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Discount__c</fullName>
+        <externalId>false</externalId>
+        <label>Discount</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Customer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>End Customer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Energy Quotes (End Customer)</relationshipLabel>
+        <relationshipName>Energy_Quotes2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Energy_Record_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Energy Record Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Exclude_Customer_Email__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Exclude Customer Email</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Validity Expiration Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expiration_Email_Sent__c</fullName>
+        <externalId>false</externalId>
+        <label>Expiration Email Sent</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expiry_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(ISPICKVAL( Days_prices_valid__c ,&apos;30 Days&apos;), (Valid_From__c +30), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;60 Days&apos;), (Valid_From__c +60), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;90 Days&apos;), (Valid_From__c + 90), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;120 Days&apos;), (Valid_From__c + 120 ), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;180 Days&apos;), (Valid_From__c + 180 ), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;1 year&apos;), (Valid_From__c + 365), 
+if(ISPICKVAL( Days_prices_valid__c ,&apos;2 years&apos;), (Valid_From__c + 730),
+if(ISPICKVAL( Days_prices_valid__c ,&apos;3 years&apos;), (Valid_From__c + 1095),
+if(ISPICKVAL( Days_prices_valid__c  ,&apos;4 years&apos;), (Valid_From__c + 1460),
+if(ISPICKVAL( Days_prices_valid__c ,&apos;5 years&apos;), (Valid_From__c + 1825),null))))))))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expiry Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>From_ComPriceRequest__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>From ComPriceRequest</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GrandTotal__c</fullName>
+        <externalId>false</externalId>
+        <label>Grand Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Header_Level_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Header Level Comments</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IsSyncing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Syncing</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Language__c</fullName>
+        <externalId>false</externalId>
+        <label>Language</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>English</fullName>
+                    <default>false</default>
+                    <label>English</label>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                    <label>Spanish</label>
+                </value>
+                <value>
+                    <fullName>Portuguese</fullName>
+                    <default>false</default>
+                    <label>Portuguese</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>LegacyQuoteNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Legacy Quote Number</label>
+        <length>30</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LineItemCount__c</fullName>
+        <externalId>false</externalId>
+        <label>Line Items</label>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Market_Segment__c</fullName>
+        <externalId>false</externalId>
+        <label>Market Segment</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Aviation</fullName>
+                    <default>false</default>
+                    <label>Aviation</label>
+                </value>
+                <value>
+                    <fullName>Chemical Processing</fullName>
+                    <default>false</default>
+                    <label>Chemical Processing</label>
+                </value>
+                <value>
+                    <fullName>Commercial</fullName>
+                    <default>false</default>
+                    <label>Commercial</label>
+                </value>
+                <value>
+                    <fullName>Crompton</fullName>
+                    <default>false</default>
+                    <label>Crompton</label>
+                </value>
+                <value>
+                    <fullName>Data Centers</fullName>
+                    <default>false</default>
+                    <label>Data Centers</label>
+                </value>
+                <value>
+                    <fullName>Distribution</fullName>
+                    <default>false</default>
+                    <label>Distribution</label>
+                </value>
+                <value>
+                    <fullName>Hydro</fullName>
+                    <default>false</default>
+                    <label>Hydro</label>
+                </value>
+                <value>
+                    <fullName>Mining</fullName>
+                    <default>false</default>
+                    <label>Mining</label>
+                </value>
+                <value>
+                    <fullName>Nuclear</fullName>
+                    <default>false</default>
+                    <label>Nuclear</label>
+                </value>
+                <value>
+                    <fullName>OEM</fullName>
+                    <default>false</default>
+                    <label>OEM</label>
+                </value>
+                <value>
+                    <fullName>Oil &amp; Gas</fullName>
+                    <default>false</default>
+                    <label>Oil &amp; Gas</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>Ports &amp; Waterways</fullName>
+                    <default>false</default>
+                    <label>Ports &amp; Waterways</label>
+                </value>
+                <value>
+                    <fullName>Pulp, Paper &amp; Wood</fullName>
+                    <default>false</default>
+                    <label>Pulp, Paper &amp; Wood</label>
+                </value>
+                <value>
+                    <fullName>Smart Grid</fullName>
+                    <default>false</default>
+                    <label>Smart Grid</label>
+                </value>
+                <value>
+                    <fullName>Solar</fullName>
+                    <default>false</default>
+                    <label>Solar</label>
+                </value>
+                <value>
+                    <fullName>Substation</fullName>
+                    <default>false</default>
+                    <label>Substation</label>
+                </value>
+                <value>
+                    <fullName>Transit/Rail</fullName>
+                    <default>false</default>
+                    <label>Transit/Rail</label>
+                </value>
+                <value>
+                    <fullName>Transmission</fullName>
+                    <default>false</default>
+                    <label>Transmission</label>
+                </value>
+                <value>
+                    <fullName>Wind</fullName>
+                    <default>false</default>
+                    <label>Wind</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Market_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Market Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Power Generation Wind</fullName>
+                    <default>false</default>
+                    <label>Power Generation Wind</label>
+                </value>
+                <value>
+                    <fullName>Power Generation Nuclear</fullName>
+                    <default>false</default>
+                    <label>Power Generation Nuclear</label>
+                </value>
+                <value>
+                    <fullName>Power Generation Solar</fullName>
+                    <default>false</default>
+                    <label>Power Generation Solar</label>
+                </value>
+                <value>
+                    <fullName>Power Generation Others</fullName>
+                    <default>false</default>
+                    <label>Power Generation Others</label>
+                </value>
+                <value>
+                    <fullName>Power Transmission Overhead</fullName>
+                    <default>false</default>
+                    <label>Power Transmission Overhead</label>
+                </value>
+                <value>
+                    <fullName>Power Transmission Underground</fullName>
+                    <default>false</default>
+                    <label>Power Transmission Underground</label>
+                </value>
+                <value>
+                    <fullName>Power Transmission Sub-station</fullName>
+                    <default>false</default>
+                    <label>Power Transmission Sub-station</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution LV Overhead</fullName>
+                    <default>false</default>
+                    <label>Power Distribution LV Overhead</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution LV Underground</fullName>
+                    <default>false</default>
+                    <label>Power Distribution LV Underground</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution MV Overhead</fullName>
+                    <default>false</default>
+                    <label>Power Distribution MV Overhead</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution MV Underground</fullName>
+                    <default>false</default>
+                    <label>Power Distribution MV Underground</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution Sub-station</fullName>
+                    <default>false</default>
+                    <label>Power Distribution Sub-station</label>
+                </value>
+                <value>
+                    <fullName>Power Distribution Industrial</fullName>
+                    <default>false</default>
+                    <label>Power Distribution Industrial</label>
+                </value>
+                <value>
+                    <fullName>Industry Railway</fullName>
+                    <default>false</default>
+                    <label>Industry Railway</label>
+                </value>
+                <value>
+                    <fullName>Industry Mining</fullName>
+                    <default>false</default>
+                    <label>Industry Mining</label>
+                </value>
+                <value>
+                    <fullName>Industry OGPC</fullName>
+                    <default>false</default>
+                    <label>Industry OGPC</label>
+                </value>
+                <value>
+                    <fullName>Industry Building/Construction</fullName>
+                    <default>false</default>
+                    <label>Industry Building/Construction</label>
+                </value>
+                <value>
+                    <fullName>Industry Others</fullName>
+                    <default>false</default>
+                    <label>Industry Others</label>
+                </value>
+                <value>
+                    <fullName>Crompton Metering</fullName>
+                    <default>false</default>
+                    <label>Crompton Metering</label>
+                </value>
+                <value>
+                    <fullName>Distribution &amp; Automation</fullName>
+                    <default>false</default>
+                    <label>Distribution &amp; Automation</label>
+                </value>
+                <value>
+                    <fullName>Industry Steel</fullName>
+                    <default>false</default>
+                    <label>Industry Steel</label>
+                </value>
+                <value>
+                    <fullName>Industry Shipbuilding</fullName>
+                    <default>false</default>
+                    <label>Industry Shipbuilding</label>
+                </value>
+                <value>
+                    <fullName>Partnership</fullName>
+                    <default>false</default>
+                    <label>Partnership</label>
+                </value>
+                <value>
+                    <fullName>Industry Ship / Rig Building</fullName>
+                    <default>false</default>
+                    <label>Industry Ship / Rig Building</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Market__c</fullName>
+        <externalId>false</externalId>
+        <label>Market</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Industrial</fullName>
+                    <default>false</default>
+                    <label>Industrial</label>
+                </value>
+                <value>
+                    <fullName>Utility</fullName>
+                    <default>false</default>
+                    <label>Utility</label>
+                </value>
+                <value>
+                    <fullName>Nuclear</fullName>
+                    <default>false</default>
+                    <label>Nuclear</label>
+                </value>
+                <value>
+                    <fullName>OEM</fullName>
+                    <default>false</default>
+                    <label>OEM</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Month__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(MONTH(DATEVALUE(CreatedDate)),
+1, &quot;1-Jan&quot;, 
+2, &quot;2-Feb&quot;, 
+3, &quot;3-Mar&quot;, 
+4, &quot;4-Apr&quot;, 
+5, &quot;5-May&quot;, 
+6, &quot;6-Jun&quot;, 
+7, &quot;7-Jul&quot;, 
+8, &quot;8-Aug&quot;, 
+9, &quot;9-Sep&quot;, 
+10,&quot;10-Oct&quot;, 
+11, &quot;11-Nov&quot;, 
+12, &quot;12-Dec&quot;, 
+&quot;None&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Month</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity Name</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Energy Quotes</relationshipLabel>
+        <relationshipName>Energy_Quotes</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Override_Incoterms_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Incoterms Code</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>EXW</fullName>
+                    <default>false</default>
+                    <label>EXW</label>
+                </value>
+                <value>
+                    <fullName>FCA</fullName>
+                    <default>false</default>
+                    <label>FCA</label>
+                </value>
+                <value>
+                    <fullName>CPT</fullName>
+                    <default>false</default>
+                    <label>CPT</label>
+                </value>
+                <value>
+                    <fullName>CIP</fullName>
+                    <default>false</default>
+                    <label>CIP</label>
+                </value>
+                <value>
+                    <fullName>DAT</fullName>
+                    <default>false</default>
+                    <label>DAT</label>
+                </value>
+                <value>
+                    <fullName>DAP</fullName>
+                    <default>false</default>
+                    <label>DAP</label>
+                </value>
+                <value>
+                    <fullName>DDP</fullName>
+                    <default>false</default>
+                    <label>DDP</label>
+                </value>
+                <value>
+                    <fullName>FAS</fullName>
+                    <default>false</default>
+                    <label>FAS</label>
+                </value>
+                <value>
+                    <fullName>FOB</fullName>
+                    <default>false</default>
+                    <label>FOB</label>
+                </value>
+                <value>
+                    <fullName>CFR</fullName>
+                    <default>false</default>
+                    <label>CFR</label>
+                </value>
+                <value>
+                    <fullName>CIF</fullName>
+                    <default>false</default>
+                    <label>CIF</label>
+                </value>
+                <value>
+                    <fullName>DAS</fullName>
+                    <default>false</default>
+                    <label>DAS</label>
+                </value>
+                <value>
+                    <fullName>DEQ</fullName>
+                    <default>false</default>
+                    <label>DEQ</label>
+                </value>
+                <value>
+                    <fullName>DDU</fullName>
+                    <default>false</default>
+                    <label>DDU</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Override_Incoterms_Details__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Incoterms Details</label>
+        <length>28</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Override_Payment_Terms_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Payment Terms Code</label>
+        <length>4</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Owner_Active__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Owner Active</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Phone</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>PriceList_RollUp__c</fullName>
+        <externalId>false</externalId>
+        <label>PriceList RollUp</label>
+        <summarizedField>Energy_Quote_Line_Item__c.Product_List_Price__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Price_List_Roll_Up__c</fullName>
+        <description>AMR Auto Approval roll up</description>
+        <externalId>false</externalId>
+        <label>Price List (Roll Up)</label>
+        <summarizedField>Energy_Quote_Line_Item__c.UnitPrice__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Price_increase_or_Price_erosion_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Price_increase_or_Price_erosion__c *100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Price increase or Price erosion - Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Price_increase_or_Price_erosion__c</fullName>
+        <externalId>false</externalId>
+        <label>Price increase or Price erosion (%)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Pricing_Analyst__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Pricing Analyst</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Energy_Quotes2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Print_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>TODAY()</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Print Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Product_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>RSM</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Energy_Quotes1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>QuoteLineItem_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>QuoteLineItem Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuoteNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>QuoteNumber</label>
+        <length>20</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quote_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isBlank(LegacyQuoteNumber__c),  
+    if(isBlank(SAP_Quote_Number__c), 
+        Auto_Quote_Number__c + &apos;-&apos; +  text(RevisionNum__c), 
+        SAP_Quote_Number__c + &apos;-&apos; +  text(RevisionNum__c) ), 
+    if (isBlank(RevisionNum__c), 
+        if (Contains(LegacyQuoteNumber__c, &apos;RSQ&apos;), MID(LegacyQuoteNumber__c, 3, LEN(LegacyQuoteNumber__c)) , LegacyQuoteNumber__c), 
+        if (Contains(LegacyQuoteNumber__c, &apos;RSQ&apos;), MID(LegacyQuoteNumber__c, 3, LEN(LegacyQuoteNumber__c)) , LegacyQuoteNumber__c) + &apos;-&apos; +  text(RevisionNum__c) ))</formula>
+        <label>Quote Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quote_Price_Roll_Up__c</fullName>
+        <description>AMR Auto Approval for Quote</description>
+        <externalId>false</externalId>
+        <label>Quote Price (Roll Up)</label>
+        <summarizedField>Energy_Quote_Line_Item__c.Sold_Price__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Quote_Record_No__c</fullName>
+        <externalId>false</externalId>
+        <label>Quote Record No</label>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Quote_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Quote Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>false</default>
+                    <label>Standard</label>
+                </value>
+                <value>
+                    <fullName>Meet Competitor Price</fullName>
+                    <default>false</default>
+                    <label>Meet Competitor Price</label>
+                </value>
+                <value>
+                    <fullName>Blanket/Tender</fullName>
+                    <default>false</default>
+                    <label>Blanket/Tender</label>
+                </value>
+                <value>
+                    <fullName>One Time Tender</fullName>
+                    <default>false</default>
+                    <label>One Time Tender</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Quote_number_Without_revision_number__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isBlank(LegacyQuoteNumber__c),  
+    if(isBlank(SAP_Quote_Number__c), 
+        Auto_Quote_Number__c , 
+        SAP_Quote_Number__c ), 
+    LegacyQuoteNumber__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quote number Without revision number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RSM_Price_Roll_Up__c</fullName>
+        <externalId>false</externalId>
+        <label>RSM Price Roll Up</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reason_of_Win__c</fullName>
+        <externalId>false</externalId>
+        <label>Reason Won</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Reason_Won_Picklist_Value</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity_Name__r.Owner_Region__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RevisionNum__c</fullName>
+        <externalId>false</externalId>
+        <label>Revision</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Creation_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>SAP Creation Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not Applicable</fullName>
+                    <default>false</default>
+                    <label>Not Applicable</label>
+                </value>
+                <value>
+                    <fullName>Awaiting Creation in SAP</fullName>
+                    <default>false</default>
+                    <label>Awaiting Creation in SAP</label>
+                </value>
+                <value>
+                    <fullName>Created In SAP</fullName>
+                    <default>false</default>
+                    <label>Created In SAP</label>
+                </value>
+                <value>
+                    <fullName>Failed to Create in SAP</fullName>
+                    <default>false</default>
+                    <label>Failed to Create in SAP</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SAP_Message__c</fullName>
+        <description>Message returned from SAP</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Message returned for EMEA</inlineHelpText>
+        <label>SAP Message</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SAP_Quote_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>SAP Quote Number</label>
+        <length>40</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Person_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account_Name__r.Owner.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sales Person Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Selected_Email_Template__c</fullName>
+        <externalId>false</externalId>
+        <label>Selected Email Template</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Send_to_QAD__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Send to QAD</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ShippingAddress__c</fullName>
+        <externalId>false</externalId>
+        <label>Ship To</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ShippingName__c</fullName>
+        <externalId>false</externalId>
+        <label>Ship To Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sold_to_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Quote Company Name</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Energy Quotes (Quote Company Name)</relationshipLabel>
+        <relationshipName>Energy_Quotes1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Standard_Margin_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Standard_Margin__c *100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Standard Margin (%) - Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Standard_Margin__c</fullName>
+        <externalId>false</externalId>
+        <label>Standard Margin (%)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Subtotal__c</fullName>
+        <externalId>false</externalId>
+        <label>Subtotal</label>
+        <summarizedField>Energy_Quote_Line_Item__c.Subtotal__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TE_Sales_Office__c</fullName>
+        <externalId>false</externalId>
+        <label>TE Sales Office</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ARGENTINA</fullName>
+                    <default>false</default>
+                    <label>ARGENTINA</label>
+                </value>
+                <value>
+                    <fullName>BRAZIL</fullName>
+                    <default>false</default>
+                    <label>BRAZIL</label>
+                </value>
+                <value>
+                    <fullName>CANADA</fullName>
+                    <default>false</default>
+                    <label>CANADA</label>
+                </value>
+                <value>
+                    <fullName>CHILE</fullName>
+                    <default>false</default>
+                    <label>CHILE</label>
+                </value>
+                <value>
+                    <fullName>COLOMBIA</fullName>
+                    <default>false</default>
+                    <label>COLOMBIA</label>
+                </value>
+                <value>
+                    <fullName>MEXICO</fullName>
+                    <default>false</default>
+                    <label>MEXICO</label>
+                </value>
+                <value>
+                    <fullName>PERU</fullName>
+                    <default>false</default>
+                    <label>PERU</label>
+                </value>
+                <value>
+                    <fullName>UNITED STATES</fullName>
+                    <default>false</default>
+                    <label>UNITED STATES</label>
+                </value>
+                <value>
+                    <fullName>CARIBBEAN</fullName>
+                    <default>false</default>
+                    <label>CARIBBEAN</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TE_Sales_Person2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>TE Sales Person</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Energy_Quotes</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TE_Sales_Person__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity_Name__r.Account_Owner__r.FirstName + &apos; &apos; + Opportunity_Name__r.Account_Owner__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>TE Sales Person</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TotalPrice__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Price</label>
+        <summarizedField>Energy_Quote_Line_Item__c.TotalPrice__c</summarizedField>
+        <summaryForeignKey>Energy_Quote_Line_Item__c.Energy_Quote_Name__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Valid_Days__c</fullName>
+        <externalId>false</externalId>
+        <formula>Case( Days_prices_valid__c , 
+&quot;30 Days&quot;,&quot;30&quot;, 
+&quot;60 Days&quot;,&quot;60&quot;, 
+&quot;90 Days&quot;,&quot;90&quot;,
+&quot;120 Days&quot;,&quot;120&quot;,
+&quot;180 Days&quot;,&quot;180&quot;, 
+&quot;1 year&quot;,&quot;365&quot;,
+&quot;2 years&quot;,&quot;730&quot;,
+&quot;3 years&quot;,&quot;1096&quot;,
+&quot;4 years&quot;,&quot;1461&quot;,
+&quot;5 years&quot;, &quot;1826&quot;,
+&quot;0&quot; 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Valid Days</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Valid_From__c</fullName>
+        <externalId>false</externalId>
+        <label>Valid From</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Validity__c</fullName>
+        <externalId>false</externalId>
+        <label>Validity</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>30 days</fullName>
+                    <default>false</default>
+                    <label>30 days</label>
+                </value>
+                <value>
+                    <fullName>60 days</fullName>
+                    <default>false</default>
+                    <label>60 days</label>
+                </value>
+                <value>
+                    <fullName>90 days</fullName>
+                    <default>false</default>
+                    <label>90 days</label>
+                </value>
+                <value>
+                    <fullName>6 months</fullName>
+                    <default>false</default>
+                    <label>6 months</label>
+                </value>
+                <value>
+                    <fullName>1 year</fullName>
+                    <default>false</default>
+                    <label>1 year</label>
+                </value>
+                <value>
+                    <fullName>12/31/16</fullName>
+                    <default>false</default>
+                    <label>12/31/16</label>
+                </value>
+                <value>
+                    <fullName>12/31/17</fullName>
+                    <default>false</default>
+                    <label>12/31/17</label>
+                </value>
+                <value>
+                    <fullName>2 years</fullName>
+                    <default>false</default>
+                    <label>2 years</label>
+                </value>
+                <value>
+                    <fullName>3 years</fullName>
+                    <default>false</default>
+                    <label>3 years</label>
+                </value>
+                <value>
+                    <fullName>4 years</fullName>
+                    <default>false</default>
+                    <label>4 years</label>
+                </value>
+                <value>
+                    <fullName>5 years</fullName>
+                    <default>false</default>
+                    <label>5 years</label>
+                </value>
+                <value>
+                    <fullName>12/31/18</fullName>
+                    <default>false</default>
+                    <label>12/31/18</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>isActive__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>isActive</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Energy Quote</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>QuoteNumber__c</columns>
+        <columns>Quote_Number__c</columns>
+        <columns>NAME</columns>
+        <columns>Account_Name__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Energy Quote Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Energy Quotes</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Energy_Quote</fullName>
+        <active>true</active>
+        <label>Energy Quote</label>
+        <picklistValues>
+            <picklist>Approval_Status__c</picklist>
+            <values>
+                <fullName>In QAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lost</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Superceded</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Won</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Competitor__c</picklist>
+            <values>
+                <fullName>3M</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ABB</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basler</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Beede</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Blackburn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brady</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brugg</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Burndy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canadian Shunts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canusa</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Central Maloney</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cooper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton Greaves</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DMX</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dark to Light</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deif</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ECO Electrical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EHV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Elastimold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electic Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electro-Industries</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emelec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Empro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Erico</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>G%26W</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green jacket</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Homac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hoyt</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hubbell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IMS Leviton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ITI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ilsco</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inertia REPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intermatic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Jewell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joslyn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kaddas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maclean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Magna-Core</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meter Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midsun</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Modutec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multi-tech</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NKT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nexans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio Brass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PFISTERER</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PML</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Panduit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Precision</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prysmian</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rauckman</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Redline</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richardson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ripley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salisbury</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schneider Electric</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sicame</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Siemens</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sifam</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Simpson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Socomec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Suntech %2F Fisher Pierce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%26B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Taihan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texmate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Therm-A-Guard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork%2FNSI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Triplett</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WICC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yokogawa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Currency1__c</picklist>
+            <values>
+                <fullName>ARS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CLP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PEN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Days_prices_valid__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F16</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>120 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>180 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 Days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Language__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Portuguese</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Spanish</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Segment__c</picklist>
+            <values>
+                <fullName>Aviation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chemical Processing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Data Centers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hydro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ports %26 Waterways</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pulp%2C Paper %26 Wood</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Smart Grid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Substation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transit%2FRail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transmission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wind</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Type__c</picklist>
+            <values>
+                <fullName>Crompton Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution %26 Automation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Building%2FConstruction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry OGPC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Railway</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Ship %2F Rig Building</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Shipbuilding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Steel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partnership</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Wind</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Underground</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market__c</picklist>
+            <values>
+                <fullName>Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Utility</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Override_Incoterms_Code__c</picklist>
+            <values>
+                <fullName>CFR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DEQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EXW</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FCA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FOB</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Quote_Type__c</picklist>
+            <values>
+                <fullName>Blanket%2FTender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meet Competitor Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time Tender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason_of_Win__c</picklist>
+            <values>
+                <fullName>Don%27t Know</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lead time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On spec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Relationship</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SAP_Creation_Status__c</picklist>
+            <values>
+                <fullName>Awaiting Creation in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Created In SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Failed to Create in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not Applicable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TE_Sales_Office__c</picklist>
+            <values>
+                <fullName>ARGENTINA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRAZIL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CANADA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CARIBBEAN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CHILE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COLOMBIA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MEXICO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PERU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UNITED STATES</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Validity__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F16</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>LMA_Approval_Quote</fullName>
+        <active>true</active>
+        <label>LMA Approval Quote</label>
+        <picklistValues>
+            <picklist>Approval_Status__c</picklist>
+            <values>
+                <fullName>In QAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lost</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Presented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Superceded</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Won</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Competitor__c</picklist>
+            <values>
+                <fullName>3M</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ABB</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basler</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Beede</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Blackburn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brady</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brugg</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Burndy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canadian Shunts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canusa</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Central Maloney</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cooper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton Greaves</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DMX</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dark to Light</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deif</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ECO Electrical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EHV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Elastimold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electic Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electro-Industries</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emelec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Empro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Erico</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>G%26W</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green jacket</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Homac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hoyt</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hubbell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IMS Leviton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ITI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ilsco</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inertia REPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intermatic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Jewell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joslyn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kaddas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maclean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Magna-Core</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meter Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midsun</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Modutec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multi-tech</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NKT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nexans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio Brass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PFISTERER</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PML</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Panduit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Precision</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prysmian</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rauckman</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Redline</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richardson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ripley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salisbury</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schneider Electric</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sicame</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Siemens</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sifam</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Simpson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Socomec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Suntech %2F Fisher Pierce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%26B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Taihan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texmate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Therm-A-Guard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork%2FNSI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Triplett</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WICC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yokogawa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Currency1__c</picklist>
+            <values>
+                <fullName>ARS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CLP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PEN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Days_prices_valid__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>120 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>180 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 Days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Language__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Portuguese</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Spanish</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Segment__c</picklist>
+            <values>
+                <fullName>Aviation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chemical Processing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Data Centers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hydro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ports %26 Waterways</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pulp%2C Paper %26 Wood</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Smart Grid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Substation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transit%2FRail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transmission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wind</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Type__c</picklist>
+            <values>
+                <fullName>Crompton Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution %26 Automation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Building%2FConstruction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry OGPC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Railway</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Ship %2F Rig Building</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Shipbuilding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Steel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partnership</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Wind</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Underground</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market__c</picklist>
+            <values>
+                <fullName>Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Utility</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Override_Incoterms_Code__c</picklist>
+            <values>
+                <fullName>CFR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DEQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EXW</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FCA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FOB</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Quote_Type__c</picklist>
+            <values>
+                <fullName>Blanket%2FTender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meet Competitor Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time Tender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason_of_Win__c</picklist>
+            <values>
+                <fullName>Don%27t Know</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lead time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On spec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Relationship</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SAP_Creation_Status__c</picklist>
+            <values>
+                <fullName>Awaiting Creation in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Created In SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Failed to Create in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not Applicable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TE_Sales_Office__c</picklist>
+            <values>
+                <fullName>ARGENTINA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRAZIL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CANADA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CARIBBEAN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CHILE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COLOMBIA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MEXICO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PERU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UNITED STATES</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Validity__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F16</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Sales_Quote</fullName>
+        <active>true</active>
+        <label>Sales Quote</label>
+        <picklistValues>
+            <picklist>Approval_Status__c</picklist>
+            <values>
+                <fullName>In QAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lost</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Presented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Superceded</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Won</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Competitor__c</picklist>
+            <values>
+                <fullName>3M</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ABB</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Basler</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Beede</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Blackburn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brady</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Brugg</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Burndy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canadian Shunts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canusa</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Central Maloney</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cooper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton Greaves</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DMX</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dark to Light</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deif</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ECO Electrical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EHV</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Elastimold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electic Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electro-Industries</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emelec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Empro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Erico</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>G%26W</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green jacket</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Homac</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hoyt</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hubbell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IMS Leviton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ITI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ilsco</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inertia REPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intermatic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Jewell</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joslyn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kaddas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maclean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Magna-Core</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meter Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midsun</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Modutec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multi-tech</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NKT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nexans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio Brass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PFISTERER</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PML</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Panduit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Precision</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prysmian</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rauckman</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Redline</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Richardson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ripley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salisbury</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schneider Electric</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sicame</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Siemens</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sifam</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Simpson</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Socomec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Suntech %2F Fisher Pierce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%26B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Taihan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texmate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Therm-A-Guard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tork%2FNSI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Triplett</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WICC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yokogawa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Currency1__c</picklist>
+            <values>
+                <fullName>ARS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CLP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PEN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Days_prices_valid__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>120 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>180 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>4 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 years</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 Days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Language__c</picklist>
+            <values>
+                <fullName>English</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Portuguese</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Spanish</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Segment__c</picklist>
+            <values>
+                <fullName>Aviation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chemical Processing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Crompton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Data Centers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hydro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ports %26 Waterways</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pulp%2C Paper %26 Wood</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Smart Grid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Substation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transit%2FRail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transmission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wind</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market_Type__c</picklist>
+            <values>
+                <fullName>Crompton Metering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Distribution %26 Automation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Building%2FConstruction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Mining</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry OGPC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Railway</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Ship %2F Rig Building</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Shipbuilding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Industry Steel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partnership</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution LV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution MV Underground</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Distribution Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Others</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Solar</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Generation Wind</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Overhead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Sub-station</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power Transmission Underground</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Market__c</picklist>
+            <values>
+                <fullName>Industrial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>OEM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Utility</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Override_Incoterms_Code__c</picklist>
+            <values>
+                <fullName>CFR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CIP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DAT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DDU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DEQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EXW</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FAS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FCA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FOB</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Quote_Type__c</picklist>
+            <values>
+                <fullName>Blanket%2FTender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meet Competitor Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time Tender</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason_of_Win__c</picklist>
+            <values>
+                <fullName>Don%27t Know</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lead time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>On spec</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Relationship</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SAP_Creation_Status__c</picklist>
+            <values>
+                <fullName>Awaiting Creation in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Created In SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Failed to Create in SAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not Applicable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TE_Sales_Office__c</picklist>
+            <values>
+                <fullName>ARGENTINA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BRAZIL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CANADA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CARIBBEAN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CHILE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>COLOMBIA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MEXICO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PERU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UNITED STATES</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Validity__c</picklist>
+            <values>
+                <fullName>1 year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F16</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>12%2F31%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>6 months</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>60 days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 days</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Cannot_Modify_Quote_Presented</fullName>
+        <active>true</active>
+        <description>Cannot edit the record once the quote has been submitted for Approval</description>
+        <errorConditionFormula>text( Approval_Status__c ) = &apos;Presented&apos; &amp;&amp; TEXT( TE_Sales_Office__c) = &apos;UNITED STATES&apos;</errorConditionFormula>
+        <errorMessage>Cannot edit the record once the quote has been submitted for Approval</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Reason_Won_Required</fullName>
+        <active>true</active>
+        <description>When quote approval status is marked as Won, then  reaon won value must be filled in.</description>
+        <errorConditionFormula>AND( ISPICKVAL( Approval_Status__c , &apos;Won&apos;), ISPICKVAL(  Reason_of_Win__c , &apos;&apos;) )</errorConditionFormula>
+        <errorMessage>When quote approval status is marked as Won, Reason Won must be filled in.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Create_NewPDF</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create PDF</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/28.0/connection.js&quot;)}; 
+{!REQUIRESCRIPT(&quot;/soap/ajax/28.0/apex.js&quot;)}; 
+
+var result = sforce.connection.query(&quot;select id,Name,RecordType.Name,Opportunity_Name__c from Energy_Quote__c where id=&apos;{!Energy_Quote__c.Id}&apos;&quot;); 
+
+var records = result.getArray(&quot;records&quot;); 
+if(records.length &gt; 0 ){ 
+	console.log(&apos;in onclick javascript&apos;); 
+	var quoid= &apos;{!Energy_Quote__c.Id}&apos;; 
+
+	try { 
+		var res = sforce.apex.execute(&quot;CreateQuoteBasedOnOpp&quot;,&quot;savePdf&quot;,{ quoteId : &apos;{!Energy_Quote__c.Id}&apos; } ); 
+		if(res==&apos;SUCCESS&apos;) { 
+			console.log(&apos;SUCCESS&apos;); 
+			window.location.reload(); 
+		} else{ 
+			alert(&apos;Error in attaching file ----&apos;+ res) 
+		}; 
+	}catch(er) { 
+		console.log(&apos;error::&apos;); 
+		alert(er); 
+	} 
+}else{ 
+	alert(&quot;Cannot find Quote !&quot;); 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_PDF</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create PDF</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/28.0/connection.js&quot;)};
+{!REQUIRESCRIPT(&quot;/soap/ajax/28.0/apex.js&quot;)};
+
+var result = sforce.connection.query(&quot;select id,Name,RecordType.Name,Opportunity_Name__c from Energy_Quote__c where id=&apos;{!Energy_Quote__c.Id}&apos;&quot;);
+
+var records = result.getArray(&quot;records&quot;);
+if(records.length &gt; 0 ){
+    console.log(&apos;in onclick javascript&apos;);
+    var quoid= &apos;{!Energy_Quote__c.Id}&apos;;
+	var RecordTypeName = records[0][&apos;RecordType&apos;].Name;
+	var OppyId = records[0].Opportunity_Name__c;
+	if(RecordTypeName == &apos;Sales Quote&apos;) {
+		var newwindow = window.open(&apos;/apex/ANZQuotationPDF?id={!Energy_Quote__c.Id}&apos;);
+	}else if(RecordTypeName == &apos;LMA Approval Quote&apos;) {
+		var newwindow = window.open(&apos;/apex/ANZ_TENDER_PDF?id={!Energy_Quote__c.Id}&apos;);
+	}else {
+		alert(&apos;this record type has no PDF&apos;);
+	}
+
+    try {
+	var res = sforce.apex.execute(&quot;EnergyQuoteSavePDFAsAttachment&quot;,&quot;savePDFToAttachment&quot;,{ quoteId : &apos;{!Energy_Quote__c.Id}&apos; } );
+	if(res==&apos;SUCCESS&apos;) {
+                  console.log(&apos;111&apos;); 
+		  window.location.reload();
+		} else{
+		  alert(&apos;Error in attaching file ----&apos;+ res)
+		};
+	}catch(er) { 
+                console.log(&apos;222&apos;);    
+		alert(er); 
+	}
+}else{
+    alert(&quot;Only for Status Approved !&quot;);
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Expiration_Setting</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Expiration Setting</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/CtrlEnergyQuoteExpirationSetting?id={!Energy_Quote__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Send_Email</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send Email</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)};
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)};
+
+var energyQuoteId = &quot;{!Energy_Quote__c.Id}&quot;;
+var result = sforce.apex.execute(&quot;Cls_EnergyQuote2SendEmail&quot;, &quot;SendEmail&quot;,{energyQuoteId : energyQuoteId}); 
+
+alert(result);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Send_Email_Demo</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Send Email</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/ANZPACSendEmailPDF?id={!Energy_Quote__c.Opportunity_NameId__c}&amp;quoteId={!Energy_Quote__c.Id}&amp;accid={!Energy_Quote__c.Account_NameId__c}</url>
+    </webLinks>
+</CustomObject>

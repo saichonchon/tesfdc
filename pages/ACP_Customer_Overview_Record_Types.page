@@ -1,0 +1,51 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_View_Customer_Page_ctrl" sidebar="false" showHeader="true" standardStylesheets="false">
+
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <!-- <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'gotham.css')}" />-->
+     <div class = "bootstrap-sfdc">
+    <div class="container-fluid">
+        <apex:form >
+            <apex:pageBlock >
+                <apex:image url="{!$Resource.status_bar}" width="100%" height="8" />
+                <br/><br/><br/>
+                <div style="margin-left: 15%;">
+                    <apex:pageMessages />
+                    <apex:outputText value="{!$Label.ACP_Customer_Overview}" styleClass="SectionHeader"> </apex:outputText>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">{!$Label.ACP_Select_Customer_Overview_Record_Type}</div>
+                            <div class="panel-body">
+                                <div class="informationBar">{!$Label.ACP_Customer_Overview_Information}</div>
+                                <br/>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label><font style="color:red">*</font>{!$Label.ACP_Select_Record_Type}</label><br />
+                                        <apex:selectList value="{!SelectType}" multiselect="false" size="1" styleClass="inputField">
+                                            <apex:selectOption itemValue="Revenue and Growth" itemLabel="{!$Label.ACP_Revenue_and_Growth}" />
+                                            <apex:selectOption itemValue="End Markets" itemLabel="{!$Label.ACP_End_Markets}" />
+                                            <apex:selectOption itemValue="Regions" itemLabel="{!$Label.ACP_Regions}" />
+                                            <apex:selectOption itemValue="Key Manufacturing/Purchasing Locations" itemLabel="{!$Label.ACP_Key_Manufacturing_Purchasing_Locations}" />
+                                            <apex:selectOption itemValue="Key Engineering/Design Locations" itemLabel="{!$Label.ACP_Key_Engineering_Design_Locations}" />
+                                            <apex:selectOption itemValue="Key Vendors in Supply Chain" itemLabel="{!$Label.ACP_Key_Vendors_in_Supply_Chain}" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <div align="right" style="">
+                                    <apex:commandButton value="{!$Label.ACP_Cancel}" action="{!cancel}" styleClass="btn btn-default" />&nbsp;
+                                    <apex:commandButton action="{!save}" value="{!$Label.ACP_Continue}" styleClass="btn btn-primary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+   </div>
+</apex:page>

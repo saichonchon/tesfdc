@@ -1,0 +1,19 @@
+<apex:page controller="spExams.SPExamsUserVerificationCtrl" sidebar="false" showheader="false" standardStylesheets="false" action="{!verifyUserExam}">
+    <script>
+        var GLOBAL_no_dialog = true;
+    </script>   
+    <c:spExamsUserVerification_Resources />
+    <c:RaphaelResources />
+    
+    <apex:form styleClass="container-form">    
+        <apex:actionFunction name="generateRandomUserExamQuestions" 
+                             action="{!generateRandomUserExamQuestions}"
+                             rerender="user-exam-status"
+                             oncomplete="startExam()">
+            <apex:param name="userCode" value=""/>
+        </apex:actionFunction> 
+        
+        <c:spExamsUserVerificationComponent ExamSettings="{!ExamSettings}" UserExam="{!UserExam}" IsPreview="false"/>
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_30845700</developerName>
+        <masterLabel>Account</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account$GAMDESC__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Google</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Oracle</sourceValue>
+            </sourceValues>
+            <value>G &amp; O</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Account.Opportunities$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Amount</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account$GAMDESC__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMC,Google,Oracle</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>ehsan,kohn,davis,mark</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Name</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notContain</operator>
+            <value>test oppty</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Amount</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>USD 100000</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_30845700</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Opps &lt;$100k</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Datacomm_Opportunity_Metrics__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

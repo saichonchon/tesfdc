@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Define_CTL_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Approval_Step</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Quick approval for Admins (Admin Approval Checkbox must be ticked before)</description>
+        <label>Admin Approval</label>
+        <name>Admin_Approval</name>
+    </approvalStep>
+    <description>This approval process is used for Admins only.</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+
+	
+	Industry_Code__c &lt;&gt; &quot;Data &amp; Devices&quot;,
+	Industry_Code__c &lt;&gt; &quot;EMS&quot;,
+        Admin_Approval_process__c = TRUE,
+	Amount  &gt; 0, 
+	OR(
+		ISPICKVAL(StageName, &quot;Approved/Active&quot;), 
+		ISPICKVAL(StageName, &quot;New&quot;),
+                ISPICKVAL(StageName, &quot;Concept&quot;),
+                ISPICKVAL(StageName, &quot;Initiating&quot;),
+                ISPICKVAL(StageName, &quot;Exploring Needs&quot;),
+                ISPICKVAL(StageName, &quot;Developing &amp; Differentiating&quot;),
+                ISPICKVAL(StageName, &quot;Refining &amp; Resolving&quot;),
+                ISPICKVAL(StageName, &quot;Contracting&quot;)
+	)
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Opportunity_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_G0_rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Set_approval_status_PMV_G0_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>StageName_to_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Admin Approval Process</label>
+    <recallActions>
+        <action>
+            <name>Reset_Approval_Step</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_Criteria_is_Met</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Reset_CTL_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Set_approval_status_PMV_to_New</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Stage_name_New</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

@@ -1,0 +1,39 @@
+<apex:page standardStylesheets="true" showHeader="false" sidebar="false" standardController="Campaign" extensions="CAMPAIGNCAL.ccEdit" tabStyle="Campaign">
+    <apex:styleSheet value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'bootstrap/css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CAMPAIGNCAL__ccZipfile, 'jquery/jquery-1.11.1.min.js')}" />
+    <script type="text/javascript">
+        if ({!closeDialog}) {
+            parent.$j('.modal').modal('hide')
+            parent.loadAndRenderWithDelay('The campaign has been updated, reloading...');
+        }
+    </script>
+
+    <style type="text/css">
+        .bPageBlock{
+            background-color: white !important;
+            border: none !important;
+        }
+    </style>
+    <div class="cc-bs">
+    <apex:form target="_self" id="theForm" style="text-align: left;">
+    <apex:pageBlock >
+    
+    <apex:pageBlockSection columns="1">
+        <apex:outputPanel layout="block" style="overflow:auto; width:350; height:125px" rendered="{!NOT(isSecondForm)}">
+            <apex:outputField value="{!Campaign.description}" style="overflow: auto; height: 125px; min-width: 350px;"/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!isSecondForm}">
+            <apex:inputField value="{!Campaign.description}" style="overflow: auto; min-height: 120px; min-width: 345px; resize: none;"/>
+        </apex:outputPanel>   
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:outputPanel >
+        <div class="modal-footer">
+            <apex:commandLink action="{!next}" rendered="{!NOT(isSecondForm)}" styleclass="btn btn-default btn-primary">Edit</apex:commandLink>
+            <apex:commandLink action="{!saveAndClose}" id="saveButton" rendered="{!isSecondForm}" styleclass="btn btn-default btn-primary">Save</apex:commandLink>
+            <apex:commandLink action="{!cancel}" onclick="parent.$j('.modal').modal('hide');return false;" rendered="{!NOT(isSecondForm)}" styleclass="btn btn-default">Cancel</apex:commandLink>
+        </div>
+    </apex:outputPanel>
+    </apex:form>
+    </div>
+</apex:page>

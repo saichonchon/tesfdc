@@ -1,0 +1,79 @@
+<apex:page controller="AgileVizArt.CtrlLogUserStory" tabstyle="AgileVizArt__User_Story__c">
+	<apex:sectionHeader title="User Story" subtitle="{!IF(urgent, IF(isDefect,$Label.AgileVizArt__Log_Defect,$Label.AgileVizArt__Log_Issue), $Label.AgileVizArt__Log_Requirement)}"/>
+	<apex:form id="topForm" enctype="multipart/form-data">
+		<apex:pageBlock mode="edit" >
+			<apex:pageMessages id="messages" />
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="Save" />
+				<apex:commandButton action="{!cancel}" value="Cancel" />
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockSection title="Information">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.AgileVizArt__User_Story__c.fields.Name.label}" />
+					<apex:outputPanel styleClass="requiredInput" layout="block">
+						<apex:outputPanel styleClass="requiredBlock" layout="block"/>
+						<apex:inputField value="{!userStory.Name}" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem rendered="{!AND(urgent=true, isDefect=true)}">
+					<apex:outputLabel value="{!$ObjectType.AgileVizArt__User_Story__c.fields.AgileVizArt__Severity__c.label}" />
+					<apex:inputField value="{!userStory.AgileVizArt__Severity__c}" />
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem rendered="{!AND(urgent=true, isDefect=false)}">
+					<apex:outputLabel value="{!$ObjectType.AgileVizArt__User_Story__c.fields.AgileVizArt__Urgency__c.label}" />
+					<apex:inputField value="{!userStory.AgileVizArt__Urgency__c}" />
+				</apex:pageBlockSectionItem>					
+				<apex:pageBlockSectionItem rendered="{!!urgent}">
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection >
+				<apex:pageBlockSectionItem rendered="{!defaultProject}">
+					<apex:outputLabel value="{!$ObjectType.AgileVizArt__User_Story__c.fields.AgileVizArt__Project__c.label}" />
+					<apex:outputPanel styleClass="requiredInput" layout="block">
+						<apex:outputPanel styleClass="requiredBlock" layout="block"/>
+						<apex:actionRegion >
+							<apex:selectList value="{!projectVal}" size="1" >
+								<apex:selectOptions value="{!list_projects}" />
+								<apex:actionSupport event="onchange" rerender="epicStoryList"
+									status="projectStatus" />
+							</apex:selectList>
+							<apex:actionStatus startText=" Loading... " stopText=""
+								id="projectStatus">
+								<apex:facet name="start">
+									<img src="/img/loading.gif" />
+									<span class="waitingDescription">{!$Label.Loading}...</span>
+								</apex:facet>
+							</apex:actionStatus>
+						</apex:actionRegion>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>				
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.AgileVizArt__User_Story__c.fields.AgileVizArt__Epic_Story__c.label}" />
+					<apex:outputPanel styleClass="requiredInput" layout="block">
+						<apex:outputPanel styleClass="requiredBlock" layout="block"/>
+						<apex:selectList value="{!epicStoryVal}" size="1"
+							id="epicStoryList" >
+							<apex:selectOptions value="{!epicStories}" />
+						</apex:selectList>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>				
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection columns="1">				
+				<apex:inputField value="{!userStory.AgileVizArt__Description__c}" />
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Upload Attachment" columns="1">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="File" for="file" />
+					<apex:inputFile value="{!attachment.body}"
+						filename="{!attachment.name}" id="file" />
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		
+	</apex:form>
+</apex:page>

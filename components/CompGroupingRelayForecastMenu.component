@@ -1,0 +1,28 @@
+<apex:component layout="block">
+  
+	
+	<apex:attribute name="pageCtrl" type="CtrlGroupingRelayForecast" required="true" description="the root page controller reference" />
+	
+
+
+<apex:inputHidden value="{!pageCtrl.sp.isShow}" id="isShow" />
+
+	<div class="menu_divcls" id="menudivid">
+		<span style="display: inline-block;" class="">
+<!-- 	        <input onclick="backForecast_eve(this, '{!pageCtrl.sp.url}')" value="{!$Label.APL_btn_back_account_grouping}" class="btn btnmg_left" type="button"/> -->
+	        <apex:outputPanel style="display: inline-block;" rendered="{!if(pageCtrl.pageConf.isFrozen, false, true)}" >
+	        	<input id="submitamfcid" onclick="submitRelayForecast(this)" value="{!$Label.APL_AM_Submit}" class="btn btnmg_left" type="button"/>
+	        </apex:outputPanel>
+	        <apex:outputPanel style="display: inline-block;" rendered="{!if(and(pageCtrl.sp.isShow, !pageCtrl.pageConf.isFrozen), true, false)}" >
+		        <input id="saverelayinputid" onclick="saveRelayForecast(this)" value="{!$Label.APL_btn_save_relay_forecast}" class="btn btnmg_left" type="button"/>
+	        </apex:outputPanel>
+<!-- 	        <input onclick="cancelGroup(this)" value="{!$Label.APL_btn_cancel}" class="btn btnmg_left" type="button"/> -->
+			<div style="display: inline-block; margin-left: 10px;">
+				<input onclick="event_chart_click(event, this)" value="Show Chart" type="button" class="btn" />
+			</div>
+			<div style="display: inline-block; margin-left: 10px;">
+				<input onclick="showAccuracy('Relay');" value="Show Accuracy" type="button" class="btn" />
+			</div>
+		</span>
+	</div>
+</apex:component>

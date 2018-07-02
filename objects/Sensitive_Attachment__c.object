@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>ExtUploadSensitiveAttachment</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>ExtUploadSensitiveAttachment</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>ExtUploadSensitiveAttachment</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Attachments that are only visible by a selective user group.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup Relationship to the related Account.</description>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Sensitive Attachments</relationshipLabel>
+        <relationshipName>Sensitive_Attachments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Attachment_Id__c</fullName>
+        <description>This field contains the related Attachment Id to have the possibility to open the attachment from parent record.</description>
+        <externalId>false</externalId>
+        <label>Attachment Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Attachment_Name__c</fullName>
+        <description>Name of the related Attachment.</description>
+        <externalId>false</externalId>
+        <label>Attachment Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>File_Action__c</fullName>
+        <description>HYPERLINK(&quot;/&quot; &amp; Id,IMAGE(&quot;/img/icon/tasks16.gif&quot;,&quot;View&quot;),&quot;_parent&quot;) &amp; &quot; &quot; &amp; HYPERLINK(&quot;/servlet/servlet.FileDownload?file=&quot; &amp; Attachment_Id__c, IMAGE(&quot;/servlet/servlet.FileDownload?file=015M00000000kFK&quot;,&quot;Download&quot;), &quot;_blank&quot;) &amp; &quot; &quot; &amp; HYPERLINK(&quot;/apex/ExtUploadSensitiveAttachment?upload=true&amp;id=&quot; &amp; Id , IMAGE(&quot;/servlet/servlet.FileDownload?file=015M00000000kFP&quot;,&quot;Upload&quot;), &quot;_blank&quot;)</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id,&quot;View&quot;,&quot;_parent&quot;) &amp; &quot; &quot; &amp; HYPERLINK(&quot;/servlet/servlet.FileDownload?file=&quot; &amp; Attachment_Id__c, &quot;Download&quot;, &quot;_blank&quot;) &amp; &quot; &quot; &amp; HYPERLINK(&quot;/apex/ExtUploadSensitiveAttachment?upload=true&amp;id=&quot; &amp; Id , &quot;Upload&quot;, &quot;_blank&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>File Action</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PLM_Integration_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PLM Integration Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Name__c</fullName>
+        <description>Hyperlink to open the related attachment.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Id, Attachment_Name__c, &quot;_parent&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Sensitive Attachments</relationshipLabel>
+        <relationshipName>Sensitive_Attachments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Original_File_Name__c</fullName>
+        <description>The field to save the original file name of attachment.</description>
+        <externalId>false</externalId>
+        <label>Original File Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Program_Central_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>This field contains the PLM Id.</description>
+        <externalId>true</externalId>
+        <label>Program Central Id</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Send_to_PLM__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This checkbox specifies if a Sensitive Attachment is replicated to PLM or not.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This checkbox specifies if a Sensitive Attachment is replicated to PLM or not.</inlineHelpText>
+        <label>Send to PLM</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>TE_Network_Id__c</fullName>
+        <description>This field contains the attachment owners TE Network Id.</description>
+        <externalId>false</externalId>
+        <label>TE Network Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Sensitive Attachment</label>
+    <nameField>
+        <displayFormat>SAtt-{000000}</displayFormat>
+        <label>Sensitive Attachment Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Sensitive Attachments</pluralLabel>
+    <recordTypes>
+        <fullName>Account_Attachment</fullName>
+        <active>true</active>
+        <description>Choose this record type if you want to attach a file to the account</description>
+        <label>Account Attachment</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Opportunity_Attachment</fullName>
+        <active>true</active>
+        <description>Choose this record type if you want to attach a file to the opportunity</description>
+        <label>Opportunity Attachment</label>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

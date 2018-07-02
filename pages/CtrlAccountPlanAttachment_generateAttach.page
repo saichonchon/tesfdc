@@ -1,0 +1,74 @@
+<apex:page controller="CtrlAccountPlanAttachment">
+    <apex:sectionHeader title="{!$Label.Attach_File_to_Account_Plan} {!ParentName}"/>
+    <apex:pageBlock mode="edit">
+        <apex:form >
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>1. Select the File</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;{!$Label.Type_Path}.</apex:outputText>
+            <div class="errorMsg" >
+                 &nbsp;&nbsp;&nbsp;{!$Label.file_size_cannot_be_greater_than_3_MB}.
+            </div>
+            <apex:pageblockSectionitem >
+                <apex:outputText >File</apex:outputText>
+                <apex:inputFile fileName="{!attachmentName}" value="{!att.Body}"  style="width:500px" ></apex:inputFile>
+            </apex:pageblockSectionitem>
+            <apex:outputPanel rendered="{!error}">
+                <div class="errorMsg" >
+                    <strong>{!$Label.Error}:</strong>
+                    {!$Label.Please_upload}.&nbsp;{!$Label.file_size_cannot_be_greater_than_3_MB}.
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!errorTwo}">
+                <div class="errorMsg" >
+                <strong>{!$Label.Error}:</strong>
+                {!$Label.Cannot_Upload}.
+                </div>
+            </apex:outputPanel>
+            <apex:inputField required="true" value="{!accountPlanAttachment.Title__c}" style="width:220px"/>
+            <apex:inputField required="true" value="{!accountPlanAttachment.Author__c}" style="width:220px"/>
+            <apex:inputField required="true" value="{!accountPlanAttachment.Description__c}" style="width:500px"/>
+            <apex:inputField value="{!accountPlanAttachment.Send_Attachment_to_Executive_Dashboard__c}"/>           
+        </apex:pageblockSection>
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>{!$Label.Click_Attach_Button}.</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;{!$Label.Repeat_steps}.</apex:outputText>
+            <apex:outputtext >&nbsp;&nbsp;&nbsp;&nbsp;( {!$Label.Complete_Upload_Help}. )</apex:outputtext>
+            <apex:commandbutton value="{!$Label.Attach_File}" action="{!Save}"/>           
+        </apex:pageblockSection>
+        <apex:pageblockSection columns="1">
+            <apex:outputText ><b>3. {!$Label.Back_to_Previous}.</b></apex:outputText>
+            <apex:outputText >&nbsp;&nbsp;&nbsp;&nbsp;( {!$Label.Help_Text_Cancel}. )</apex:outputText>
+            <apex:commandbutton value="Done" action="/apex/ExtAccountPlanView_showAccountPlanDetail?id={!accountPlanId}" immediate="true"/>
+        </apex:pageblockSection>
+    </apex:form>
+    <apex:pageBlockSection columns="1" rendered="{!finishedInsert}">
+        <div class="pbBody">
+            <div id="errorDiv_ep" class="pbError" style="display: none">
+                {!$Label.Error}: {!$Label.Invalid_Data}.
+                <br/>
+                {!$Label.Review_Messages}.
+            </div>
+            <div id="head_1_ep" class="pbSubheader first tertiaryPalette">
+                <h3>
+                {!$Label.Just_Uploaded}
+                <span class="titleSeparatingColon">:</span>
+                </h3>
+            </div>
+            <div class="pbSubsection">
+                <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td class="labelCol">{!$Label.File_Name}</td>
+                        <td class="data2Col" colspan="3">{!attachmentName}</td>
+                    </tr>
+                   <!-- <tr>
+                        <td class="labelCol last">Size</td>
+                        <td class="data2Col last" colspan="3">{!Att.BodyLength}</td>
+                    </tr>    -->             
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </apex:pageBlockSection>        
+    </apex:pageBlock> 
+</apex:page>

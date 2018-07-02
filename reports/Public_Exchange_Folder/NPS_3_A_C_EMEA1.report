@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_Amount_USD__c:SUM 
+-
+BBB_Year_Bill_Book_Cust_PN__c.Bill_Prior_Year_to_Date_Amount_USD__c:SUM
++
+BBB_Year_Bill_Book_Cust_PN__c.Bill_Year_to_Date_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Billings for rolling 12 months</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Bill Rolling 12 Months</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account$Sales_Hierarchy__c.Level_2_Territory_Code__c</field>
+    </columns>
+    <columns>
+        <field>Account$Sales_Hierarchy__c.Level_2_Territory_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account$Territor_L3_Code__c</field>
+    </columns>
+    <columns>
+        <field>Account$Territory_L3_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account$Territory_L4_code__c</field>
+    </columns>
+    <columns>
+        <field>Account$Territory_level4_name__c</field>
+    </columns>
+    <columns>
+        <field>Account$BU_Customer_Classification__c</field>
+    </columns>
+    <columns>
+        <field>Account$Customer_Industry__c</field>
+    </columns>
+    <columns>
+        <field>Account$Customer_Region__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$SAP_Profit_Center_Short_Desc_Filter__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Type_Filter__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$CBC2_Code__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$CBC2_Description__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c.Market_Date__c</field>
+    </columns>
+    <columns>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c.NPS_category__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>NPS 3 A&amp;C EMEA Direct Team</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c.NPS_category__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>NPS 1,NPS 2,NPS 3</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$SAP_Profit_Center_Short_Desc_Filter__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>RP - A&amp;C,A&amp;C</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Customer_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>EMEA (excl. India)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>Babunek,Beno,Eisinger,Esposito,Griesheimer,Klapil,Kopetzky,Krauss,Kryszak,Kulla,Lepage,Schadach,Terruzzi,Wisseler</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$Obsolete__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$AccountNumber</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>NPS 3 A&amp;C EMEA</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_Yearly_BB_direct_and_Indirect_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Yearly_BBB_by_Part_and_Customers__r$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

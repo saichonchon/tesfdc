@@ -1,0 +1,357 @@
+<apex:page controller="CtrlOpportunityPartManagePopPage" sidebar="false" showheader="false">
+	<script src="/soap/ajax/23.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/23.0/apex.js" type="text/javascript"></script>
+    <apex:form id="pageForm" >
+
+
+		<apex:outputPanel id="searchLookupPanel" >
+<!-- *****************************************************  PageBlock 02 : Search  for lookup**********************************************************-->
+<!-- *****************************************************  PageBlock 02 : Search  for lookup**********************************************************-->
+        <apex:PageBlock id="searchLookupBlock">
+               	<table>
+             	<!-- ********************************  Search Method SelectList **************************-->
+				<!-- ********************************  Search Method SelectList **************************-->       		
+	         	<tr><td colspan="3">
+            		<apex:outputPanel id="searchCriteriaChoice">
+                		<table cellspacing="5">
+                			<tr>
+                    			<td >
+                    			<div id="searchLookupMode"></div>
+                    			</td>
+                			</tr>
+                		</table>            
+            		</apex:outputPanel>
+	            </td></tr>
+            	<tr>
+            		<td><apex:outputPanel id="searchMethodLOOKUP" styleClass="searchFilterFieldsHolder">
+            	
+            			<!-- ********************************  Advanced Search **************************-->
+						<!-- ********************************  Advanced Search **************************--> 						            			  
+           				<apex:outputPanel >                                  
+                 				<table class="searchFilterFields">
+                    				<tr>
+                        				<td>
+                            				<h4>{!$Label.Advanced_Search}</h4>
+                        				</td>
+                    				</tr>
+                    				<tr>
+                    					<td>
+                    						<table>
+	                   	 						<tr>
+	                    							<td>
+			                    						<table>
+			                    							<tr>
+									                    		<td colspan="2">
+									                    			{!$Label.Search_For_Text_In_Specific_Fields}
+									                    		</td>
+									                    		<td>
+									                    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									                    		</td>
+									                    		<td colspan="2">
+									                    			{!$Label.Search_For_Text_In_All_Fields}
+									                    		</td>			                    					                    		
+			                    							</tr>                    
+				                    						<tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.Part_Nbr}:" />
+										                        </td>
+										                        <td>
+										                            <apex:inputText onkeypress="return noenter()" id="searchPartNumberLOOKUP" value="{!searchPartNumberLOOKUP}" />
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                            <apex:outputText value="{!$Label.Search_All_Fields_For}:" />
+										                        </td>
+										                        <td>
+										                            <apex:inputText onkeypress="return noenter()" id="searchSOSLLOOKUP" value="{!searchSOSLLOOKUP}"/>
+										                        </td>				                        
+				                    						</tr>
+				                    						<tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.Part_Description}:" />
+										                        </td>
+										                        <td>
+										                            <apex:inputText onkeypress="return noenter()" id="searchPartDescLOOKUP" value="{!searchPartDescLOOKUP}" />
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>				                        				                        				                        
+				                    						</tr>
+										                    <tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.GPL}:" />
+										                        </td>
+										                        <td>
+										                            <apex:inputText onkeypress="return noenter()" id="searchGPLLOOKUP" value="{!searchGPLLOOKUP}" />
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>				                        
+										                    </tr>
+										                    <tr>
+										                        <td>
+										                            <apex:outputText value="{!$Label.GPL_Name}: " />
+										                        </td>
+										                        <td>
+										                            <apex:inputText onkeypress="return noenter()" id="searchGPLDescLOOKUP" value="{!searchGPLDescLOOKUP}" />
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>
+										                        <td>
+										                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										                        </td>				                        
+										                    </tr>
+										                    <tr>
+											                    <td colspan="5" align="center">
+											                     	<apex:commandButton action="{!DoAdvancedSearchLOOKUP}" value="{!$Label.Search}"  rerender="resultRadioShow"  status="advancesearchallLOOKUP"/>
+											                     	<apex:commandButton action="{!ClearAdvancedSearchLOOKUP}" value="{!$Label.Clear}" rerender="searchLookupBlock" status="advancesearchallLOOKUP"/>
+										                    	 	<apex:commandButton value="{!$Label.Cancel}" onclick="cancel()" rerender="avoidRefreshError" />  
+										                            <apex:actionStatus startText=" Loading... " stopText="" id="advancesearchallLOOKUP">
+																	    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+																	</apex:actionStatus>  
+											                    </td>
+										                    </tr>				                    
+										                    				                    
+														</table>
+	                    							</td>
+                   								</tr>
+                    						</table>
+                    					</td>
+                    				</tr>                                                                                      
+                 			</table>
+            			</apex:outputPanel>
+ 			            <!-- ********************************  Advanced Search **************************-->
+						<!-- ********************************  Advanced Search **************************--> 
+
+ 			                       			                                
+            	</apex:outputPanel></td>
+            	<td width="15px"></td>
+            	
+            	
+            	<td><apex:outputPanel id="searchMethodByNumberLOOKUP" styleClass="searchFilterFieldsHolder">
+         				<!-- ********************************  Search By Part Number **************************-->
+						<!-- ********************************  Search By Part Number **************************--> 
+            			<apex:outputPanel >                               
+	                 		<table class="searchFilterFields">
+		                   		<tr>
+			                        <td colspan="2">
+			                            <h4>{!$Label.Search_By_Part_Number}</h4>
+			                        </td>
+		                    	</tr>
+	                    		<tr>
+			                        <td colspan="2">
+			                            <apex:inputTextarea id="searchTextAreaLOOKUP" rows="5" style="width:300px" value="{!searchStringLOOKUP}"/>
+			                        </td>
+	                    		</tr>
+			                    <tr>
+			                        <td colspan="2">
+			                            <apex:commandButton action="{!DoPartNbrSearchLOOKUP}" value="{!$Label.Search}"  rerender="resultRadioShow" status="searchbynumberLOOKUP"/>
+			                            <apex:commandButton action="{!ClearPartNbrSearchLOOKUP}" value="{!$Label.Clear}" rerender="searchLookupBlock" status="searchbynumberLOOKUP"/>
+			                            <apex:commandButton value="{!$Label.Cancel}" onclick="cancel()" rerender="avoidRefreshError" />
+                                        <apex:actionStatus startText=" Loading... " stopText="" id="searchbynumberLOOKUP">
+										    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+										</apex:actionStatus>                                           
+			                        </td>
+			                    </tr>           
+	                 		</table>
+            			</apex:outputPanel>
+            			<!-- ********************************  Search By Part Number **************************-->
+						<!-- ********************************  Search By Part Number **************************--> 
+         		</apex:outputPanel>
+         		</td>
+       		</tr>
+         	</table>
+         </apex:PageBlock>
+
+<!-- *****************************************************  PageBlock 02 : Search  for lookup**********************************************************-->
+<!-- *****************************************************  PageBlock 02 : Search  for lookup**********************************************************-->
+		</apex:outputPanel>
+
+
+
+
+
+
+		<apex:outputPanel id="resultRadioPanel" >
+		<apex:outputPanel id="resultRadioShow">
+
+<!-- *****************************************************  PageBlock 03 : Search Result for radio*************************************************-->
+<!-- *****************************************************  PageBlock 03 : Search Result for radio*************************************************-->         
+		 <apex:actionRegion >
+         <apex:PageBlock title="{!$Label.Search_Results}" id="searchResultsPageBlockRadio" rendered="{!list_singlePageSelectablePart.size>0}">
+         <apex:pageMessages id="pagemessages"  rendered="{!messageOnResult}"/> 
+            <apex:outputPanel id="searchResultsTable">
+                <apex:dataTable value="{!list_singlePageSelectablePart}" var="result" headerClass="headerRow" rowClasses="dataRow" styleClass="list" id="radiolist">
+                   
+           			<apex:column id="theCol" style="width:20px">                      
+	                    <apex:inputCheckbox value="{!result.selected}" id="radiocheckbox"  onclick="RadioCancelOther(this.id, '{!result.part.Id}','{!result.part.Name}','{!result.part.Description__c}');" /> 
+	                    <apex:actionSupport event="onclick" rerender="selectedItems"/> 
+               		</apex:column>
+	     
+	               		
+	               		             
+                    <apex:column >
+                        <apex:facet name="header">
+                         <apex:commandLink value="{!$ObjectType.Part__c.fields.Name.label}" action="{!doSearchResultsSort}" rerender="searchResultsPageBlockRadio" status="searchresultlookup">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Name', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Name', searchResultsPrevSortField != searchResultsSortField),true,false)}"/>                          
+                             <apex:param name="searchResultsSortField" value="Name" assignTo="{!searchResultsSortField}"/> 
+                         </apex:commandLink>                         
+                        </apex:facet>
+                        <apex:outputText value="{!result.part.Name}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">
+                         <apex:commandLink value="{!$ObjectType.Product2.fields.Description.label}" action="{!doSearchResultsSort}" rerender="searchResultsPageBlockRadio" status="searchresultlookup">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Description__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Description__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/>                           
+                             <apex:param name="searchResultsSortField" value="Description__c" assignTo="{!searchResultsSortField}"/> 
+                         </apex:commandLink>                         
+                        </apex:facet>
+                        <apex:outputText value="{!result.part.Description__c}" style="width:250px"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.Part__c.fields.GPL__c.label}" action="{!doSearchResultsSort}" rerender="searchResultsPageBlockRadio" status="searchresultlookup">
+							 	<apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 	<apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/> 	                          
+	                             <apex:param name="searchResultsSortField" value="GPL__c" assignTo="{!searchResultsSortField}"/> 
+	                         </apex:commandLink>                             
+                            </apex:facet>
+                            <apex:outputText value="{!result.part.GPL__r.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.Part__c.fields.GPL_Description__c.label}" action="{!doSearchResultsSort}" rerender="searchResultsPageBlockRadio" status="searchresultlookup">
+							 	<apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL_Description__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 	<apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL_Description__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/> 	                          
+	                             <apex:param name="searchResultsSortField" value="GPL_Description__c" assignTo="{!searchResultsSortField}"/> 
+	                         </apex:commandLink>                             
+                            </apex:facet>
+                            <apex:outputText value="{!result.part.GPL_Description__c}"/>
+                    </apex:column>                    
+                </apex:dataTable>
+
+
+
+                <table width="100%">
+	                <tr>
+	                <!--  
+		               	<td width="25%" align="left">
+			                {!$Label.Showing_records} &nbsp; <apex:outputText id="searchResultsStartRowNbr" value="{!searchResultsFirstRecordNbr}" /> {!$Label.To}&nbsp; <apex:outputText id="searchResultsEndRowNbr" value="{!searchResultsLastRecordNbr}" />
+			                &nbsp;{!$Label.Of}&nbsp; <apex:outputText id="searchResultsTotalRecords" value="{!searchResultsTotalRecordCount}" />&nbsp;{!$Label.Records}
+			                <br />
+		                </td>-->
+		                <td width="25%" align="left">
+			                <apex:outputText id="searchResultsStartRowNbr" value="{!searchResultsFirstRecordNbr}" /> -&nbsp; <apex:outputText id="searchResultsEndRowNbr" value="{!searchResultsLastRecordNbr}" />
+			                &nbsp;{!$Label.Of}&nbsp;&nbsp; <apex:outputText id="searchResultsTotalRecords" value="{!searchResultsTotalRecordCount}" />
+			                <br /> 
+		                </td>
+		                <td width="25%" align="right">
+			                <apex:commandLink action="{!SearchResultsPreviousPage}" rendered="{!searchResultsShowPrevPageLink}" value="{!$Label.Previous_Page}" dir="RTL" rerender="searchResultsPageBlockRadio" status="lookupresultpreviousstatus" oncomplete="uncheckHeaderCB();">
+		                		<apex:image url="{!$Resource.PreviousArrow}" style="vertical-align:bottom"/>
+		                	</apex:commandLink>	
+		                	<apex:actionStatus startText=" Loading... " stopText="" id="lookupresultpreviousstatus">
+							    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+							</apex:actionStatus>		                
+			                &nbsp;
+		                </td>
+		                <td width="25%" align="left">                               
+		                	<apex:commandLink action="{!SearchResultsNextPage}" rendered="{!searchResultsShowNextPageLink}" value="{!$Label.Next_Page}" rerender="searchResultsPageBlockRadio" status="lookupresultnextstatus" oncomplete="uncheckHeaderCB();">
+		                		<apex:image url="{!$Resource.NextArrow}" style="vertical-align:bottom"/> 
+		                	</apex:commandLink>	
+		                	<apex:actionStatus startText=" Loading... " stopText="" id="lookupresultnextstatus">
+							    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+							</apex:actionStatus>	                	
+		                </td>
+		                <!--  
+		                <td width="25%" align="right">
+		                	<apex:commandButton action="{!JumpToSearchResultsPage}" value="{!$Label.Jump_To_Page}" rerender="searchResultsPageBlockRadio" status="lookupresultjumpstatus" oncomplete="uncheckHeaderCB();"/>
+		                	<apex:inputText onkeypress="return noenter()" id="searchResultsJumpToPage"  value="{!searchResultsJumpToPage}" style="width:20px" />
+		                	<apex:actionStatus startText=" Loading... " stopText="" id="lookupresultjumpstatus">
+							    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+							</apex:actionStatus>
+		                </td>
+		                -->
+		                <td width="25%" align="right">
+	                	{!$Label.Page}&nbsp;<apex:outputText id="recentlypage" value="{!searchResultsPageNumber}" />
+	                	</td>
+	                </tr>                
+				</table>
+                                            
+            </apex:outputPanel>
+            <apex:PageBlockButtons location="top"> 
+                <apex:commandButton value="{!$Label.Add}" onclick="addPart();SelectSimilarParts();" rerender="avoidRefreshError" />
+ 				<apex:actionStatus startText=" Loading... " stopText="" id="searchresultlookup">
+				    <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+				</apex:actionStatus>                                  
+            </apex:PageBlockButtons>    
+         </apex:PageBlock>   
+         </apex:actionRegion>                 
+<!-- *****************************************************  PageBlock 03 : Search Result for radio*************************************************-->
+<!-- *****************************************************  PageBlock 03 : Search Result for radio*************************************************--> 
+         </apex:outputPanel>
+  		 </apex:outputPanel>
+
+		<input type="hidden" id="selectedPartId" value=""></input>
+        <input type="hidden" id="selectedPartName" value=""></input>
+        <input type="hidden" id="selectedPartDescription" value=""></input>   
+		<apex:outputPanel id="avoidRefreshError">
+        </apex:outputPanel>
+
+	<script>
+		function hideLoading(){
+			parent.document.getElementById('loading').style.display = "none";
+		}
+		hideLoading();
+		
+		function cancel() {
+			parent.closePopUp();
+		}	
+
+        function RadioCancelOther(selfId, partId, partName,partDescription){
+        	var list_check = document.getElementsByTagName("input"); 
+            for(var i=0; i<list_check.length; i++){
+                if(list_check[i].type=="checkbox" && list_check[i].id != selfId ){
+                    list_check[i].checked = false;
+                }
+            }
+            //alert("1:"+parent.document.getElementById("selectedPartId"));
+            //alert("2:"+parent.document.getElementById("selectedPartName"));
+            //alert("3:"+parent.document.getElementById("selectedPartDescription"));
+            parent.document.getElementById("selectedPartId").value = partId;
+            parent.document.getElementById("selectedPartName").value = partName;
+            parent.document.getElementById("selectedPartDescription").value = partDescription;    
+        }
+
+		function addPart(){
+			//alert(parent.document.getElementById("selectedPartId").value);
+			//alert(parent.document.getElementById("selectedPartName").value);
+			var field = parent.document.getElementById("selectedProposalPartId").value;
+			//alert("field:"+field);
+			parent.document.getElementById(field + "_Id").value = parent.document.getElementById("selectedPartId").value;
+			parent.document.getElementById(field + "_Name").value = parent.document.getElementById("selectedPartName").value;
+			parent.SelectSimilarParts();
+			cancel();
+		}        
+	</script>          		 
+</apex:form>  		 
+</apex:page>

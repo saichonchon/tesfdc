@@ -1,0 +1,18 @@
+<apex:page standardController="Case" extensions="CaseDetailPDFController" renderAs="pdf">
+  <apex:form >
+      <apex:detail relatedList="false"/>
+      <br/>
+      <h2>Emails</h2><br/><br/>
+      <apex:repeat value="{!vEMList}" var="EM">
+          <b> {!EM.Subject}</b><br/>
+          <hr/><br/>
+          Message Date  : <b> {!EM.MessageDate}</b><br/>
+          From Email Address : <b> {!EM.FromAddress}</b><br/>
+          To Email Address   : <b> {!EM.ToAddress}</b><br/>
+          Subject : <b> {!EM.Subject}</b><br/>
+          Text Body :<apex:outputText escape="false" value="{!EM.HTMLBody}"/> <br/><br/>
+          
+          
+      </apex:repeat>
+  </apex:form>
+</apex:page>

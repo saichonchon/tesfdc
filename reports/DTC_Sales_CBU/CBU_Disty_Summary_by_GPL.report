@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Prior_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Year_to_Date_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account$BU_Customer_Classification__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Top Disty</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Yearly_BBB_by_Part_and_Customers__r$CBC1_Description__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Data Communications</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Bill_Type__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$WWCORPACCTNM__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Yearly_BBB_by_Part_and_Customers__r$Part__c.GPL_DESC__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>CBU - Disty Summary by GPL</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Yearly_Bookings_Billings__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Yearly_BBB_by_Part_and_Customers__r$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

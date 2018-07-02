@@ -1,0 +1,649 @@
+<apex:page controller="CtrlPMVCustomSettings" sidebar="false" title="Custom Setting">
+<!-- 	<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery-1.8.3.min.js')}"/> -->
+	<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-1.10.2.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.Chosen, '/chosen/chosen.jquery.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.Chosen, '/chosen/chosen.proto.js')}" type="text/javascript"></script>
+	<script src="{!URLFOR($Resource.Chosen, '/chosen/docsupport/prism.js')}" type="text/javascript"></script>
+	<apex:stylesheet value="{!URLFOR($Resource.Chosen, '/chosen/chosen.css')}" />
+	
+	
+	
+	<link href="{!URLFOR($Resource.jsCss4OrgChart,'/css/ui-lightness/jquery-ui-1.10.4.custom.css')}" rel="stylesheet"></link>
+	
+	<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery-ui-1.10.4.custom.min.js')}"></script>
+	<script type="text/javascript" src="{!URLFOR($Resource.jsCss4OrgChart,'/js/jquery.json-2.4.min.js')}"></script>
+	<script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+	<style>
+		.activeTab { color:white; background-image:none}
+	    .inactiveTab { background-color: #f8f8f8; color:black; background-image:none}
+	    .bPageBlock .detailList td.data2Col.visitBtn{text-align:center;}
+	    .secHeader{background-color:#996666;color:#fff;display:block;font-family: Arial, Helvetica, sans-serif;
+	                font-size: 11px;font-weight: bold;height: 14px;margin-bottom: 2px;margin-top: 15px;overflow-x: hidden;
+	                overflow-y: hidden;padding-bottom: 4px;padding-left: 3px;padding-right: 3px;padding-top: 4px;width:99%;}
+	
+	    .parentTable,.visitTable{cellspacing:0px;border-collapse:collapse;border:1px solid #e0e3e5;margin-top:10px;}
+	    .parentTable tr,.visitTable tr{border-bottom:1px solid #e0e3e5;}
+	    .c0{width:30px;}
+	    .accHead,.ctcHead,.visitHead,.proHead{width:150px;}
+	    .visitHead.Visit{width:50px;}
+	    .d0{width:30px;text-align:center;}
+	    .mask{top:0px;left:0px;text-align: center; width: 100%; height: 100%; display: block; position: fixed; z-index: 80;}
+	    
+	    #popNew,#popClose{position:fixed;width:400px;height:160px;top:50%;left:50%;border:5px solid #ccc;
+	                        background-color:#eee;margin:-80px 0 0 -200px;border-radius:8px;
+	                        -webkit-box-shadow:1px 3px 5px #aaa; -moz-box-shadow:1px 3px 5px #aaa;}
+	    #popNew .p_btn,#popClose .p_btn{margin:10px;}
+	    .p1{text-align:right;width:195px;}
+	    .p1 span{margin-right:20px;}
+	    .p2{text-align:left;width:195px;position:relative;}
+	    .p2 select{width:150px;}
+	    .p2 input{width:80px;}
+	    .rqBk{background-color: #c00;position: absolute;left: -4px;width: 3px;top: 1px;bottom: 1px;}
+	    .pageNumDiv{text-align:center;color:#19e;font-size:12px;margin-top:3px;}
+	    .pageNumDiv span.pageTurn:hover{text-decoration:underline;cursor:pointer;}
+	    .pageNumDiv span.isOff,.sp{color:#aaa;}
+	    .hide{display:none;}
+	    .tfilter td input[type="text"]{width:90%;}
+	    .la{text-align:left;}
+	    .ra{text-align:right;}
+	    .pageSize{float:left;}
+	    .pageLift{float:right;}
+	    .pageLift input{width:20px;text-align:center;}
+	    .testSpan:hover{cursor:pointer;}
+	    /*  tab  */
+	
+	/*************************/
+	.ui-tabs-panel,.ui-tabs-panel-active,.visitDiv,.tabDiv{
+	-webkit-background-clip: border-box;
+	-webkit-background-origin: padding-box;
+	-webkit-background-size: auto;
+	background-attachment: scroll;
+	background-clip: border-box;
+	background-origin: padding-box;
+	background-size: auto;
+	border-bottom-color: rgb(170, 170, 170);
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-style: solid;
+	border-image-outset: 0px;
+	border-image-repeat: stretch;
+	border-image-slice: 100%;
+	border-image-source: none;
+	border-image-width: 1;
+	border-left-color: rgb(170, 170, 170);
+	border-left-style: solid;
+	border-right-color: rgb(170, 170, 170);
+	border-right-style: solid;
+	border-top-color: rgb(170, 170, 170);
+	border-top-style: solid;
+	color: rgb(34, 34, 34);
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	} 
+	/*************************/
+	    .tabDiv{
+	        background-color: #fff;
+	        border-bottom-width: 1px;
+	        border-left-width: 1px;
+	        border-right-width: 1px;
+	        border-top-left-radius: 4px;
+	        border-top-right-radius: 4px;
+	        border-top-width: 1px;
+	        display: block;
+	        padding-bottom: 3px;
+	        padding-left: 3px;
+	        padding-right: 3px;
+	        padding-top: 3px;
+	        position: relative;
+	    }
+	    .ui-tabs{
+	        -webkit-background-clip: border-box;
+	        -webkit-background-origin: padding-box;
+	        -webkit-background-size: auto;
+	        background-attachment: scroll;
+	        background-clip: border-box;
+	        background-color: #fff;
+	        background-origin: padding-box;
+	        background-size: auto;
+	        border-bottom-color: rgb(170, 170, 170);
+	        
+	        border-bottom-style: solid;
+	        border-bottom-width: 1px;
+	        border-image-outset: 0px;
+	        border-image-repeat: stretch;
+	        border-image-slice: 100%;
+	        border-image-source: none;
+	        border-image-width: 1;
+	        
+	        color: rgb(34, 34, 34);
+	        display: block;
+	        font-family: Verdana, Arial, sans-serif;
+	        font-size: 12px;
+	        font-weight: bold;
+	        height: 27px;
+	        line-height: 14px;
+	        list-style-image: none;
+	        list-style-position: outside;
+	        list-style-type: none;
+	        margin-bottom: 0px;
+	        margin-left: 0px;
+	        margin-right: 0px;
+	        margin-top: 0px;
+	        min-height: 0px;
+	        outline-color: rgb(34, 34, 34);
+	        outline-style: none;
+	        outline-width: 0px;
+	        padding-bottom: 0px;
+	        padding-left: 2px;
+	        padding-right: 2px;
+	        padding-top: 2px;
+	        text-decoration: none;
+	    }
+	    .ui-tab-active{
+	        -webkit-background-clip: border-box;
+	        -webkit-background-origin: padding-box;
+	        -webkit-background-size: auto;
+	        background-attachment: scroll;
+	        background-clip: border-box;
+	        background-color:black;
+	        
+	        background-origin: padding-box;
+	        background-size: auto;
+	        border-bottom-color: rgb(170, 170, 170);
+	        border-bottom-style: solid;
+	        border-bottom-width: 0px;
+	        border-image-outset: 0px;
+	        border-image-repeat: stretch;
+	        border-image-slice: 100%;
+	        border-image-source: none;
+	        border-image-width: 1;
+	        border-left-color: rgb(170, 170, 170);
+	        border-left-style: solid;
+	        border-left-width: 1px;
+	        border-right-color: rgb(170, 170, 170);
+	        border-right-style: solid;
+	        border-right-width: 1px;
+	        border-top-color: rgb(170, 170, 170);
+	        border-top-left-radius: 4px;
+	        border-top-right-radius: 4px;
+	        border-top-style: solid;
+	        border-top-width: 1px;
+	        color: rgb(33, 33, 33);
+	        display: list-item;
+	        float: left;
+	        font-family: Verdana, Arial, sans-serif;
+	        font-size: 12px;
+	        font-weight: normal;
+	        height: 25px;
+	        line-height: 14px;
+	        list-style-image: none;
+	        list-style-position: outside;
+	        list-style-type: none;
+	        margin-bottom: -1px;
+	        margin-left: 0px;
+	        margin-right: 2px;
+	        margin-top: 1px;
+	        padding-bottom: 1px;
+	        padding-left: 0px;
+	        padding-right: 0px;
+	        padding-top: 0px;
+	        position: relative;
+	        text-align: left;
+	        top: 0px;
+	        white-space: nowrap;
+	        width: 201px;
+	    }
+	    .ui-tab{
+	        -webkit-background-clip: border-box;
+	        -webkit-background-origin: padding-box;
+	        -webkit-background-size: auto;
+	        background-attachment: scroll;
+	        background-clip: border-box;
+	        background-color: #eee;
+	        
+	        background-origin: padding-box;
+	        background-size: auto;
+	        border-bottom-color: rgb(211, 211, 211);
+	        border-bottom-style: solid;
+	        border-bottom-width: 0px;
+	        border-image-outset: 0px;
+	        border-image-repeat: stretch;
+	        border-image-slice: 100%;
+	        border-image-source: none;
+	        border-image-width: 1;
+	        border-left-color: rgb(211, 211, 211);
+	        border-left-style: solid;
+	        border-left-width: 1px;
+	        border-right-color: rgb(211, 211, 211);
+	        border-right-style: solid;
+	        border-right-width: 1px;
+	        border-top-color: rgb(211, 211, 211);
+	        border-top-left-radius: 4px;
+	        border-top-right-radius: 4px;
+	        border-top-style: solid;
+	        border-top-width: 1px;
+	        color: rgb(85, 85, 85);
+	        display: list-item;
+	        float: left;
+	        font-family: Verdana, Arial, sans-serif;
+	        font-size: 12px;
+	        font-weight: normal;
+	        height: 25px;
+	        line-height: 14px;
+	        list-style-image: none;
+	        list-style-position: outside;
+	        list-style-type: none;
+	        margin-bottom: 0px;
+	        margin-left: 0px;
+	        margin-right: 2px;
+	        margin-top: 1px;
+	        padding-bottom: 0px;
+	        padding-left: 0px;
+	        padding-right: 0px;
+	        padding-top: 0px;
+	        position: relative;
+	        text-align: left;
+	        top: 0px;
+	        white-space: nowrap;
+	        width: 201px;
+	    }
+	    .ui-tab div,.ui-tab-active div{
+	        cursor: pointer;
+	        display: block;
+	        float: left;
+	        font-family: Verdana, Arial, sans-serif;
+	        font-size: 12px;
+	        font-weight: normal;
+	        line-height: 14px;
+	        list-style-image: none;
+	        list-style-position: outside;
+	        list-style-type: none;
+	        width:200px;
+	        height:100%;
+	        margin:1px;
+	        line-height:23px;
+	        text-decoration: none;
+	        white-space: nowrap;
+	        text-align:center;
+	    }
+	    .ui-tab div{
+	        color: rgb(85, 85, 85);
+	    }
+	    .ui-tab-active div{
+	        color:#f8f8f8;
+	    }
+	
+	
+	    .ui-tabs-panel{
+	        background-color: rgba(0, 0, 0, 0);
+	        background-image: none;
+	        border-bottom-width: 0px;
+	        border-left-width: 0px;
+	        border-right-width: 0px;
+	        border-top-width: 0px;
+	        display: none;
+	        height: auto;
+	        padding-bottom: 11px;
+	        padding-left: 15px;
+	        padding-right: 15px;
+	        padding-top: 11px;
+	    }
+	    .ui-tabs-panel-active{
+	        background-color: rgba(0, 0, 0, 0);
+	        background-image: none;
+	        border-bottom-width: 0px;
+	        border-left-width: 0px;
+	        border-right-width: 0px;
+	        border-top-width: 0px;
+	        display: block;
+	        padding-bottom: 11px;
+	        padding-left: 15px;
+	        padding-right: 15px;
+	        padding-top: 11px;
+	    }
+   		.hideClass{display:none;}
+   		#mask {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			z-index: 3000;
+			background-color: #fff;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-image: url('/img/loading.gif');
+			filter: alpha(opacity = 85);
+			opacity: .85;
+			display: none;
+		}
+		.parentTable tbody tr td{
+			padding:4px 8px;
+			word-wrap:break-word;
+			white-space:nowrap;
+			text-align: center;
+			margin: 0px auto;
+			border: 1px solid #CFD1CD;
+		}
+	    .parentTable thead th {
+	    	font-weight:bold;
+	    	font-style:italic;
+	    	text-align:center;
+	    	text-align: center;
+			margin: 0px auto;
+			color:white;
+			border: 1px solid #CFD1CD;
+			background-color: #00626E;
+			height:25px;
+	    }
+	    .parentTable thead th span{
+	    	padding-left:15px;
+	    	padding-right:15px;
+	    }
+	    .parentTable {width:100%;cellspacing:0px;border-collapse:collapse;border:1px solid #e0e3e5;}
+	    .parentTable tr{border-bottom:1px solid #e0e3e5;}
+	    .parentTable tbody tr td{padding: 5px 2px 4px 5px;}
+    
+    	.edit{
+    		color:blue !important;
+    		cursor: pointer;
+    	}
+    	.del{
+    		color:blue !important;
+    		cursor: pointer;
+    	}
+    	//.itb-table-style-01 tbody tr:hover td{color:#009;}
+    	.itb-table-style-01 tbody tr:hover{background: #C6EBFC;}
+    	.langNewEditDiv, .stageNewEditDiv,.spNewEditDiv, .stageSalesNewEditDiv{margin-top: 25px;}
+    	.btnCenter{margin-bottom:10px;}
+    	.tertiaryPalette{
+    		background-color:#00626E !important;
+    		border-color:#00626E !important;
+    	}
+    	.chosen-container{
+    		width:80% !important;
+    		
+    	}
+    	
+	</style>
+	<script>
+		var j$ = jQuery.noConflict();
+		var config = {
+	      '.chosen-select'           : {},
+	      '.chosen-select-deselect'  : {allow_single_deselect:true},
+	      '.chosen-select-no-single' : {disable_search_threshold:10},
+	      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	      '.chosen-select-width'     : {width:"95%"}
+	    }
+		j$(function(){
+			j$(".chosen-select").chosen();
+			j$("#tableDiv").css("width",(j$(window).width() - 100) + 'px');
+			j$("#stageSalesDiv").css("width",(j$(window).width() - 100) + 'px');
+			if(j$("#errorSpan").find("input").val() === "false" || !j$("#errorSpan").find("input").val()){
+        		onUnFocus();
+        	}
+			
+		});
+		
+		function addEvent(){
+			j$(".chosen-select").chosen();
+			j$("#tableDiv").css("width",(j$(window).width() - 100) + 'px');
+			j$("#stageSalesDiv").css("width",(j$(window).width() - 100) + 'px');
+		}
+		
+		function showNewDiv(item, key){
+			showMask();
+			if(j$(item).hasClass("new_btn")){
+				j$("#editRecordId").find("input").val('');
+				initialRecord();
+			}
+			
+		}
+		
+		function showNewEditDiv(){
+			var target = j$("#pageConfTab").find("input").val();
+			if(target === "PMV Language Config"){
+				j$("[id$='theForm']").find(".langNewEditDiv").removeClass("hideClass");
+			}
+			else if(target === "PMV Team View"){
+				j$("[id$='theForm']").find(".tvNewEditDiv").removeClass("hideClass");
+			}
+			/*
+			else if(target === "PMV Sales Process Settings"){
+				j$("[id$='theForm']").find(".spNewEditDiv").removeClass("hideClass");
+			}
+			else if(target === "PMV Sales Stage Setting"){
+				j$("[id$='theForm']").find(".stageSalesNewEditDiv").removeClass("hideClass");
+			}
+			else if(target === "PMV Stage Config"){
+				j$("[id$='theForm']").find(".stageNewEditDiv").removeClass("hideClass");
+			}
+			*/
+		}
+		
+		function hideNewEditDiv(){
+			
+			var target = j$("#pageConfTab").find("input").val();
+			if(target === "PMV Language Config"){
+				j$("[id$='theForm']").find(".langNewEditDiv").addClass("hideClass");
+			}
+			else if(target === "PMV Team View"){
+				j$("[id$='theForm']").find(".tvNewEditDiv").addClass("hideClass");
+			}
+			/*
+			else if(target === "PMV Sales Process Settings"){
+				j$("[id$='theForm']").find(".spNewEditDiv").addClass("hideClass");
+			}
+			else if(target === "PMV Sales Stage Setting"){
+				j$("[id$='theForm']").find(".stageSalesNewEditDiv").addClass("hideClass");
+			}
+			else if(target === "PMV Stage Config"){
+				j$("[id$='theForm']").find(".stageNewEditDiv").addClass("hideClass");
+			}
+			*/
+		}
+		
+		function saveRecord(key){
+			showMask();
+			if(key === "language"){
+				saveLanguageConfig();
+			}
+			else if(key === 'teamview'){
+				saveTeamView();
+			}
+			
+			/*
+			else if(key === "sp"){
+				if(j$(".dealSizeMax").val() < j$(".dealSizeMin").val()){
+					alert("{!$Label.Deal_Size_Max_Bigger}");
+					hideMask();
+					return;
+				}
+				saveSalesProcessSettings();
+			}
+			else if(key === 'stage'){
+				saveStageConfig();
+			}
+			else if(key === 'ss'){
+				saveSalesStageSetting();
+			}
+			*/
+		}
+		function showMask(){
+			j$("#mask").show();
+		}
+		function hideMask(){
+			j$(".chosen-select").chosen();
+			loadCss();
+			j$("#mask").hide();
+		}
+		function editRecord(item, key){
+			showMask();
+			//console.log(j$(item).data("rid"));
+			j$("#editRecordId").find("input").val(j$(item).data("rid"));
+			initialRecord();
+		}
+		function cancel(key){
+			j$("[id$='theForm']").find("." + key).addClass("hideClass");
+			onUnFocus();
+		}
+		function deleteRecord(item, key){
+			showMask();
+			j$("#editRecordId").find("input").val(j$(item).data("rid"));
+			if(key === "language"){
+				deleteLanguageConfig();
+			}
+			else if(key === 'teamview'){
+				deleteTeamView();
+			}
+			/*
+			else if(key === "sp"){
+				deleteSalesProcessSettings();
+			}
+			else if(key === 'stage'){
+				deleteStageConfig();
+			}
+			else if(key === 'ss'){
+				deleteSalesStageSetting();
+			}
+			*/
+		}
+		//added by weihang 2014-04-24
+		var pbBodyWidth;
+		function  switchTab(el,str){
+            var $el = j$(el);
+            if($el.hasClass('ui-tab-active')){
+                return false;
+            }
+            showMask();
+            j$('#ui-tab-ul').children().removeClass('ui-tab-active').addClass('ui-tab');
+            $el.removeClass('ui-tab').addClass('ui-tab-active');
+            j$("#pageConfTab").find("input").val(str);
+            //added by weihang 2014-04-24
+            pbBodyWidth = j$(".pbBody").width();
+            re_parent();
+        }
+        function onlyNumber(item){
+        	item.value = item.value.replace(/[^\d]/g,'');
+        	
+        }
+        function saveSuccess(){
+        	if(j$("#errorSpan").find("input").val() === "false" || !j$("#errorSpan").find("input").val()){
+        		hideNewEditDiv();
+        	}
+        	else{
+        		showNewEditDiv();
+        	}
+        }
+        ;function onFocus(){
+        	document.location.hash= "pagebottom";
+        }
+        ;function onUnFocus(){
+        	document.location.hash= "pageTop";
+        }
+        
+        function loadCss(){
+        	j$("table").attr("border-collapse","collapse");
+		    j$( "#accordion" ).accordion({
+		     	collapsible: true,
+		    	heightStyle: "content",
+		    	beforeActivate: function( event, ui ) {
+	            	if(j$(event.currentTarget).hasClass("accordion-disabled")) {
+	            		return false;
+	            	}
+	            }
+		    });
+		    var realwidth = pbBodyWidth - j$('.leftDiv').width()-200;
+          	j$('.rightDiv').width(realwidth);
+	    }
+        function setIndex(spid){
+        	showMask();
+        	j$(".hiddenSalesProcessId").val(spid);
+        	j$(".hiddenIndex").val(-1);
+        	refreshRdType();
+        }
+	</script>
+	<apex:form id="theForm">
+		<div id="mask"></div>
+		<span id="pageConfTab">
+			<apex:inputHidden value="{!pageConf.pageTab}"/>
+		</span>
+		<span id="editRecordId">
+			<apex:inputHidden value="{!pageConf.recordId}"/>
+		</span>
+		<span id="errorSpan">
+			<apex:inputHidden value="{!pageConf.isError}"/>
+		</span>
+		<a name="pageTop" ></a>
+		
+		
+		
+		<apex:actionFunction name="initialRecord" action="{!initialRecord}" rerender="theForm" onComplete="showNewEditDiv();hideMask();addEvent();onFocus();"/>
+		<apex:actionFunction name="saveLanguageConfig" action="{!saveLanguageConfig}" rerender="theForm" onComplete="saveSuccess();hideMask();addEvent();onUnFocus()"/>
+<!-- 		<apex:actionFunction name="editLanguageConfigFromPage" action="{!editLanguageConfigFromPage}" rerender="theForm" onComplete="showNewEditDiv();hideMask();"/> -->
+		<apex:actionFunction name="deleteLanguageConfig" action="{!deleteLanguageConfig}" rerender="theForm" onComplete="hideNewEditDiv();hideMask();addEvent();"/>
+		<apex:actionFunction name="deleteTeamView" action="{!deleteTeamView}" rerender="theForm" onComplete="hideNewEditDiv();hideMask();addEvent();"/>
+		<apex:actionFunction name="saveTeamView" action="{!saveTeamView}" rerender="theForm" onComplete="saveSuccess();hideMask();addEvent();onUnFocus();"/>
+		<apex:actionFunction name="re_parent" action="{!refershPage}" rerender="theForm" onComplete="addEvent();loadCss();hideMask();onUnFocus();"/>
+		<apex:actionFunction name="refreshRdType" action="{!refershRecordType}" reRender="PMVTypePanel" oncomplete="hideMask();" />
+		
+<!-- 		<apex:actionFunction name="saveSalesProcessSettings" action="{!saveSalesProcessSettings}" rerender="theForm" onComplete="saveSuccess();hideMask();addEvent();onUnFocus();"/> -->
+<!-- 		<apex:actionFunction name="deleteSalesProcessSettings" action="{!deleteSalesProcessSettings}" rerender="theForm" onComplete="hideNewEditDiv();hideMask();addEvent();"/> -->
+<!-- 		<apex:actionFunction name="saveStageConfig" action="{!saveStageConfig}" rerender="theForm,pageMessage" onComplete="saveSuccess();hideMask();addEvent();onUnFocus();"/> -->
+<!-- 		<apex:actionFunction name="deleteStageConfig" action="{!deleteStageConfig}" rerender="theForm" onComplete="hideNewEditDiv();hideMask();addEvent();"/> -->
+<!-- 		<apex:actionFunction name="saveSalesStageSetting" action="{!saveSalesStageSetting}" rerender="theForm" onComplete="saveSuccess();hideMask();addEvent();onUnFocus();"/> -->
+<!-- 		<apex:actionFunction name="deleteSalesStageSetting" action="{!deleteSalesStageSetting}" rerender="theForm" onComplete="hideNewEditDiv();hideMask();addEvent();"/> -->
+		
+		
+		<apex:pageBlock >
+			
+			<apex:outputPanel id="wholePanel">
+				
+				<ul class="ui-tabs" id="ui-tab-ul">
+                	<li class="ui-tab{!IF(pageConf.pageTab='PMV Language Config','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Language Config');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Language Config','black','')}" id="ui-id-2">{!$Label.PMV_Setting_Label_LanguageConfig}</div></li>
+                    <li class="ui-tab{!IF(pageConf.pageTab='PMV Team View','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Team View');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Team View','black','')}" id="ui-id-2">{!$Label.PMV_Setting_Label_TeamView}</div></li>
+                    <li class="ui-tab{!IF(pageConf.pageTab='PMV Sales Stage','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Sales Stage');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Sales Stage','black','')}" id="ui-id-2">{!$Label.PMV_Setting_Label_SalesStage}</div></li>
+<!--                     <li class="ui-tab{!IF(pageConf.pageTab='PMV Stage Config','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Stage Config');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Stage Config','black','')}" id="ui-id-2">PMV Stage Config</div></li> -->
+<!--                     <li class="ui-tab{!IF(pageConf.pageTab='PMV Sales Stage Setting','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Sales Stage Setting');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Sales Stage Setting','black','')}" id="ui-id-2">PMV Sales Stage Setting</div></li> -->
+                	
+<!--                 	<li class="ui-tab{!IF(pageConf.pageTab='PMV Stage Mapping','-active','')}" tabindex="-1" onclick="switchTab(this, 'PMV Stage Mapping');"><div class="ui-tabs-anchor" style="background-color:{!IF(pageConf.pageTab='PMV Stage Mapping','#56B1ED','')}" id="ui-id-2">PMV Stage Mapping</div></li> -->
+                </ul>
+                <div class="ui-tabs-panel{!IF(pageConf.pageTab='PMV Language Config','-active','')}">
+	            	<apex:outputPanel id="tabLanguage" rendered="{!pageConf.pageTab='PMV Language Config'}">
+	            		<c:CompPMVLanguageConfig pageCtrl="{!this}" id="languageCompId"></c:CompPMVLanguageConfig>
+	            	</apex:outputPanel>
+	            </div>
+	            
+	            <div class="ui-tabs-panel{!IF(pageConf.pageTab='PMV Team View','-active','')}">
+	            	<apex:outputPanel id="teamviewConfig" rendered="{!pageConf.pageTab='PMV Team View'}">
+	            		<c:CompPMVTeamViewSetting pageCtrl="{!this}" id="teamviewCompId"></c:CompPMVTeamViewSetting>
+	            	</apex:outputPanel>
+	            </div>
+	            
+	            <div class="ui-tabs-panel{!IF(pageConf.pageTab='PMV Sales Stage','-active','')}">
+	            	
+	            	<apex:outputPanel id="tabSalesProcess" rendered="{!pageConf.pageTab='PMV Sales Stage'}">
+	            		<c:CompPMVSalesStage pageCtrl="{!this}" id="salesProcessCompId"></c:CompPMVSalesStage>
+	            	</apex:outputPanel>
+	            </div>
+<!-- 	            <div class="ui-tabs-panel{!IF(pageConf.pageTab='PMV Stage Config','-active','')}"> -->
+<!-- 	            	<apex:outputPanel id="tabStageConfig" rendered="{!pageConf.pageTab='PMV Stage Config'}"> -->
+<!-- 	            		<c:CompPMVStageConfig pageCtrl="{!this}" id="stageCompId"></c:CompPMVStageConfig> -->
+<!-- 	            	</apex:outputPanel> -->
+<!-- 	            </div> -->
+	            
+<!-- 	            <div class="ui-tabs-panel{!IF(pageConf.pageTab='PMV Sales Stage Setting','-active','')}"> -->
+<!-- 	            	<apex:outputPanel id="salesStageConfig" rendered="{!pageConf.pageTab='PMV Sales Stage Setting'}"> -->
+<!-- 	            		<c:CompPMVSalesStageSetting pageCtrl="{!this}" id="stageSalesCompId"></c:CompPMVSalesStageSetting> -->
+<!-- 	            	</apex:outputPanel> -->
+<!-- 	            </div> -->
+	            
+	            <a name="pagebottom" ></a>
+			</apex:outputPanel>
+		</apex:pageBlock>
+		
+	</apex:form>   
+</apex:page>

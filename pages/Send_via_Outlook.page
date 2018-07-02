@@ -1,0 +1,118 @@
+<apex:page standardController="Case" extensions="Send_an_Email_Controller" standardStylesheets="false" >
+    <apex:form >
+    <style type="text/css">
+    .send {
+  
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #9dce2c), color-stop(1, #8cb82b) ) !important;
+    background:-moz-linear-gradient( center top, #9dce2c 5%, #8cb82b 100% ) !important;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9dce2c', endColorstr='#8cb82b') !important;
+    background-color:#9dce2c !important;
+    border-top-left-radius:10px !important;   -moz-border-radius:6px !important;
+    -webkit-border-radius:6px !important;
+    border-radius:6px !important;
+    border:1px solid #eeb44f !important;
+    display:inline-block !important;
+    color:#ffffff !important;
+    font-family:arial !important;
+    font-size:12px !important;
+    font-weight:bold !important;
+    padding:6px 18px !important;
+ }
+       
+.classname {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+    background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+    background-color:#ededed;
+   border-top-left-radius:0px !important;   -moz-border-radius:6px !important;
+    -webkit-border-radius:0px !important;
+    border-radius:0px !important;
+    border:1px solid #ffffff !important;
+    display:inline-block !important;
+    color:#000000 !important;
+    font-family:arial !important;
+    font-size:12px !important;
+    font-weight:bold !important;
+    padding:6px 18px !important;
+}
+</style>
+
+
+    
+    <b>
+    Please click on button to send an email.
+    </b><br/>
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:pageMessages />
+<apex:commandButton action="{!Send}" value="Send Email" oncomplete="SendEmailfc()" styleClass="send"/> 
+  <script>
+     function myFunction()
+        {
+             searchServer(document.getElementById("casestatus").value);
+        }
+        function SendEmailfc(){
+        
+        var count = 0;
+        var strchk = document.getElementById("Email").innerHTML;
+        
+        //str =str.replace(/\n/gm,'%0D%0A');
+        var cl = '{!cs.isclosed}';
+        var cs_owner = '{!cs.ownerid}';
+        var em_subject = '{!cs.Email_Subject__c}';
+        
+         if(cl == 'true'){
+               alert('Case is closed.Please change case status to send an email');
+           }else if(cs_owner.indexOf("005") == -1){
+               alert('Case Owner Cannot be a Queue. Please change Case Owner');
+           }
+           else{
+               /*for(var i = 0;i < str.length;i++){
+                   if(str.charCodeAt(i) >19968 && str.charCodeAt(i) < 40909){
+                   count++;
+                   }
+              }
+       
+              if(str.length > 1000){
+                  if(count>0){
+                      str = str.substring(0,450);
+                  }else{
+                      str=str.substring(0,1100);
+                  } 
+              }*/
+              var str1;
+              if(strchk.length>20){
+                  str1='--------Original message-------'+'%0D%0A'+'From: {!cs.Email_ToAddress__c}'+'%0D%0A'+'Sent: {!msgDate}'+
+                           '%0D%0A'+'To: {!cs.Email_FromAddress__c}' +'%0D%0A'+'subject: {!cs.Email_Subject__c}'+
+                           '%0D%0A'+'{!cs.Case_Thread_ID__c}'
+             }
+             else{
+             str1='';
+             }
+              
+              
+           if(em_subject.indexOf("ref:_") == -1) {
+                window.top.location='mailto:{!cs.Email_ToAddress__c}'+'?subject=Case {!cs.casenumber} :Re:'+'{!cs.Email_Subject__c}{!cs.Case_Thread_ID__c}'+'&bcc={!vBCCAddr.Value__c}&body='+str1;
+            }else{
+                
+                window.top.location='mailto:{!cs.Email_ToAddress__c}'+'?subject='+'{!cs.Email_Subject__c}'+'&bcc={!vBCCAddr.Value__c}&body='+str1;
+            }
+        }
+           
+    }
+    </script>        
+  
+    <div id="Email"  style="visibility: hidden">
+    
+    {!cs.Email_FromAddress__c}
+    
+    </div>
+</apex:form> 
+
+</apex:page>

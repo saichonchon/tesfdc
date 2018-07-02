@@ -1,0 +1,71 @@
+<apex:page standardController="ACP_Account_Plan__c" extensions="ACP_Performance_Analytics_ctrl" tabStyle="ACP_Market_and_Competition__c" standardStylesheets="false" showHeader="true" sidebar="false" >
+  <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'ACPBootstrapStyling.css')}" />
+   <apex:stylesheet value="{!URLFOR($Resource.ACP_CSS, 'NewEditPage.css')}" />
+   <div class = "bootstrap-sfdc">
+   <div class="container-fluid">
+      <apex:form >
+         <apex:pageBlock mode="edit">
+            <apex:image url="{!$Resource.status_bar}" width="100%" height="8"/>
+            <br/><br/><br/>
+            <div style="margin-left: 15%;">
+            <apex:pageMessages />
+            <apex:outputText value="{!$Label.ACP_ADM_Market_Competition}" styleClass="SectionHeader"> </apex:outputText></div>
+            <br/><br/>
+            <div class = "row" >
+           
+               <div class = "col-md-12">
+                  <div class="panel panel-primary">
+                     <div class="panel-heading">{!$Label.ACP_Create_ADM_Market_Competition}  </div>
+                     <div class ="panel-body">
+                     <div class ="informationBar">{!$Label.ACP_ADM_Market_Competition_Information}</div>
+                     <br/>
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>{!$Label.ACP_Product_Group}</label><br/>
+                    <apex:inputField value="{!ADMMarkComp.ACP_Product_Group__c}" taborderhint="1" styleClass="form-control"  html-placeholder="Enter Product" />
+                    
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>{!$Label.ACP_TAM}</label>
+                    <apex:inputField value="{!ADMMarkComp.ACP_TAM__c}" taborderhint="2" html-placeholder="Enter TAM" styleClass="form-control" />
+                  </div>
+                   <div class="form-group">
+                    <label>{!$Label.ACP_Comments}</label><br />
+                    <apex:inputField taborderhint="3" value="{!ADMMarkComp.ACP_Comments__c}" styleClass="form-control" html-placeholder="Enter Comments" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                
+                  <div class="form-group">
+                    <label>{!$Label.ACP_TE_Position}</label><br />
+                    <apex:inputField taborderhint="4" value="{!ADMMarkComp.ACP_TE_Position__c}" styleClass="form-control" html-placeholder="Enter TE Position" />
+                  </div>
+                  <div class="form-group">
+                    <label>{!$Label.ACP_Market_Share}</label><br />
+                    <apex:inputField taborderhint="5" value="{!ADMMarkComp.ACP_Market_Share__c}" styleClass="form-control" html-placeholder="Enter Market Share" />
+                  </div>
+                 
+                </div>
+               
+              </div>
+              <div class="panel-footer">
+                <div align="right" style="">
+                  <!--<apex:commandButton value="{!$Label.ACP_Cancel}" immediate="true" action="{!perfPageRedirection}" styleClass="btn btn-default" />&nbsp;&nbsp;
+                  -->
+                  <apex:commandLink value="{!$Label.ACP_Cancel}" immediate="true" action="{!cancelAddPage}" styleClass="btn btn-default" >
+                          <apex:param name="div" value="MrktCompSum" />
+                         </apeX:commandLink>&nbsp;
+                    <apex:commandButton action="{!saveAndNewADM}"  value="{!$Label.ACP_Save_And_New}" disabled="{!IF(admMarkCompList.size < admmarkrec.ACP_No_Of_Records__c-1, false, true)}" styleClass="btn btn-default" />&nbsp;&nbsp;
+                     <apex:commandButton action="{!SaveADMMarkComp}" value="{!$Label.ACP_Save}" styleClass="btn btn-primary" />
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </apex:pageBlock>
+    </apex:form>
+  </div>
+  </div>
+</apex:page>

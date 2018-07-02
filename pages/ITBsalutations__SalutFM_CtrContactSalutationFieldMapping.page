@@ -1,0 +1,37 @@
+<apex:page controller="ITBsalutations.CtrContactSalutationFieldMapping" title="Salutation Field Mapping Settings" tabstyle="Definitions__tab">
+	<apex:form id="bodyform">
+		<c:CompLoadingPopup />
+		
+		<div id="pageblock">
+		<apex:pageBlock id="salutAll" title="Mapping Fields">
+			<apex:pageMessage summary="{!currentMsg}" severity="info" rendered="{!mode='edit'}"/>
+			<apex:pageMessages />
+			<apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!Edit}" value="Edit" rendered="{!mode='view'}" onclick="showLoading()" oncomplete="endLoading()"/>
+                <apex:commandButton action="{!Save}" value="Save" rendered="{!mode='edit'}" rerender="bodyform" onclick="showLoading()" oncomplete="endLoading()"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" rendered="{!mode='edit'}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="1" collapsible="false" rendered="{!mode='view'}">
+	            <apex:repeat value="{!list_fieldMappings}" var="key">
+	            	<apex:pageBlockSectionItem >
+	            		<apex:outputLabel value="{!key.settingField}"/>
+		            	<apex:outputText value="{!key.label}"/>
+                	</apex:pageBlockSectionItem>
+	            </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="editSection" columns="1" collapsible="false" rendered="{!mode='edit'}">
+	            <apex:repeat value="{!list_fieldMappings}" var="key">
+	            	<apex:pageBlockSectionItem >
+	            		<apex:outputLabel value="{!key.settingField}"/>
+		            	<apex:selectList value="{!key.contactField}" size="1">
+				            <apex:selectOptions value="{!list_keyOptions}"/>
+				        </apex:selectList>		
+                	</apex:pageBlockSectionItem>
+	            </apex:repeat>
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+		</div>
+	</apex:form>
+</apex:page>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <block>
+        <blockInfo>
+            <blockId>B1</blockId>
+            <joinTable>Opportunity</joinTable>
+        </blockInfo>
+        <columns>
+            <field>Opportunity$MED_Product_Family__c</field>
+        </columns>
+        <columns>
+            <field>Opportunity$Opportunity_Number__c</field>
+        </columns>
+        <columns>
+            <field>Opportunity$Name</field>
+        </columns>
+        <columns>
+            <field>Opportunity$Segment__c</field>
+        </columns>
+        <columns>
+            <field>Opportunity$MED_Opp_Confidence__c</field>
+        </columns>
+        <columns>
+            <field>Opportunity$Account</field>
+        </columns>
+        <columns>
+            <field>Opportunity$MED_Current_Year_Net_of_Cann__c.CONVERT</field>
+        </columns>
+        <columns>
+            <field>Opportunity$MED_Next_Year_Net_of_Cann__c.CONVERT</field>
+        </columns>
+        <columns>
+            <field>Opportunity$MED_Third_Year_Net_of_Cann__c.CONVERT</field>
+        </columns>
+        <columns>
+            <field>Opportunity$MED_5_Year_Revenue__c</field>
+        </columns>
+        <currency>USD</currency>
+        <filter>
+            <criteriaItems>
+                <column>Opportunity$Opportunity_Owner_GIBU__c</column>
+                <isUnlocked>true</isUnlocked>
+                <operator>equals</operator>
+                <value>Medical</value>
+            </criteriaItems>
+            <criteriaItems>
+                <column>Opportunity$MED_5_Year_Revenue__c</column>
+                <isUnlocked>true</isUnlocked>
+                <operator>notEqual</operator>
+                <value>0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <column>Opportunity$MED_Opp_Status__c</column>
+                <isUnlocked>true</isUnlocked>
+                <operator>notEqual</operator>
+                <value>CN - Lost (Canceled),LS - Lost,HL - Hold,CM - Complete,P0 - Pre-Opportunity,P3 - In Quoting Opportunity,QR - Quote Released</value>
+            </criteriaItems>
+            <criteriaItems>
+                <column>Opportunity$MED_Opp_Confidence__c</column>
+                <isUnlocked>true</isUnlocked>
+                <operator>notEqual</operator>
+                <value>0</value>
+            </criteriaItems>
+            <criteriaItems>
+                <column>Opportunity$MED_Product_Family__c</column>
+                <isUnlocked>true</isUnlocked>
+                <operator>notEqual</operator>
+                <value>CREG</value>
+            </criteriaItems>
+        </filter>
+        <format>Summary</format>
+        <name>Opportunities with and without O block 1</name>
+        <params>
+            <name>co</name>
+            <value>1</value>
+        </params>
+        <reportType>Opportunities_with_and_without_Opp_statuses__c</reportType>
+        <scope>organization</scope>
+        <timeFrameFilter>
+            <dateColumn>Opportunity$CreatedDate</dateColumn>
+            <interval>INTERVAL_CUSTOM</interval>
+        </timeFrameFilter>
+    </block>
+    <blockInfo>
+        <blockId xsi:nil="true"/>
+        <joinTable>Opportunity</joinTable>
+    </blockInfo>
+    <description>Review Active NPI projects</description>
+    <format>MultiBlock</format>
+    <name>Active NPI Projects</name>
+    <params>
+        <name>lsk</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunities_with_and_without_Opp_statuses__c</reportType>
+    <showDetails>true</showDetails>
+</Report>

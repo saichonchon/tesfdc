@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Submitted_By__c</field>
+        <field>Opportunity__c</field>
+        <field>Part_Number__c</field>
+        <field>Request_Quantity__c</field>
+        <field>Requested_Date__c</field>
+        <field>Description_of_Request__c</field>
+        <field>Prototype_Request_Type__c</field>
+        <field>Project_Type__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Product_Manager_Name__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>The PM must Approve/Reject the Prototype Request</description>
+        <label>PM Approval</label>
+        <name>PM_Approval</name>
+    </approvalStep>
+    <description>1.31.2013 - Approval Process for Sales to submit Prototype Requests to Product Managers. Process is uses to track more than to actually perform approvals. This process is NOT for sample requests of existing parts. It is ONLY for Prototype Requests. Product Managers will collaborate with Engineering outside of SFDC.</description>
+    <emailTemplate>Approval_Email_Templates/PrototypeRequest_Notification</emailTemplate>
+    <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Prototype_Sample_Request__c.Ship_Date__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Email_Alert_PM_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>UpdateApprovedCheckboxYes</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Email_Alert_PM_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>UpdateApprovedCheckboxNo</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>Prototype Request Approval Process</label>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

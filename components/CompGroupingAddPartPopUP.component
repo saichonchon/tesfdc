@@ -1,0 +1,29 @@
+<apex:component layout="block">
+
+<apex:attribute name="isRelay" type="Boolean" required="false" description="the page controller reference" />
+
+
+<span id="popboxcover">
+<div class="popup_main" id="popupmain" style="display: none;"></div>
+
+<div class="popup_box" id="popupbox" style="display: none;">
+	<div class="popup_box_content">
+		<div class="popup_box_title" id="popup_title">
+			<input id="searchpart_inputid" type="text" class="popup_search_input"/> 
+			<input onclick="{!if(isRelay, 'searchPartPopUPRelay(this)', 'searchPartPopUP(this)')}" id="searchpart_btnid" value="Search Part" class="btn" type="button" />
+			<input onclick="{!if(isRelay, 'searchTopPartBtn_eveRelay(this)', 'searchTopPartBtn_eve(this)')}" class="btn addpartbtn top_cls" type="button" value="{!$Label.APL_btn_search_top5_part}"/> 
+		</div>
+		<div class="ov" style="position: relative;">
+			<div id="popup_loading" class="popup_loading" style="display: none;"></div>
+			<select  id="multiselect_simple" name="multiselect" class="multiselect" multiple="multiple" style="visibility:hidden; width:100%; min-height:400px; height: 400px;">
+				
+			</select>
+		</div>
+		<div class="popup_box_bottom">
+			<input onclick="{!if(isRelay, 'saveSearchPartRelay(this)', 'saveSearchPart(this)')}" id="saveSearchPartId" value="{!$Label.APL_btn_add_part}" class="btn"  type="button" />
+			<input onclick="closePopUP(this)" value="{!$Label.APL_btn_close}" class="btn" type="button" />
+		</div>
+	</div>
+</div>
+</span>
+</apex:component>

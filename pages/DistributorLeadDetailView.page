@@ -1,0 +1,58 @@
+<apex:page standardController="Lead" Extensions="LeadEditDetailController" TabStyle="Distributor_Lead__tab" sidebar="false" contentType="{!if($CurrentPage.parameters.iscontentType == null,  null, 'application/vnd.ms-excel#MyLeadDetail.xls')}" cache="true" expires="1200">
+
+<!-- Schema added to add autofilter for header row in Excel sheet -->
+    <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+     <head></head>
+      
+         
+<chatter:feedWithFollowers entityId="{!Lead.id}" rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}"/>
+<apex:message />
+<apex:form >
+<apex:pageBlock title="Lead Detail">
+    <apex:pageBlockButtons rendered="{!IF($CurrentPage.parameters.iscontentType == 'true',false,true)}">
+
+    <apex:commandButton value="Edit" onclick="window.location='DistributorLeadEditView?ID={!Lead.ID}'; return false;" rendered="{!IF((Lead.Distributor_Response__c == 'Convert to opportunity')||(Lead.Distributor_Response__c == 'Dead'),false,true)}"/>
+
+    <apex:commandButton value="Back" onclick="window.location='DistributorLeadListView?ID={!Lead.ID}'; return false;"/>
+    
+    <apex:commandButton value="Export Excel" action="/apex/DistributorLeadDetailView?iscontentType=true"/>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection title="Lead Information" columns="2" id="Section">
+                    <apex:outputField value="{!Lead.Lead_Number__c}" Label="Lead Number"/>
+                    <apex:outputField value="{!Lead.Owner.Name}" label="Owner"/>                    
+                    <apex:outputField value="{!Lead.name}" Label="Contact Name"/>
+                    <apex:outputField value="{!Lead.CreatedDate}" label="CreatedDate"/>                    
+                    <apex:outputField value="{!Lead.Rating}" label="Rating"/>
+                    <apex:outputField value="{!Lead.ROLE__c}"/>
+                    <apex:outputField value="{!Lead.company}"/>
+                    <apex:outputField value="{!Lead.title}"/>
+                    <apex:outputField value="{!Lead.email}"/>
+                    <apex:outputField value="{!Lead.phone}"/>
+                    <apex:outputField value="{!Lead.MobilePhone}"/>                   
+                    <apex:outputField value="{!Lead.Distributor_Response__c}">
+                    <apex:actionSupport event="onchange" reRender="Section"/>
+                    </apex:outputField>
+                    
+                    <apex:outputField value="{!Lead.Distributor_Status_Reason_Code__c}" rendered="{!Lead.Distributor_Response__c ='Dead'}"/>                    
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Address Information" columns="2">
+                    <apex:outputField value="{!Lead.Street}"/>
+                    <apex:outputField value="{!Lead.City}"/>
+                    <apex:outputField value="{!Lead.State}"/>
+                    <apex:outputField value="{!Lead.PostalCode}"/>
+                    <apex:outputField value="{!Lead.Country}"/>
+                    <apex:outputField value="{!Lead.website}"/>
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection title="Additional Information" >
+                    <apex:outputField value="{!Lead.Distributor_Comments__c}"/>
+                    <apex:outputField value="{!Lead.ACTIVITY_NOTES__c}"/>
+                    <apex:outputField value="{!Lead.Description}" />
+                    <apex:outputField value="{!Lead.SUGGESTED_SE__c}"/>
+                </apex:pageBlockSection>
+    </apex:pageBlock>
+
+</apex:form>
+</html>
+</apex:page>

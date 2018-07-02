@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM 
+-Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM)/
+ Plant_Account_Shipment__c.Shipment_Count__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Promotor_Count_Business_Understanding__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Detractor_Count_Business_Understanding__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Passive_Count_Business_Understanding__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Shipment_Count__c</field>
+    </columns>
+    <columns>
+        <field>Account$Account__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Shows Scores by functions</description>
+    <format>Matrix</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Plant_Account_Shipments__r$Shipped_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND NPS Scores Plants by Functions</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Accounts_with_NPS_plant_data__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

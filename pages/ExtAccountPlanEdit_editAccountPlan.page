@@ -1,0 +1,1546 @@
+<apex:page standardController="Account_Plan__c" extensions="ExtAccountPlanEdit" sideBar="true" showHeader="true" title="{!$ObjectType.Account_Plan__c.label}">
+    <apex:sectionHeader title="{!$ObjectType.Account_Plan__c.label}" subtitle="Edit"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ITB_Table_Style)}" />
+    <apex:stylesheet value="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.css')}" />
+    
+    <style>    
+        .headerrow TD { 
+            vertical-align: bottom; 
+            background-color:#94D3E7; 
+            font-weight: bold; 
+        }    
+        .alignbottom {
+            vertical-align:bottom;
+        }
+             
+        div.scrollTableContainer {
+            height: 285px;   
+            overflow: auto;
+            width: 1000px;
+            //margin: 0 0 15px 0 ;
+            position: relative;
+            
+        }  
+          
+        div.strategicAccount {
+            height: 204px;
+            width: 1000px;
+            overflow: auto;
+            position: relative;
+        }
+        
+        div.strategicInitiatives {
+            height: 379px;
+            width: 1000px;
+            overflow: auto;
+            position: relative;
+        }
+        
+        div.winScrollTable {
+            //height: 285px;
+            overflow: auto;
+            width: 1000px;
+            //margin: 0 0 15px 0 ;
+            position: relative;
+            
+        }
+        
+        div.lossScrollTable {
+            //height: 285px;
+            overflow: auto;
+            width: 1000px;
+            //margin: 0 0 15px 0 ;
+            position: relative;
+            
+        }
+        
+        div#chart_div.jqplot-target {
+            color: #FFFFFF;
+        }
+        div#regionChart_div.jqplot-target {
+            color: #FFFFFF;
+        }
+        .jqplot-title {   
+            top: 0px;
+            left: 0px;  
+            padding-bottom: 0.5em;
+            font-size: 1.2em;   
+            color:black;
+            font-weight: bold;  
+        }
+        .errorcls{ color: red;margin-left: 160px; margin-top: 185px;}
+    </style>
+    <div id="loading-curtain-div" style="top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');" title="Please Wait..."></div>
+  
+    <apex:form id="theForm">
+    
+        <apex:actionStatus startText="" stopText="" id="searchbynumberLOOKUP" >  
+         <apex:facet name="start">
+            <div id="pageStartLoading" style="text-align:center;width:99%;height:99%;display:block;background-color:#FFF;opacity:0.5;position:absolute;z-index:8000;filter:alpha(opacity=85);">
+                <div class="loadingDiv" style="width:40px;margin-left:48%;margin-top:48%;position:absolute;">
+                    <img src="/img/loading.gif"/>
+                </div>
+            </div>
+         </apex:facet>
+        </apex:actionStatus>
+        <apex:pageMessages id="messId"/>
+        <c:CompLoadingPopup />
+        <div id="pageblock">
+        <apex:pageBlock mode="edit" id="theBlock">
+
+            <apex:pageBlockButtons >
+                <!-- <apex:commandButton action="{!saveone}" value="{!$Label.SaveButton}" onclick="showLoading()" /> 
+                <apex:commandButton action="{!cancel}" value="{!$Label.CancelButton}" onclick="showLoading()" immediate="true"/> -->
+                 
+                <input type="button" value="{!$Label.SaveButton}" onclick="showLoading();doSaveOne();"/>  
+                <input type="button" value="{!$Label.CancelButton}" onclick="showLoading();doCancelOne();"/> 
+            </apex:pageBlockButtons>
+            <apex:actionFunction name="doSaveOne"  action="{!saveone}">                
+            </apex:actionFunction>
+            <apex:actionFunction name="doCancelOne"  action="{!cancel}">
+            </apex:actionFunction>
+            <apex:pageBlockSection >
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem ><!-- rendered="{!mode == 'edit'}" -->
+                    <apex:outputLabel >{!$Label.Customer}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accPlan.Customer__c}" />
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.Account_Manager_Approver__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.Account_Manager_Approver__c}" required="true" onkeypress="return noenter(event);"/></div>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.GAM_Code__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accPlan.GAM_Code__c}"/>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                 
+                <apex:pageBlockSectionItem rendered="{!accPlan.Customer_Type__c='A'}">
+                    <apex:outputLabel rendered="{!accPlan.Customer_Type__c='A'}">{!$ObjectType.Account_Plan__c.Fields.Account_Definition__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accPlan.Account_Definition__c}" rendered="{!accPlan.Customer_Type__c='A'}"/>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!customerType = 'A'}">
+                    <apex:outputLabel rendered="{!customerType = 'A'}">{!$ObjectType.Account_Plan__c.Fields.Replicate_to_Central_Org__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!accPlan.Replicate_to_Central_Org__c}" rendered="{!customerType = 'A'}"/>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                <!--END Only for test 2012-06-04  -->
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.Name.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.Name}" onkeypress="return noenter(event);"/></div>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>                                
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.Plan_Year__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock">
+                            </div>
+                                <apex:actionRegion >
+                                    <apex:inputField value="{!accPlan.Plan_Year__c}" onkeypress="return noenter(event);" id="planYearId" >
+                                        <apex:actionSupport event="onchange" action="{!refreshOverviewTable}"  oncomplete="loadChart();" rerender="chartId,StrPeriod,overviewPanel,forcastPanel,chartSection,CBC3Panel,regionPanel,lineChartPanel, amountData, fiscalData" status="searchbynumberLOOKUP"/>
+                                    </apex:inputField>
+                                    <apex:outputField value="{!accPlan.Plan_Year__c}" rendered="{!mode='edit'}"/>
+                                    
+                                </apex:actionRegion>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.Active__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!accPlan.Active__c}"/>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                <!-- field TE_Inside_Account_Plan__c added by Mrunal for R-1468 -->
+                <apex:pageBlockSectionItem rendered="{!chkLoggedInUser}">
+                    <apex:outputLabel rendered="{!chkLoggedInUser}">{!$ObjectType.Account_Plan__c.Fields.TE_Inside_Account_Plan__c.Label}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!accPlan.TE_Inside_Account_Plan__c}" rendered="{!chkLoggedInUser}"/>
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.Sales_Figures_Makeup__c.Label}</apex:outputLabel>
+                    <apex:outputpanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div>
+                        <apex:actionRegion >
+                            <apex:inputField value="{!accPlan.Sales_Figures_Makeup__c}" onkeypress="return noenter(event);" Id="salesFigures">
+                                <apex:actionSupport event="onchange" action="{!refreshPerformanceAndChart}" oncomplete="loadChart();" rerender="chartId,StrPeriod,overviewPanel,forcastPanel,chartSection,CBC3Panel,regionPanel,lineChartPanel, amountData, fiscalData" status="searchbynumberLOOKUP"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                        </div>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem dataStyle="vertical-align:middle" helpText="{!$Label.HelpText_Voice}">
+                    <apex:outputPanel > <apex:outputLabel value="{!$Label.Voice_Overview}"/>
+                      <a href="/servlet/servlet.FileDownload?file={!voiceId}" >
+                         <apex:image url="{!$Resource.Speaker}" width="25" height="25" title="{!$Label.Voice_Overview_exists}" rendered="{!displayVoice}"/> 
+                      </a> 
+                      <apex:commandLink action="{!RemoveVoiceFile}" rendered="{!displayVoice}" value="{!$Label.Delete}" id="theVoiceDeleteLink" />
+                    </apex:outputPanel>  
+                    <apex:outputPanel > Select audio file to upload: <apex:inputFile fileSize="{!voiceFileSize}" id="VoiceFileId" contentType="{!voiceFileContentType}" value="{!voiceBody}" filename="{!voiceName}" style="width:375px"/>
+                      <apex:outputLabel style="color:blue"  value="{!$Label.file_size_cannot_be_greater_than_3_MB}" />
+                      <br />
+                      <apex:outputLabel style="color:red;" rendered="{!displayVoiceFileError}" 
+                        value="{!voiceFileErrorMsg}" />      
+                    </apex:outputPanel>
+                 </apex:pageblockSectionItem>
+             </apex:pageBlockSection>  
+             <!-- add lili 2014.3.5 for link the Related Account Planning begin-->
+             <!--  
+              <apex:pageBlockSection title="Related Account Planning" rendered="{!OR(isGAMLink, isKAMLink)}" columns="1">   
+                 <apex:pageBlockSectionItem rendered="{!OR(isGAMLink, isKAMLink)}" >
+                    <apex:outputPanel Id="relPlan">
+                        <apex:outputLabel value="{!$Label.Global_Account_Planning}" rendered="{!isGAMLink}" styleClass="labelCol" />
+                        <apex:outputLabel value="{!$Label.B_Account_Planning}" rendered="{!isKAMLink}" styleClass="labelCol" />&nbsp;&nbsp;&nbsp;&nbsp;                     
+                        <apex:outputLink value="{!strLink}" id="theLink">{!accPlanName}</apex:outputLink> 
+                    </apex:outputPanel>                       
+                </apex:pageBlockSectionItem>
+             </apex:pageBlockSection> 
+             -->
+             <!-- add lili 2014.3.5 for link the Related Account Planning end-->                                                                                     
+            <br/>
+            <hr/>
+            <table width="100%"><tr><td><h2><font color="0073AE" size="4px">{!$Label.Customer_Overview}</font></h2><br/></td></tr></table>
+            <apex:outputPanel id="overviewPanel">
+                <apex:outputPanel id="innerPanel" ><!-- rendered="{!planYearIsChoosed}" -->
+                    <table width="60%" border="1" cellpadding="4" cellspacing="0">
+                        <tr class="headerrow">
+                            <td align="center" style="font-weight:normal"> <i>{!$Label.All_figures_in_Millions}</i> </td>
+                            <td colspan="3" align="center">{!$Label.Customer_Revenue}</td>               
+                        </tr> 
+                        <tr class="headerrow">
+                            <td align="center"><div Class="helpButton"><b>{!$Label.Category}</b><img class="helpOrb" title="{!$Label.Name_of_Customer_Revenue}" alt="" src="/s.gif" /></div></td>
+                            <td align="center"><b>{!planYearMinus3}</b></td> 
+                            <td align="center"><b>{!planYearMinus2}</b></td>
+                            <td align="center"><b>{!planYearMinus1}</b></td>
+                                                        
+                        </tr>        
+                        <tr><b>
+                            <td align="center"><b>{!$Label.Total}</b></td>
+                            <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Total_Revenue_M_Plan_Yr_3__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                            <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Total_Revenue_M_Plan_Yr_2__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                            <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Total_Revenue_M_Plan_Yr_1__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                        </b></tr>                       
+                        <tr>
+                            <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Category1_Name__c}" onkeypress="return noenter(event);"/></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category1_Revenue_M_Plan_Yr_3__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category1_Revenue_M_Plan_Yr_2__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category1_Revenue_M_Plan_Yr_1__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                        </tr>        
+                        <tr>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category2_Name__c}" onkeypress="return noenter(event);"/></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category2_Revenue_M_Plan_Yr_3__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category2_Revenue_M_Plan_Yr_2__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category2_Revenue_M_Plan_Yr_1__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                        </tr>        
+                        <tr>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category3_Name__c}" onkeypress="return noenter(event);"/></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category3_Revenue_M_Plan_Yr_3__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category3_Revenue_M_Plan_Yr_2__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                            <td align="center" style="background-color: lightyellow"> <apex:inputField value="{!accPlan.Category3_Revenue_M_Plan_Yr_1__c}" style="width:75px" onkeypress="return noenter(event);"></apex:inputField></td>
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <br/><br/>
+            <apex:pageBlockSection showHeader="false" columns="1">                          
+                <apex:inputField value="{!accPlan.Industry_Segment__c}" style="width:300px" onkeypress="return noenter(event);"/>
+                <apex:pageblockSectionItem helpText="{!$ObjectType.Account_Plan__c.Fields.Key_Product_Percent_Title__c.inlineHelpText}">
+                    <apex:outputLabel >{!$Label.key_Products}</apex:outputLabel>
+                    <apex:outputPanel >
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.Key_Product_Percent_Title__c}" onkeypress="return noenter(event);"/></div>
+                    </apex:outputPanel>
+                </apex:pageblockSectionItem>                
+            </apex:pageBlockSection>
+            <br/>
+            <table width="60%" border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center"></td>  
+                    <td align="left">  <b>{!$Label.key_Products}</b></td>                    
+                    <td align="center"><b>{!$Label.Percent}</b></td>
+                    <td align="center"><b>{!$Label.Outlook}</b></td>
+                </tr>
+                <tr>
+                    <td align="center"><b>1</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_1__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_1_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!accPlan.Key_Product_1_Outlook__c}" onkeypress="return noenter(event);"/></div></td>                     
+                </tr>
+                <tr>
+                    <td align="center"><b>2</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_2__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_2_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_2_Outlook__c}" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+                <tr>
+                    <td align="center"><b>3</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_3__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_3_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_3_Outlook__c}" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>4</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_4__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_4_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_4_Outlook__c}" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>5</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_5__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_5_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_5_Outlook__c}" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+                 <tr>
+                    <td align="center"><b>6</b></td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_6__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_6_Pct__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Key_Product_6_Outlook__c}" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+            </table>
+            <br/><br/>
+            <hr/>
+            <table width="100%"><tr><td><h2><font color="0073AE" size="4px">{!$Label.TE_Performance_Overview}</font></h2></td></tr></table>
+            <br/>
+            <apex:pageBlockSection showHeader="false" columns="1">  
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.Account_Plan__c.Fields.TE_Performance_Status__c.inlineHelpText}"> 
+                    <apex:outputLabel >{!$ObjectType.Account_Plan__c.Fields.TE_Performance_Status__c.Label}</apex:outputLabel>
+                    <apex:outputpanel >                       
+                        <div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.TE_Performance_Status__c}" onkeypress="return noenter(event);"/></div>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>                
+            </apex:pageBlockSection>
+            <br/>
+            <apex:outputPanel id="forcastPanel">
+            
+            <table border="0" width="62%" cellpadding="0" cellspacing="2">
+                <tr>
+                    <td>
+                        <table width="100%" border="1" cellpadding="6" cellspacing="0">
+                            <tr class="headerrow">
+                                <td align="center" style="font-weight: normal;"><i>{!$Label.All_figures_in_Millions}</i></td>
+                                <td colspan="1" align="center"></td><!-- {!$Label.Actual} -->
+                                <td colspan="3" align="center">{!$Label.Forecast} ({!planYear})</td>
+                                <td colspan="4" align="center">{!$Label.Annual_Plan}</td>
+                            </tr> 
+                            <tr class="headerrow">
+                                <td align="center" style="font-weight: normal;"><i>{!$Label.Fiscal_Years}</i></td>
+                                <td align="center">{!planYearMinus1}</td>
+                                <td align="center">{!$Label.YTD_Actuals}</td>
+                                <!-- <td align="center">{!$Label.Forecast}</td> -->
+                                <td align="center">{!$Label.Adjusted_Forecast}</td>
+                                <td align="center">{!planYear}</td>
+                                <td align="center">{!planYearPlus1}</td>
+                                <td align="center">{!planYearPlus4}</td>
+                            </tr>
+                            <!-- 2012-05-30  -->
+                            <tr>
+                                <td align="center"><b>{!$Label.TE}</b></td>
+                                
+                                <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strte_prior_revernue}" style="width:75px" /></td>  
+                                <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strte_actual_revernue}" style="width:75px" /></td>
+                                <!-- <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strte_cy_forecast}" style="width:75px" /></td> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TE_Revenue_CY_Forecast_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <!-- <td align="center" style="background-color: lightyellow"></td> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TE_Revenue_Fcst_Plan_Yr_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TE_Revenue_Fcst_Plan_Yr_1_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TE_Revenue_Fcst_Plan_Yr_4_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><b><apex:outputText Value="{!buName}" style="width:75px" /></b></td>
+                               
+                                <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strbu_prior_revernue}" style="width:75px" /></td>
+                                <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strbu_actual_revernue}" style="width:75px" /></td>
+                                <!-- <td align="center" style="background-color: lightyellow"><apex:outputText Value="{!strbu_cy_forecast}" style="width:75px" /></td> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.BU_Revenue_CY_Forecast_M__c}" style="width:75px" onkeypress="return noenter(event);" /></td>
+                                <!-- <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.BU_Revenue_CY_Manual_Forecast_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.BU_Revenue_Fcst_Plan_Yr_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.BU_Revenue_Fcst_Plan_Yr_1_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.BU_Revenue_Fcst_Plan_Yr_4_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:outputText Value="{!$Label.TAM}" style="width:75px"/> </div></td><!-- <img class="helpOrb" title="{!$Label.TAM_or_SAM}" alt="" src="/s.gif" /> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TAM_Prior_Yr_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"></td>
+                                <td align="center" style="background-color: lightyellow"></td>
+                                <!-- <td align="center" style="background-color: lightyellow"></td> -->
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TAM_Plan_Year_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TAM_Plan_Yr_1_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                                <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.TAM_Plan_Yr_4_M__c}" style="width:75px" onkeypress="return noenter(event);"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            </apex:outputPanel>
+            <br/>
+            <table width="60%" border="0" cellpadding="4" cellspacing="0" >
+                <tr><i>
+                    <td align="left"><font color="0073AE"><b>{!$Label.TAM}</b> ({!$Label.Total_Available_Market})</font></td>  
+                    <td align="left">{!$Label.TAM_Definition}</td>                    
+                </i></tr>
+            </table>
+            <br/>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td align="center" width="25%">{!$Label.Relationships}</td>
+                    <td align="center" width="25%">{!$Label.Status}</td>
+                    <td align="center" width="50%">{!$Label.Comments}</td>                                                                                                                                       
+                </tr>
+                <tr>
+                    <td align="center"><b>{!$ObjectType.Account_Plan__c.fields.Executive_Relationship__c.label}</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!accPlan.Executive_Relationship__c}" onkeypress="return noenter(event);"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Executive_Relationship_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                </tr>  
+                <tr>
+                    <td align="center"><b>{!$ObjectType.Account_Plan__c.fields.Purchasing_Relationship__c.label}</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!accPlan.Purchasing_Relationship__c}" onkeypress="return noenter(event);"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Purchasing_Relationship_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                </tr>  
+                <tr>
+                    <td align="center"><b>{!$ObjectType.Account_Plan__c.fields.Engineering_Relationship__c.label}</b></td>
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!accPlan.Engineering_Relationship__c}" onkeypress="return noenter(event);"/></div></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Engineering_Relationship_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+            </table>
+            <br/>
+            <apex:outputPanel ><!-- rendered="{!OR(showRegionPanel,showCBCPanel)}" -->
+                <h2><font color="DE8703" size="4px" >
+                    <div Class="helpButton">
+                        <apex:outputLabel value="{!$Label.Sales_Breakdown}" />
+                        <img class="helpOrb" title="{!$Label.Select_Chart}" alt="" src="/s.gif" />
+                    </div>
+                </font></h2>  
+            </apex:outputPanel>
+            <br/>
+           <!--  added by weihang 2013-04-15 begin -->
+            <apex:outputPanel id="lineChartPanel">
+                <div id="chartPeriod" style="margin-top:20px; margin-left:20px; width:600px; height:240px;display:none;"></div>
+                <div id="chartPeriodLoading" style="margin-top:20px; margin-left:20px;text-align:center;width: 600px; height: 240px;;display:none;background-color:#FFF;opacity:0.5;position:inherit;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');">                   
+                </div>  
+            </apex:outputPanel>
+            
+            <apex:pageBlockSection columns="2" id="chartSection">
+                <apex:pageBlockSectionItem >
+                <apex:outputPanel id="CBC3Panel">     
+                    <apex:outputPanel >
+                        <div id="CBCChart" style= "display:none;">
+                            <apex:inputCheckBox value="{!chooseCBC}" styleClass="chartsCheck" onclick="checkCharts(this);" id="chart1" />   
+                        </div>                    
+                        <table>
+                            <tr><td >
+                                <div id="chart_div" style="width: 600px; height: 400px;display:none;"></div>
+                                <div id="chartDivLoading" style="text-align:center;width: 600px; height: 400px;display:none;background-color:#FFF;opacity:0.5;position:static;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');">
+                            </div>
+                            </td></tr>
+                        </table>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                
+                </apex:pageBlockSectionItem>
+                   
+               <apex:pageBlockSectionItem >      
+                <apex:outputPanel id="regionPanel" > 
+                    <apex:outputPanel >
+                        <div id="regionChart" style= "display:none;">
+                        <apex:inputCheckBox value="{!chooseRegion}" styleClass="chartsCheck" onclick="checkCharts(this);"  id="chart2" />
+                        </div>
+                       <table>
+                           <tr><td >
+                            <div id="regionChart_div" style="width: 600px; height: 400px;display:none;"></div>
+                            <div id="regionChartDivLoading" style="text-align:center;width: 600px; height: 400px;display:none;background-color:#FFF;opacity:0.5;position:static;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/img/loading.gif');">
+                            </div>
+                           </td></tr>
+                        </table>                      
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <br/>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">              
+                    <td align="center"></td> 
+                    <td align="left">  <b>{!$Label.Competitors}</b></td>                    
+                    <td align="center"><b>{!$Label.Market_Share} %</b></td>
+                    <td align="center"><b>{!$Label.Market_Share_Trend}</b></td>
+                    <td align="left">  <b>{!$Label.Comments}</b></td> 
+                </tr>
+                <tr>
+                    <td align="center">1</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor1__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_1_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputfield Value="{!accPlan.Competitor_1_MS_Trend__c}" onkeypress="return noenter(event);"/></div    ></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_1_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                 </tr>          
+                <tr>
+                    <td align="center">2</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor2__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_2_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_2_MS_Trend__c}" onkeypress="return noenter(event);"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_2_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">3</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor3__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_3_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_3_MS_Trend__c}" onkeypress="return noenter(event);"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_3_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">4</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor4__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_4_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_4_MS_Trend__c}" onkeypress="return noenter(event);"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_4_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">5</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor5__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_5_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_5_MS_Trend__c}" onkeypress="return noenter(event);"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_5_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                 </tr>
+                <tr>
+                    <td align="center">6</td> 
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor6__c}" style="width:300px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_6_Market_Share__c}" style="width:50px" onkeypress="return noenter(event);"/></td>                                                            
+                    <td align="center" style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_6_MS_Trend__c}" onkeypress="return noenter(event);"/></td>                     
+                    <td align="left"   style="background-color: lightyellow"><apex:inputfield Value="{!accPlan.Competitor_6_Comments__c}" style="width:300px" onkeypress="return noenter(event);"/></td>                     
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Strategies}</font></h2><br/><br/></table>
+            <div class="strategicAccount">
+                <table border="1" cellpadding="4" cellspacing="0" width="100%">
+                    <tr class="headerrow">
+                        <td width="5%"></td>
+                        <td align="left" width="74%"><div Class="helpButton"><b>{!$Label.Strategic_Account_Objectives} </b><img class="helpOrb" title="{!$Label.What_are_the_goals_for_this_account}?" alt="" src="/s.gif" /></div></td>                                                                                                                                       
+                        <td>{!$Label.Location}</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_1__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_1__c}" style="width:740px;" onkeypress="return noenter(event);"/></td>                   
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_1__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_2__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_2__c}" style="width:740px;" onkeypress="return noenter(event);"/></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_2__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_3__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_3__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_3__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_4__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_4__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_4__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_5__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_5__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_5__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_6__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_6__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_6__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_7__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_7__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_7__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_8__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_8__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_8__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_9__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_9__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_9__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_10__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_10__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_10__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_11__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_11__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_11__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_12__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_12__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_12__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_13__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_13__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_13__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_14__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_14__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_14__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_15__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_15__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_15__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_16__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_16__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_16__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_17__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_17__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_17__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_18__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_18__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_18__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_19__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_19__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_19__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Account_Objective_Active_20__c}" onclick="checkAccountActiveLength(this)" styleClass="accActive" /></td>
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_20__c}" style="width:740px;" onkeypress="return noenter(event);" /></td>                    
+                        <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Account_Objective_Location_20__c}" onkeypress="return noenter(event);"/></td>
+                    </tr> 
+                </table>
+            </div>
+            <br/> 
+            <div class="strategicInitiatives">
+                <table border="1" cellpadding="4" cellspacing="0" width="100%">
+                    <tr class="headerrow">
+                        <td align="center" width="5%"></td> 
+                        <td align="left" width="45%"><div Class="helpButton"><b>{!$Label.Strategic_Initiatives_Penetration_Plan}</b><img class="helpOrb" title="{!$Label.How_will_the_goals_for_this_account_be_achieved}?" alt="" src="/s.gif" /></div></td>                    
+                        <td align="center" width="8%"><b>{!$Label.Target}</b></td>
+                        <td align="left" width="23%">  <b>{!$Label.Status}</b></td>
+                        <td align="center">{!$Label.Owner}</td>                              
+                    </tr>
+                    <tr>
+                        <td align="center" ><apex:inputField value="{!accPlan.Strategic_Initiative_Active_1__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_1__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.Strategic_Initiative_1_Target__c}" onkeypress="return noenter(event);"/></div></td>
+                        <td align="center" style="background-color: lightyellow"><div class="requiredInput"><div class="requiredBlock"></div><apex:inputField value="{!accPlan.Strategic_Initiative_1_Status__c}" onkeypress="return noenter(event);"/></div></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_1_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_2__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_2__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_2_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_2_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_2_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_3__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_3__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_3_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_3_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_3_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_4__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_4__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_4_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_4_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_4_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_5__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_5__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_5_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_5_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_5_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_6__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_6__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_6_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_6_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_6_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_7__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_7__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_7_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_7_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_7_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_8__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_8__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_8_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_8_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_8_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_9__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_9__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_9_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_9_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_9_Owner__c}" style="width:130px;" /></td>
+                    </tr>                
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_10__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_10__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_10_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_10_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_10_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_11__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_11__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_11_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_11_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_11_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_12__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_12__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_12_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_12_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_12_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_13__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_13__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_13_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_13_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_13_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_14__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_14__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_14_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_14_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_14_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_15__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_15__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_15_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_15_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_15_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_16__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_16__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_16_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_16_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_16_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_17__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_17__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_17_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_17_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_17_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_18__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_18__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_18_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_18_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_18_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_19__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_19__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_19_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_19_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_19_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                    <tr>
+                        <td  align="center"><apex:inputField value="{!accPlan.Strategic_Initiative_Active_20__c}" onclick="checkStrategicActiveLength(this)" styleClass="strategicActive" /></td>
+                        <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_20__c}" style="width:450px" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_20_Target__c}" onkeypress="return noenter(event);"/></td>
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_20_Status__c}" onkeypress="return noenter(event);"/></td>                        
+                        <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Strategic_Initiative_20_Owner__c}" style="width:130px;" /></td>
+                    </tr>
+                </table>
+            </div>
+            <br/><br/>
+            
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Key_Projects_Opportunities}</font></h2><br/><br/></table>
+                
+            <div class="scrollTableContainer">
+                <table border="1" cellpadding="4" cellspacing="0" class="itb-table-style-01">
+                    <thead>
+                        <tr class="headerrow" style="background-color: lightblue">
+                            <th width="5%"/> 
+                            <th width="30%">  <b>{!$Label.Key_Projects_Opportunities}</b></th>
+                            <th nowrap="nowrap" width="15%"><div Class="helpButton"><b>{!$Label.X5_Yr_Value_M}</b><img class="helpOrb" title="{!$Label.Value_in_Millions}" alt="" src="/s.gif"/></div></th>                    
+                            <th width="15%"><div Class="helpButton"><b>{!$Label.Start_Date}</b><img class="helpOrb" title="{!$Label.Expected_Start_Date_or_Initial_Order_Date}" alt="" src="/s.gif" /> </div></th>
+                            <th width="15%">  <b>{!$Label.Type}</b></th>
+                            <th width="20%">  <b>{!$Label.Master_Programm}</b></th>                                
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!list_keyOppyAndProgramm}" var="item">
+                            <tr style="background-color:lightyellow; font-weight: bold;">
+                                <td width="5%" ><apex:inputCheckBox value="{!item.isSelected}" styleClass="oppyCheck" onclick="checkSuper6(this, 'project');"/> </td>
+                                <td width="30%" ><apex:outputLink value="/{!item.oppy4edit.Id}" target="_Blank">{!item.oppy4edit.Name}</apex:outputLink></td>
+                                <td width="15%" ><apex:outputText value="{!item.fiveYearReve}"/></td>
+                                <td width="15%" ><div class="requiredInput"><div class="requiredBlock" style="display:{!IF(item.isSelected, '', 'none')};"></div><apex:inputField value="{!item.ap.Key_Project_1_Start_Date__c}" styleClass="keyProjectStartDate"/></div></td><!-- //2012-10-26 modified by yuanyuan zhang  -->
+                                <td width="15%" ><apex:outputText value="{!item.oppyType}"/></td>
+                                <td width="20%" ><apex:outputLink target="_Blank" value="/{!item.oppy4edit.Program__c}">{!item.programName}</apex:outputLink></td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                    
+                </table>
+            </div>
+            
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Breakthrough_Programs}</font></h2><br/><br/></table>
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr class="headerrow">
+                    <td  align="center"></td>                     
+                    <td align="left">  <div Class="helpButton"><b>{!$Label.Program}</b><img class="helpOrb" title="{!$Label.KeyProject_Description}?" alt="" src="/s.gif" /> </div></td>
+                    <td align="center"><b>{!$Label.Status}</b></td>
+                    <td align="left">  <b>{!$Label.Comments}</b></td>
+                </tr>
+                <tr>
+                    <td  align="center" >1</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Program_1__c}" style="width:500px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_1_Status__c}" onkeypress="return noenter(event);"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_1_Comments__c}" style="width:250px" onkeypress="return noenter(event);"/></td>                        
+                </tr>       
+                <tr>
+                    <td  align="center" >2</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Program_2__c}" style="width:500px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_2_Status__c}" onkeypress="return noenter(event);"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_2_Comments__c}" style="width:250px" onkeypress="return noenter(event);"/></td>                        
+                </tr>       
+                 <tr>
+                    <td  align="center" >3</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Program_3__c}" style="width:500px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_3_Status__c}" onkeypress="return noenter(event);"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_3_Comments__c}" style="width:250px" onkeypress="return noenter(event);"/></td>                        
+                </tr>       
+                 <tr>
+                    <td  align="center" >4</td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Program_4__c}" style="width:500px" onkeypress="return noenter(event);"/></td>
+                    <td align="center" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_4_Status__c}" onkeypress="return noenter(event);"/></td>
+                    <td align="left"   style="background-color: lightyellow"><apex:inputField value="{!accPlan.Breakthrough_Pgm_4_Comments__c}" style="width:250px" onkeypress="return noenter(event);"/></td>                        
+                </tr>       
+           </table>
+               
+         <br/><br/>     
+         
+         <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Obstacles}</font></h2><br/><br/></table>   
+              <table border="1" cellpadding="4" cellspacing="0">            
+                <tr class="headerrow">
+                    <td/>
+                    <td align="left"><b>{!$Label.Obstacle_Headwind}</b></td>                                                                                                             
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Obstacle_1__c}" style="width:700px" onkeypress="return noenter(event);"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">2</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Obstacle_2__c}" style="width:700px" onkeypress="return noenter(event);"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">3</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Obstacle_3__c}" style="width:700px" onkeypress="return noenter(event);"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">4</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Obstacle_4__c}" style="width:700px" onkeypress="return noenter(event);"/></td>                    
+                </tr>     
+                <tr>
+                    <td align="center">5</td>
+                    <td align="left" style="background-color: lightyellow"><apex:inputField value="{!accPlan.Obstacle_5__c}" style="width:700px" onkeypress="return noenter(event);"/></td>                    
+                </tr>
+            </table>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Win_Projects}</font></h2><br/><br/></table>
+            <div class="winScrollTable">
+            <table border="1" cellpadding="4" cellspacing="0" class="itb-table-style-01">
+                <thead>
+                    <tr class="headerrow" style="background-color: lightblue">
+                        <th/> 
+                        <th align="left">  <b>{!$Label.Win_Projects}</b></th>
+                        <th align="center" nowrap="nowrap"><div Class="helpButton"><b>{!$Label.X5_Yr_Value_M}</b><img class="helpOrb" title="{!$Label.Value_in_Millions}" alt="" src="/s.gif"/></div></th>
+                        <th>{!$Label.Type}</th>
+                        <th>{!$Label.Won_Date}</th>
+                        <th>{!$ObjectType.Opportunity.Fields.Account_Plan_Comment__c.Label}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!list_winOppy}" var="item">
+                        <tr style="background-color:lightyellow; font-weight: bold;">
+                            <td width="5%" ><apex:inputCheckBox value="{!item.isSelected}" styleClass="winCheck" onclick="checkSuper6(this, 'win', '{!item.oppy4edit.Id}');" id="checkBoxWon"/> </td>
+                            <td width="15%" ><apex:outputLink value="/{!item.oppy4edit.Id}" target="_Blank">{!item.oppy4edit.Name}</apex:outputLink></td>
+                            <td width="15%" >
+                                <apex:outputText value="{!item.fiveYearReve}"/>
+                            </td>
+                            <td width="10%" ><apex:outputText value="{!item.oppyType}"/></td>
+                            <td width="10%" ><div class="requiredInput"><div class="requiredBlock" style="display:{!IF(item.isSelected, '', 'none')};"></div><apex:inputField value="{!item.ap.Recent_Big_Win_1_Date_Won__c}"/></div></td>
+                            <td width="30%">
+                                <apex:inputField value="{!item.oppy4edit.Account_Plan_Comment__c}" style="width:80%;height:100%;" onkeypress="return noenter(event);"/>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            </div>
+            <br/><br/>
+            
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$Label.Loss_Projects}</font></h2><br/><br/></table>
+            <apex:outputPanel id="lossPanel">
+            <div class="lossScrollTable">
+            <table border="1" cellpadding="4" cellspacing="0" class="itb-table-style-01" id="lossTable">
+                <thead>
+                    <tr class="headerrow" style="background-color: lightblue">
+                        <th/> 
+                        <th>  <b>{!$Label.Loss_Projects}</b></th>
+                        <th nowrap="nowrap"><div Class="helpButton"><b>{!$Label.X5_Yr_Value_M}</b><img class="helpOrb" title="{!$Label.Value_in_Millions}" alt="" src="/s.gif"/></div></th>
+                        <th>{!$Label.Type}</th>
+                        <th>{!$Label.Loss_Date}</th>
+                        <th>{!$ObjectType.Opportunity.Fields.Account_Plan_Comment__c.Label}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!list_lossOppy}" var="item">
+                        <tr style="background-color:lightyellow; font-weight: bold;">
+                            <td width="5%" >
+                                <apex:inputCheckBox value="{!item.isSelected}" styleClass="lossCheck" onclick="checkSuper6(this, 'loss','{!item.oppy4edit.Id}');" />
+                            </td>
+                            <td width="15%" ><apex:outputLink value="/{!item.oppy4edit.Id}" target="_Blank">{!item.oppy4edit.Name}</apex:outputLink></td>
+                            <td width="15%" ><apex:outputText value="{!item.fiveYearReve}"/></td>
+                            <td width="10%" ><apex:outputText value="{!item.oppyType}"/></td>
+                            <td width="10%" ><div class="requiredInput"><div class="requiredBlock" style="display:{!IF(item.isSelected, '', 'none')};"></div><apex:inputField value="{!item.ap.Recent_Loss_1_Date__c}"/></div></td>
+                            <td width="30%">
+                                <apex:inputField value="{!item.oppy4edit.Account_Plan_Comment__c}" style="width:80%;height:100%;" onkeypress="return noenter(event);"/>
+                            </td>
+                            
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            </div>
+            </apex:outputPanel>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$ObjectType.Account_Plan__c.fields.Customer_Scorecard__c.label}</font></h2><br/></table>
+            <apex:pageBlockSection showHeader="false" title="Customer Scorecard" columns="1">
+                <apex:inputField value="{!accPlan.Customer_Scorecard__c}" style="width:700px" onkeypress="return noenter(event);"/>
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel >{!$Label.Comments}</apex:outputLabel>
+                     <apex:inputField value="{!accPlan.Customer_Scorecard_Comments__c}" style="width:700px" onkeypress="return noenter(event);"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <br/><br/>
+            <table width="100%"><hr/><h2><font color="0073AE" size="4px">{!$ObjectType.Account_Plan__c.fields.Monthly_Update__c.label}</font></h2><br/></table>
+                <apex:pageBlockSection showHeader="false" title="Monthly Update" columns="1">
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel ></apex:outputLabel>
+                     <apex:outputLabel ><i>{!$Label.Monthly_update_Description}</i></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <!-- <apex:inputField value="{!accPlan.Monthly_Update__c}" style="width:700px; "/> -->
+                <apex:outputPanel >
+                    <apex:inputTextarea rows="20" richText="true" value="{!accPlan.Monthly_Update__c}" onkeypress="return noenter(event);"/>
+                    <br />
+                    <apex:outputLabel style="color:red;" rendered="{!displayMUError}" 
+                    value="{!$Label.Value_cannot_exceed_3000}" />  
+                </apex:outputPanel> 
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        </div>
+
+       <apex:outputPanel id="StrPeriod">
+        <span id="chartPeriodId"> 
+            <input type="hidden" value="{!cbcTop1}" id="cbcTop1Id"/>
+            <input type="hidden" value="{!cbcTop2}" id="cbcTop2Id"/>
+            <input type="hidden" value="{!cbcTop3}" id="cbcTop3Id"/>
+            <input type="hidden" value="{!cbcTop4}" id="cbcTop4Id"/>
+            <input type="hidden" value="{!cbcTop5}" id="cbcTop5Id"/>
+            
+            <input type="hidden" value="{!cbcPercent1}" id="cbcPercent1Id"/>
+            <input type="hidden" value="{!cbcPercent2}" id="cbcPercent2Id"/>
+            <input type="hidden" value="{!cbcPercent3}" id="cbcPercent3Id"/>
+            <input type="hidden" value="{!cbcPercent4}" id="cbcPercent4Id"/>
+            <input type="hidden" value="{!cbcPercent5}" id="cbcPercent5Id"/>
+            
+            <input type="hidden" value="{!regionTop1}" id="regionTop1Id"/>
+            <input type="hidden" value="{!regionTop2}" id="regionTop2Id"/>
+            <input type="hidden" value="{!regionTop3}" id="regionTop3Id"/>
+            <input type="hidden" value="{!regionTop4}" id="regionTop4Id"/>
+            <input type="hidden" value="{!regionTop5}" id="regionTop5Id"/>              
+            
+            <input type="hidden" value="{!regionPercent1}" id="regionPercent1Id"/>
+            <input type="hidden" value="{!regionPercent2}" id="regionPercent2Id"/>
+            <input type="hidden" value="{!regionPercent3}" id="regionPercent3Id"/>
+            <input type="hidden" value="{!regionPercent4}" id="regionPercent4Id"/>
+            <input type="hidden" value="{!regionPercent5}" id="regionPercent5Id"/>
+            
+        </span>
+       </apex:outputPanel>
+        
+    </apex:form>
+    
+    <script type="text/javascript">var __sfdcSessionId = '{!GETSESSIONID()}';</script>
+    <script src="{!URLFOR($Resource.TEJqueryMiNi)}" />
+    <script src="../../soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/24.0/apex.js" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+    <script src="{!URLFOR($Resource.Jqplot,'dist/excanvas.js')}" />
+    <!-- <script src="{!URLFOR($Resource.Jqplot,'dist/jquery.min.js')}" /> -->
+    <script src="{!URLFOR($Resource.Jqplot,'dist/jquery.jqplot.min.js')}" />
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.pieRenderer.min.js')}" />
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.categoryAxisRenderer.js')}" />
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasTextRenderer.min.js')}" />
+    <script src="{!URLFOR($Resource.Jqplot,'dist/plugins/jqplot.canvasAxisLabelRenderer.min.js')}" />
+    <!--  
+        <script src="{!URLFOR($Resource.ExtAccountPlanViewTE)}" />
+    -->           
+    <script>
+       // j$ = jQuery.noConflict();
+
+        function checkSuper6(item, itemType, oppyId){
+            
+            var checkString = '';
+            var checkNumber = 4;
+            if(itemType == 'win'){
+                checkString = 'winCheck';
+            }
+            else if(itemType == 'loss'){
+                checkString = 'lossCheck';
+            }
+            else{
+                checkString = 'oppyCheck';
+                checkNumber = 6;
+            }
+            var list_check = document.getElementsByTagName("input");
+            checkFlag = 0;
+            var j = 0;
+            for(var i=0; i<list_check.length; i++){ 
+                if(list_check[i].type == "checkbox" && list_check[i].className == checkString){
+                    if(list_check[i].checked){
+                        j++;
+                    }
+                    if(j > checkNumber){
+                        checkFlag = 1;
+                        break;
+                    }
+                }
+            }           
+            
+            if(item.checked){
+                if(checkFlag != 0){
+                    item.checked = false;
+                    alert("You can only choose " + checkNumber + " of them!");
+                    return;
+                }               
+            }
+            else{
+                if(checkString == 'oppyCheck' && j == 0){
+                    alert('You must choose one key opportunity!');
+                    item.checked = true;
+                    return;
+                }
+            }
+            for(var i=0; i<list_check.length; i++){
+                if(list_check[i].type == "checkbox" && list_check[i].className == checkString){
+                    if(list_check[i].checked){
+                        if(checkString == 'oppyCheck'){
+                            $(list_check[i]).parent().next().next().next().find('.requiredBlock').attr('style', 'display:');
+                        }
+                        else{
+                            $(list_check[i]).parent().next().next().next().next().find('.requiredBlock').attr('style', 'display:');
+                        }
+                    }   
+                    else{
+                        if(checkString == 'oppyCheck'){
+                            $(list_check[i]).parent().next().next().next().find('.requiredBlock').attr('style', 'display:none');
+                        }
+                        else{
+                            $(list_check[i]).parent().next().next().next().next().find('.requiredBlock').attr('style', 'display:none');
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        function checkCharts(item){
+            var checkString = 'chartsCheck', array_check = [];
+            var list_check = document.getElementsByTagName("input");
+
+            for(var i=0, max=list_check.length; i<max; i++){ 
+                if(list_check[i].type == "checkbox" && list_check[i].className == checkString){
+                    if(list_check[i].id != item.id){
+                        array_check.push(list_check[i]);
+                    }
+                }
+            }
+            
+            if(array_check.length == 0){
+                item.checked = true;
+                alert('You must select one Chart!');
+                return;
+            }
+            
+            if(item.checked){
+                array_check[0].checked = false;
+            }
+            else{
+                array_check[0].checked = true;
+            }                      
+                        
+        }
+        addListener(window, 'load', initDocument, {});
+        ;function initDocument(){
+            document.getElementById('loading-curtain-div').style.display = 'none';
+            loadChart();
+        }
+        //initDocumentPage();
+        /*
+         $(document).ready(function () {            
+            loadChart();            
+        });
+        */ 
+        function loadChart() {  
+            var modeType = "{!mode}";          
+            showChart2Loading(); 
+            setTimeout(function(){
+                loadLineChart();
+            }, 600);
+            if(modeType == 'edit') {                       
+                showChartDivLoading();
+                showRegionChartDivLoading();
+                setTimeout(function(){
+                    loadPieCBCChart();
+                
+                }, 400);
+                setTimeout(function(){
+                    loadPieRegionChart();               
+                }, 400);
+            }            
+        }  
+    function loadLineChart() {
+        //console.log('test1');
+        var sal = $('[id*=salesFigures_selected] option'),salVal = '';
+        $('[id*=salesFigures_selected] option').each(function(){
+            salVal += $(this).text() + ';';
+        });       
+        var year = $('[id*=planYearId] option:selected').val();
+        var mode = "{!mode}";
+        if(mode == 'new') {
+            Visualforce.remoting.Manager.invokeAction(
+                "{!$RemoteAction.ExtAccountPlanEdit.loadLineChart}",
+                {
+                 Plan_Year__c : year,
+                 Sales_Figures_Makeup__c : salVal,
+                 Customer__c : "{!accId}"
+                 },
+                function(result, event) {
+                    var $chart=$('#chartPeriod').html('');
+                    if (event.status) {
+                    drawLineChart(result);  
+                    } else {
+                            var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadLineChart\', \'chartPeriod\')" /><br/><br/>'+event['message']+'</div>';
+                            $chart.append(el_div).show();
+                    //    alert("communication error");
+                            if (window.console){
+                                console.log(event);
+                            }
+                    }
+                }   
+            );          
+        }else{
+            Visualforce.remoting.Manager.invokeAction(
+                "{!$RemoteAction.ExtAccountPlanEdit.loadLineChart}",
+                {Id:"{!accPlan.Id}",Plan_Year__c:year,Sales_Figures_Makeup__c:salVal},
+                function(result, event) {
+                    var $chart=$('#chartPeriod').html('');
+                    if (event.status) {
+                        drawLineChart(result);  
+                    } else {
+                            hideChart2Loading();
+                            var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadLineChart\', \'chartPeriod\')" /><br/><br/>'+event['message']+'</div>';
+                            $chart.append(el_div).show();
+                            if (window.console){
+                                console.log(event);
+                            }
+                    }
+                }   
+            );
+        }
+    }
+    ;function reLoadChart(callBack, targetId){
+        if(targetId == 'chartPeriod') {
+            $("#chartPeriod").hide();
+            showChart2Loading();
+        }else if(targetId == 'chart_div') {
+            $("#chart_div").hide();
+            showChartDivLoading();
+        }else if(targetId == 'regionChart_div') {
+            $("#regionChart_div").hide();
+            showRegionChartDivLoading(); 
+        }
+        $('#'+targetId).html('');
+        window[callBack]();
+    }
+    ;function loadPieCBCChart() {      
+        var sal = $('[id*=salesFigures_selected] option'),salVal = '';
+        $('[id*=salesFigures_selected] option').each(function(){
+            salVal += $(this).text() + ';';
+        });       
+        var year = $('[id*=planYearId] option:selected').val();  
+        Visualforce.remoting.Manager.invokeAction(
+            "{!$RemoteAction.ExtAccountPlanEdit.loadPieCBCChart}",
+            {Id:"{!accPlan.Id}",Plan_Year__c:year,Sales_Figures_Makeup__c:salVal},
+            function(result, event) {
+                var $chart=$('#chart_div').html('');
+                if (event.status) {
+                drawPieCBCChart(result);    
+                } else {
+                    $('#regionChart').hide();
+                    hideChartDivLoading();
+                    var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadPieCBCChart\', \'chart_div\')" /><br/<br/>'+event['message']+'</div>';
+                    $chart.append(el_div).show();
+                //    alert("communication error");
+                }
+            }   
+        );
+    }
+    function loadPieRegionChart() {
+        var sal = $('[id*=salesFigures_selected] option'),salVal = '';
+        $('[id*=salesFigures_selected] option').each(function(){
+            salVal += $(this).text() + ';';
+        });       
+        var year = $('[id*=planYearId] option:selected').val();
+        Visualforce.remoting.Manager.invokeAction(
+            "{!$RemoteAction.ExtAccountPlanEdit.loadPieRegionChart}",
+            {
+                Id : "{!accPlan.Id}",
+                Plan_Year__c : year,
+                Sales_Figures_Makeup__c : salVal
+            },
+            function(result, event) {
+                var $chart=$('#regionChart_div').html('');
+                if (event.status) {
+                drawPieRegionChart(result); 
+                } else {
+                    $('#regionChart').hide();
+                    hideRegionChartDivLoading();
+                    var el_div='<div class="errorcls"><input type="button" class="btn chartbtn" value="Reload" onclick="reLoadChart(\'loadPieRegionChart\', \'regionChart_div\')" /><br/<br/>'+event['message']+'</div>';
+                    $chart.append(el_div).show();
+                //    alert("communication error");
+                }   
+            }   
+        );
+    }         
+            
+    function makeUpList(result){
+        var list_result = [], data;
+        for(data in result) {
+            if(result.hasOwnProperty(data)) {
+                list_result.push({cust:data,total:result[data]});
+            }
+        }
+        return list_result;
+    }
+    
+    function drawLineChart(result){       
+        var xData,yData,i,amt,m,list_result = [],list_sort = []; 
+        xData = '';           
+        var res = new Array();
+        for(i in result) {
+            if(result.hasOwnProperty(i)){
+                list_sort.push(i);                  
+                list_result.push({des:i,amt:result[i]});
+            }
+        }
+
+        list_result.sort(function(a,b){
+            if(a.des > b.des) return 1;
+            if(a.des < b.des) return -1;
+            return 0;
+        });
+        list_sort.sort();
+        if(list_sort.length > 0) {
+            xData = list_sort;
+        }else{
+            xData = [""];
+        }
+        if(list_sort.length > 0){
+            for(m=0; m<list_result.length; m++){
+                res.push([m+1,list_result[m]['amt']]);
+            }
+        }else {
+            res.push([0,1]);
+        }               
+        hideChart2Loading();
+        showChart2();
+        plot2 = $.jqplot('chartPeriod', [res], {
+            axes: {
+                xaxis: {
+                    ticks:xData,  
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    label: 'Sales Period',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {
+                        fontWeight: '200'
+                    }   
+                },
+                yaxis:{
+                    label: 'Sum of Bill Amount - USD',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {            
+                        fontWeight: '200'
+                    }
+                }
+            }
+        });
+    }
+    
+    function drawPieCBCChart(result) {      
+        hideChartDivLoading();
+        showChartDiv();
+        var i,j,map_CBC3Des_amount = {},item,list_result = [],list_sort = [];
+        list_result = makeUpList(result);
+        for(i=0,j=list_result.length;i<j;i++){
+            item = list_result[i];
+            if(item['cust'] in map_CBC3Des_amount)
+            map_CBC3Des_amount[item['cust']] += (parseFloat(item['total'])||0);
+            else map_CBC3Des_amount[item['cust']] = (parseFloat(item['total'])||0);
+        }
+        //console.log(map_CBC3Des_amount);
+        list_sort = getPieParams(map_CBC3Des_amount);
+        //console.log(list_sort);
+        /*
+        for(i=0;i<list_sort.length;i++) {       
+            var cbcId = '#cbcTop'+(i+1)+'Id';
+            var cbcPercentId = '#cbcPercent'+(i+1)+'Id';
+            $(cbcId).val(list_sort[i][0]);
+            $(cbcPercentId).val(list_sort[i][1]);
+        }
+        */
+        //console.log('::::2'+$('#cbcTop1Id').val());
+        //console.log('::::1'+$('#cbcPercent1Id').val());
+
+        if(j > 0){              
+            var pie = $.jqplot('chart_div',[getPieParams(map_CBC3Des_amount)],
+                      {
+                          title:'CBC 3 Breakdown',  
+                          seriesColors:['#3366CC','#DC3912','#FF9900','#109618','#990099'],
+                          series:[{
+                              renderer:$.jqplot.PieRenderer,
+                              rendererOptions:{
+                                  diameter:250,
+                                  sliceMargin:1,
+                                  showDataLabels:true,
+                                  dataLabelThreshold: 0,
+                                  dataLabelFormatString: '%.1f%%',
+                                  dataLabelNudge:35,
+                                  lineWidth:5
+                              }
+                          }],
+                          legend:{  
+                              show:true
+                          }
+                      });
+        } else {
+            $('#CBCChart').hide();
+            $('#chart_div').hide();
+            
+        }
+    }
+    
+    function drawPieRegionChart(result) {
+    
+        hideRegionChartDivLoading();
+        showRegionChartDiv();
+        var i,j,map_RegionDes_amount = {},item, list_result = [],list_sort = [];
+        list_result = makeUpList(result);
+        
+        for(i=0,j=list_result.length;i<j;i++){
+            item = list_result[i];
+            if(item['total'] != null) {
+                if(item['cust'] in map_RegionDes_amount)
+                map_RegionDes_amount[item['cust']] += (parseFloat(item['total'])||0);
+                else map_RegionDes_amount[item['cust']] = (parseFloat(item['total'])||0);
+            }           
+        } 
+        list_sort = getPieParams(map_RegionDes_amount);      
+       
+        for(i=0;i<list_sort.length;i++) {       
+            var regionId = '#regionTop'+(i+1)+'Id';
+            var regionPercentId = '#regionPercent'+(i+1)+'Id';
+            $(regionId).val(list_sort[i][0]);
+            $(regionPercentId).val(list_sort[i][1]);
+        }
+
+        
+        if(j > 0){          
+            var pie = $.jqplot('regionChart_div',[getPieParams(map_RegionDes_amount)],
+             {
+                 title:'Region Breakdown',  
+                 seriesColors:['#3366CC','#DC3912','#FF9900','#109618','#990099'],
+                 series:[{
+                     renderer:$.jqplot.PieRenderer,
+                     rendererOptions:{
+                         diameter:250,
+                         sliceMargin:1,
+                         showDataLabels:true,
+                         dataLabelThreshold: 0,
+                      dataLabelFormatString: '%.1f%%',
+                         dataLabelNudge:35,
+                         lineWidth:5
+                     }
+                 }],
+                 legend:{
+                     show:true
+                 }
+             });
+        } else {
+            $('#regionChart').hide();
+            $('#regionChart_div').hide();
+        }       
+    }
+   
+    function getPieParams(map_des_amt){
+        var i,j,count = 0,amt,sum = 0,list_sort = [],result = [],percent,total;
+        for(i in map_des_amt){
+            if(map_des_amt.hasOwnProperty(i)){
+                list_sort.push({des:i,amt:map_des_amt[i]});
+            }
+        }
+        list_sort.sort(function(a,b){
+            if(a.amt > b.amt) return 1;
+            if(a.amt < b.amt) return -1;
+            return 0;
+        });
+        j=list_sort.length;
+        for(i = j-1;i>=0;i--){
+            count ++;
+            amt = list_sort[i]['amt'];
+            sum += amt;
+            if(count < 5)
+                result.push(list_sort[i]);
+            else if(count == 5){
+                result.push({des:'Others',amt:list_sort[i]['amt']});
+            }else{
+                result[result.length -1]['amt'] += list_sort[i]['amt'];
+            }
+        }    
+        j=result.length;
+        list_sort = new Array(j);
+        total = 100;
+        for(i=0;i<j;i++){
+            percent = Math.round(1000*result[i]['amt'] / sum)/10;
+            if(i != j-1)total -= percent;
+            list_sort.push({des:i,amt:map_des_amt[i]});
+            list_sort[i] = [result[i]['des'],percent];
+        }
+        if(j > 0){
+        list_sort[j-1][1] = total;
+        }
+        return list_sort;
+    }
+    
+    ;function hideRegionChartDivLoading() {
+        $("#regionChartDivLoading").hide();
+    }
+    ;function hideChartDivLoading() {
+        $("#chartDivLoading").hide();
+    }
+    ;function hideChart2Loading() {
+        $("#chartPeriodLoading").hide();
+    }
+    ;function showRegionChartDivLoading() {
+        $("#regionChartDivLoading").show();
+    }
+    ;function showChartDivLoading() {
+        $("#chartDivLoading").show();
+    }
+    ;function showChart2Loading() {
+        $("#chartPeriodLoading").show();
+    }
+    ;function showRegionChartDiv() {
+        $("#regionChart_div").show();
+        $("#regionChart").show();
+    }
+    ;function showChartDiv() {
+        $("#chart_div").show();
+        $("#CBCChart").show();      
+    }
+    ;function showChart2() {
+        $("#chartPeriod").show();
+        
+    } 
+    
+    ////////////
+j$ = $;
+        function noenter(e){
+            var key;     
+            if(window.event)
+                key = window.event.keyCode; //IE
+            else
+                key = e.which; //firefox
+            if(key == 13) {
+               window.event.keyCode = 9;
+            }     
+            return (key != 13);
+        }
+        
+        function checkAccountActiveLength (obj){
+            if($('.accActive:checked').length > 5){
+                alert("The selected quantity is not greater than 5");
+                $(obj).attr('checked',false);
+            } 
+        }
+        function checkStrategicActiveLength(obj) {
+            if($('.strategicActive:checked').length > 10){
+                alert("The selected quantity is not greater than 10");
+                $(obj).attr('checked',false);
+            }
+        }
+        ;function addListener (element, event, fn, params) {
+            var eventHandler = ( params ? function(){ fn.call(params); } : fn );
+            if (window.attachEvent) {
+                element.attachEvent('on' + event, eventHandler);
+            } else {
+                element.addEventListener(event, eventHandler, false);
+            }
+        }
+                         
+    </script>
+    
+</apex:page>

@@ -1,0 +1,142 @@
+<apex:page title="DND GAM Comparison View" sidebar="false" controller="CSD_CtrlGlobalGAMComparisonView" id="thePage" applyBodyTag="true" docType="html-5.0">
+<head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!$Resource.CSD_CtrlGlobalGAMComparisonViewCSS}" />
+       
+        <style type="text/css">
+            .reload_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/reload.png')}');
+            }
+            .del_img{
+                background-image:url('{!URLFOR($Resource.jQueryTool, '/img/deleteImage.png')}');
+            }
+            .helpIcon{
+                background: transparent url(/img/alohaSkin/help_orange.png) no-repeat; position: absolute; margin-left: -21px; margin-top: -1px;
+            }
+        </style>
+       
+        <apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+       
+        <script src="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/async_js/async.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/mousewheel/jquery.mousewheel.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/artDialog/artDialog.plugins.min.js')}"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, '/uuid/uuid.js')}"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/glob-cultures/globalize.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jQueryTool, lc.jsPath)}" type="text/javascript"></script>
+        
+        <script src="{!URLFOR($Resource.jQueryTool, '/Utils.js')}"></script>
+
+        <script type="text/javascript" src="{!$Resource.CSD_CtrlGlobalGAMComparisonViewJS}"></script>
+
+        <script type="text/javascript">
+        var GLOBAL = {'DJSON': JSON.parse('{!jsonAttention}')};
+            function setFocusOnLoad() {}
+            addListener(window, 'load', initCtrlDocument, {'locale':'{!lc.locale}'});
+        </script>
+    </head>
+    <body>
+        <div id="loading-curtain-div" title="Please Wait..."></div>
+        
+        <div id="contentallid" class="tc">
+        
+            <apex:form id="theForm">
+
+                <div id="dmsgid" ><apex:pageMessages id="themsg"/></div>
+                
+                <apex:outputPanel id="groupingAllOP" layout="block">
+                    
+                    <div class="csd_menu_div">
+                        <input value="Back" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.href='/apex/CSD_CtrlLinkManage';"/>
+                        <input value="Refresh" class="btn btncls" type="button" onclick="document.getElementById('loading-curtain-div').style.display=''; window.location.reload();"/>
+                    </div>
+                    
+                    <div id="forecastdiv_id" style="min-width:800px; visibility: hidden;" class="mgauto">
+                        
+                        <!-- TODO need append to override element -->
+                        <c:CSD_CompForecastCalendar pageCtrl="{!this}" />
+                        
+                        <c:CSD_CompForecastContent >
+                            <!-- START left content -->
+                            <c:CSD_CompForecastContentLeft >
+                                
+                                <apex:repeat var="level" value="{!list_OEMData}">
+                                    <tr class="level1 {!level['type']}{!level['id']}_level1 external cp mark " id="{!level['type']}{!level['id']}" data-type="{!level['type']}" data-v1="{!level['id']}" data-level="level1">
+                                        <td class="">
+                                            <div style="display: inline;">
+                                                <div class="dis_ib mgleft1" >
+                                                    <span class="cellbox fcell ">+</span>
+                                                </div>
+                                                <div class="dis_ib mgleft" >
+                                                    <span class="position_r namecell"> {!level['name']} </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+
+                            </c:CSD_CompForecastContentLeft>
+                            <!-- END left content -->
+                            
+                            <!-- START right content -->
+                            <c:CSD_CompForecastContentRight >
+                                
+                                <apex:repeat var="level" value="{!list_OEMData}">
+                                    <tr class="v1 rlevel1" data-id="{!level['id']}" data-csfc="{!level['json_csFC']}" data-dcfc="{!level['json_dcFC']}" data-gapfc="{!level['json_pmFC']}">
+                                        <apex:repeat var="fd" value="{!list_allDateItems}">
+                                        <td class=" " ></td>
+                                        </apex:repeat>
+                                    </tr>
+                                </apex:repeat>
+
+                            </c:CSD_CompForecastContentRight>
+                            <!-- END right content -->
+                        </c:CSD_CompForecastContent>
+                        
+                    </div>
+                </apex:outputPanel>
+                
+            </apex:form>
+    
+        </div>
+        
+        <span id="floatscroll" class="floatscroll" style="visibility: hidden;">
+            <span id="innerData" class="innerdata"></span>
+        </span>
+        
+        <input type="hidden" value="{!pageConf.refStartDate}" id="hidd_start" />
+        <input type="hidden" value="{!pageConf.refEndDate}" id="hidd_end" />    
+        <input type="hidden" value="{!pageConf.json_map_quarter_months}" id="hiddquartermonths"/>
+        
+        <div style="display: none;">
+            <table>
+                <thead id="lefttemplate">
+                    <tr class=" external cp mark " >
+                        <td class="">
+                            <div style="display: inline;">
+                                <div class="dis_ib mgleft1" ><span class="cellbox fcell mk">+</span></div>
+                                <div class="dis_ib mgleft" ><span class="position_r namecell"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="righttemplate">
+                    <tr>
+                        <apex:repeat var="fd" value="{!list_allDateItems}">
+                        <td></td>
+                        </apex:repeat>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <script type="text/javascript">
+            ;function existObject_js(){ return '{!$RemoteAction.CSD_CtrlGlobalGAMComparisonView.existCSDsObject}';}
+        </script>
+    
+    </body>
+
+</apex:page>

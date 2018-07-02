@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(Budget__c.Final_Total_Budget__c:SUM  / Budget_Detail__c.Forecast_CY__c:SUM) - 1</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Territory Growth</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Territory Growth</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Budget__c.Budget_Details__r$Forecast_CY__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Budget__c.Budget_Details__r$Run_Rate_Business__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Budget__c.Budget_Details__r$Adjusted_Business__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Budget__c$Final_Total_Budget__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>shows a high level overview of all Industrial budgets for FY2014 with the possibility to drill down into the details</description>
+    <filter>
+        <criteriaItems>
+            <column>Budget__c$Year__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Budget__c$Territory__c.Level_3_Territory_Name__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>Industrial</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Budget__c$Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Budget__c$Territory__c.Level_4_Territory_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Budget__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Ind Budget 2014 summary</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Budget__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Budget__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

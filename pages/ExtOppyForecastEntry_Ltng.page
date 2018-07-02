@@ -1,0 +1,75 @@
+<apex:page standardcontroller="Opportunity" 
+            sidebar="false" 
+            showHeader="false" 
+            standardStylesheets="false"
+            showQuickActionVfHeader="false"
+            applyHtmlTag="false" 
+            applyBodyTag="false"
+            docType="html-5.0" 
+            >
+    
+    <apex:includeLightning />
+    
+    <html>
+        <head>
+            <title>Opportunitie forecast</title>
+            <script type="text/javascript">
+            
+                var visualForceFunction = function(event){
+                    
+                    var param=event.getParams();
+                    param = (param ? param : event['pc']);
+                    
+                    console.log('param', param, 'event', event);
+                    
+                    if(param['param'] == 'full'){
+                        parent.location.href = '/apex/ExtOppyForecastEntry_Ltng?id={!opportunity.id}';
+                        return;
+                    }
+
+                    if(window.self ==window.top){
+                    //    window.location.reload();
+                    }else{
+                        parent.location.href='/{!opportunity.id}';
+                    }
+                };
+            
+                if(!$Lightning){
+                    alert('use lightning app ERROR.');
+                }
+                $Lightning.use("c:LtngOpportunityForecastApp", function() {
+                
+                    $Lightning.createComponent("c:LtngOpportunityForecastComp",
+                        {originalId: '{!Opportunity.Id}', originalName: 'Opportunity'}, "lightning",
+                        function(comp) {
+                            $A.eventService.addHandler({ "event": "c:LtngOpportunityForecastVfPageEvt", "handler" : visualForceFunction});
+                        }
+                   );
+                        
+                });
+                
+                ;function setFullscreen(){
+                    var elem=document.getElementById('lightning');
+                    
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    }
+                    else if (elem.webkitRequestFullScreen) {
+                        if ( window.navigator.userAgent.toUpperCase().indexOf( 'CHROME' ) >= 0 ) {
+                            elem.webkitRequestFullScreen( Element.ALLOW_KEYBOARD_INPUT );
+                        }else {
+                            elem.webkitRequestFullScreen();
+                        }
+                    }else if (elem.mozRequestFullScreen) {
+                        elem.mozRequestFullScreen();
+                    }
+                }
+                
+            </script>
+        </head>
+        <body>
+            <div id="lightning" style="display: inline-block;width: 100%;height: 100%;"></div>
+        </body>
+    </html>
+
+</apex:page>

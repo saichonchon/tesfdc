@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Book_Amount_USD__c:SUM / BBB_Day_Direct_Bill_Book_Bklg_Cust_PN__c.Bill_Amount_USD__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Book to bill ratio</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Book to Bill</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_36867216</developerName>
+        <masterLabel>BU</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Daily_BBBs__r$SAP_Profit_Center_Short_Desc_Filter__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>A&amp;C</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - A&amp;C</sourceValue>
+            </sourceValues>
+            <value>A&amp;C</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>IB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - IB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RP - Solar</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Solar</sourceValue>
+            </sourceValues>
+            <value>IB</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>RP - Rail</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rail</sourceValue>
+            </sourceValues>
+            <value>Rail</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_94262747</developerName>
+        <masterLabel>Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account$Billing_Region__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>North America</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>South America</sourceValue>
+            </sourceValues>
+            <value>Americas</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>China (AP Central)</sourceValue>
+            </sourceValues>
+            <value>China</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>AP North</sourceValue>
+            </sourceValues>
+            <value>Japan</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>AP South</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Australia / New Zealand</sourceValue>
+            </sourceValues>
+            <value>Rest of APAC</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>EMEA (excl. India)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>India</sourceValue>
+            </sourceValues>
+            <value>EMEA</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Daily_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <field>BucketField_36867216</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$IND_Profit_Centre_Groups__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Systems,Devices</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Daily_BBBs__r$Obsolete__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Daily_BBBs__r$Transaction_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account$IND_Billing_Region__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND Profit book to bill current mth</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Daily_BBB_with_accounts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Daily_BBBs__r$Transaction_Date__c</dateColumn>
+        <interval>THIS_FISCALPERIOD</interval>
+    </timeFrameFilter>
+</Report>

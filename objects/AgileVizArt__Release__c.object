@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Defines phases, releases or milestones of the project as project tasks.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AgileVizArt__Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Parent__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Relates to a parent task, e.g. to link milestones to phases</inlineHelpText>
+        <label>Parent</label>
+        <referenceTo>AgileVizArt__Release__c</referenceTo>
+        <relationshipLabel>Sub Tasks</relationshipLabel>
+        <relationshipName>Sub_Tasks</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Project__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>AgileVizArt__Project__c</referenceTo>
+        <relationshipLabel>Phases/Releases</relationshipLabel>
+        <relationshipName>Releases</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Release_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date when release is planned</inlineHelpText>
+        <label>End Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Release_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Calculated minimum sprint start date as start date of release when we interpret a release as phase. Used in Gantt chart.</description>
+        <externalId>false</externalId>
+        <label>Release Start Date</label>
+        <summarizedField>AgileVizArt__Sprint__c.AgileVizArt__Start_Date__c</summarizedField>
+        <summaryForeignKey>AgileVizArt__Sprint__c.AgileVizArt__Release__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Resulting_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For releases use rollup min from sprints, otherwise use manually entered value</description>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK( AgileVizArt__Start_Date__c ),  IF(ISBLANK( AgileVizArt__Release_Start_Date__c), AgileVizArt__Release_Date__c - 1, AgileVizArt__Release_Start_Date__c) , AgileVizArt__Start_Date__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Start date of task or phase</inlineHelpText>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>AgileVizArt__Velocity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number for all existing sprints within this release that are &quot;Completed&quot;.</inlineHelpText>
+        <label>Velocity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Task</label>
+    <listViews>
+        <fullName>AgileVizArt__Milestones_by_Project</fullName>
+        <columns>NAME</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>AgileVizArt__Release_Date__c</columns>
+        <columns>AgileVizArt__Parent__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__Release__c.AgileVizArt__Milestone</value>
+        </filters>
+        <filters>
+            <field>AgileVizArt__Project__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>*Milestones by Project</label>
+    </listViews>
+    <listViews>
+        <fullName>AgileVizArt__Releases_by_Project</fullName>
+        <columns>NAME</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>AgileVizArt__Release_Date__c</columns>
+        <columns>AgileVizArt__Parent__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>AgileVizArt__Release__c.AgileVizArt__Release</value>
+        </filters>
+        <label>*Releases by Project</label>
+    </listViews>
+    <nameField>
+        <label>Task Name</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Tasks</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>AgileVizArt__Milestone</fullName>
+        <active>true</active>
+        <description>Used for project milestones</description>
+        <label>Milestone</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>AgileVizArt__Phase</fullName>
+        <active>true</active>
+        <description>Used for project phases</description>
+        <label>Phase</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>AgileVizArt__Release</fullName>
+        <active>true</active>
+        <description>Used for release planning</description>
+        <label>Release</label>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>AgileVizArt__New_Milestone_Task</fullName>
+        <availability>online</availability>
+        <description>Used to create new milestone from task page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Milestone</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Milestone&amp;URL_Task.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_Task.ProjectId={!AgileVizArt__Project__c.Id}&amp;URL_Task.ParentName={!AgileVizArt__Release__c.Name}&amp;URL_Task_ParentId={!AgileVizArt__Release__c.Id}&amp;obj=Release__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Phase_Project</fullName>
+        <availability>online</availability>
+        <description>Used to create new phase from project page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Phase</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Phase&amp;URL_Task.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_Task.ProjectId={!AgileVizArt__Project__c.Id}&amp;obj=Release__c</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AgileVizArt__New_Release_Project</fullName>
+        <availability>online</availability>
+        <description>Used to create new release from project page layout</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Release</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/AgileVizArt__CtrlCustomButton?retURL=%2F{!AgileVizArt__Project__c.Id}&amp;recordTypeName=Release&amp;URL_Task.ProjectName={!AgileVizArt__Project__c.Name}&amp;URL_Task.ProjectId={!AgileVizArt__Project__c.Id}&amp;obj=Release__c</url>
+    </webLinks>
+</CustomObject>

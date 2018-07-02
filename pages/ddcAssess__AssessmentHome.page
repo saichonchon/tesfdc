@@ -1,0 +1,161 @@
+<apex:page controller="ddcAssess.AssessmentHomeCtlr" action="{!onPageLoad}"
+	title="Data.com Assessment">
+	<link rel="stylesheet"
+		href="{!URLFOR($Resource.jquery_ui_base_theme,'jquery-ui.min.css')}" />
+	<link rel="stylesheet" type="text/css"
+		href="{!URLFOR($Resource.assessment_css)}" />
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$("#maintabs").tabs();
+			$("#maintabs").on("tabsactivate", function( event, ui ) {
+				resizeIframe();
+				refreshPage();
+			});
+			$("#maintabs ul li a").click(function(){
+				location.hash = $(this).attr("href") + "-tab";
+			});
+			$("#maintabs").tabs('select', location.hash.replace("-tab",""));
+			$(window).resize(function(){
+				var scrollPos = window.scrollY;
+				resizeIframe();
+				window.scrollTo(0,scrollPos);
+			});
+		});
+		
+		function resizeIframe() {
+			var iframe = document.getElementById('results_iframe');
+			if (iframe && iframe.contentWindow.document.body) {
+				iframe.height = "1px"; // needed for some browsers
+				iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+			}
+		}
+		
+	</script>
+	<apex:pageMessages id="page_messages"/>
+	<apex:form >
+		<apex:actionFunction name="start" rerender="page_messages,redirect_js" action="{!start}" onComplete="goToAssessments(); return false"/>
+		<apex:outputPanel id="redirect_js">
+			<script>
+				function goToAssessments() {
+					if('{!hasErrorMessages}' != 'true') {
+						document.getElementById("results_iframe").contentWindow.onRefresh();
+						document.location.href = '{!$Page.AssessmentHome}#assessments-tab';
+						$("#maintabs").tabs('select', location.hash.replace("-tab",""));
+					}
+				}
+			</script>
+		</apex:outputPanel>
+		<apex:actionFunction name="refreshMessages"
+			rerender="page_messages" />
+		<apex:actionFunction name="refreshTimeEstimate"
+			rerender="time_estimate" />
+		<apex:actionFunction name="refreshPage" action="{!refresh}"
+			rerender="page_messages,start_button,error_messages"/>
+		<div id="header_block">
+			<div id="help_block">
+				<span class="help" title="Help for this Page (New Window)">
+					<a href="javascript:openPopupFocusEscapePounds('http://help.salesforce.com/HTViewHelpDoc?id=data_dot_com_clean_analyzing_with_data_assessment.htm&language=en_US', 'Help', 1024, 768, 'width=1024,height=768,resizable=yes,toolbar=yes,status=yes,scrollbars=yes,menubar=yes,directories=no,location=yes,dependant=no', false, false);" class="linkCol">
+						<span class="helpLink">Help for this Page</span>
+						<img src="/s.gif" alt="Help for this Page (New Window)" class="helpIcon" title="Help for this Page (New Window)"/>
+					</a>
+				</span>
+			</div>
+			<div>
+			<img src="{!URLFOR($Resource.logo)}" alt="data.com logo" id="data_logo"/>
+				<h1>Data Assessments</h1>
+			</div>
+			<p>Data assessments tell you how many of your organization's records we can enrich 
+			with more and better Data.com data. They also identify how many of your records can 
+			potentially be marked as "inactive" based on information in Data.com, and if you request, 
+			how many records in your Salesforce org appear to be duplicates. Your organization can request 
+			one assessment every 30 days.</p>
+		</div>
+
+		<div id="maintabs">
+			<ul>
+				<li><a href="#setup">Setup</a></li>
+				<li><a href="#assessments">Assessments</a></li>
+			</ul>
+
+
+			<div id="setup">
+				<div class="inner_content">
+					<div id="time_estimate">
+						<apex:outputPanel id="time_estimate">
+			Estimated Completion Time:&nbsp;
+			<apex:outputPanel rendered="{!NOT(isRecordCountComplete)}"
+								layout="none">
+				Calculating...
+			</apex:outputPanel>
+							<apex:outputPanel rendered="{!isRecordCountComplete}"
+								layout="none">
+								<span class="blue">{!timeEstimate} hour{!IF(timeEstimate >
+									1,'s','')}</span>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</div>
+					Define your preferences, then start your data assessment. <br /> <br />
+					<h2>Duplicate Check</h2>
+					<p>Duplicate check tells you how many account, contact, and lead records in your org 
+					are likely duplicates. Duplicate check temporarily consumes data storage in your 
+					Salesforce organization (2 KB per unique record).</p>
+					<div class="setup_checkbox">
+						<apex:inputCheckbox id="dupe_check" value="{!dupeCheck}"/>
+						Yes, check for duplicates.
+					</div>
+					
+					<br />
+					<h2>Notifications</h2>
+					<p>When your assessment is done, we can also send an email
+						notification to you and anyone else you designate.</p>
+					<div class="setup_checkbox">
+							Email recipients (separate addresses with commas):<br />
+							<apex:inputTextArea id="email_recipients"
+								value="{!emailRecipients}"
+								rows="2" cols="50" />
+						<br />
+					</div>
+				</div>
+				<hr />
+				<br />
+				<div id="start_button">
+					<apex:commandButton value="Start My Assessment" onclick="start(); return false"
+						immediate="true" disabled="{!hasError}" id="start_button" />
+					<apex:outputPanel id="error_messages" layout="none">
+						<apex:outputPanel id="in_blackout_period_error" rendered="{!inBlackoutPeriod}" >
+							<img src="/img/msg_icons/warning16.png" alt="warning" class="message_icon"/>
+							You can only request one assessment every {!timeLimit} days. 
+							Check the Assessments tab to find out when you can start your next assessment.
+						</apex:outputPanel>
+						<apex:outputPanel id="assessment_in_progress_error" rendered="{!assessmentInProgress}" >
+							<img src="/img/msg_icons/warning16.png" alt="warning" class="message_icon"/>
+							An assessment is already in progress. Check the Assessments tab for details.
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</div>
+			</div>
+
+			<div id="assessments">
+				<iframe height="1px" src="{!$Page.Results}" width="100%"
+					id="results_iframe" onload="resizeIframe()" scrolling ="no"></iframe>
+			</div>
+		</div>
+	</apex:form>
+
+	<script type="text/javascript">
+		var timer = setInterval(function() {
+			Visualforce.remoting.Manager.invokeAction(
+					'{!$RemoteAction.AssessmentHomeCtlr.getIsRecordCountComplete}',
+					function(result, event) {
+						if (result) {
+							clearInterval(timer);
+							refreshTimeEstimate();
+						}
+					});
+		}, 2000);
+	</script>
+</apex:page>

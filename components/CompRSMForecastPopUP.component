@@ -1,0 +1,102 @@
+<apex:component layout="block" id="compfcpopup">
+
+
+<apex:attribute name="pageCtrl" type="CtrlRSMForecast" required="true" description="the root page controller reference" />
+    
+    <div id="popCmt" class="hide"></div>
+    <div id="popCtn" class="" style="display: none;">
+        <div class="titleLine">
+        		<span style="float: left;">
+        			<span style="position:relative; left: 20px; cursor: pointer;" onclick="showTableComment('rsm')">
+        				<img src="/s.gif" class="commentimg" />
+        				 RSM 
+     			</span>
+        			<span style="position:relative; left: 40px; cursor: pointer;" onclick="showTableComment('asm')"> 
+        				<img src="/s.gif" class="commentimg" />
+        				AM 
+        			</span>
+        		</span>
+        		<span id="popTitle">{!$Label.FinancialPlan_Comment}</span>
+        		<div class="icon_close" onclick="clsPop();">&times;</div>
+		</div>
+        <div id="loadCtDiv"></div>
+        <div style="height: 410px; overflow: auto;">
+            <table id="rsmcmtid" class="hdfw" border="0" cellspacing="0" cellpadding="0" style="width: 100%;table-layout: fixed;">
+                    <thead>
+                    <tr>
+                        <th class="pb pdtb tc border_b1 " id="onlyidyear" style="height: 25px; width: 30px;" >
+                        			<apex:image rendered="{!pageCtrl.editable}" styleClass="hd" url="{!URLFOR($Resource.Icon4FinancialForecase,'add.png')}" onclick="addComment(this)" />
+<!--                                 <img class="hd" src="{!URLFOR($Resource.Icon4FinancialForecase,'add.png')}" onclick="addComment(this)"/> -->
+                        </th>
+                        <th style="height: 25px;" class="pd pdtb pdtr tr border_b1">{!$Label.FinancialPlan_Value}</th>
+                        <th style="height: 25px; padding-left: 10px;" class="pe pdtb tl border_b1">{!$Label.FinancialPlan_Comment}</th>
+                    </tr>
+                    </thead>
+                <tbody id="commentBodyId">
+    
+                    <apex:repeat var="item" value="{!pageCtrl.Comments}">
+                    <tr class="odd" isv="false" did="{!item.fcDefId}" dyear="{!item.fiscalDate}" isnew="true">
+                        <td style="height: 25px;width: 30px;" class="pd tc pdtr border_b1">
+                        		<apex:image rendered="{!pageCtrl.editable}" styleClass="hd" url="{!URLFOR($Resource.Icon4FinancialForecase,'minus.png')}"  onclick="delComment(this)" />
+<!--                                 <img class="hd" src="{!URLFOR($Resource.Icon4FinancialForecase,'minus.png')}" onclick="delComment(this)"/> -->
+                        </td>
+                        <td style="height: 25px;" class="pd tr pdtr border_b1">
+                        			<apex:inputText disabled="{!!pageCtrl.editable}" value="{!item.value}" style="width: 95%; text-align:right; " styleClass="valcls" />
+<!--                                 <input style="width: 95%; text-align:right; " class="valcls" type="text" value="{!item.value}"/> -->
+                            </td>
+                        <td style="height: 25px; padding-left: 10px;" class="pe tl border_b1">
+                        			<apex:inputText disabled="{!!pageCtrl.editable}" value="{!item.comment}" style="width: 95%; text-align:right; " styleClass="cmtcls" />
+<!--                                 <input style="width: 95%; text-align:left; " class="cmtcls" type="text" value="{!item.comment}"/> -->
+                            </td>
+                    </tr>
+                   </apex:repeat>
+    
+                </tbody>
+                    
+                <tfoot style="display: none;" id="comment_tmpid">
+                        <tr class="odd" isv="false" isnew="false" did="null" dyear="null">
+                        <td style="height: 25px;width: 30px;" class="pd tc pdtr border_b1">
+                                <img class="hd" src="{!URLFOR($Resource.Icon4FinancialForecase,'minus.png')}" onclick="delComment(this)"/>
+                        </td>
+                        <td style="height: 25px;" class="pd tr pdtr border_b1">
+                                <input style="width: 95%; text-align:right; " class="valcls" type="text" value=""/>
+                        </td>
+                        <td style="height: 25px; padding-left: 10px;" class="pe tl border_b1">
+                                <input style="width: 95%; text-align: left; " class="cmtcls" type="text" value=""/>
+                            </td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            
+            
+            <table id="asmcmtid" class="hdfw" border="0" cellspacing="0" cellpadding="0" style="display:none; width: 100%;table-layout: fixed;">
+                    <thead>
+                    <tr>
+                        <th class="pb pdtb tc border_b1 " style="height: 25px;" >{!$Label.FinancialPlan_Account}</th>
+                        <th style="height: 25px;" class="pd pdtb pdtr tr border_b1">{!$Label.FinancialPlan_PFCenter}</th>
+                        <th style="height: 25px; padding-left: 10px;" class="pe pdtb tl border_b1">{!$Label.FinancialPlan_Value}</th>
+                        <th style="height: 25px; padding-left: 10px;" class="pe pdtb tl border_b1">{!$Label.FinancialPlan_Comment}</th>
+                    </tr>
+                    </thead>
+                <tbody id="asmbodyid">
+                		<apex:repeat var="item" value="{!pageCtrl.ASMComments}">
+					<tr class="odd" >
+                        <td style="height: 25px;" class="pd tc pdtr border_b1">{!item.acctName}</td>
+                        <td style="height: 25px;" class="pd tr pdtr border_b1">{!item.profitCtr}</td>
+                        <td style="height: 25px; padding-left: 10px;" class="pe tl border_b1">{!item.value}</td>
+                        <td style="height: 25px; padding-left: 10px;" class="pe tl border_b1">{!item.comment}</td>
+                    </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        
+		<center id="rsmbtncenterid">
+			<apex:outputPanel rendered="{!pageCtrl.editable}" >
+			<input type="button" value="{!$Label.FinancialPlan_Save}" onclick="saveCmt();" class="btn"/>
+			</apex:outputPanel>
+		</center>
+    </div>
+
+</apex:component>

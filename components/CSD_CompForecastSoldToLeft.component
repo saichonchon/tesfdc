@@ -1,0 +1,59 @@
+<apex:component layout="none">
+	<apex:attribute name="pageCtrl" type="Object" required="true" description="the root page controller reference" />
+	
+	
+	<!-- total -->
+	<apex:variable value="{!0}" var="rowNum"/>
+	<apex:repeat var="total" value="{!pageCtrl['list_TotalColumns']}">
+	    <tr class="{!total.cls} totcls {!if(rowNum=0, ' mark ', ' dn subtotcls ')} external" data-level="level0">
+	        <td>
+	            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+	                <div class="dis_ib mgleft" >
+	                    <span class="search_img">
+	                        <input data-level="level1" onclick="event_popupBox_click(event, this)" id="accountbtnid" value="Search soldto account" type="button" class="btn addsoldbtn btnlevel2"/>
+	                    </span>
+	                </div>
+	                <div class="dis_ib mgleft1" >
+	                    <span class="cellbox fcell " >+</span>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r fontcell"> {!if(rowNum=0, 'Total', '')} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" >{!total.fieldName}</td>
+	    </tr>
+	<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+	</apex:repeat>
+	<!-- total -->
+    
+    
+	<apex:repeat var="soldTo" value="{!pageCtrl['list_soldToData']}">
+	    <apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat var="total" value="{!pageCtrl['list_SoldToColumns']}">
+		<tr class="level1 {!soldTo['id']}_level1 external {!if(rowNum = 0, ' cp mark ', ' dn ')} " id="{!if(rowNum = 0, soldTo['id'], '')}" data-region="{!if(rowNum = 0, soldTo['region'], '')}" data-title="{!if(rowNum = 0, soldTo['name'], '')}" title="{!if(rowNum = 0, soldTo['name'], '')}" data-number="{!if(rowNum=0, soldTo['accnumber'], '')}" data-isd="{!if(rowNum=0, soldTo['type'], '')}" data-level="level1" data-cmt="{!if(rowNum=0, soldTo['eolcomment'], '')}">
+			<td class="{!if(rowNum = 0, '', 'lev1')}">
+	            <apex:outputPanel rendered="{!if(rowNum = 0, true, false)}" >
+	                <div class="dis_ib mgleft" >
+	                    <span class="search_img">
+	                        <input data-level="level2" onclick="event_popupBox_click(event, this)" value="Search OEM" type="button" class="btn addsoldbtn btnlevel2"/>
+	                    </span>
+	                    <span class="del_img" >
+	                        <input onclick="event_deleteObject_click(event, this)" value="Del SoldTo" type="button" class="btn addsoldbtn btnlevel2"/>
+	                    </span>
+	                </div>
+	                <div class="dis_ib mgleft1" >
+	                    <span class="cellbox fcell " >+</span>
+	                    <span class="cellbox pin spin" >&nbsp;</span>
+	                </div>
+	                <div class="dis_ib mgleft" >
+	                    <span class="position_r namecell"> {!soldTo['accnumber']} </span>
+	                </div>
+	            </apex:outputPanel>
+	        </td>
+	        <td class="fieldwidth" >{!total.fieldName}</td>
+		</tr>
+		<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+	</apex:repeat>
+</apex:component>

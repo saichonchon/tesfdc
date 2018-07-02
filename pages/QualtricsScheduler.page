@@ -1,0 +1,48 @@
+<!--
+/**********************************************************************************************************************************************
+Name: Qualtrics Scheduler
+===================================================================================================================================================
+Purpose: The Purpose is Schedule Quatrics Date and Reminders.
+Created by: Prabhanjan Nandyala
+Created Date : 2017-03-16
+=====================================================================================================================================================
+***********************************************************************************************************************************************/
+--> 
+<apex:page controller="QualtricsSchedulerctrl" tabstyle="Campaign">
+  <apex:form >
+  <br/>
+      <apex:pageBlock title="Select Schedule Date">
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!schedule}" value="Schedule" oncomplete="showalert()" reRender="out9"/>
+              <apex:commandButton value="Cancel" onclick="window.history.back();"/>
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection title="Initial Schedule" collapsible="false">
+              <apex:inputField value="{!camp.Qualtrics_Schedule_Date__c}"/> 
+          </apex:pageBlockSection>
+          <apex:pageBlockSection title="   Reminders" columns="1" collapsible="false"> 
+              <apex:inputField value="{!camp.Qualtrics_Schedule_Reminder1__c}"/>
+              <apex:inputField value="{!camp.Qualtrics_Schedule_Reminder2__c}"/>
+          </apex:pageBlockSection>
+      </apex:pageBlock>
+      <apex:outputPanel id="out9">
+          <script>
+              function showalert(){
+              //alert('show alert funtion');
+                 var v1= '{!showAlert}';   
+               //  alert(v1);     
+                if(v1=='true'){
+                      alert('Survey has been succesfully scheduled!!!');
+                      goBack();               
+                  }
+              }
+          </script>
+      </apex:outputPanel>
+      <script>
+      function goBack() {
+          window.history.back();
+          
+      }
+      </script>
+
+  </apex:form>
+</apex:page>

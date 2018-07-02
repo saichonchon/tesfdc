@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_82316</developerName>
+        <masterLabel>Product Line Bucket</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Tender__c.Tender_Details__r$Product_Line__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Cable Ident</sourceValue>
+            </sourceValues>
+            <value>Ident Solution</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Datanet &amp; Fiber Optics</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Datanet Connectors &amp;  Fiber Optics</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Datanet &amp; Fiber Optics Connectors</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Datanet &amp; Fiber Optics Switching</sourceValue>
+            </sourceValues>
+            <value>Rail Data</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>High Voltage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>DC Switching Devices</sourceValue>
+            </sourceValues>
+            <value>Roofline</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Relays &amp; Contactors</sourceValue>
+            </sourceValues>
+            <value>Rail Relays</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Tubing &amp; Molded Parts</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Resistors</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Others</sourceValue>
+            </sourceValues>
+            <value>Non Product Parts Rail</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Ruggedized Connectors</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Wire &amp; Cable</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Signal Connectors</sourceValue>
+            </sourceValues>
+            <value>Power and Signal</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Tender__c.Tender_Details__r$PAM_in_pipeline_period_3yr__c</field>
+    </columns>
+    <columns>
+        <field>Tender__c$Tender_Number__c</field>
+    </columns>
+    <columns>
+        <field>Tender__c$Owner</field>
+    </columns>
+    <columns>
+        <field>Tender__c$End_Date__c</field>
+    </columns>
+    <columns>
+        <field>Tender__c.Tender_Details__r$PAM_Pipeline_overlap_3yr__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>PAM per tender in product buckets</description>
+    <filter>
+        <booleanFilter>(((((1 AND 2) OR (3 AND 2) OR (4 AND 1) OR (3 and 4))) AND 5) AND 6) AND 7</booleanFilter>
+        <criteriaItems>
+            <column>Tender__c$Manufacturing_Start_Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>NEXT_N_MONTHS:35,THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$End_Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>NEXT_N_MONTHS:35,THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$Manufacturing_Start_Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>lessThan</operator>
+            <value>THIS_MONTH</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$End_Date__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>NEXT_N_MONTHS:36</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$Name</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>SIE</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$Name</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>BT</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Tender__c$Name</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>ALS</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_82316</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Tender__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Tender__c$Manufacturing_Start_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>PAM product buckets</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>IND_Tender_with_Tender_Details__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Tender__c$Bidding_status_changed__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

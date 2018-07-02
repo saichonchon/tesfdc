@@ -1,0 +1,96 @@
+<apex:page controller="FundClaim" renderas="PDF" showHeader="false" >
+
+ 
+ 
+  <table cellspacing="5">  
+    
+   <tr>
+      <td width="100%" valign="top" >  
+      <apex:image url="{!$Resource.NewTElogo}" width="200" height="90"></apex:image>
+      <!--apex:image url="{!$Resource.TELOGONEW}" width="200" height="90"></apex:image-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>PAYMENT REQUEST</b></td> <br/>
+     
+      <td width="35%"  valign="top" >   
+         <br/><br/>
+         <apex:outputLabel style="font-size:11pt;font-family:arial,helvetica,sans-serif;">
+          <b><apex:outputLabel style="font-size:11pt;font-family:arial,helvetica,sans-serif;font-style:italic">TE Connectivity:</apex:outputLabel> </b> <br/>
+          {!ClaimDetails[0].Owner_City__c}<br/>{!ClaimDetails[0].Owner_Country__c}<br/>
+          Requested by: {!ClaimDetails[0].Owner.Name}
+         </apex:outputLabel>        
+      </td>
+      
+     
+      <td width="20%" valign="top">   
+         <br/><br/>
+         <apex:outputLabel style="font-size:11pt;font-family:arial,helvetica,sans-serif;">
+         <apex:outputText value="{0, date, MMMM d','  yyyy}">
+         Date: <apex:param value="{!ClaimDetails[0].Claim_Paid_Date__c}"/>
+        </apex:outputText> <br/>
+         
+          ACCOUNT CHARGED: 6085000 <br/>
+          COST CENTER: 14342 <br/>
+          VENDOR NUMBER: <!-- {!ClaimDetails[0].Remit_to__r.CUST__c}--> <br/>
+         </apex:outputLabel>  
+         <br/><br/>      
+      </td>
+      </tr>
+      
+      <tr>
+       <td width="35%"  valign="top" >   
+         <br/><br/>
+         <apex:outputLabel style="font-size:11pt;font-family:arial,helvetica,sans-serif;">
+          <b>Remit To:</b> <br/>
+          {!ClaimDetails[0].Remit_to__r.Name}<br/>{!ClaimDetails[0].Remit_to__r.BillingStreet}<br/>{!ClaimDetails[0].Remit_to__r.BillingCity},&nbsp;
+          {!ClaimDetails[0].Remit_to__r.BillingState}<br/>{!ClaimDetails[0].Remit_to__r.BillingPostalCode}&nbsp;{!ClaimDetails[0].Remit_to__r.BillingCountry}
+          <br/><b>Attn:</b> {!ClaimDetails[0].Remit_to_Attention__c}<br/>
+         </apex:outputLabel>        
+      </td>
+      
+     <!-- If amount is less than 1000 --> 
+     <apex:outputpanel rendered="{!(ClaimDetails[0].amount__c <=1000)}">
+     <td width="20%" valign="top"  >   
+         <br/><br/>
+         <b>Final Approver:</b>  {!ClaimDetails[0].Initial_Approver__c}<br/>
+         <b> Date:</b> {!dateformat1}
+      </td>
+      <br/><br/>
+      </apex:outputpanel>
+      <apex:outputpanel rendered="{!(ClaimDetails[0].amount__c >1000)}">
+      <td width="20%" valign="top" >   
+         <br/><br/><br/>
+        <b> Initial Approver:</b>  {!ClaimDetails[0].Initial_Approver__c}<br/>
+         <b>Date:</b>  {!Dateformat}
+        
+         <br/><br/>
+         <b>Final Approver: </b> {!ClaimDetails[0].Final_Approver__c}<br/>
+         <b>Date: </b> {!Dateformat1}
+       
+         
+         
+      </td>
+      <br/><br/>
+      </apex:outputpanel>
+  
+      </tr>
+         <table cellspacing="" border="1"> 
+         <tr>
+         <th align="Center" width="100%" style="border-color: #000000 #D0D0D0;"><b>DESCRIPTION</b></th>
+         <th align="Center" width="100%" style="border-color: #000000 #D0D0D0;"><b>AMOUNT</b></th>
+         </tr>
+         
+         <tr>
+         <td align="center" width="100%" style="border-color: #000000 #D0D0D0;"> {!ClaimDetails[0].Claim_Details__c} </td>
+         <td align="center" width="100%" style="border-color: #000000 #D0D0D0;">$&nbsp;{!ClaimDetails[0].Amount__c} </td>
+         </tr>
+         <tr ><td height="150"></td></tr>
+         <tr ><td>PLEASE INCLUDE COPY OF THIS PAYMENT REQUEST WITH THE CHECK FOR</td></tr>
+         <tr ><td>PROPER CREDIT TO BE APPLIED BY THE DISTRIBUTOR.</td></tr>
+         <!--tr ><td>APPLIED TO 2014 CO-OP FUNDS </td></tr-->
+         
+         <tr>
+         <th align="right" width="100%" style="border-color: #000000 #D0D0D0;"><b>TOTAL</b></th>
+         <th align="Center" width="100%" style="border-color: #000000 #D0D0D0;">$&nbsp;{!ClaimDetails[0].Amount__c}</th>
+         </tr>
+         </table>
+      </table>
+  
+</apex:page>

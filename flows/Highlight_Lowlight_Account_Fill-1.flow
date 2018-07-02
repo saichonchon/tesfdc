@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>populates the account field lookup automatically with the account when the HL/LL is started from the opportunity</description>
+    <label>Highlight_Lowlight Account Fill</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Account_ID</name>
+        <label>Get Account ID</label>
+        <locationX>246</locationX>
+        <locationY>121</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Fill_account_lookup</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varOppID</elementReference>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <outputAssignments>
+            <assignToReference>varAccountID</assignToReference>
+            <field>AccountId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordUpdates>
+        <name>Fill_account_lookup</name>
+        <label>Fill account lookup</label>
+        <locationX>532</locationX>
+        <locationY>122</locationY>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varHL_LL_ID</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Account_Name__c</field>
+            <value>
+                <elementReference>varAccountID</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Highlight_Lowlight__c</object>
+    </recordUpdates>
+    <startElementReference>Get_Account_ID</startElementReference>
+    <variables>
+        <description>Contains the id of the account the opp is linked to</description>
+        <name>varAccountID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Stores the ID of a HL/LL</description>
+        <name>varHL_LL_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>stores the variable of the opportunity the HL/LL i screated for</description>
+        <name>varOppID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

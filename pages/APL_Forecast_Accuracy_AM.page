@@ -1,0 +1,183 @@
+<apex:page controller="APL_ForecastAccuracy_Controller">
+    <head>
+        <style type="text/css">
+            *{
+                margin:0;
+                padding:0;
+            }
+            
+            /* Table 1 Style */
+            table.table1{
+                font-family: "Trebuchet MS", sans-serif;
+                font-size: 16px;
+                font-weight: bold;
+                line-height: 1.4em;
+                font-style: normal;
+                border-collapse:separate;
+            }
+            .table1 thead th{
+                padding:15px;
+                color:#fff;
+                text-shadow:1px 1px 1px #568F23;
+                border:1px solid #93CE37;
+                border-bottom:3px solid #9ED929;
+                background-color:#9DD929;
+                background:-webkit-gradient(
+                    linear,
+                    left bottom,
+                    left top,
+                    color-stop(0.02, rgb(123,192,67)),
+                    color-stop(0.51, rgb(139,198,66)),
+                    color-stop(0.87, rgb(158,217,41))
+                    );
+                background: -moz-linear-gradient(
+                    center bottom,
+                    rgb(123,192,67) 2%,
+                    rgb(139,198,66) 51%,
+                    rgb(158,217,41) 87%
+                    );
+                -webkit-border-top-left-radius:5px;
+                -webkit-border-top-right-radius:5px;
+                -moz-border-radius:5px 5px 0px 0px;
+                border-top-left-radius:5px;
+                border-top-right-radius:5px;
+            }
+            .table1 thead th:empty{
+                background:transparent;
+                border:none;
+            }
+            .table1 tbody th{
+                color:#fff;
+                text-shadow:1px 1px 1px #568F23;
+                background-color:#9DD929;
+                border:1px solid #93CE37;
+                border-right:3px solid #9ED929;
+                padding:0px 10px;
+                background:-webkit-gradient(
+                    linear,
+                    left bottom,
+                    right top,
+                    color-stop(0.02, rgb(158,217,41)),
+                    color-stop(0.51, rgb(139,198,66)),
+                    color-stop(0.87, rgb(123,192,67))
+                    );
+                background: -moz-linear-gradient(
+                    left bottom,
+                    rgb(158,217,41) 2%,
+                    rgb(139,198,66) 51%,
+                    rgb(123,192,67) 87%
+                    );
+                -moz-border-radius:5px 0px 0px 5px;
+                -webkit-border-top-left-radius:5px;
+                -webkit-border-bottom-left-radius:5px;
+                border-top-left-radius:5px;
+                border-bottom-left-radius:5px;
+            }
+            .table1 tfoot td{
+                color: #9CD009;
+                font-size:32px;
+                text-align:center;
+                padding:10px 0px;
+                text-shadow:1px 1px 1px #444;
+            }
+            .table1 tfoot th{
+                color:#666;
+            }
+            .table1 tbody td{
+                padding:10px;
+                text-align:center;
+                background-color:#DEF3CA;
+                border: 2px solid #E7EFE0;
+                -moz-border-radius:2px;
+                -webkit-border-radius:2px;
+                border-radius:2px;
+                color:#666;
+                text-shadow:1px 1px 1px #fff;
+            }
+            .table1 tbody span.check::before{
+                content : url(../images/check0.png)
+            }
+        </style>
+    </head>
+  <apex:pageBlock >
+      <apex:form >
+        <apex:selectList value="{!selectYear}" multiselect="false">
+            <apex:selectOptions value="{!years}"/>
+        </apex:selectList>
+        <apex:commandButton value="Query" action="{!queryAccuracyByYear}" rerender="show" status="status"/>
+</apex:form>
+  </apex:pageBlock>
+  
+  <apex:pageBlock id="show">
+      <apex:actionstatus id="status" startText="quering..."/>
+      <apex:outputPanel rendered="{!hasAccuracy}">
+          <table class="table1">
+              <thead>
+              <tr>
+                  <th rowspan="2" align="center" class="tab_head_data"><font style="font-weight:bold;">Product Family</font></th>
+                  <th colspan="4" align="center" class="tab_head_data"><font style="font-weight:bold;">Q1</font></th>
+                  <th colspan="4" align="center" class="tab_head_data"><font style="font-weight:bold;">Q2</font></th>
+                  <th colspan="4" align="center" class="tab_head_data"><font style="font-weight:bold;">Q3</font></th>
+                  <th colspan="4" align="center" class="tab_head_data"><font style="font-weight:bold;">Q4</font></th>
+                  <th rowspan="2" align="center" class="tab_head_data"><font style="font-weight:bold;">Year (%)</font></th>
+              </tr>
+              <tr>
+                  <td align="center">Three Month (%)</td>
+                  <td align="center">Two Month (%)</td>
+                  <td align="center">One Month (%)</td>
+                  <td align="center">Sub Total (%)</td>
+                  <td align="center">Three Month (%)</td>
+                  <td align="center">Two Month (%)</td>
+                  <td align="center">One Month (%)</td>
+                  <td align="center">Sub Total (%)</td>
+                  <td align="center">Three Month (%)</td>
+                  <td align="center">Two Month (%)</td>
+                  <td align="center">One Month (%)</td>
+                  <td align="center">Sub Total (%)</td>
+                  <td align="center">Three Month (%)</td>
+                  <td align="center">Two Month (%)</td>
+                  <td align="center">One Month (%)</td>
+                  <td align="center">Sub Total (%)</td>
+              </tr>
+              </thead>
+              <tbody>
+               <apex:repeat value="{!showTemplates}" var="temp">
+                  <tr>
+                      <td>{!temp.productFamily}</td>
+                      <td align="right">{!temp.q1ThreeMonth}</td>
+                      <td align="right">{!temp.q1TwoMonth}</td>
+                      <td align="right">{!temp.q1OneMonth}</td>
+                      <td align="right">{!temp.q1Accuracy}</td>
+                      <td align="right">{!temp.q2ThreeMonth}</td>
+                      <td align="right">{!temp.q2TwoMonth}</td>
+                      <td align="right">{!temp.q2OneMonth}</td>
+                      <td align="right">{!temp.q2Accuracy}</td>
+                      <td align="right">{!temp.q3ThreeMonth}</td>
+                      <td align="right">{!temp.q3TwoMonth}</td>
+                      <td align="right">{!temp.q3OneMonth}</td>
+                      <td align="right">{!temp.q3Accuracy}</td>
+                      <td align="right">{!temp.q4ThreeMonth}</td>
+                      <td align="right">{!temp.q4TwoMonth}</td>
+                      <td align="right">{!temp.q4OneMonth}</td>
+                      <td align="right">{!temp.q4Accuracy}</td>
+                      <td align="right">{!temp.yearToDay}</td>
+                  </tr>
+               </apex:repeat>
+               <tr>
+                   <td>Total (%)</td>
+                   <td colspan="4" align="right">{!q1Total}</td>
+                   <td colspan="4" align="right">{!q2Total}</td>
+                   <td colspan="4" align="right">{!q3Total}</td>
+                   <td colspan="4" align="right">{!q4Total}</td>
+                   <td align="right">{!yearTotal}</td>
+               </tr>
+               </tbody>
+          </table>
+      </apex:outputPanel>
+      
+      <apex:outputPanel rendered="{!!hasAccuracy}">
+          No Accuracy data was found of that fiscal year.
+      </apex:outputPanel>
+  </apex:pageBlock>
+  
+</apex:page>

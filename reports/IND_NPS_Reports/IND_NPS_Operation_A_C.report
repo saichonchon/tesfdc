@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM 
+-Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM)/
+ Plant_Account_Shipment__c.Shipment_Count__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Promoter_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))/
+(Plant_Account_Shipment__c.Shipment_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)+
+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))-
+(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)
++PREVGROUPVAL(Plant_Account_Shipment__c.NPS_Detractor_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))/
+(Plant_Account_Shipment__c.Shipment_Count__c:SUM+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,1)+PREVGROUPVAL(Plant_Account_Shipment__c.Shipment_Count__c:SUM, Plant_Account_Shipment__c.Shipped_Date__c,2))</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>Account.Plant_Account_Shipments__r$Shipped_Date__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3 Month Rolling</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Competitive_Price__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Competitive_Price__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Competitive_Price__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Competitive_Price__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Competitive_Price__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Competetive Price</description>
+        <developerName>FORMULA6</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Competetive Price Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Delivery_Performance__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Delivery_Performance__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Delivery_Performance__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Delivery_Performance__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Delivery_Performance__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Delivery Performance</description>
+        <developerName>FORMULA7</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Delivery Performance Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(Plant_Account_Shipment__c.Promotor_Count_Product_Quality__c:SUM-Plant_Account_Shipment__c.Detractor_Count_Product_Quality__c:SUM)/
+(Plant_Account_Shipment__c.Promotor_Count_Product_Quality__c:SUM+
+Plant_Account_Shipment__c.Detractor_Count_Product_Quality__c:SUM+
+Plant_Account_Shipment__c.Passive_Count_Product_Quality__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Shows NPS Score for Product Quality</description>
+        <developerName>FORMULA8</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Product Quality Score</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_60159594</developerName>
+        <masterLabel>PLANT</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Plant_Account_Shipments__r$BUILDING_NBR_MFG__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>644</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>645</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>668</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>G60</sourceValue>
+            </sourceValues>
+            <value>Bydgoszcz</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>860</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>874</sourceValue>
+            </sourceValues>
+            <value>Hermosillo</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>J31</sourceValue>
+            </sourceValues>
+            <value>Grenoble</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>771</sourceValue>
+            </sourceValues>
+            <value>Roedermark</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA7</column>
+        </chartSummaries>
+        <chartType>LineGrouped</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Plant_Account_Shipments__r$Shipped_Date__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>BucketField_60159594</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Plant_Account_Shipments__r$Shipment_Count__c</field>
+    </columns>
+    <columns>
+        <field>Account$Account__c</field>
+    </columns>
+    <columns>
+        <field>Account.Plant_Account_Shipments__r$Detractor_Count_Competitive_Price__c</field>
+    </columns>
+    <currency>USD</currency>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Plant_Account_Shipments__r$Shipped_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_60159594</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND NPS Operation A&amp;C</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Accounts_with_NPS_plant_data__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Plant_Account_Shipments__r$Shipped_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

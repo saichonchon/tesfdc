@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_15777372</developerName>
+        <masterLabel>Product Group</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities.Parts__r$GPL__c.CBC2_Description__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC - I/O</sourceValue>
+            </sourceValues>
+            <value>I/O</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC - Backplane</sourceValue>
+            </sourceValues>
+            <value>Backplane</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC - Cable Assemblies</sourceValue>
+            </sourceValues>
+            <value>Cable</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC - Fiber Optics</sourceValue>
+            </sourceValues>
+            <value>Fiber</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC - Power/Mezzanine</sourceValue>
+            </sourceValues>
+            <value>Power/Mezz</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_73477237</developerName>
+        <masterLabel>Stage</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Opportunities.Parts__r$Status__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>On Hold</sourceValue>
+            </sourceValues>
+            <value>1 - Lost/Dead/On Hold</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Weak</sourceValue>
+            </sourceValues>
+            <value>2 - Weak</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>50/50</sourceValue>
+            </sourceValues>
+            <value>3 - 50/50</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Likely</sourceValue>
+            </sourceValues>
+            <value>4 - Likely</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Commit</sourceValue>
+            </sourceValues>
+            <value>5 - Commit</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Won</sourceValue>
+            </sourceValues>
+            <value>6 - Won</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Account$Customer_Region__c</field>
+    </columns>
+    <columns>
+        <field>Account$Sales_Hierarchy__c.Level_2_Territory_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account$Sales_Hierarchy__c.Level_3_Territory_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account$SALES_TERRITORY_NM__c</field>
+    </columns>
+    <columns>
+        <field>Account$GAMDESC__c</field>
+    </columns>
+    <columns>
+        <field>Account$Name</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$GAMorOEM__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Record_Type_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$CloseDate</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities$Manufacturing_Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r$New_Part_Description__c</field>
+    </columns>
+    <columns>
+        <field>Account.Opportunities.Parts__r.Forecast__r$Fiscal_Year__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Opportunities$Five_Year_Revenue__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(((1 AND 2 AND 3 AND 4 AND 7 AND (NOT 6)) OR (5 AND (6  OR 11 )AND 10)) AND 8 AND 9) AND 12</booleanFilter>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r.Forecast__r$Amount__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>USD 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Record_Type_Name__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>TAM,Tender,Program</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities.Parts__r$BU_profit_center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>DataComm,Data and Devices</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_73477237</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>1 - Lost/Dead/On Hold</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>New Opportunity,Quotation,Sampling,Opportunity Development</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Opportunity.Engineering_Opportunity_CSD,Opportunity.Sales_Opportunity_CSD</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$StageName</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Lost/Dead - closed,Rejected - Closed,Dead,Lost,Won - Closed,Order Received or Mass Production,Order Received  or Mass Production</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$Billing_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>China (AP Central),AP South,India</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$BillingCountry</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Korea,Japan</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner.CSD_Region__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Taiwan,China,South Asia(Pacific)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$RecordType</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Opportunity.DND_Opportunity</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Opportunities$Owner</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Avery Lim,Jerome Chen,Jerry Chen,Simon Chen,Ivan He,Kritsana Hemathulin,Jacky Hsu,Hugh Hu,Henry Koay,Jerome Liu,Yun Liu,Gavin Shih,Harry Wang,William Wu,Steven Yan,Tommy Yu,Johnny Zhou,Robbie Xu</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Opportunities$Owner</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>FAE Opportunity Report1</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Datacomm_Opportunity_Metrics__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Opportunities$CloseDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

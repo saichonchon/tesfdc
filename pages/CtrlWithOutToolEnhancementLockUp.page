@@ -1,0 +1,130 @@
+<apex:page id="thePage" controller="CtrlWithOutToolEnhancementLockUp"  title="Search Product" showHeader="false" sidebar="false">
+	
+	<style type="text/css">
+		.lookupTab .pageTitleIcon, .individualPalette .lookupBlock .pageTitleIcon{
+			    background-image: url(/img/sprites/master.png); background-position: 0 -1202px; width: 32px; height: 32px;
+		}
+		#loading-curtain-div{display:none; top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');}
+	</style>
+	<apex:includeScript value="{!URLFOR($Resource.jQueryTool, '/jquery1.11/jquery-1.11.0.min.js')}" />
+	<script type="text/javascript">
+		window.opener.window._returnValue = undefined;
+		addListener(window, 'load', initCtrlDocument, {});
+		
+		
+		;function initCtrlDocument(){
+			replaceReference();
+		}
+		
+		;function event_product_click(target){
+			var id=target.getAttribute('data-id'), value=target.getAttribute('data-name');
+			window.opener.window._returnValue =  JSON.stringify({'id': id, 'value': value});
+            self.close();
+			
+		}
+		
+		;function event_go_click(target){
+			var $lksrch=$('#lksrch'), search=$lksrch.val(), filter='';
+
+			$('#loading-curtain-div').show();
+			searchProduct(search, filter);	//this is action function.
+		}
+		
+		;function searchProductComplete(){
+			
+			replaceReference();
+			$('#loading-curtain-div').hide();
+		}
+		
+		;function replaceReference(){
+			$('#searchBody span.reference a').each(function(){
+				$(this).parent().parent().html(this.innerHTML);//.find
+			});
+		}
+		
+		;function addListener (element, event, fn, params) {
+		    var eventHandler = ( params ? function(){ fn.call(params); } : fn );
+		    if (window.attachEvent) {
+		        element.attachEvent('on' + event, eventHandler);
+		    } else {
+		        element.addEventListener(event, eventHandler, false);
+		    }
+		}
+	
+	</script>
+	<div id="loading-curtain-div" title="Please Wait..."></div>
+	<apex:form id="theForm" styleClass="lookupTab  LookupSearchFrame  brandNoBgrImg net-withGlobalHeader">
+		
+		<apex:actionStatus id="theStatus" />
+		
+		<apex:actionFunction name="searchProduct" action="{!searchProduct}" oncomplete="searchProductComplete()"  status="theStatus" rerender="theForm" >
+			<apex:param name="inputS" value="" />
+			<apex:param name="filter" value="" />
+		</apex:actionFunction>
+	
+		<div style="background: #fff url(/img/alohaSkin/lookup_bg.png) repeat-x; border-bottom: 1px solid #eee; padding: 0; position: fixed; z-index: 10; width: 100%; top: 0px;">
+			<div class="lookup">
+				<div class="bPageTitle" style="padding: 0;">
+					<div class="ptBody secondaryPalette">
+						<div class="content">
+							<img src="/img/s.gif" alt="" class="pageTitleIcon" title="" />
+							<h1 style="font-size: 1.8em; color: #333435; margin: 8px 0 4px;">Lookup</h1>
+					        <apex:pageMessages id="pageMsg"></apex:pageMessages>
+						</div>
+					</div>
+				</div>
+				<div class="pBody">
+					<label class="assistiveText" for="lksrch">Search</label>
+					<input id="lksrch" maxlength="80" placeholder="Search..." size="20" type="text" value="{!s}" />
+					<input onclick="event_go_click(this)" id="goBtn" value=" Go! " class="btn" name="go" title="Go!" type="button" />
+					<div>
+						
+					</div>
+					<div style="margin-top: 0px;" class="bDescription">
+						You can use "*" as a wildcard next to other characters to improve your search results.
+					</div>
+				</div>
+			</div>
+		</div>		
+		
+		<div style="margin-top: 120px;">
+			<div style="padding: 10px;">
+				<div style="padding: 4px 3px; font-weight: bold; font-size: 118%;">{!searchLabel}</div>
+				
+		        <apex:pageBlock mode="edit">
+		        	<div style="position: relative; overflow: auto; background-color: #fff; width: 100%;">
+			            <table class="list" border="0" cellpadding="0" cellspacing="0">
+			            	<thead>
+			            		<tr class="headerRow">
+			            			<apex:repeat value="{!list_cfsm}" var="f">
+			            			<th>{!f.labelName}</th>
+			            			</apex:repeat>
+			            		</tr>
+			            	</thead>
+			                <tbody id="searchBody">
+			                	<apex:repeat value="{!list_account}" var="p">
+			                	<tr class="dataRow even">
+			                		<apex:repeat value="{!list_cfsm}" var="f">
+			                		<td>
+			                			<apex:outputpanel rendered="{!if(f.apiName = 'Name', true, false)}">
+			                				<a onclick="event_product_click(this)" href="javascript:void(0);" data-name="{!p[f.apiName]}" data-id="{!p.Id}">
+			                					{!p[f.apiName]}
+			                				</a>
+			                			</apex:outputpanel>
+			                			<apex:outputpanel rendered="{!if(f.apiName != 'Name', true, false)}">
+			                				{!p[f.apiName]}
+			                			</apex:outputpanel>
+			                		</td>
+			                		</apex:repeat>
+			                	</tr>
+			                	</apex:repeat>
+			                </tbody>
+			            </table>
+		        	</div>
+		        </apex:pageBlock>
+		     </div>   
+		</div>
+    </apex:form>
+	
+	
+</apex:page>

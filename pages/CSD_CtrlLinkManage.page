@@ -1,0 +1,78 @@
+<apex:page title="DND Sales Forecast" controller="CSD_CtrlLinkManage" id="thePage" applyBodyTag="true" docType="html-5.0">
+    
+    <head>
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/jQueryUI/jquery-ui-1.10.4.custom.min.css')}" />
+        <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.jQueryTool, '/artDialog/skins/twitter.css')}" />
+        <style type="text/css">
+            .x-table{ width: 100%; }
+            .x-table tbody td{padding: 5px;}
+            .x-tdw {width: 20%;}
+            .x-table tr:HOVER { background-color: #e3f3ff !important; }
+
+        </style>
+    </head>
+    
+    <body>
+        <apex:sectionHeader title="DND" subtitle=" Sales Forecast " />
+        
+        <apex:form id="pageForm">
+            <apex:pageMessages id="themsg"/>
+            
+            <apex:variable value="{!map_section_link['edit']}" var="list_edit"/>
+            <apex:pageBlock id="thePb1" mode="detail" title="Forecast Entry" rendered="{!list_edit.size > 0}">
+                <apex:outputPanel layout="block">
+                    <div>
+                        <table class="x-table" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                                <apex:repeat value="{!list_edit}" var="edit">
+                                    <tr>
+                                        <td class="x-tdw"><a href="{!edit.url}">{!edit.label}</a></td>
+                                        <td>{!edit.description}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:outputPanel>
+            </apex:PageBlock>
+            
+            <apex:variable value="{!map_section_link['view']}" var="list_view"/>
+            <apex:pageBlock mode="detail" title="Forecast Views" rendered="{!list_view.size > 0}">
+                <apex:outputPanel layout="block">
+                    <div>
+                        <table class="x-table" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                                <apex:repeat value="{!list_view}" var="view">
+                                    <tr>
+                                        <td class="x-tdw"><a href="{!view.url}">{!view.label}</a></td>
+                                        <td>{!view.description}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:outputPanel>
+            </apex:PageBlock>
+            
+            <apex:variable value="{!map_section_link['import']}" var="list_import"/>
+            <apex:pageBlock mode="detail" title="Master Data Import" rendered="{!list_import.size > 0}">
+                <apex:outputPanel layout="block">
+                    <div>
+                        <table class="x-table" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                                <apex:repeat value="{!list_import}" var="import">
+                                    <tr>
+                                        <td class="x-tdw"><a href="{!import.url}">{!import.label}</a></td>
+                                        <td>{!import.description}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:outputPanel>
+            </apex:PageBlock>
+            
+        </apex:form>
+    
+    </body>
+</apex:page>

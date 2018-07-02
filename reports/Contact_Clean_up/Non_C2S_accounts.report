@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>SALUTATION</field>
+    </columns>
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>CONTACT_CREATED</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>OWNER_FULL_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>Account.DD1_Industry_Business_Name__c</field>
+    </columns>
+    <columns>
+        <field>Account.Active__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Contacts that belong to non-C2S BUs like AD&amp;M</description>
+    <filter>
+        <criteriaItems>
+            <column>OWNER_FULL_NAME</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>TEIS Admin</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CONTACT_OWNER</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>TEIS Admin</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CONTACT_RECORDTYPE</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Contact.Other</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.DD1_Industry_Business_Name__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>Aerospace Defense &amp; Marine,Automotive,Subcontractors,Circuit Protection,Energy,Enterprise Networks,Other,OTHER TRADE &amp; ADMINISTRATIVE</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Non-C2S accounts</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>ACCOUNT.NAME</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,68 @@
+<apex:page standardController="AgileVizArt__Project__c" extensions="AgileVizArt.ExtProject_RiskPortfolio" sidebar="false">
+    <head>
+        <apex:includeScript value="{!URLFOR($Resource.AgileVizArt__UI, '/ui/js/jquery.js')}" />
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load('visualization', '1', {'packages':['motionchart']});
+            google.setOnLoadCallback(drawChart);
+            var chart;
+            
+            function drawChart() {
+                var chartDivId = $('#chart_div');
+                var chartDivHeight = chartDivId.css("height").replace("px");
+                var chartDivWidth = chartDivId.css("width").replace("px");
+                var data = new google.visualization.DataTable();
+                
+                data.addColumn("string", "Risk");
+                data.addColumn("date", "Date");
+                data.addColumn("number", "Impact");
+                data.addColumn("number", "Probability");
+                data.addColumn("string", "Trend");
+                data.addColumn("number", "Rating");
+                var jsonData = eval("("+'{!JSENCODE(RiskMotionChart)}'+")"); 
+
+                var rowFormate = [];
+                for(var i=0, max=jsonData.length; i<max; i++){
+                	var dateVal = jsonData[i]['date'];
+                    var row = [jsonData[i]['name'], new Date(Date.parse(dateVal.replace(/-/g,   "/"))), jsonData[i]['impact'], jsonData[i]['probability'], jsonData[i]['trend'], jsonData[i]['rating']];
+                    rowFormate.push(row);
+                }
+
+                data.addRows(rowFormate);
+
+                chart = new google.visualization.MotionChart(document.getElementById('chart_div')); 
+                var options = setOptions(chartDivWidth ,chartDivHeight);
+                google.visualization.events.addListener(chart, 'statechange',getState);
+                chart.draw(data, options);
+                chartDivId.css("height",((parseInt(chartDivHeight)-300)+"px"));
+            }
+            
+            function setOptions(chartDivWidth, chartDivHeight){
+                var options = {};
+                options['width'] = (parseInt(chartDivWidth)-300);
+                options['height'] = (parseInt(chartDivHeight)-300);
+                options['showChartButtons'] = false;
+                options['showXScalePicker'] = false;
+                options['showYScalePicker'] = false;
+                options['showSelectListComponent'] = false;
+                options['showSidePanel'] = true;
+                options['showAdvancedPanel'] = false;
+                options['showHeader'] = false;
+                options['state'] ='{"colorOption":"4","dimensions":{"iconDimensions":["dim0"]}}';
+                return options;
+            }
+      
+        function getState(){
+            var oldState = chart.getState();
+        }
+        
+    </script>
+  </head>
+
+  <apex:form >
+    <div style="width: 100%; height:24px;text-align:center;font-size:13px; font-weight:bold;">{!nameStr}</div>
+    <div id="chart_div" style="width: 900px; height:800px;text-align:center;">
+    </div>
+  </apex:form>
+
+</apex:page>

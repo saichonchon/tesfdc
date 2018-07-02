@@ -1,0 +1,236 @@
+<apex:page controller="spExams.SPExamsCtrl" sidebar="false" showheader="false" standardStylesheets="false" >
+    <c:spExams_Resources />
+    
+    <apex:form id="form" styleClass="container-form">
+        <apex:actionFunction name="initialize" 
+                             action="{!initialize}" 
+                             rerender="user-exam-info, progress-bar, question-container, footer-button-container" 
+                             onComplete="verifyRedirect();">
+        </apex:actionFunction>
+       
+         <apex:actionFunction name="Redirect" 
+         					  action="{!Redirect}"> 
+         </apex:actionFunction>
+         
+        <apex:actionFunction name="moveQuestion"
+                             action="{!moveQuestion}"
+                             rerender="progress-bar, question-container, footer-button-container"
+                             oncomplete="refreshQuestionContent()">
+            <apex:param name="direction" value="" />
+            <apex:param name="userExamQuestionId" value="" />
+            <apex:param name="selectedAnswersIds" value="" />
+            <apex:param name="reviewLater" value="" />
+            <apex:param name="freeTextContent" value="" />
+            <apex:param name="remainingTime" value="" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="finish" 
+                             action="{!viewSummary}">
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="submitExam" 
+                             action="{!submitExam}" >
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="updateUserExam" 
+                             action="{!updateUserExam}"
+                             oncomplete="submitExam()">
+            <apex:param name="remainingTime" value="" />                             
+        </apex:actionFunction>
+        
+        <div class="container">
+            <div class="hero-unit header-title">
+            	<apex:outputPanel id="user-exam-info">
+	                <div class="timer pull-right"><span id="minutes">--</span>:<span id="seconds">--</span></div> 
+	                <apex:inputText styleClass="inputMinutesLeft hide" value="{!MinutesLeft}"/>
+	                <apex:inputText styleClass="inputSecondsLeft hide" value="{!SecondsLeft}"/>
+	                <h4>{!IF(NOT(ISNULL(Exam)), Exam.Title__c, 'No Valid Exam')}</h4><br/>
+	                <span class="pull-left">
+	                    <b>Name:&nbsp;</b><span class="sub-title">{!IF(NOT(ISNULL(UserExam.Id)), UserExam.First_Name__c + ' ' + UserExam.Last_Name__c, 'No Valid User')}</span>
+	                </span>    
+	                <span class="total-questions-header pull-right">
+	                    <h4>Total Question: 
+	                    <span>{!IF(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size, '0')}</span></h4><br/>
+	                </span><br/><br/>
+	            </apex:outputPanel>
+	            
+                <apex:outputPanel id="progress-bar" styleClass="pull-right" rendered="{!AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0)}">
+                    <table class="progress-container">
+                        <tr>
+                            <td>
+                                <span class="">Progress:&nbsp;</span>
+                            </td>
+                            <td>
+                                <div class="progress">
+                                    <span>{!ROUND(100 * QuestionsCompleted / ExistingUserExamQuestionsList.size, 0)}%</span>
+                                    <div class="bar" style="width: {!100 * QuestionsCompleted / ExistingUserExamQuestionsList.size}%;"></div>
+                                </div>
+                            </td>   
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+           </div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-unit header-title">
+                <div class="loading-container">
+                    <img class="loading-gif" src="{!URLFOR($Resource.spExams__Bootstrap_Newer, 'img/loading.gif')}"/>
+                </div>
+                <div class="question-container">
+                    <apex:outputPanel id="question-container">
+                    	<apex:messages />
+                    	<input class="need-redirect" type="hidden" value="{!NeedRedirect}"/>
+                        <div class="question-header">
+                            <apex:outputPanel rendered="{!IF(NOT(ISNULL(ExistingUserExamQuestionsList)), IF(ExistingUserExamQuestionsList.size > 0, true, false), false)}">
+                                <b><span class="index-question" user-exam-status="{!IF(NOT(ISNULL(UserExam)), UserExam.spExams__Status__c, '')}">Question {!IndexCurrentQuestion}</span> of <span class="exam-questions">{!ExistingUserExamQuestionsList.size}</span></b>
+                            </apex:outputPanel>
+                        </div>
+                        <div class="question-body">
+                            <div class="question">
+                                <span>
+                                    {!IF(ISNULL(ExistingUserExamQuestionsList) || ExistingUserExamQuestionsList.size == 0, 'There is no questions for this exam.', '')}
+                                    <b><apex:OutputField rendered="{!IF(NOT(ISNULL(ExistingUserExamQuestionsList)), IF(ExistingUserExamQuestionsList.size > 0, true, false), false)}" value="{!ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Content__c}"></apex:OutputField></b>
+                                </span>
+                                <div class="answer-item-container">
+                                    <apex:outputPanel styleClass="question-item" rendered="{!AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0) || (NOT(ISNULL(ExistingUserExamQuestionsList)) && AND(ExistingUserExamQuestionsList.size > 0, ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'Text'))}" html-user-exam-question-id="{!ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Id}">
+                                        <apex:repeat value="{!IF(NOT(ISNULL(UserExamQuestionWrapper)) && AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0), UserExamQuestionWrapper.AnswerWrapperList, null)}" var="answerWrapper" rendered="{!ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'Single Choice' || ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'Multiple Choice'}">
+                                            <div class="answer-item">
+                                                <label class="{!IF(ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c != 'Single Choice',  IF(ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'Multiple Choice', 'checkbox', ''), 'radio')}" onclick="enableNextButtonByCheckboxes($('.item-answer:checked, .review-later:checked'), $('.btn-next, .btn-finish'))">
+                                                    <input class="item-answer {!IF(answerWrapper.Selected, 'checked', '')}" type="{!IF(ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c != 'Single Choice',  IF(ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'Multiple Choice', 'checkbox', ''), 'radio')}" name="{!ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c}" answer-id="{!answerWrapper.AnswerId}">&nbsp;{!answerWrapper.Content}</input>
+                                                </label>
+                                            </div>
+                                        </apex:repeat>
+                                        <apex:outputPanel rendered="{!ExistingUserExamQuestionsList[IndexCurrentQuestion - 1].Question__r.Type__c == 'textarea'}">
+                                            <textarea class="textarea-answer" placeholder="You answer here" answer-id="{!IF(NOT(ISNULL(UserExamQuestionWrapper)) && AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0), UserExamQuestionWrapper.AnswerWrapperList[0].AnswerId, null)}">{!IF(NOT(ISNULL(UserExamQuestionWrapper)) && AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > 0), UserExamQuestionWrapper.AnswerWrapperList[0].Content, '')}</textarea>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel> 
+                                </div>
+                            </div>
+                        </div>        
+                    </apex:outputPanel> 
+                </div>
+                
+                <apex:outputPanel id="footer-button-container"> 
+                    <div class="footer-button-container">
+                        <label class="review-container checkbox">
+                            <input class=" review-later {!IF(UserExamQuestionWrapper.ReviewLater, 'checked', '')}" type="checkbox" onclick="enableNextButtonByCheckboxes($('.item-answer:checked, .review-later:checked'), $('.btn-next, .btn-finish'))">&nbsp;Review Later</input>
+                        </label>
+                        <apex:outputpanel id="btn-back">
+                            <b><a class="btn btn-back {!IF(IndexCurrentQuestion == 1, 'disabled', '')}" onclick="goToLastQuestion($(this));"><i class="icon-chevron-left"></i> Back</a></b>
+                        </apex:outputpanel>
+                        <apex:outputpanel rendered="{!AND(NOT(ISNULL(ExistingUserExamQuestionsList)), ExistingUserExamQuestionsList.size > IndexCurrentQuestion)}">
+                            <b><a class="btn btn-next" type="button" onclick="goToNextQuestion($(this));">Next <i class="icon-chevron-right"></i></a></b>
+                        </apex:outputpanel>
+                        <apex:outputpanel rendered="{!Finish}">
+                            <b><a class="btn btn-finish finish" onclick="goToNextQuestion($(this));"><i class="icon-edit"></i> Review &amp; Finish</a></b>
+                        </apex:outputpanel>
+                        
+                    </div>  
+                </apex:outputPanel> 
+            </div>
+        </div>  
+    </apex:form>
+
+    <script>
+        var GLOBAL_saveBefore_Next;
+        
+        $(document).ready(function()
+        {
+        	initialize();
+            setupSetings();
+            $('.question-container').css({'opacity' : 1});
+            centerBodyContainer($('.container-form'));
+            GLOBAL_saveBefore_Next = {!SaveBeforeNext};
+            if(GLOBAL_saveBefore_Next && $('.item-answer:checked, .review-later:checked').size() == 0)
+                $('.btn-next, .btn-finish').addClass('disabled');
+        });
+        
+        function startCounter()
+        {
+        	if($('.index-question').size() > 0)
+            {
+                var minutesLeft = parseInt($('.inputMinutesLeft').val());
+                var secondsLeft = parseInt($('.inputSecondsLeft').val());
+                var keepCounting = true;
+                
+                setInterval(function ()
+                { 
+                    if((secondsLeft == 0 && minutesLeft == 0) || $('.index-question').attr('user-exam-status') == 'Submitted')
+                        submitExamJS(0);
+                    else if(secondsLeft == 0)   
+                    {
+                        minutesLeft--;
+                        secondsLeft = 59;
+                    }
+                    else                
+                        secondsLeft--;
+                        
+                    if(parseInt(minutesLeft) >= 0 && keepCounting)
+                    {    
+                        if (minutesLeft < 10 ) 
+                            $('#minutes').html('0' + parseInt(minutesLeft));
+                        else 
+                        {
+                            $('#minutes').html(parseInt(minutesLeft));
+                            if(parseInt(minutesLeft) == 49 && parseInt(secondsLeft) >= 0 && parseInt(secondsLeft) <= 59)
+                                $('.timer, #minutes, #seconds').addClass('timer-transition').addClass('timer-alert').delay(800).removeClass('timer-transition').removeClass('timer-alert');
+                        }    
+                        
+                        if (parseInt(secondsLeft) < 10) 
+                            $('#seconds').html('0' + secondsLeft);
+                        else 
+                        {
+                            $('#seconds').html(secondsLeft);
+                            if(parseInt(minutesLeft) == 49 && parseInt(secondsLeft) >= 0 && parseInt(secondsLeft) <= 59)
+                                $('.timer, #minutes, #seconds').addClass('timer-transition').addClass('timer-alert').delay(800).removeClass('timer-transition').removeClass('timer-alert');
+                        } 
+                    }
+                    $('.inputMinutesLeft').val(minutesLeft);
+                    $('.inputSecondsLeft').val(secondsLeft);
+                }, 1000);
+            } 
+        } 
+        
+        function setupSetings()
+        {
+            var sitePrefix = '{!$Site.Prefix}';
+            var backgroundImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+            var logoImageurl = '{!$Site.Prefix}' + '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            selectorSource = $('body');
+            
+            if(sitePrefix == '' || sitePrefix == null)
+            {
+                backgroundImageurl = '{!HTMLENCODE(ExamSettings.Background_Image__c)}';
+                logoImageurl = '{!HTMLENCODE(ExamSettings.Logo_URL__c)}';
+            }
+            
+            
+            //Set Background Image
+            if({!ISNULL(ExamSettings.Background_Image__c)} || {!ISBLANK(ExamSettings.Background_Image__c)})
+            {
+                if({!NOT(ISNULL(ExamSettings.Background_Color__c))} && {!NOT(ISBLANK(ExamSettings.Background_Color__c))} && 
+                   '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != '#ffffff' && '{!HTMLENCODE(ExamSettings.Background_Color__c)}' != 'rgb(255, 255, 255)')
+                    selectorSource.css('background-color', '{!HTMLENCODE(ExamSettings.Background_Color__c)}');
+                else
+                    selectorSource.css('background-image', "url({!URLFOR($Resource.Bootstrap_Newer, 'img/pattern.png')})").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');                  
+            }
+            else
+                selectorSource.css('background-image', "url(" + "'" + backgroundImageurl + "'" + ")").addClass('{!HTMLENCODE(ExamSettings.Background_Position__c)}');
+        }   
+        
+        function verifyRedirect()
+        {
+            if($('.need-redirect').val() == 'true')
+                Redirect();
+            else
+            {
+            	startCounter();
+            	$('.checked').attr('checked', 'checked');
+            	$('.container-form').fadeIn(300);
+            }	
+        }
+        
+    </script>
+    
+</apex:page>

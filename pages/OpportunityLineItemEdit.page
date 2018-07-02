@@ -1,0 +1,500 @@
+<apex:page controller="OpportunityPartEditController" id="OpportunityLineItemEdit" >
+<script type="text/javascript" src="{!URLFOR($Resource.HtmlEncodeDecodeJS)}"></script>
+    <apex:form id="pageForm" >
+         <apex:pageMessages id="pagemessages"  />         
+         <apex:sectionHeader title="Edit Parts" />  
+         <apex:PageBlock title="Part List" id="partListPageBlock">
+            <apex:outputPanel id="partListTable">
+                <apex:dataTable value="{!singlePageOppPartList}" var="part" headerClass="headerRow" rowClasses="dataRow" styleClass="list">                            
+                    <apex:column style="width:25px">
+                    	<apex:facet name="header">Delete</apex:facet>
+                        <!-- <apex:inputCheckbox value="{!part.selected}" id="checkDeletePart"/>  -->
+						<apex:commandLink style="border:0px" action="{!deleteLineItems}" >
+							 <apex:param name="deleteLI" value="{!part.index}" assignTo="{!deleteLI}" />
+							 <apex:image url="{!$Resource.DeleteButtonImage}" />						
+						</apex:commandLink>
+                    </apex:column>            
+                    <apex:column style="width:75px">
+                        <apex:facet name="header"> 
+                         <apex:commandLink value="{!$ObjectType.OpportunityLineItem.fields.Part_Number__c.label}" action="{!doOppPartListSort}" oncomplete="displayTextArea();" rerender="partListTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Part_Number__c', oppPartListPrevSortField == oppPartListSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Part_Number__c', oppPartListPrevSortField != oppPartListSortField),true,false)}"/>							                       
+                             <apex:param name="oppPartListSortField" value="Part_Number__c" assignTo="{!oppPartListSortField}"/> 
+                         </apex:commandLink>
+                        </apex:facet>                          
+                        <apex:outputText value="{!part.oppLineItem.Part_Number__c}" />
+                        <!--<apex:outputText value="{!prd2IdToPrd2NameMap[oppPartToPrd2Map[part]]}" />-->                                              
+                    </apex:column>
+                    <apex:column style="width:200px">
+                            <apex:facet name="header">
+	                         <apex:commandLink value="Line Item Description" action="{!doOppPartListSort}" oncomplete="displayTextArea();" rerender="partListTable">
+								 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Description', oppPartListPrevSortField == oppPartListSortField),true,false)}"/>
+								 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Description', oppPartListPrevSortField != oppPartListSortField),true,false)}"/>	                          
+	                             <apex:param name="oppPartListSortField" value="Description" assignTo="{!oppPartListSortField}"/> 
+	                         </apex:commandLink>
+							</apex:facet>
+                            <apex:inputField value="{!part.oppLineItem.Description}" onkeypress="return noSaveOnEnter(event);" style="width:150px" rendered="{!IF(part.oppLineItem.Part_Number__c != 'Proposal Part',false,true)}"/>
+                            <apex:outputText value="{!part.oppLineItem.Description}" style="width:200px" rendered="{!IF(part.oppLineItem.Part_Number__c != 'Proposal Part',true,false)}"/>                            
+                    </apex:column>                       
+                    <apex:column style="width:60px">
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.OpportunityLineItem.fields.Quantity.label}" action="{!doOppPartListSort}" oncomplete="displayTextArea();" rerender="partListTable">
+								 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Quantity', oppPartListPrevSortField == oppPartListSortField),true,false)}"/>
+								 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Quantity', oppPartListPrevSortField != oppPartListSortField),true,false)}"/>	                          
+	                             <apex:param name="oppPartListSortField" value="Quantity" assignTo="{!oppPartListSortField}"/> 
+	                         </apex:commandLink>                            
+                            </apex:facet>
+                            <apex:inputField value="{!part.oppLineItem.Quantity}" onkeypress="return noSaveOnEnter(event);" style="width:60px"/>
+                    </apex:column>
+                    <apex:column style="width:60px">
+                        <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.OpportunityLineItem.fields.UnitPrice.label}" action="{!doOppPartListSort}" oncomplete="displayTextArea();" rerender="partListTable">
+								 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'UnitPrice', oppPartListPrevSortField == oppPartListSortField),true,false)}"/>
+								 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'UnitPrice', oppPartListPrevSortField != oppPartListSortField),true,false)}"/>	                          
+	                             <apex:param name="oppPartListSortField" value="UnitPrice" assignTo="{!oppPartListSortField}"/> 
+	                         </apex:commandLink>                        
+                        </apex:facet>
+                        <apex:inputField value="{!part.oppLineItem.UnitPrice}" onkeypress="return noSaveOnEnter(event);" style="width:60px" required="true"/>
+                    </apex:column>                    
+                    <apex:column style="width:50px">
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.OpportunityLineItem.fields.Status__c.label}" action="{!doOppPartListSort}" oncomplete="displayTextArea();" rerender="partListTable">
+								 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Status__c', oppPartListPrevSortField == oppPartListSortField),true,false)}"/>
+								 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(oppPartListSortField == 'Status__c', oppPartListPrevSortField != oppPartListSortField),true,false)}"/>	                          	                          
+	                             <apex:param name="oppPartListSortField" value="Status__c" assignTo="{!oppPartListSortField}"/> 
+	                         </apex:commandLink>                            
+                            </apex:facet>
+                            <apex:selectList id="chooseStatus" size="1" value="{!part.oppLineItem.Status__c}">
+                            	<apex:selectOption itemValue="open" itemLabel="Open"/>
+                                <apex:selectOption itemValue="won" itemLabel="Won"/>
+                                <apex:selectOption itemValue="lost" itemLabel="Lost"/>
+                                <apex:selectOption itemValue="dead" itemLabel="Dead"/>                
+                            </apex:selectList> 
+                    </apex:column>
+                    <apex:column style="width:40px">
+                            <apex:facet name="header">{!$ObjectType.OpportunityLineItem.fields.Qualified__c.label}</apex:facet>
+                            <apex:inputCheckbox value="{!part.oppLineItem.Qualified__c}"/>
+                    </apex:column>
+                    <apex:column style="width:300px">
+                            <apex:facet name="header">{!$ObjectType.OpportunityLineItem.fields.Comments__c.label}</apex:facet>
+                            <apex:inputTextarea rows="1" style="width:300px" id="decodeText" value="{!part.oppLineItem.Comments__c}" />
+                    </apex:column>                                    
+                </apex:dataTable>
+                
+                <table width="100%">
+	                <tr>
+		               	<td width="25%" align="left">
+		                	Showing records &nbsp; <apex:outputText id="oppPartListStartRowNbr" value="{!oppPartListFirstRecordNbr}" /> to&nbsp; <apex:outputText id="oppPartListEndRowNbr" value="{!oppPartListLastRecordNbr}" />
+		                	&nbsp;of&nbsp; <apex:outputText id="oppPartListTotalRecords" value="{!oppPartListTotalRecordCount}" />&nbsp;Records
+		                </td>
+		                <td width="25%" align="right">
+		                	<apex:commandLink action="{!oppPartListPreviousPage}" rendered="{!oppPartListShowPrevPageLink}" value="Previous Page" dir="RTL">  
+		                		<apex:image url="{!$Resource.PreviousArrow}" style="vertical-align:bottom"/>
+		                	</apex:commandLink>
+		                	&nbsp;
+		                </td>
+		                <td width="25%" align="left">                               
+		                	<apex:commandLink action="{!oppPartListNextPage}" rendered="{!oppPartListShowNextPageLink}" value="Next Page" >
+		                		<apex:image url="{!$Resource.NextArrow}" style="vertical-align:bottom"/> 
+		                	</apex:commandLink>
+		                </td>
+		                <td width="25%" align="right">
+		                	<apex:commandButton action="{!jumpToOppPartListPage}" value="Jump To Page" />
+		                	<apex:inputText id="oppPartJumpToPage" onkeypress="return noSaveOnEnter(event);" value="{!oppPartListJumpToPage}" style="width:20px" />
+		                </td>
+	                </tr>                
+				</table>                
+            </apex:outputPanel>                
+            <apex:PageBlockButtons > 
+                <apex:commandButton action="{!doSaveAndReturn}" value="Save" />
+                <apex:commandButton action="{!SaveLineItems}" value="Save and More" />                
+                <apex:commandButton action="{!gotoOpportunity}" value="Cancel" immediate="true"/>                               
+            </apex:PageBlockButtons>                                                   
+         </apex:PageBlock>
+
+		<apex:actionRegion >
+         <apex:PageBlock id="searchCriteriaPageBlock">
+         	<table>
+         	<tr>
+         	<td colspan="3">
+            <apex:outputPanel id="searchCriteriaChoice">
+                <table cellspacing="5">
+                <tr>
+                    <apex:outputText value="Choose a Search Method" />
+                <td>
+                </td>
+                <td>
+                <apex:selectList id="chooseSearch" size="1" value="{!method}">
+                    <apex:selectOption itemValue="partNbr" itemLabel="Search By Part Number"/>
+                    <apex:selectOption itemValue="advanced" itemLabel="Advanced Search"/>
+                    <apex:selectOption itemValue="proposal" itemLabel="Add Proposal Parts"/>
+                    <!--<apex:selectOption itemValue="upload" itemLabel="Upload Spreadsheet"/> -->
+					<apex:actionSupport event="onchange" action="{!setSelectedSearchMethod}" rerender="searchMethod,searchResultsTable"/>                                      
+                </apex:selectList>
+                </td>
+                <!-- <td>
+                    <apex:commandButton action="{!setSelectedSearchMethod}" value="Go" rerender="searchMethod,searchResultsTable"/> 
+                </td> -->               
+                </tr>
+                </table>            
+            </apex:outputPanel>
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <apex:outputPanel id="searchMethod" styleClass="searchFilterFieldsHolder">
+            <apex:outputPanel rendered="{!partNbrMethod}">                               
+                 <table class="searchFilterFields">
+                    <tr>
+                        <td colspan="2">
+                            <h4>Search By Part Number</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <apex:inputTextarea id="searchTextArea" rows="5" style="width:300px" value="{!searchString}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <apex:commandButton action="{!doPartNbrSearch}" value="Search" rerender="searchResultsTable,pagemessages"/>
+                            <apex:commandButton action="{!clearPartNbrSearch}" value="Clear" rerender="searchMethod" />                                          
+                        </td>
+                    </tr>           
+                 </table>
+            </apex:outputPanel>  
+            <apex:outputPanel rendered="{!advancedMethod}">                                  
+                 <table class="searchFilterFields">
+                    <tr>
+                        <td>
+                            <h4>Advanced Search</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <table>
+	                    <tr>
+	                    	<td>
+			                    <table>
+			                    	<tr>
+			                    		<td colspan="2">
+			                    			Search For Text In Specific Fields
+			                    		</td>
+			                    		<td>
+			                    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			                    		</td>
+			                    		<td colspan="2">
+			                    			Search For Text In All Fields
+			                    		</td>			                    					                    		
+			                    	</tr>                    
+				                    <tr>
+				                        <td>
+				                            <apex:outputText value="Part Nbr: " />
+				                        </td>
+				                        <td>
+				                            <apex:inputText id="searchPartNumber" value="{!searchPartNumber}" onkeypress="return noSaveOnEnter(event);"/>
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                            <apex:outputText value="Search All Fields For: " />
+				                        </td>
+				                        <td>
+				                            <apex:inputText id="searchSOSL" value="{!searchSOSL}" onkeypress="return noSaveOnEnter(event);"/>
+				                        </td>				                        
+				                    </tr>
+				                    <tr>
+				                        <td>
+				                            <apex:outputText value="Part Description: " />
+				                        </td>
+				                        <td>
+				                            <apex:inputText id="searchPartDesc" value="{!searchPartDesc}" onkeypress="return noSaveOnEnter(event);"/>
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>				                        				                        				                        
+				                    </tr>
+				                    <tr>
+				                        <td>
+				                            <apex:outputText value="GPL: " />
+				                        </td>
+				                        <td>
+				                            <apex:inputText id="searchGPL" value="{!searchGPL}" onkeypress="return noSaveOnEnter(event);"/>
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>				                        
+				                    </tr>
+				                    <tr>
+				                        <td>
+				                            <apex:outputText value="GPL Name: " />
+				                        </td>
+				                        <td>
+				                            <apex:inputText id="searchGPLDesc" value="{!searchGPLDesc}" onkeypress="return noSaveOnEnter(event);"/>
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>				                        
+				                    </tr>				                    
+				                    <tr>
+				                        <td colspan="2">
+				                            <apex:commandButton action="{!doAdvancedSearch}" value="Search" rerender="searchResultsTable,pagemessages"/>
+				                            <apex:commandButton action="{!clearAdvancedSearch}" value="Clear" rerender="searchMethod" />				                            
+				                        </td>
+				                        <td>
+				                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				                        </td>
+				                    	<td colspan="2">
+				                            <apex:commandButton action="{!doSOSLSearch}" value="Search All" rerender="searchResultsTable,pagemessages"/>				                    	                                          
+				                        </td>				                        				                        
+				                   </tr> 				                    
+								</table>
+		                    </td>
+                    	</tr>
+                    </table>
+                    </td>
+                    </tr>                                                                                      
+          
+                 </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!proposalMethod}">                                  
+                 <table class="searchFilterFields"> 
+                    <tr>
+                        <td colspan="2">
+                            <h4>Add Proposal Parts</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <apex:outputText value="How Many?: " />
+                        </td>
+                        <td>
+                            <apex:inputText id="nbrProposalParts" value="{!nbrProposalParts}" style="width:50px" onkeypress="return noSaveOnEnter(event);"/>
+                        </td>
+                    </tr>   
+                    <tr>
+                        <td colspan="2">
+                            <apex:commandButton action="{!doAddProposalParts}" value="Add"/>
+                            &nbsp;
+                            <apex:commandButton action="{!clearAddProposalParts}" value="Clear" rerender="searchMethod" />                                           
+                        </td>
+                    </tr>           
+                 </table>
+            </apex:outputPanel>                                 
+            </apex:outputPanel>
+            </td>
+            <td width="15px">
+            </td>
+            <td style="vertical-align:middle;">
+         	<apex:outputPanel id="searchExplanationPanel">
+         		<div style="border:1px solid black;float:left;width:400px;">
+         		<table width="100%">
+         			<tr>
+         			<td>
+         				<ul>
+         					<li>
+	         					<span style="font-weight:bold;">Search By Part Number</span> - Used for a known list of parts.<br />
+	         					Have a comma or a new line separate each part number.
+         					</li>
+         					<li>
+	         					<span style="font-weight:bold;">Advanced Search</span> - Search for parts based on criteria. <br />
+	         					In the field specific search, use * or % as a wild card. <br />  
+	         					<span style="text-decoration:underline;">Note:</span> Search In All Fields will bring back parts which <br /> 
+	         					contain the search text in any field, even fields which <br />
+	         					are not visible in search results.
+         					</li>
+         					<li>
+	         					<span style="font-weight:bold;">Add Proposal Parts</span> - Use to add parts not yet in the TE <br />
+	         					system or currently in development.
+         					</li>
+         					<!-- <li>
+         					<span style="font-weight:bold;">Upload Spreadsheet</span> - Future Enhancement
+         					</li> -->
+         				</ul>
+         			</td>
+         			</tr>
+         		</table>
+         		</div>
+         	</apex:outputPanel>
+         	</td>
+         	</tr>
+         	</table>
+         </apex:PageBlock>
+         </apex:actionRegion>
+         
+         <apex:actionRegion >
+         <apex:PageBlock title="Search Results" id="searchResultsPageBlock">
+            <apex:outputPanel id="searchResultsTable">
+                <apex:dataTable value="{!singlePageSelectablePartList}" var="result" headerClass="headerRow" rowClasses="dataRow" styleClass="list">
+                    <apex:column style="width:20px">
+                        <apex:facet name="header" >
+							<apex:inputCheckbox id="headerCheckbox"> 
+								<apex:actionSupport event="onclick" onsubmit="checkAllForAddition(this);" rerender="searchResultsTable"/> 
+							</apex:inputCheckbox> 						
+						</apex:facet>
+                        <apex:inputCheckbox value="{!result.selected}" id="checkAddPart">
+							<apex:actionSupport event="onclick" rerender="selectedItems"/>                         
+                        </apex:inputCheckbox>
+                    </apex:column>              
+                    <apex:column >
+                        <apex:facet name="header">
+                         <apex:commandLink value="{!$ObjectType.Product2.fields.Name.label}" action="{!doSearchResultsSort}" rerender="searchResultsTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Name', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Name', searchResultsPrevSortField != searchResultsSortField),true,false)}"/>                          
+                             <apex:param name="searchResultsSortField" value="Name" assignTo="{!searchResultsSortField}"/> 
+                         </apex:commandLink>                         
+                        </apex:facet>
+                        <apex:outputText value="{!result.part.Name}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">
+                         <apex:commandLink value="{!$ObjectType.Product2.fields.Description.label}" action="{!doSearchResultsSort}" rerender="searchResultsTable">
+							 <apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Description', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 <apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Description', searchResultsPrevSortField != searchResultsSortField),true,false)}"/>                           
+                             <apex:param name="searchResultsSortField" value="Description" assignTo="{!searchResultsSortField}"/> 
+                         </apex:commandLink>                         
+                        </apex:facet>
+                        <apex:outputText value="{!result.part.Description}" style="width:250px"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.Product2.fields.GPL__c.label}" action="{!doSearchResultsSort}" rerender="searchResultsTable">
+							 	<apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 	<apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/> 	                          
+	                             <apex:param name="searchResultsSortField" value="GPL__c" assignTo="{!searchResultsSortField}"/> 
+	                         </apex:commandLink>                             
+                            </apex:facet>
+                            <apex:outputText value="{!result.part.GPL__c}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.Product2.fields.GPL_DESC__c.label}" action="{!doSearchResultsSort}" rerender="searchResultsTable">
+							 	<apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL_Desc__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 	<apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'GPL_Desc__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/> 	                          
+	                             <apex:param name="searchResultsSortField" value="GPL_Desc__c" assignTo="{!searchResultsSortField}"/> 
+	                         </apex:commandLink>                             
+                            </apex:facet>
+                            <apex:outputText value="{!result.part.GPL_DESC__c}"/>
+                    </apex:column>                    
+                    <apex:column >
+                            <apex:facet name="header">
+	                         <apex:commandLink value="{!$ObjectType.Product2.fields.Standard_Price__c.label}" action="{!doSearchResultsSort}" rerender="searchResultsTable">
+							 	<apex:image url="{!$Resource.SortAscendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Standard_Price__c', searchResultsPrevSortField == searchResultsSortField),true,false)}"/>
+							 	<apex:image url="{!$Resource.SortDescendingArrow}" style="vertical-align:bottom" rendered="{!IF(AND(searchResultsSortField == 'Standard_Price__c', searchResultsPrevSortField != searchResultsSortField),true,false)}"/> 	                          
+	                             <apex:param name="searchResultsSortField" value="Standard_Price__c" assignTo="{!searchResultsSortField}"/> 
+	                         </apex:commandLink>                             
+                            </apex:facet>
+                            <apex:outputText value="{!result.part.Standard_Price__c}"/>
+                    </apex:column>                          
+                </apex:dataTable>
+
+                <table width="100%">
+	                <tr>
+		               	<td width="25%" align="left">
+			                Showing records &nbsp; <apex:outputText id="searchResultsStartRowNbr" value="{!searchResultsFirstRecordNbr}" /> to&nbsp; <apex:outputText id="searchResultsEndRowNbr" value="{!searchResultsLastRecordNbr}" />
+			                &nbsp;of&nbsp; <apex:outputText id="searchResultsTotalRecords" value="{!searchResultsTotalRecordCount}" />&nbsp;Records
+			                <br />(<apex:outputText id="selectedItems" value="{!nbrSelected}" /> Parts Already Selected)
+		                </td>
+		                <td width="25%" align="right">
+			                <apex:commandLink action="{!searchResultsPreviousPage}" rendered="{!searchResultsShowPrevPageLink}" value="Previous Page" dir="RTL" rerender="searchResultsTable,pagemessages" oncomplete="uncheckHeaderCB();">
+		                		<apex:image url="{!$Resource.PreviousArrow}" style="vertical-align:bottom"/>
+		                	</apex:commandLink>			                
+			                &nbsp;
+		                </td>
+		                <td width="25%" align="left">                               
+		                	<apex:commandLink action="{!searchResultsNextPage}" rendered="{!searchResultsShowNextPageLink}" value="Next Page" rerender="searchResultsTable,pagemessages" oncomplete="uncheckHeaderCB();">
+		                		<apex:image url="{!$Resource.NextArrow}" style="vertical-align:bottom"/> 
+		                	</apex:commandLink>		                	
+		                </td>
+		                <td width="25%" align="right">
+		                	<apex:commandButton action="{!jumpToSearchResultsPage}" value="Jump To Page" rerender="searchResultsTable,pagemessages" oncomplete="uncheckHeaderCB();"/>
+		                	<apex:inputText id="searchResultsJumpToPage" onkeypress="return noSaveOnEnter(event);" value="{!searchResultsJumpToPage}" style="width:20px" />
+		                </td>
+	                </tr>                
+				</table>
+                                                
+            </apex:outputPanel>
+            <apex:PageBlockButtons > 
+            	<!-- when I tried adding rerender="partListTable,pagemessages" here, the search results list stopped retaining data when PageNumber got reset
+            	     so this is a reminder to me not to do that again -->
+                <apex:commandButton action="{!addResultToPartList}" value="Add" onclick="uncheckHeaderCB()"/>               
+                <apex:commandButton action="{!selectAllCheckboxes}" value="Select All" rerender="searchResultsTable"/>
+                <apex:commandButton action="{!clearAllCheckboxes}" value="Clear All" rerender="searchResultsTable" oncomplete="uncheckHeaderCB()"/>                                
+            </apex:PageBlockButtons>    
+         </apex:PageBlock>   
+         </apex:actionRegion>    
+
+		<script> 
+		
+		window.onload = new function() { displayTextArea(); };
+		
+		function checkAllForAddition(cb)  
+		{  
+			var inputElem = document.getElementsByTagName("input");  
+			for(var i=0; i<inputElem.length; i++)  
+			{  
+				if(inputElem[i].id.indexOf("checkAddPart")!=-1)
+				{
+					inputElem[i].checked = cb.checked;
+				}  
+			}  
+		}
+
+		function uncheckHeaderCB()  
+		{  
+			var inputElem = document.getElementsByTagName("input");  
+			for(var i=0; i<inputElem.length; i++)  
+			{  
+				if(inputElem[i].id.indexOf("headerCheckbox")!=-1)
+				{
+					inputElem[i].checked = false;
+				}  
+			}  
+		}
+		
+		function displayTextArea()  
+		{
+			Encoder.EncodeType = "entity";		
+
+			var inputTxtAreas = document.getElementsByTagName("textarea");  
+			for(var j=0; j<inputTxtAreas.length; j++)  
+			{  
+				if(inputTxtAreas[j].id.indexOf("decodeText")!=-1)
+				{
+					inputTxtAreas[j].innerHTML = Encoder.htmlDecode(inputTxtAreas[j].innerHTML);				
+				}  
+			}  			  
+		}						
+		
+       function noSaveOnEnter(ev)  
+       {  
+		if (window.event && window.event.keyCode == 13 || ev.which == 13) {  
+             return false;  
+          } else {  
+               return true;  
+         }  
+       } 				      
+		</script> 
+
+
+    </apex:form>
+</apex:page>

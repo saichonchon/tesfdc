@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Opportunity_Number__c</field>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>BU_project_category__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Regional Sales Leader should review this GATD Cost Request.</description>
+        <label>Regional Sales Leader should review this GATD Cost Request.</label>
+        <name>Sales_Leader_Approval</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Global PM need to review and approve this GATD cost request.</description>
+        <label>Global PM needs to review and approve this GATD cost request.</label>
+        <name>Global_PM_Approval</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Appliances_Engineer_Project_EM_Approved</name>
+                <type>Alert</type>
+            </action>
+            <action>
+                <name>Opportunity_was_Approved</name>
+                <type>Alert</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>ENG Manger Review and Approve this GATD cost request</description>
+        <label>ENG Manager Review and approve this GATD cost request</label>
+        <name>ENG_Manager_Review</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Appliances_Engineer_Project_EM_Approved</name>
+                <type>Alert</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <type>adhoc</type>
+            </approver>
+        </assignedApprover>
+        <description>Assign to CTL, then CTL will present the expenses needs to Appliance PAC to get approval.</description>
+        <label>Need to Assign a CTL, then CTL will present the expenses needs to Appliance PAC to get approval.</label>
+        <name>CTL_Review_and_Response</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Appliances approval process for GATD support cost</description>
+    <emailTemplate>Approval_Email_Templates/Opportunity_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Account.Customer_Industry__c</field>
+            <operation>equals</operation>
+            <value>Appliances</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.BU_project_category__c</field>
+            <operation>equals</operation>
+            <value>APL GATD Support Cost for existing business</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordType</field>
+            <operation>equals</operation>
+            <value>Opportunity - Engineering Project,Opportunity - Sales Project,Channel- Engineering Opportunity,Channel- Sales Opportunity</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Opportunity_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_was_Approved</name>
+            <type>Alert</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Opportunity_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Opportunity_Rejection</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>StageName_to_In_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>APL GATD Support Request</label>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

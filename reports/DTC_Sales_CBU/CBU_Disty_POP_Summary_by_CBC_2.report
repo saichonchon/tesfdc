@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_3201200</developerName>
+        <masterLabel>Product Groups</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Account.Monthly_BBBs__r$SAP_Profit_Center_Short_Description__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Power</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>DTC Power/Mezzanine</sourceValue>
+            </sourceValues>
+            <value>DTC-Power</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC Shared</sourceValue>
+            </sourceValues>
+            <value>Non-DTC</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC Backplane</sourceValue>
+            </sourceValues>
+            <value>DTC-Backplane</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC Cable</sourceValue>
+            </sourceValues>
+            <value>DTC-Cable</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC Fiber Optics</sourceValue>
+            </sourceValues>
+            <value>DTC-Fiber</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>DTC I/O Products</sourceValue>
+            </sourceValues>
+            <value>DTC I/O</value>
+        </values>
+    </buckets>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Book_Amount_USD__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Monthly_BBBs__r$Bill_Amount_USD__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Profit_Center__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>DTC</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$Bill_Type__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Direct</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$BU_Customer_Classification__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Disty,Top Disty</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Monthly_BBBs__r$SAP_Profit_Center_Short_Description__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>maxwell</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Monthly_BBBs__r$Fiscal_Year__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_3201200</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>CBU - Disty POP Summary by CBC 2</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Billings_Bookings_by_Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Monthly_BBBs__r$Sales_Period__c</dateColumn>
+        <interval>INTERVAL_PREVCUR2FY</interval>
+    </timeFrameFilter>
+</Report>

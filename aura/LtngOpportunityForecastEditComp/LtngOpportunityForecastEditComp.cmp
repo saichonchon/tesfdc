@@ -1,0 +1,395 @@
+<aura:component controller="LtngOpportunityForecastCtrl" extends="c:LtngOpportunityForecastEditSaveUtilComp">
+	
+    <ltng:require afterScriptsLoaded="{!c.jsLoaded}"/>
+    
+    <aura:attribute name="originalId" 						default="{!v.recordId}" type="String" access="global" />
+    <aura:attribute name="originalName" 					default="{!v.sObjectName}"	type="String" access="global" />
+	
+    <aura:attribute name="popupOptions"						type="Map" default="{isAPLOpen: false, isPartOpen: false, isRequired: true, isWonOpen: false, isDateOpen: false, value: '', partId: '', billingDate: '', orderDate: ''}"/>
+    
+    <aura:attribute name="isAPL"							type="Boolean" default="false"/>
+    <aura:attribute name="isShowMussUpdate"					type="Boolean" default="false"/>
+    <aura:attribute name="target"							type="Object" />
+	<aura:attribute name="list_part"						type="List" />
+    <aura:attribute name="list_year"						type="List" />
+	<aura:attribute name="list_forecastYear"				type="List" />
+	<aura:attribute name="map_forecast" 					type="Map" />
+    <aura:attribute name="map_totalForecast" 				type="Map" />
+
+    <aura:attribute name="map_change"						type="Map" default="{isChange: false}" />
+    
+    <aura:attribute name="popupTitle"						type="String" />
+    <aura:attribute name="popupMessage"						type="String" />
+    <aura:attribute name="partLostReasons"					type="String" />
+    
+ 	<aura:attribute name="defaultConfidence"						type="String" />
+    <aura:attribute name="defaultProcessStatus"					type="String" />
+    
+    <aura:handler name="popupEvent" 	 		event="c:LtngOpportunityForecastPopupEvt" 	action="{!c.handlepopupEvt}"/>
+    <aura:handler name="dpChangeEvent" 	 		event="c:LtngOpportunityForecastEditDependPickListChangeEvt" 	action="{!c.handldpChangeEvt}"/>
+	<aura:handler name="fiscalDateChangeEvent" 	event="c:LtngFiscalDateChangeEvt" action="{!c.handleDateChangeEvt}" />
+	<aura:handler name="aplCheckedEvent" 		event="c:LtngOpportunityForecastAPLCheckedEvt" action="{!c.handleAPLCheckedEvent}" />
+    
+    <aura:registerEvent name="modeEvent" 			type="c:LtngOpportunityForecastModeEvt"/> 
+    <aura:registerEvent name="vfPageEvent"			type="c:LtngOpportunityForecastVfPageEvt"/> 
+
+    <div class="custom-button-box" >
+        <aura:if isTrue="{!and(!v.target.isMED, v.isAPL)}">
+        <div style="border-bottom: 1px solid #ececec; padding: 5px; font-weight: bold; margin-bottom: 5px;">
+            <h1>APL Forecast Weights Vs Confidence: Weak=25%, 50/50=50%, Likely=75%, Commit=90%, Won=100%</h1>
+        </div>
+        </aura:if>
+        <div aura:id="editMenu">
+            <div class="slds-button-group" style="margin-left:10px;" role="group">
+                <div class="slds-form--inline">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="level">Level</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container custom-select_container">
+                                <select onchange="{!c.event_level_change}" data-old="{!v.target.opportunity.Level__c}" id="level" class="slds-select">
+                                    <aura:iteration items="{!v.target.list_Level}" var="value" >
+                                        <option selected="{!(value == v.target.opportunity.Level__c ? 'selected' : '')}" value="{!value}">{!value}</option>
+                                    </aura:iteration>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="method">Method</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container custom-select_container">
+                                <select onchange="{!c.event_method_change}" data-old="{!v.target.opportunity.Method__c}" id="method" class="slds-select">
+                                    <aura:iteration items="{!v.target.list_Method}" var="value" >
+                                        <option selected="{!(value == v.target.opportunity.Method__c ? 'selected' : '')}" value="{!value}">{!value}</option>
+                                    </aura:iteration>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control custom-move-date">
+                            <c:LtngFiscalDateComp label="Move" level="{!v.target.opportunity.Level__c}" map_fiscalDate="{!v.target.map_FiscalDates}"/>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element">
+                        <div class="slds-button-group" style="margin-left:10px;" role="group">
+                            <div class="slds-select_container custom-select_container_1">
+                                <select  id="addFc" class="slds-select">
+                                    <option value="none">None</option>
+                                    <aura:iteration items="{!v.list_year}" var="value" >
+                                        <option value="{!value}">{!value}</option>
+                                    </aura:iteration>
+                                </select>
+                            </div>
+                            <button onclick="{!c.event_addyear_click}" style="line-height: 1.42rem;"  type="button" class="slds-button slds-button--neutral" >
+                            	Add Fiscal Year
+                            </button>
+                            <button aura:id="screenBtn" onclick="{!c.event_fullscreen_click}" style="line-height: 1.42rem;"  type="button" class="slds-button slds-button--neutral" >
+                            	
+                            </button>
+                            
+                            	<aura:if isTrue="{!v.isShowMussUpdate}">
+                            <button onclick="{!c.event_massupdate_click}" style="line-height: 1.42rem;"  type="button" class="slds-button slds-button--neutral" >
+                            	Mass update
+                            </button>	
+                            	</aura:if>
+                            	
+                        	<button onclick="{!c.event_save_click}" style="line-height: 1.42rem;"  type="button" class="slds-button slds-button--neutral" >
+                            	Save
+                            </button>
+                        	<button onclick="{!c.event_cancel_click}" style="line-height: 1.42rem;"  type="button" class="slds-button slds-button--neutral" >
+                            	Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editFcBody" class="custom-fc_body" style="margin-top: 60px; height:270px;">
+        <table style="width:0; margin-bottom: 10px">
+			<tr>
+				<td style="position: relative; vertical-align: top;">
+					<div>
+						<div aura:id="spinner_left" class=" slds-spinner_container custom-spinner_container">
+							<div class="slds-spinner--brand slds-spinner slds-spinner--large" aria-hidden="true" role="alert">
+								<div class="slds-spinner__dot-a"></div>
+								<div class="slds-spinner__dot-b"></div>
+							</div>
+						</div>
+                        
+						<table id="leftTab" aura:id="alTab" class="slds-table--fixed-layout custom-table-padding" style="width: 0;">
+                            <c:LtngOpportunityForecastAPLComp isAPL="{!v.isShowMussUpdate}" tagName="col" style="width:20px;" />
+                            <col style="width:20px;" />
+							<col style="width:123px;" />
+							<col style="width:150px;" />
+							<col style="{!(v.target.isIND ? 'width:120px;' : 'width:80px;')}" />
+								<aura:if isTrue="{!!v.target.isIND}">
+							<col style="width:150px;" />
+								</aura:if>
+							<col style="width:90px;"  />
+							<thead>
+                                <tr>
+                                    <th colspan="{!(v.isShowMussUpdate ? 6 : v.target.isIND ? 4 : 5)}"></th>
+                                    <th class="custom-text_ac custom-border-tb custom-border-lr custom-table-title-bg custom-table-th-font">
+                                        <span class="slds-grid--align-spread">
+                                            <span class="slds-truncate">Forecast</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="padding:0; text-align: center;" class="custom-border-b">
+                                        <div class="slds-checkbox--add-button custom-checkbox--add-button">
+                                            <input onclick="{!c.event_displayfc_click}" id="total" type="checkbox" class="slds-assistive-text" />
+                                            <label for="total" class="slds-checkbox--faux custom-label-ba">
+                                                <span class="slds-assistive-text"></span>
+                                            </label>
+                                        </div>
+                                    </th>
+                                    <th colspan="{!v.isShowMussUpdate ? 5 : v.target.isIND ? 3 : 4}" class="custom-border-b"></th>
+                                    <th class="custom-text_ar custom-border-lr custom-border-b">
+                                        <span class="slds-grid--align-spread">
+                                            <span class="slds-truncate">Revenue</span>
+                                        </span>
+                                    </th>
+                                </tr>
+								<!-- START each forecast level -->
+                                <c:LtngOpportunityForecastEditTotalLeftComp isAPL="{!v.isShowMussUpdate}" colspan="{!v.isShowMussUpdate ? 6 : v.target.isIND ? 4 : 5}" isBom="{!v.target.isBom}" isExp="{!v.target.isExp}" levelType="{!v.target.opportunity.Level__c}" uniqueId="total"/>
+								<!-- END each forecast level -->
+							</thead>
+							<tbody aura:id="leftTbody">
+                                <c:LtngOpportunityForecastLeftHeadComp isAPL="{!v.isShowMussUpdate}" isIND="{!!(v.target.isIND)}" />
+								<!-- START left data -->
+								<aura:iteration items="{!v.list_part}" var="fc" >
+								<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="custom-table-tr-over custom-line_data_color custom-table-left">
+                                    <c:LtngOpportunityForecastAPLComp id="{!fc.part.Id}" isAPL="{!v.isShowMussUpdate}" tagName="td" checkbox="true" style="padding:0; text-align: center;" class="custom-border-b custom-border-l" />
+                                    <td class="custom-border-b custom-border-l" style="padding:0; text-align: center;">
+										<div class="slds-checkbox--add-button custom-checkbox--add-button">
+											<input onclick="{!c.event_displayfc_click}" id="{!fc.part.Id}" type="checkbox" class="slds-assistive-text" />
+											<label for="{!fc.part.Id}" class="slds-checkbox--faux custom-label-ba">
+												<span class="slds-assistive-text"></span>
+											</label>
+										</div>
+									</td>
+									<td class="custom-text_ac custom-border-b custom-border-l_t">
+										<div class="slds-truncate" title="{!fc.part.Part__r.Name}">{!fc.part.Part__r.Name}&nbsp;</div>
+									</td>
+									<td class="custom-border-b custom-border-l_t">
+										<div class="slds-truncate" title="{!fc.part.New_Part_Description__c}">{!fc.part.Part_Name__c}</div>
+									</td>
+									<td class="custom-border-b custom-text_ac custom-border-l_t" style="padding: 0 .4rem">
+										<div class="slds-form-element">
+												<!-- modified by simon@20171117: start-->
+												<!-- <aura:if isTrue="{!(v.target.isIND ? (and(v.target.opportunity.StageName != 'Dead', v.target.opportunity.StageName != 'Lost') ? (v.target.opportunity.StageName == 'On Hold' ? false : true) : false) : false)}"> -->
+												<aura:if isTrue="{!(v.target.isIND ? and((or(or(fc.part.Status__c == 'Dead', fc.part.Status__c == 'Lost'), fc.part.Status__c == 'On Hold')), and(and(v.target.opportunity.StageName != 'Dead', v.target.opportunity.StageName != 'Lost'), v.target.opportunity.StageName != 'On Hold')) : false)}">
+												<!-- modified by simon@20171117: end-->
+													<div style="display: inline-block; position: relative;">
+														<button onclick="{!c.event_confidenceStatus_click}" data-pid="{!fc.part.Id}" class="slds-button slds-button_icon" style="line-height: 0; border: none; margin-right: 2px;" type="button">
+															<lightning:icon iconName="utility:rotate" size="xx-small" class="slds-button__icon slds-svg-color"/>
+														</button> 
+													</div>
+												</aura:if>
+											<div style="display: inline-block; position: relative;">
+												<div class="slds-form-element">
+													<div class="slds-form-element__control">
+														<div class="slds-select_container custom-td-container">
+															<aura:if isTrue="{!(v.target.isIND ? and((or(or(fc.part.Status__c == 'Dead', fc.part.Status__c == 'Lost'), fc.part.Status__c == 'On Hold')), and(and(v.target.opportunity.StageName != 'Dead', v.target.opportunity.StageName != 'Lost'), v.target.opportunity.StageName != 'On Hold')) : false)}">
+																<select class="slds-select custom-td-select slds-confidence" disabled="disabled">
+																	<option value="{!fc.part.Status__c}">{!fc.part.Status__c}</option>
+																</select>
+																<aura:set attribute="else"> 
+																	<select onchange="{!c.event_confidence_change}" 
+																			data-pid="{!fc.part.Id}" data-original="{!fc.status}" data-old="{!fc.part.Status__c}" 
+																			class="slds-select custom-td-select slds-confidence">
+																		<c:LtngOpportunityForecastEditPickListComp fc="{!fc}" profile="{!v.target.profile}" opportunity="{!v.target.opportunity}" list_Confidence="{!v.target.list_Confidence}" />
+																		<!-- 
+																		<aura:iteration items="{!v.target.list_Confidence}" var="value" >
+																		<option selected="{!(value == fc.part.Status__c ? 'selected' : '')}" value="{!value}">{!value}</option>
+																		</aura:iteration>
+																		 -->
+																	</select>
+																</aura:set>
+															</aura:if>
+															
+																	<!-- <select onchange="{!c.event_confidence_change}" onfocus="{!c.event_confidence_focus}"
+																			data-pid="{!fc.part.Id}" data-original="{!fc.status}" data-old="{!fc.part.Status__c}" 
+																			class="{!'slds-select custom-td-select slds-confidence '+(v.target.isIND ? (or(fc.status == 'Dead', fc.status == 'Lost') ? (fc.isChangeConfidence ? '' : 'slds-is-disabled') : '') : '')}">
+																		<c:LtngOpportunityForecastEditPickListComp fc="{!fc}" profile="{!v.target.profile}" opportunity="{!v.target.opportunity}" list_Confidence="{!v.target.list_Confidence}" />
+																	</select> -->
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+										<aura:if isTrue="{!!v.target.isIND}">
+									<td class="custom-border-b custom-text_ac custom-border-l_t" style="padding: 0 .4rem">
+                                        <c:LtngOpportunityForecastEditDependPickListComp map_ps="{!v.target.map_ProcessStatus}" profile="{!v.target.profile}" opportunity="{!v.target.opportunity}" oStatus="{!fc.status}" fc="{!fc}" dependValue="{!fc.part.Status__c}" selected="{!fc.part.Process_Status__c}" uniqueId="{!fc.part.Id}"/>
+									</td>
+										</aura:if>
+									<td class="custom-text_ar custom-border-b custom-border-lr " style="padding: 0 .4rem">
+										<div class="slds-form-element">
+											<div class="slds-form-element__control">
+                                                	<aura:if isTrue="{!v.target.isBom}">
+												<input onchange="{!c.event_partQty_change}" data-pid="{!fc.part.Id}"  value="{!fc.quantity}" type="text" class="slds-input custom-input_style custom-input_qty" />
+                                                	</aura:if>
+                                        	</div>
+										</div>
+									</td>
+								</tr>
+                                    <c:LtngOpportunityForecastEditLeftComp isAPL="{!v.isShowMussUpdate}" colspan="{!v.isShowMussUpdate ? 6 : v.target.isIND ? 4 : 5}" isExp="{!fc.isView}" levelType="{!v.target.opportunity.Level__c}" uniqueId="{!fc.part.Id}" />
+								</aura:iteration>
+								<!-- END left data -->
+							</tbody>
+						</table>
+					</div>
+				</td>
+				<td style="position: relative; vertical-align: top;">
+					<div>
+						<div aura:id="spinner_right" class=" slds-spinner_container custom-spinner_container custom-spinner_hide">
+							<div class="slds-spinner--brand slds-spinner slds-spinner--large" style="left:75%;"  aria-hidden="true" role="alert">
+								<div class="slds-spinner__dot-a"></div>
+								<div class="slds-spinner__dot-b"></div>
+							</div>
+						</div>
+						<div id="rigthScroll" class="custom-right-scroll" style="">
+							<table class="slds-table--fixed-layout custom-table-padding custom-table-data-th-w custom-table-right" style="width: 0;">
+								<thead>
+									<tr>
+										<aura:iteration items="{!v.list_forecastYear}" var="year" >
+										<th scope="col" class="custom-text_ac custom-border-b custom-border-tr custom-table-title-bg custom-table-th-font">
+											<div class="slds-is-relative">
+												<button onclick="{!c.event_deleteYearPopup_click}" data-year="{!year}" style="top: -2px; left: 13px;" class="slds-button slds-button__icon slds-button--icon-x-small slds-is-absolute">
+													<lightning:icon iconName="utility:delete" size="xx-small" class="slds-button__icon icon-btn-fill"/>
+												</button>
+												<div class="slds-truncate">{!year}</div>
+											</div>
+										</th>
+										</aura:iteration>
+									</tr>
+									<tr>
+										<aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                            <c:LtngOpportunityForecastTotalColumnBlankComp opp="{!v.target.opportunity}" list_part="{!v.list_part}" map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="total"/>
+										</aura:iteration>
+									</tr>
+                                    <c:LtngOpportunityForecastEditTotalRightComp opp="{!v.target.opportunity}"  map_change="{!v.map_change}" list_part="{!v.list_part}" map_totalForecast="{!v.map_totalForecast}" map_forecast="{!v.map_forecast}" list_forecastYear="{!v.list_forecastYear}" isBom="{!v.target.isBom}" isExp="{!v.target.isExp}" levelType="{!v.target.opportunity.Level__c}" uniqueId="total"/>
+								</thead>
+								<tbody class="rightTbody">
+									<tr class="custom-year-tr">
+										<aura:iteration items="{!v.list_forecastYear}" var="year" >
+										<td class="custom-text_ac custom-border-r custom-border-b custom-table-title-bg custom-table-th-font" >
+											<div class="slds-truncate">{!year}</div>
+										</td>
+										</aura:iteration>
+									</tr>
+									<!-- START right data -->
+									<aura:iteration items="{!v.list_part}" var="fc" >
+									<tr onmouseover="{!c.event_mouse_over}" onmouseout="{!c.event_mouse_out}" class="custom-table-tr-over custom-line_data_color">
+										<aura:iteration items="{!v.list_forecastYear}" var="year" >
+                                            <c:LtngOpportunityForecastColumnBlankComp map_forecast="{!v.map_forecast}" year="{!year}" uniqueId="{!fc.part.Id}" />
+										</aura:iteration>
+									</tr>
+                                    
+                                    <c:LtngOpportunityForecastEditRightComp map_change="{!v.map_change}" map_forecast="{!v.map_forecast}" list_forecastYear="{!v.list_forecastYear}" isBom="{!v.target.isBom}" isExp="{!fc.isView}" levelType="{!v.target.opportunity.Level__c}" uniqueId="{!fc.part.Id}"/>
+									<!-- END right data -->
+									</aura:iteration>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+    </div>
+    	
+    	<aura:if isTrue="{!(v.target.isADM || v.target.isDND)}">
+    <c:LtngOppFcPopWonComp list_picklist="{!v.target.list_WonReasons}" popupOptions="{!v.popupOptions}" profile="{!v.target.profile}" opportunity="{!v.target.opportunity}" />
+    	</aura:if>
+    	
+    <c:LtngOpportunityForecastPopupPartComp isAPL="{!v.isAPL}" isDND="{!v.target.isDND}" popupOptions="{!v.popupOptions}" partLostReasons="{!v.partLostReasons}" map_LostReasons="{!v.target.map_LostReasons}"/>
+    <c:LtngOpportunityForecastPopupComp title="{!v.popupTitle}" message="{!v.popupMessage}" />
+    	<aura:if isTrue="{!v.isShowMussUpdate}">
+    <c:LtngOpportunityForecastAPLPopUpComp list_reason="{!v.target.list_WonReasons}" isMass="{!v.popupOptions.isAPLOpen}"  popupOptions="{!v.popupOptions}"  profile="{!v.target.profile}" opportunity="{!v.target.opportunity}" map_ProcessStatus="{!v.target.map_ProcessStatus}" map_LostReasons="{!v.target.map_LostReasons}" />
+    	</aura:if>
+    <c:LtngOpportunityForecastAPLPopUpPartDateComp popupOptions="{!v.popupOptions}" />
+	
+    <div aura:id="saveStatus" class="custom-save-status slds-hide">
+        <div class="cover"></div>
+        <div class="status">
+            <div class="slds-grid" style=" position: relative;">
+                <div class="slds-tabs--path" role="application">
+                    <ul class="slds-tabs--path__nav" role="tablist">
+                        <li aura:id="saveOpLi" class="slds-tabs--path__item slds-is-current" role="presentation">
+                            <a class="slds-tabs--path__link"  aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                <span class="slds-tabs--path__stage">
+                                    <lightning:icon iconName="utility:check" size="x-small" class="slds-icon icon-btn-fill"/>
+                                    <span class="slds-assistive-text">Stage Complete</span>
+                                </span>
+                                <div aura:id="saveOpSpinner" class="slds-spinner_container custom-save-spinner">
+                                    <div class="slds-spinner slds-spinner--inverse slds-spinner--x-small" style="margin-top: 0;" aria-hidden="true" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                <span class="slds-tabs--path__title">Save Opportunity and Parts</span>
+                            </a>
+                        </li>
+                        <li aura:id="saveFcLi" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                            <a class="slds-tabs--path__link" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                <span class="slds-tabs--path__stage">
+                                    <lightning:icon iconName="utility:check" size="x-small" class="slds-icon icon-btn-fill"/>
+                                    <span class="slds-assistive-text">Stage Complete</span>
+                                </span>
+                                <div aura:id="saveFcSpinner" class="slds-spinner_container custom-save-spinner slds-hide" >
+                                    <div class="slds-spinner slds-spinner--inverse slds-spinner--x-small" style="margin-top: 0;" aria-hidden="true" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                <span class="slds-tabs--path__title"><b aura:id="saveLen"></b>Save Forecast</span>
+                            </a>
+                        </li>
+                        <li  aura:id="delFcLi" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                            <a class="slds-tabs--path__link" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                <span class="slds-tabs--path__stage">
+                                    <lightning:icon iconName="utility:check" size="x-small" class="slds-icon icon-btn-fill"/>
+                                    <span class="slds-assistive-text">Stage Complete</span>
+                                </span>
+                                <div aura:id="delFcSpinner" class="slds-spinner_container custom-save-spinner slds-hide" >
+                                    <div class="slds-spinner slds-spinner--inverse slds-spinner--x-small" style="margin-top: 0;" aria-hidden="true" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                <span class="slds-tabs--path__title">Clean Cache</span>
+                            </a>
+                        </li>
+                        <aura:if isTrue="{!v.isAPL}">
+                        <li  aura:id="aplFcLi" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                            <a class="slds-tabs--path__link" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                <span class="slds-tabs--path__stage">
+                                    <lightning:icon iconName="utility:check" size="x-small" class="slds-icon icon-btn-fill"/>
+                                    <span class="slds-assistive-text">Update Forecast History</span>
+                                </span>
+                                <div aura:id="aplFcSpinner" class="slds-spinner_container custom-save-spinner slds-hide" >
+                                    <div class="slds-spinner slds-spinner--inverse slds-spinner--x-small" style="margin-top: 0;" aria-hidden="true" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                <span class="slds-tabs--path__title">Update Forecast History</span>
+                            </a>
+                        </li>
+                        </aura:if>
+                    </ul>
+                    <div class="error" style="background: #fff;">
+                    	<div aura:id="errorMessage" class="slds-hide"></div>
+                    </div>
+                </div>
+                <button aura:id="closeSaveStatus" onclick="{!c.event_closeSaveStatus_click}" style="position: absolute; right: -100px;" class="slds-hide slds-button slds-button--neutral slds-path__mark-complete slds-no-flex slds-m-horizontal--small">Close</button>
+            </div>
+        </div>
+    </div>
+</aura:component>

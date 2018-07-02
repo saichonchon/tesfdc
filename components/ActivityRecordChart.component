@@ -1,0 +1,219 @@
+<!--/*********************************************************************************************************************** 
+ Name: ActivityRecordChart
+ Copyright © 2013 TE Connectivity | Salesforce Instance : Central Org
+========================================================================================================================
+ Purpose: Component for the pages ContactActivityRecordChart andLeadActivityRecordChart                                 
+========================================================================================================================
+ REQUIREMENT INFORMATION & DEVELOPMENT INFORMATION:                                                     
+------------------------------------------------------------------------------------------------------------------------
+ VERSION AUTHOR                DATE         DETAIL                                            Mercury Request #
+------------------------------------------------------------------------------------------------------------------------
+     1.0 Ankit                 05/16/2013   Initial Development                                         
+***********************************************************************************************************************/-->
+<apex:component controller="ActivityRecordChartController" extensions="ActivityRecordChartExtension" id="compId">
+<!-- Load Lib -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+
+<style>
+    #left { float: left;}
+    #right { float: right;} 
+    .btn{
+        background-color: #8ab529;
+        background: none;
+    }
+    
+</style>
+ <script type="text/javascript">
+     var data ;
+     var clickD = 0 ;
+     $j = jQuery.noConflict();
+     $j(document).ready(function() {           
+     });
+     
+     function checkAll(cb,cbid){
+     var inputElem = document.getElementsByTagName("input");                     
+     for(var i=0; i<inputElem.length; i++){             
+         if(inputElem[i].id.indexOf(cbid)!=-1){                                        
+         inputElem[i].checked = cb.checked;
+            }
+        }
+    }
+    function called(thisId){
+        data  = $j(document.getElementById(thisId));
+        if(clickD == 0){
+        var tempS = data.text();
+        tempS = tempS.replace('▲','');
+        tempS = tempS.replace('▼','');
+            data.text(tempS +" ▲");
+            clickD = 1;
+        }
+        else{
+        var tempS = data.text();
+        tempS = tempS.replace('▲','');
+        tempS = tempS.replace('▼','');
+            data.text(tempS +" ▼");
+            clickD = 0;
+        }
+    } 
+    </script>  
+
+<apex:form id="formId">
+    <apex:actionFunction name="callDexecute" action="{!ActiRecWrapperFillMethordl}" reRender="pbBlock,dspnullRec" status="loadSts"/> 
+    <apex:actionFunction name="callDexecuteforDateSOQL" action="{!ActiRecWrapperFillMethordl}" reRender="pbBlock,dspnullRec" status="loadSts"/> 
+
+    <apex:pageBlock id="pbBlock">
+        <!-- <center>Total Activity Record Count : <b>{!vTotalPNRCCount}</b></center> -->
+        <apex:tabPanel switchType="client" selectedTab="tabbody" id="containerTab">
+       
+                <!-- ***********************Tab for AR*********************** -->
+            <apex:tab label="Activity Record -- {!vCurrentLstSize}" name="name1" id="tabSent">
+                     
+                <b><apex:outputText value="Select Activity Type :"></apex:outputText></b>
+                <apex:selectList size="1" value="{!vSelectARType}" onchange="callDexecute()">
+                    <apex:selectOptions value="{!StatusList}"></apex:selectOptions>
+                </apex:selectList>
+                <b><apex:outputText value="Select Activity Date :"></apex:outputText></b>
+                <apex:selectList size="1" value="{!vsetDateRangeAR}"  multiselect="false" onchange="callDexecuteforDateSOQL()">
+                    <apex:selectOptions value="{!ARDateFilter}"></apex:selectOptions>
+                </apex:selectList>
+                <br/>
+                
+                <apex:actionStatus id="loadSts">
+                    <apex:facet name="start">
+                        <apex:outputPanel >
+                           <apex:image value="/img/loading32.gif" style="height: 20px;" id="imgload1" />
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:actionStatus>
+                
+                <hr/>
+                
+               <apex:pageBlockTable value="{!vArcRecLst}" var="row" id="pbTableId">
+                        
+                    <apex:column width="100">
+                        <apex:facet name="header">
+                            <apex:outputPanel >
+                                <apex:commandLink value="Activity Record Name ▲▼" action="{!getSort}"  rerender="pbBlock" status="loadSts" oncomplete="called('{!$Component.cmdSort}');" id="col1">
+                                    <apex:param name="eventId" value="Name" assignTo="{!vParamOrder}"/>
+                                    <apex:param name="eventId2" value="{!If(vParamDirec == 'ASC','DESC','ASC')}" assignTo="{!vParamDirec}"/>
+                                </apex:commandLink> 
+                            </apex:outputPanel>       
+                        </apex:facet>
+                        <apex:outputLink value="/{!row.Id}"  target="_blank">{!row.Name}</apex:outputLink> 
+                    </apex:column>
+                                   
+                    <apex:column width="100">
+                        <apex:facet name="header">
+                            <apex:commandLink value="Activity Date ▲▼" action="{!getSort}"  rerender="pbBlock" status="loadSts" oncomplete="called('{!$Component.cmdSort}');" id="col2">
+                                <apex:param name="eventId" value="Activity_Date__c" assignTo="{!vParamOrder}"/>
+                                <apex:param name="eventId2" value="{!If(vParamDirec == 'ASC','DESC','ASC')}" assignTo="{!vParamDirec}"/>
+                            </apex:commandLink>        
+                        </apex:facet>
+                        <apex:outputfield value="{!row.Activity_Date__c }" ></apex:outputfield> 
+                    </apex:column>
+                    
+                     <apex:column width="100">
+                        <apex:facet name="header">
+                            <apex:commandLink value="Activity Rating Description ▲▼" action="{!getSort}"  rerender="pbBlock" status="loadSts" oncomplete="called('{!$Component.cmdSort}');" id="col3">
+                                <apex:param name="eventId" value="Activity_Rating_Desc__c" assignTo="{!vParamOrder}"/>
+                                <apex:param name="eventId2" value="{!If(vParamDirec == 'ASC','DESC','ASC')}" assignTo="{!vParamDirec}"/>
+                            </apex:commandLink>        
+                        </apex:facet>
+                        <apex:outputText value="{!row.Activity_Rating_Desc__c}" ></apex:outputText> 
+                    </apex:column>
+                    
+                    <apex:column width="100">
+                        <apex:facet name="header">
+                            <apex:commandLink value="Related Part Number(s)▲▼" action="{!getSort}"  rerender="pbBlock" status="loadSts" oncomplete="called('{!$Component.cmdSort}');" id="col5">
+                                <apex:param name="eventId" value="Related_Part_Number_s__c" assignTo="{!vParamOrder}"/>
+                                <apex:param name="eventId2" value="{!If(vParamDirec == 'ASC','DESC','ASC')}" assignTo="{!vParamDirec}"/>
+                            </apex:commandLink>       
+                        </apex:facet>
+                        <apex:outputText value="{!row.Related_Part_Number_s__c }" ></apex:outputText> 
+                    </apex:column>
+                    
+                    <apex:column width="100">
+                        <apex:facet name="header">
+                            <apex:commandLink value="Activity Notes ▲▼" action="{!getSort}"  rerender="pbBlock" status="loadSts" oncomplete="called('{!$Component.cmdSort}');" id="col6">
+                                <apex:param name="eventId" value="Activity_Notes__c" assignTo="{!vParamOrder}"/>
+                                <apex:param name="eventId2" value="{!If(vParamDirec == 'ASC','DESC','ASC')}" assignTo="{!vParamDirec}"/>
+                            </apex:commandLink>      
+                        </apex:facet>
+                        <apex:outputText value="{!LEFT(row.Activity_Notes__c, 50)}{!IF( (LEN(row.Activity_Notes__c) > 50),'...','')}" ></apex:outputText> 
+                    </apex:column>
+                </apex:pageBlockTable>
+                
+                <center>
+                <apex:outputPanel rendered="{!IF((LEN(sLeadEmail)> 2),true ,false)}">
+                    <apex:commandLink value="First" action="{!first}" rendered="{!IF(con.hasPrevious,true,false)}" 
+                        style="color: #000000;font-size:12px;font-weight:bold;margin-right:30px;" status="loadPagination" reRender="pbBlock"/> 
+                    <apex:commandLink value="Previous" action="{!previous}" rendered="{!IF(con.hasPrevious,true,false)}" 
+                        style="color: #000000;font-size:12px;font-weight:bold;margin-right:30px;" status="loadPagination" reRender="pbBlock"/> 
+                    <apex:commandLink value="Next" action="{!next}" rendered="{!IF(con.hasNext,true,false)}" 
+                        style="color: #000000;font-size:12px;font-weight:bold;margin-right:30px;" status="loadPagination" reRender="pbBlock"/>
+                    <apex:commandLink value="Last" action="{!last}" rendered="{!IF(con.hasNext,true,false)}" 
+                        style="color: #000000;font-size:12px;font-weight:bold;margin-right:30px;" status="loadPagination" reRender="pbBlock"/> 
+                </apex:outputPanel>
+                
+                <apex:outputPanel id="dspnullRec" rendered="{!IF(OR((LEN(sLeadEmail)> 2),NOT(ISNULL(vCurrentLstSize))),IF(vCurrentLstSize == 0,true,false),true)}">
+                    <b><font size="2" color="Blue"><apex:outputText >There are no records to display</apex:outputText></font></b>
+                </apex:outputPanel>
+                
+                </center>
+                <apex:actionStatus id="loadPagination">
+                    <apex:facet name="start">
+                        <apex:outputPanel >
+                           <apex:image value="/img/loading32.gif" style="height: 20px;" id="imgload2" />
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:actionStatus>
+                
+            </apex:tab>
+                
+                <!-- *********************Tab for Charting************************* -->
+            <apex:tab label="Activity Record Charting" name="name4" id="tabChart" switchType="Server">
+               
+               <b><apex:outputText value="Select Activity Type :"></apex:outputText></b>
+               <apex:selectList size="3" value="{!vSelectMultipleARType}"  multiselect="true">
+                    <apex:selectOptions value="{!StatusList}"></apex:selectOptions>
+                </apex:selectList>
+                <b><apex:outputText value="Select Activity Date :"></apex:outputText></b>
+               <apex:selectList size="1" value="{!vSetDateRange}"  multiselect="false" >
+                    <apex:selectOptions value="{!ARDateFilter}"></apex:selectOptions>
+                </apex:selectList>
+
+                <apex:commandButton value="Refine Chart" action="{!FillChartDataMethord}"/>
+                <hr/>
+                   
+                 <center>
+                   <apex:chart height="400" width="80%" data="{!wrppnrcChart}" animate="true" resizable="true">
+                       <apex:legend position="right" />
+                       <apex:axis type="Numeric" position="left" fields="datacount" minimum="0" maximum="{!vTotalPNRCCount}" title="Activity Record" grid="true" gridFill="true"/>
+                       <apex:axis type="Category" position="bottom" fields="stsStatus" minimum="0"  title="Type" grid="true" gridFill="true" >
+                           <apex:chartLabel rotate="75" />
+                       </apex:axis>
+                       <apex:BarSeries axis="left" xField="stsStatus" yField="datacount" orientation="vertical" colorSet="{!vSetChartColor}" colorsProgressWithinSeries="true" gutter="5" showInLegend="false">
+                       <apex:chartTips height="80" width="150" trackMouse="true" />
+                       </apex:BarSeries>
+                   </apex:chart>
+
+                    <hr/>
+                   <apex:chart data="{!wrppnrcChart}" height="300" width="80%"  animate="true" theme="Salesforce" resizable="true">
+                       <apex:legend position="right"/>
+                       <apex:pieSeries labelField="stsStatus" dataField="datacount" donut="20" highlight="true" showInLegend="true" >
+                       <apex:chartTips height="80" width="150" trackMouse="true" labelField="stsStatus" valueField="datacount"/>
+                       </apex:pieSeries>
+                  </apex:chart>
+                  
+                  <apex:outputPanel id="dspnullRecChart" rendered="{!IF(OR((LEN(sLeadEmail)> 2),NOT(ISNULL(vTotalPNRCCount ))),IF(vTotalPNRCCount == 0,true,false),true)}">
+                    <b><font size="2" color="Blue"><apex:outputText >There are no records to display</apex:outputText></font></b>
+                </apex:outputPanel>
+                
+                </center>    
+            </apex:tab>
+            
+        </apex:tabPanel>
+    </apex:pageBlock>
+</apex:form> 
+</apex:component>

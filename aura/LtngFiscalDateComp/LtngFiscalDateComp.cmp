@@ -1,0 +1,117 @@
+<aura:component >
+    
+    <aura:attribute name="level" 			type="String" />
+    <aura:attribute name="message" 			type="String"  />
+    <aura:attribute name="map_fiscalDate" 	type="Map"  />
+    <aura:attribute name="list_date" 		type="List"  />
+    <aura:attribute name="selectedDate" 		type="Object"  />
+    
+    
+    
+    <aura:attribute name="value" 			type="String" />
+	<aura:attribute name="label" 			type="String" />
+	<aura:attribute name="labelClass" 		type="String" default="slds-form-element__label" />
+    
+    <!-- private attributes -->
+    <aura:attribute name="_setFocus" type="Boolean" default="true" description="The internal state of setFocus." />
+    <aura:attribute name="_gridOver" type="Boolean" default="false" />
+	
+	<aura:handler name="change" value="{!v.map_fiscalDate}" action="{!c.handlerFiscalDateChange}"/>
+    
+    <!-- events -->
+	<aura:registerevent name="fiscalDateChangeEvent" type="c:LtngFiscalDateChangeEvt"  />
+
+    
+	<div class="slds-form-element ">
+        <label class="{!v.labelClass}" for="closedate">{!v.label}</label>
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right"  onmouseleave="{!c.onMouseLeaveInput}">
+            <input readonly="readonly" type="text" aura:id="dateInput" class="slds-input" value="{!v.value}" displayDatePicker="false" updateOn="keyup" onclick="{!c.event_input_focus}"/>
+            <button style="right:5px;" aura:id="date-button" onclick="{!c.event_input_focus}" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon custom-date-style" type="button">
+            	
+                <lightning:icon iconName="utility:event" size="xx-small" class="slds-button__icon icon-btn-fill"/>
+                <span class="slds-assistive-text">Date</span>
+            </button>
+            <button style="right:5px;" aura:id="clear-button" onclick="{!c.event_clearDate_click}" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon slds-hide" type="button">
+                <lightning:icon iconName="utility:clear" size="xx-small" class="slds-button__icon"/>
+                <span class="slds-assistive-text">Clear</span>
+            </button>
+        </div>
+	</div>
+    
+    <div aura:id="grid" id="datepicker-dropdown" style="min-width:14rem; margin-left: 2rem;" class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" onmouseenter="{!c.onMouseEnterGrid}" onmouseleave="{!c.onMouseLeaveGrid}">
+
+        <div class="slds-datepicker__filter slds-grid slds-datepicker_header" style="">
+            <div class="slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-grow custom-grid">
+                <h2 style="font-weight: bold; margin: 0 1rem;" class="slds-align-middle" aria-live="assertive" aria-atomic="true">Fiscal Year</h2>
+            	<ui:inputSelect aura:id="yearSelect"  class="slds-select" labelClass="slds-assistive-text" required="false" change="{!c.event_year_change}" />
+            </div>
+            <div class="slds-shrink-none">
+            	
+            </div>
+        </div>
+        <div style="height: 9rem; overflow-y: scroll;">
+        	<table aura:id="maintable" class="datepicker__month" role="grid" aria-labelledby="month">
+                <tbody>
+                    <aura:iteration items="{!v.list_date}" var="d" indexVar="i">
+                        <tr>
+                            <td >
+                                <div onclick="{!c.event_selectDate_click}" data-index="{!i}">
+                                    <span class="left">{!d.label}</span>
+                                    <span class="right">{!d.date}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    
+    <div aura:id="movePopup" style="z-index:1000;" aria-hidden="false" role="dialog"  class="slds-modal slds-fade-in-open slds-docked-composer-modal slds-hide">
+      
+        <div class="slds-modal__container">
+        <div class="slds-modal__content">
+          <div class="slds-docked-composer slds-grid slds-grid--vertical" role="dialog" aria-labelledby="panel-heading-01">
+            <div class="slds-docked-composer__header slds-grid slds-shrink-none">
+              <div class="slds-media slds-media--center">
+                <div class="slds-media__figure slds-m-right--x-small">
+                    <div class="slds-grid">
+                    	<div>
+                        	<lightning:icon iconName="utility:warning" size="xx-small" class="slds-button__icon slds-icon-text-warning"/>
+                        </div>
+                        <div>
+                        	<h2>Move Forecast</h2>
+                        </div>
+                    </div>
+                </div>
+                
+              </div>
+              <div class="slds-col--bump-left">
+                <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--icon slds-icon--small" title="Close">
+                    <lightning:icon iconName="utility:close" size="xx-small" class="slds-button__icon"/>
+                    <span class="slds-assistive-text">Close Panel</span>
+                </button>
+              </div>
+            </div>
+            <div class="slds-docked-composer__body" style="display: inline-table; display:ruby-base-container; width: 100%;">
+              <div class="slds-align--absolute-center" style="padding:1rem 2rem; font-size: 2rem;">
+              	{!v.message}
+              </div>
+            </div>
+            <footer class="slds-docked-composer__footer slds-shrink-none">
+                <div class="slds-col--bump-left slds-text-align--right">
+                    <div class="slds-button-group" role="group">
+                        <button onclick="{!c.event_moveForecast_click}" class="slds-button slds-button--brand">Ok</button>
+                        <button onclick="{!c.event_popupClose_click}" class="slds-button slds-button--neutral">Cancel</button>
+                    </div>
+                </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+        
+    </div>
+    
+    
+</aura:component>

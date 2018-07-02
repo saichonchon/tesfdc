@@ -1,0 +1,96 @@
+<apex:page showHeader="false">
+<script src="//assets.adobedtm.com/a868df5fd82b7d3cdb6c7e08558b6dad36f2b9ab/satelliteLib-8af595cb0a5a164cf41fbe049f06894afb57ea02-staging.js"></script>
+    <script>  
+ 
+        //var domain = "https://"+"{!$Site.Domain}";
+        //var sitelabel = "{!$Site.Prefix}";
+        var vBaseURL = "{!$Site.BaseUrl}";
+        var language = getParameterByName('Language');
+     
+        //var additionalInfovar = getParameterByName1('additionalInfo');
+        var orgid = '{!$Organization.Id}';
+        orgid = orgid.substring(0, 15);
+                
+        <!-- dct ict logic-->
+                var additionalinfofromte=document.URL;
+                var act = additionalinfofromte.indexOf("additionalInfo=");
+                if(act >= 0)var addinfourl = atob(additionalinfofromte.substring(act+15));
+        <!-- end of dct ict logic -->
+        
+        //var decodedadditionalInfo = atob(additionalInfovar);
+        //alert('additionalInfo1 '+additionalInfovar);
+        //alert('decoded additional info'+decodedadditionalInfo );
+        //alert('language...'+language);    
+        //alert('base url'+vBaseURL);      
+        
+        var deplymntid = '{!$Setup.Live_Agent_Org_Settings__c.DeploymentID__c}';
+        var defaultbuttonid='{!$Setup.Live_Agent_Org_Settings__c.Default_Button__c}';
+        var additionictinfo='{!$Setup.Live_Agent_Org_Settings__c.AdditionalInfo__c}';
+        //Prabhanjan May-09: Removing over deploymentid (PIC English-UsTeam:573E0000000blJd)
+        //Adding new Global id (PIC English-Global Team:5734C0000008OIt)
+        var URL = vBaseURL+'/apex/livechatbybooks?language='+language+'#deployment_id='+deplymntid+'&org_id='+orgid+'&button_id='+defaultbuttonid+'&session_id=';
+        //var URL_DCT= vBaseURL+'/apex/livechatbybooks_dct?language='+language+'#deployment_id='+deplymntid+'&org_id='+orgid+'&button_id='+defaultbuttonid+'&session_id='; 
+        console.log(vBaseURL);
+        console.log(URL);
+        var URLEncoded = encodeURIComponent(URL);
+        //var URLEncodedDCT = encodeURIComponent(URL_DCT);
+        var urltemp = window.location.search;
+        if(urltemp.toLowerCase().indexOf("additionalinfo") < 0){
+           urltemp = urltemp+"&additionalInfo="+"{!$Setup.Live_Agent_Org_Settings__c.AdditionalInfo__c}";
+        }
+        urltemp = urltemp.replace("?", ''); 
+                //+"&additionalInfo="+"{!$Setup.Live_Agent_Org_Settings__c.AdditionalInfo__c}"  
+                
+                
+       <!-- DCT Requirement Development 28 Aug As per Requirement    REQ_01175 -->  
+       
+       
+        var dec = atob(additionictinfo);  
+        if(act >= 0 ) dec=addinfourl;    //checking if te.com is passing additional info         
+        var res = dec.split('&');
+        var dctflag= dec.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");        
+        var n = dctflag.indexOf("LiveChatPrimaryGroup=ICT"); 
+        
+       
+       if(n > 0){               
+          
+          window.location.replace(vBaseURL+'/apex/liveagentintro_dct?endpoint='+URLEncoded+'&'+urltemp); //Routing to DCT Page
+         
+         }
+         else{
+          window.location.replace(vBaseURL+'/apex/liveagentintro?endpoint='+URLEncoded+'&'+urltemp);  //Routing to non DCT Page
+         }
+        function getParameterByNameaddinfo(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.search);
+            
+            if(results == null)
+                return "";
+            else
+                return decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        function getParameterByName(variable) {
+            var additionalInfovar = getParameterByNameaddinfo('additionalInfo');
+            //start:Prabhanjan May-08: Adding Additionalinfo parameter to avoid errors if doesnt exist
+         
+            if(additionalInfovar==""){
+                additionalInfovar = '{!$Setup.Live_Agent_Org_Settings__c.AdditionalInfo__c}';
+            }
+            console.log('result from initialised'+additionalInfovar);
+            //end: Prabhanjan May-08
+            var decodedadditionalInfo = atob(additionalInfovar);
+            var vars = decodedadditionalInfo.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) == variable) {
+                    return decodeURIComponent(pair[1]);                  
+                }
+                
+            }
+        }
+    
+    </script> 
+    <script type="text/javascript">_satellite.pageBottom();</script>  
+</apex:page>

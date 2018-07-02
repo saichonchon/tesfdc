@@ -1,0 +1,76 @@
+<apex:component layout="block">
+<apex:attribute name="pageCtrl" type="CtrlPMVTeamView" required="true" description="the root page controller reference" />
+
+	<div class="popup-Search" id="searchuserdivid" data-call="  " style="display: none; overflow: hidden;">
+		<div id="searchuserLoading" class="searchuserLoadingcls" style="display: none;"></div>
+        <div class="popup-title">
+            <span>{!$Label.PMV_team_lab_search_for_user}</span>
+        </div>
+        <div class="popup-content">
+            <div class="popup-content-title" style="margin-top: 5px;">
+                <span>{!$Label.PMV_team_lab_search_information}</span>
+            </div>
+            <div class="popup-content-left">
+            	<label for="firstnameinput" class="popup_search_lab">First Name</label>
+            		<input id="firstnameid" name="firstnameinput" type="text" onkeyup="searchUsers_eve(event, this)"/><br/>
+            	<label for="lastnameinput" class="popup_search_lab">Last Name</label>
+            		<input id="lastnameid" name="lastnameinput" type="text" onkeyup="searchUsers_eve(event, this)"/><br/>
+                <input id="searchuserbtnid" onclick="searchPopUPUsers(this);" type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_search_for_user}"/>
+            </div>
+            <div class="popup-content-right">
+                <p>{!$Label.PMV_team_lab_description1}</p>
+                <p>{!$Label.PMV_team_lab_description2}</p>
+            </div>
+            <div class="popup-content-title"><span>{!$Label.PMV_team_lab_search_results}</span></div>
+            <div class="popup_usertable_head">
+            	<div id="popupuserheadid">
+	            	<table class="tabdft " border="0" cellspacing="0" cellpadding="0">
+	            		<thead>
+	                    	<th class="th_head_pding tc th_head_r" style="width: 36px">
+	                    		<label id="allckboxid" onclick="checkAllLabelStatus(this)" class="labelckbox" style="margin-left: -4px;">
+									<span class="all1img box"></span>
+								</label>
+	                    	</th>
+	                        <th class="th_head_pding th_head_r">{!$Label.PMV_team_lab_first_name}</th>
+	                        <th class="th_head_pding th_head_r">{!$Label.PMV_team_lab_last_name}</th>
+	                        <th class="th_head_pding th_head_r">{!$Label.PMV_team_lab_role}</th>
+	                        <th class="th_head_pding">{!$Label.PMV_team_lab_profile}</th>
+						</thead>
+	            	</table>
+            	</div>
+            </div>
+            <div class="popup-content-partDiv" id="content_user_body" style="padding: 0px; overflow-y: scroll; overflow-x: hidden; height: 33px; min-height: 230px;">
+            	<div id="popupuserbodyid" style="width: 100%; border: 1px solid #cfcfcf;">
+	            	<apex:outputPanel id="searchuserOpid">
+						<apex:inputHidden id="firstusernameid" value="{!pageCtrl.pageConf.firstName}" />
+						<apex:inputHidden id="lastusernameid" value="{!pageCtrl.pageConf.lastName}" />
+		           		<table class="tabdft" border="0" cellspacing="0" cellpadding="0">
+		                    <tbody id="searchuserbodyid" class="searchusertbodycls">
+		                    	<apex:variable value="{!0}" var="rowNum"/>
+		                        <apex:repeat var="fm" id="repeat" value="{!pageCtrl.list_userForSearch}" >
+								<tr class="{!if(mod(rowNum, 2) == 0, '', 'old')}">
+									<td class="th_head_pding th_head_r" style="width: 36px;">
+										<label onclick="checkLabelStatus(this)" class="labelckbox {!fm.id} " data-name="{!fm.name}" data-id="{!fm.id}">
+											<span class="all1img box"></span>
+										</label>
+									</td>
+									<td class="th_head_pding th_head_r">{!fm.firstName}</td>
+									<td class="th_head_pding th_head_r">{!fm.lastName}</td>
+									<td class="th_head_pding th_head_r">{!fm.UserRole.Name}</td>
+									<td class="th_head_pding">{!fm.Profile.Name}</td>
+								</tr>
+								<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+								</apex:repeat>
+		                    </tbody>
+		                </table>
+	                </apex:outputPanel>
+            	</div>
+            </div>
+            <div class="popup-button" style="margin-top: 20px;">
+                <input onclick="closeSearchUserPopUP(this)" type="button" class="popup-buttonGray cp"  value="{!$Label.PMV_team_button_cancel}"/>
+                <input onclick="addSearchUsers_eve(this)" type="button" class="popup-buttonYellow cp" value="{!$Label.PMV_team_button_add_seleced_user}"/>
+            </div>
+        </div>
+    </div>
+	
+</apex:component>

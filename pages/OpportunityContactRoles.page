@@ -1,0 +1,49 @@
+<apex:page standardController="Opportunity" extensions="exOpportunity_contact_roles" id="pg">
+<script>
+function refreshPage(){
+    //alert('hi===');
+      if(confirm('Are you sure you want to delete?'))
+         return true;
+         return false;
+    window.top.location.href = '/' + redirectUrl;
+//define this in the controller
+}
+</script>
+    <apex:form >
+        <!---<apex:detail subject="{!Opportunity.Id}" 
+                 rendered="{!Opportunity.Id != null}" 
+                 relatedList="True" 
+                 showChatter="True" 
+                 inlineEdit="true"
+                 oncomplete="location.reload()"/>-->
+    <apex:pageBlock mode="edit" helpTitle="Contact Roles Help" helpUrl="https://help.salesforce.com/htviewhelpdoc?id=contactroles_edit.htm"> 
+    <apex:pageBlockSection collapsible="false"/>
+    <apex:pageBlockTable value="{!Opportunity.OpportunityContactRoles}" var="ContactRole" width="100">
+    <apex:column style="width:75px" >
+    <apex:facet name="header">
+     Action
+    </apex:facet>
+    <!--  <a href="/p/opp/ContactRoleEditUi/e?oppid={!Opportunity.Id}&retURL=%2F{!Opportunity.Id}" target="_top">Edit</a> 
+          <a href="/apex/ContactRolesPage" target="_top">Edit</a> |
+          <a href="/apex/ContactRolesPage" target="_top">Del</a> -->
+    <apex:commandLink action="{!editOpp}" value="Edit" target="_top">
+    <apex:param name="oppid" value="{!ContactRole.opportunity.id}"/>
+    </apex:commandLink> &nbsp; | &nbsp;
+      <!--<apex:outputLink value="{!URLFOR($Action.Contact.delete,ContactRole.opportunity.id)}" onclick="return window.confirm('Are you sure?');">Del</apex:outputLink>-->
+    <apex:commandLink value="Del" action="{!deleteOpp}" oncomplete="window.top.location = '/{!PracticeImpactID}';">
+    <apex:param name="oppid" value="{!ContactRole.id}"/> 
+    </apex:commandLink>
+    </apex:column>
+    <apex:column value="{!ContactRole.Contact.Name}" headerValue="Contact Name"/>
+    <apex:column value="{!ContactRole.Contact.Account.Name}" headerValue="Account Name"/>
+    <apex:column value="{!ContactRole.Contact.Email}" headerValue="Email"/>
+    <apex:column value="{!ContactRole.Contact.Phone}" headerValue="Phone"/>
+    <apex:column value="{!ContactRole.Role}" headerValue="Role" />
+    <apex:column value="{!ContactRole.IsPrimary}" headerValue="Is Primary"/>
+    </apex:pageBlockTable>    
+    <apex:pageBlockButtons location="top">
+    <input type="button" class="btn" value="New" onclick="javascript:window.open('/apex/Opp_Contact_Roles?oppid={!Opportunity.Id}')"/> 
+    </apex:pageBlockButtons>
+    </apex:pageBlock>    
+    </apex:form>
+</apex:page>

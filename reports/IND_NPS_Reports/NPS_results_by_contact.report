@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Answer__c.Promotor_Count__c:SUM/RowCount - Answer__c.Detractor_Count__c:SUM/RowCount</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>NPS score per question</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS Score</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <columns>
+        <field>Account.Contacts.Answers__r$Question__c.Name</field>
+    </columns>
+    <columns>
+        <field>Account.Contacts.Answers__r$Answer_Value__c</field>
+    </columns>
+    <columns>
+        <field>Account.Contacts.Answers__r$Answer_txt__c</field>
+    </columns>
+    <columns>
+        <field>Account.Contacts.Answers__r$Not_Applicable__c</field>
+    </columns>
+    <currency>EUR</currency>
+    <description>report for contact custom links to report NPS history results</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Contacts$Id</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Contacts$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Month</dateGranularity>
+        <field>Account.Contacts.Answers__r$Campaign__c.Survey_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>NPS results by contact</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_NPS_Accounts_with_Contacts_with_Answers__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Contacts.Answers__r$Campaign__c.Survey_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

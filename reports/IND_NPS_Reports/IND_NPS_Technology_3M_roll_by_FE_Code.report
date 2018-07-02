@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Answer__c.Promotor_Count__c:SUM /RowCount -Answer__c.Detractor_Count__c:SUM/RowCount</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>NPS Calculation</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NPS</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>RowCount</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>record count</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>Account.Contacts.Answers__r$Survey_date__c</acrossGroupingContext>
+        <calculatedFormula>(Answer__c.Promotor_Count__c:SUM+
+PREVGROUPVAL (Answer__c.Promotor_Count__c:SUM, Answer__c.Survey_date__c,1)+
+PREVGROUPVAL(Answer__c.Promotor_Count__c:SUM, Answer__c.Survey_date__c,2))
+/
+(RowCount+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,1)+
+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,2))
+-(Answer__c.Detractor_Count__c:SUM+PREVGROUPVAL(Answer__c.Detractor_Count__c:SUM, Answer__c.Survey_date__c,1)+PREVGROUPVAL(Answer__c.Detractor_Count__c:SUM, Answer__c.Survey_date__c,2))
+/
+(RowCount+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,1)+PREVGROUPVAL(RowCount, Answer__c.Survey_date__c,2))</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>3 month rolling</description>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>Account.Contacts.Answers__r$Question_Short_Name__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>3 month rolling</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA3</column>
+        </chartSummaries>
+        <chartType>LineGrouped</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Account.Contacts.Answers__r$Survey_date__c</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>Account.Contacts.Answers__r$Question_Short_Name__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Contacts.Answers__r$Detractor_Count__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Account.Contacts.Answers__r$Promotor_Count__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Campaign_Name__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>contains</operator>
+            <value>IND</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Question_Category__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Technology</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Answer__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Contacts.Answers__r$Campaign_Status__c</column>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>completed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account$My_FE_Code__c</column>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>true</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>Account.Contacts.Answers__r$Survey_date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Contacts.Answers__r$Question_Short_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>IND NPS Technology 3M roll. by FE Code</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>IND_NPS_accounts_contacts_Answers_chatter__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Account.Contacts.Answers__r$Survey_date__c</dateColumn>
+        <interval>INTERVAL_PREVCURFY</interval>
+    </timeFrameFilter>
+</Report>
