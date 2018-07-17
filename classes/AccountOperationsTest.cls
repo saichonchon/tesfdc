@@ -11,7 +11,7 @@ public class AccountOperationsTest {
             ClsTestCustomSettingHelper.getPMV_Sales_Stage_Setting();
             ChannelinsightData_test.ChannelinsightData_test();
             ClsTestCustomSettingHelper.getTrigger_Configuration();
-     
+            ClsTestCustomSettingHelper.getADMTerritoryCode();
         Account acc = new Account();
         acc.Name = 't'+system.now().millisecond()+math.round(math.random()*10000);//Modified by Harinath to get Unique AccountName for each Account.
         acc.AnnualRevenue = 2000000.11; 
