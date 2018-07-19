@@ -59769,52 +59769,6 @@
         <startAddress>0.0.0.0</startAddress>
     </loginIpRanges>
     <loginIpRanges>
-        <endAddress>52.2.2.209</endAddress>
-        <startAddress>52.2.2.209</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <endAddress>52.72.119.132</endAddress>
-        <startAddress>52.72.119.132</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <endAddress>52.200.207.131</endAddress>
-        <startAddress>52.200.207.131</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <endAddress>52.203.195.34</endAddress>
-        <startAddress>52.203.195.34</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Conga Composer</description>
-        <endAddress>54.85.136.135</endAddress>
-        <startAddress>54.85.136.135</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Conga Composer</description>
-        <endAddress>54.219.139.180</endAddress>
-        <startAddress>54.219.139.180</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Conga Composer</description>
-        <endAddress>54.219.145.149</endAddress>
-        <startAddress>54.219.145.149</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Conga Composer</description>
-        <endAddress>54.236.206.9</endAddress>
-        <startAddress>54.236.206.9</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Salesforce</description>
-        <endAddress>96.43.144.22</endAddress>
-        <startAddress>96.43.144.0</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
-        <description>Salesforce</description>
-        <endAddress>96.43.148.22</endAddress>
-        <startAddress>96.43.148.0</startAddress>
-    </loginIpRanges>
-    <loginIpRanges>
         <description>Salesforce</description>
         <endAddress>182.50.76.22</endAddress>
         <startAddress>182.50.76.0</startAddress>
@@ -59868,6 +59822,52 @@
         <description>GuangZhou</description>
         <endAddress>211.147.255.143</endAddress>
         <startAddress>211.147.255.128</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <endAddress>52.2.2.209</endAddress>
+        <startAddress>52.2.2.209</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <endAddress>52.200.207.131</endAddress>
+        <startAddress>52.200.207.131</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <endAddress>52.203.195.34</endAddress>
+        <startAddress>52.203.195.34</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <endAddress>52.72.119.132</endAddress>
+        <startAddress>52.72.119.132</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Conga Composer</description>
+        <endAddress>54.219.139.180</endAddress>
+        <startAddress>54.219.139.180</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Conga Composer</description>
+        <endAddress>54.219.145.149</endAddress>
+        <startAddress>54.219.145.149</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Conga Composer</description>
+        <endAddress>54.236.206.9</endAddress>
+        <startAddress>54.236.206.9</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Conga Composer</description>
+        <endAddress>54.85.136.135</endAddress>
+        <startAddress>54.85.136.135</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Salesforce</description>
+        <endAddress>96.43.144.22</endAddress>
+        <startAddress>96.43.144.0</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Salesforce</description>
+        <endAddress>96.43.148.22</endAddress>
+        <startAddress>96.43.148.0</startAddress>
     </loginIpRanges>
     <objectPermissions>
         <allowCreate>true</allowCreate>
