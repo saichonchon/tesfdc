@@ -10985,6 +10985,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.Account_External_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Account.Account_Has_Entitlement__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -38526,6 +38531,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.One_Year_Revenue__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.Opp_External_Id__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
