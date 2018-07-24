@@ -33112,6 +33112,12 @@ ISBLANK(TEXT(Preferred_Distributor__c))
 )</errorConditionFormula>
         <errorMessage>Preferred Distributor field is required for Hot Lead.</errorMessage>
     </validationRules>
+    <validationRules>
+        <fullName>Region_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>OR(RecordTypeId=&quot;012G00000012CS7&quot;, ISPICKVAL(Eloqua_Request_Type__c,&quot;New Campaign&quot;), isblank(text(Region__c )))</errorConditionFormula>
+        <errorMessage>Region must be supplied to submit a New Campaign request.</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>APXTConga4__Conga_Composer_OAuth</fullName>
         <availability>online</availability>
